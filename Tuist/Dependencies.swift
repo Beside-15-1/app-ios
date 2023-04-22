@@ -14,7 +14,6 @@ let dependencies = Dependencies(
     .moya,
     .snapKit,
     .then,
-    .kingfisher,
     .lottie,
     .rxKeyboard,
     .rxGesture,
@@ -31,10 +30,6 @@ extension Package {
     requirement: .upToNextMinor(from: "5.0.1")
   )
   public static let then: Package = .remote(url: "https://github.com/devxoul/Then", requirement: .upToNextMajor(from: "2.7.0"))
-  public static let kingfisher: Package = .remote(
-    url: "https://github.com/onevcat/Kingfisher",
-    requirement: .upToNextMajor(from: "5.15.6")
-  )
   public static let lottie: Package = .remote(
     url: "https://github.com/airbnb/lottie-ios.git",
     requirement: .upToNextMajor(from: "3.2.1")

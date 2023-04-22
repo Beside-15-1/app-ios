@@ -122,7 +122,6 @@ extension TargetDependency {
   public static let rxMoya: TargetDependency = .external(name: "RxMoya")
   public static let snapKit: TargetDependency = .external(name: "SnapKit")
   public static let then: TargetDependency = .external(name: "Then")
-  public static let kingfisher: TargetDependency = .external(name: "Kingfisher")
   public static let rxKeyboard: TargetDependency = .external(name: "RxKeyboard")
   public static let lottie: TargetDependency = .external(name: "Lottie")
   public static let rxGesture: TargetDependency = .external(name: "RxGesture")

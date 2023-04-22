@@ -15,6 +15,8 @@ target 'App' do
   project 'Projects/App/App.xcodeproj'
   pod 'FlexLayout', '~> 1.0', binary: true
   pod 'PinLayout', '~> 1.0', binary: true
+  pod 'PINRemoteImage/PINCache', '~> 3.0', binary: true
+  pod 'PINRemoteImage/iOS', '~> 3.0', binary: true
 end
 
 target 'Domain' do
@@ -26,6 +28,8 @@ target 'Presentation' do
   project 'Projects/Presentation/Presentation.xcodeproj'
   pod 'FlexLayout', '~> 1.0', binary: true
   pod 'PinLayout', '~> 1.0', binary: true
+  pod 'PINRemoteImage/PINCache', '~> 3.0', binary: true
+  pod 'PINRemoteImage/iOS', '~> 3.0', binary: true
 
 end
 
