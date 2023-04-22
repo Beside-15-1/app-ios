@@ -1,0 +1,248 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "alamofire",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/Alamofire/Alamofire",
+          "name" : "Alamofire"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "78424be314842833c04bc3bef5b72e85fff99204",
+            "version" : "5.6.4"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "Alamofire"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "flexlayout",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/layoutBox/FlexLayout.git",
+          "name" : "FlexLayout"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "master",
+            "revision" : "f74852384d0e70ac655c6021fe954ee223abb102"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "FlexLayout"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "kingfisher",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/onevcat/Kingfisher",
+          "name" : "Kingfisher"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "1a0c2df04b31ed7aa318354f3583faea24f006fc",
+            "version" : "5.15.8"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "Kingfisher"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "lottie-ios",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/airbnb/lottie-ios.git",
+          "name" : "Lottie"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "b4bd0604ded9574807f41b4004b57dd1226a30a4",
+            "version" : "3.5.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "lottie-ios"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "moya",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/Moya/Moya",
+          "name" : "Moya"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "master",
+            "revision" : "963654cd4f82d17d7546b9d6127c29f6df091717"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "Moya"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "pinlayout",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/layoutBox/PinLayout",
+          "name" : "PinLayout"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "master",
+            "revision" : "ce929a6ecdc6701adee9bdf9d949e0036f567ca7"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "PinLayout"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "reactiveswift",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+          "name" : "ReactiveSwift"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+            "version" : "6.7.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "ReactiveSwift"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "ribs",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/uber/RIBs",
+          "name" : "RIBs"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "main",
+            "revision" : "62673341744690b9419074758eabcd3e988eaac6"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "RIBs"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "rxgesture",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/RxSwiftCommunity/RxGesture",
+          "name" : "RxGesture"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "1b137c576b4aaaab949235752278956697c9e4a0",
+            "version" : "4.0.4"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "RxGesture"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "rxkeyboard",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/RxSwiftCommunity/RxKeyboard",
+          "name" : "RxKeyboard"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "63f6377975c962a1d89f012a6f1e5bebb2c502b7",
+            "version" : "2.0.1"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "RxKeyboard"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "rxswift",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/ReactiveX/RxSwift",
+          "name" : "RxSwift"
+        },
+        "state" : {
+          "checkoutState" : {
+            "branch" : "main",
+            "revision" : "04c8d2b491b54e46a3534254bed8807b4a954fad"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "RxSwift"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "snapkit",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/SnapKit/SnapKit",
+          "name" : "SnapKit"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "d458564516e5676af9c70b4f4b2a9178294f1bc6",
+            "version" : "5.0.1"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "SnapKit"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "swiftyjson",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/SwiftyJSON/SwiftyJSON.git",
+          "name" : "SwiftyJSON"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "2b6054efa051565954e1d2b9da831680026cd768",
+            "version" : "4.3.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "SwiftyJSON"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "then",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/devxoul/Then",
+          "name" : "Then"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "e421a7b3440a271834337694e6050133a3958bc7",
+            "version" : "2.7.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "Then"
+      }
+    ]
+  },
+  "version" : 5
+}
