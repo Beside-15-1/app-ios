@@ -9,7 +9,7 @@ workspace 'Projects'
 project 'Projects/App.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
-project 'Projects/Data.xcodeproj'
+project 'Projects/Core.xcodeproj'
 
 target 'App' do
   project 'Projects/App/App.xcodeproj'
@@ -33,8 +33,8 @@ target 'Presentation' do
 
 end
 
-target 'Data' do
-  project 'Projects/Data/Data.xcodeproj'
+target 'Core' do
+  project 'Projects/Core/Core.xcodeproj'
 
 
 end
