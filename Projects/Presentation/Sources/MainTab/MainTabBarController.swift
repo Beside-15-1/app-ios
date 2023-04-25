@@ -6,3 +6,22 @@
 //
 
 import Foundation
+
+import UIKit
+
+public class MainTabBarController: UITabBarController {
+
+  let mvvm = MVVMViewController()
+  let reactorKit = ReactorViewController()
+
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+
+    tabBar.isHidden = false
+
+    mvvm.tabBarItem.title = "MVVM"
+    reactorKit.tabBarItem.title = "ReactorKit"
+
+    viewControllers = [mvvm, reactorKit]
+  }
+}

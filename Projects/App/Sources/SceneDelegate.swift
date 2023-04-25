@@ -7,7 +7,6 @@
 
 import UIKit
 import Domain
-import Data
 import Presentation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -21,15 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-        let vc = UIViewController()
-        vc.view.backgroundColor = .white
+        let vc = MainTabBarController()
+        
         window.rootViewController = vc
         self.window = window
         window.makeKeyAndVisible()
-        
-        let _ = DomainTest()
-        let _ = RepositoryTest()
-        let _ = PresentationTest()
+
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
