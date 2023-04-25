@@ -3,5 +3,5 @@ import ProjectDescriptionHelpers
 
 let project = Project.framework(
   name: Module.presentation.name,
-  dependencies: [Module.domain.project, Module.designSystem.project]
+  dependencies: [Module.domain.project, Module.designSystem.project, .reactorKit]
 )
