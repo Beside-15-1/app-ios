@@ -35,6 +35,7 @@ let protject = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Data/**"],
       dependencies: [
+        .target(name: "Domain"),
         Module.core.project,
         .rxSwift,
         .rxCocoa,
