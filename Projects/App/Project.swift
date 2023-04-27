@@ -4,10 +4,11 @@ import ProjectDescriptionHelpers
 let project = Project.app(
   name: "App",
   dependencies: [
-    .project(target: "Domain", path: .relativeToRoot("Projects/Domain")),
+    Module.domain.project,
     Module.presentation.project,
     Module.core.project,
     Module.designSystem.project,
+    .swinject
   ],
   resources: .default
 )
