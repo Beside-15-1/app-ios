@@ -5,14 +5,14 @@ use_frameworks!
 inhibit_all_warnings!
 
 
-workspace 'Projects'
-project 'Projects/App.xcodeproj'
-project 'Projects/Domain.xcodeproj'
-project 'Projects/Presentation.xcodeproj'
-project 'Projects/Core.xcodeproj'
+workspace 'joosum'
+project 'joosum/App.xcodeproj'
+project 'joosum/Domain.xcodeproj'
+project 'joosum/Presentation.xcodeproj'
+project 'joosum/Core.xcodeproj'
 
 target 'App' do
-  project 'Projects/App/App.xcodeproj'
+  project 'joosum/App/App.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'
   pod 'PINRemoteImage/PINCache', '~> 3.0'
@@ -20,12 +20,12 @@ target 'App' do
 end
 
 target 'Domain' do
-  project 'Projects/Domain/Domain.xcodeproj'
+  project 'joosum/Domain/Domain.xcodeproj'
 
 end
 
 target 'Presentation' do
-  project 'Projects/Presentation/Presentation.xcodeproj'
+  project 'joosum/Presentation/Presentation.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'
   pod 'PINRemoteImage/PINCache', '~> 3.0'
@@ -34,7 +34,6 @@ target 'Presentation' do
 end
 
 target 'Core' do
-  project 'Projects/Core/Core.xcodeproj'
-
+  project 'joosum/Core/Core.xcodeproj'
 
 end

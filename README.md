@@ -14,13 +14,13 @@ CleanArchitecture With Tuist Templete
 │   ├── Manifest.lock
 │   ├── Pods.xcodeproj
 │   └── Target Support Files
-├── Projects
+├── joosum
 │   ├── App
 │   ├── Data
 │   ├── DesignSystem
 │   ├── Domain
 │   └── Presentation
-├── Projects.xcworkspace
+├── joosum.xcworkspace
 │   ├── contents.xcworkspacedata
 │   ├── xcshareddata
 │   └── xcuserdata

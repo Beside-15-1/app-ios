@@ -39,7 +39,7 @@ extension Module {
   }
   
   public var path: ProjectDescription.Path {
-    .relativeToRoot("Projects/" + name)
+    .relativeToRoot("joosum/" + name)
   }
 
   public var project: TargetDependency {
