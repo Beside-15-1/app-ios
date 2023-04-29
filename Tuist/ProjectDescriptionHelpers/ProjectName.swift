@@ -9,6 +9,7 @@ import ProjectDescription
 
 public enum Module {
   case app
+  
   // Domain
   case domain
 
