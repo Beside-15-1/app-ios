@@ -60,5 +60,4 @@ extension Package {
     url: "https://github.com/ReactorKit/ReactorKit.git",
     requirement: .upToNextMajor(from: "3.0.0")
   )
-
 }

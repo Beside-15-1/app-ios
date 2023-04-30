@@ -6,7 +6,6 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
-
   static let bundleID = "com.cheonsong"
   static let iosVersion = "14.0"
 
@@ -41,8 +40,6 @@ extension Project {
     )
   }
 
-
-
   public static func project(
     name: String,
     product: Product,
@@ -51,9 +48,10 @@ extension Project {
     dependencies: [TargetDependency] = [],
     resources: ProjectDescription.ResourceFileElements? = nil
   ) -> Project {
-    var target: [Target] = []
+    var targets: [Target] = []
+
     if product == .app {
-      target = [Target(
+      targets = [Target(
         name: name,
         platform: .iOS,
         product: product,
@@ -62,10 +60,11 @@ extension Project {
         infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
         sources: ["Sources/**"],
         resources: resources,
+        scripts: [.SwiftFormatString],
         dependencies: dependencies
       )]
     } else {
-      target = [
+      targets = [
         Target(
           name: "\(name)Interface",
           platform: .iOS,
@@ -75,9 +74,10 @@ extension Project {
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: ["Interfaces/**"],
           resources: resources,
+          scripts: [.SwiftFormatString],
           dependencies: dependencies
-        )
-        ,Target(
+        ),
+        Target(
           name: name,
           platform: .iOS,
           product: product,
@@ -86,6 +86,7 @@ extension Project {
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: ["Sources/**"],
           resources: resources,
+          scripts: [.SwiftFormatString],
           dependencies: dependencies
         ),
         Target(
@@ -96,6 +97,7 @@ extension Project {
           deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: "Tests/**",
+          scripts: [.SwiftFormatString],
           dependencies: [
             .target(name: "\(name)"),
             .target(name: "\(name)Interface")
@@ -106,7 +108,7 @@ extension Project {
 
     return Project(
       name: name,
-      targets: target,
+      targets: targets,
       schemes: schemes
     )
   }
