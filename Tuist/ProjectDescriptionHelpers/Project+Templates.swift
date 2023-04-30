@@ -87,7 +87,7 @@ extension Project {
           sources: ["Sources/**"],
           resources: resources,
           scripts: [.SwiftFormatString],
-          dependencies: dependencies
+          dependencies: dependencies + [.target(name: "\(name)Interface")]
         ),
         Target(
           name: "\(name)Tests",
