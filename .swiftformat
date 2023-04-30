@@ -1,0 +1,45 @@
+# rules
+--disable \
+  consecutiveSpaces, \
+  redundantReturn, \
+  strongOutlets, \
+  wrapMultilineStatementBraces
+
+# format options
+--allman false
+--binarygrouping ignore
+--closingparen balanced
+--commas false
+--comments indent
+--decimalgrouping ignore
+--elseposition same-line
+--empty void
+--enable blankLineAfterImports
+--enable isEmpty
+--enable markTypes
+--exponentcase uppercase
+--exponentgrouping disabled
+--fractiongrouping disabled
+--header ignore
+--hexgrouping ignore
+--hexliteralcase lowercase
+--ifdef indent
+--importgrouping alphabetized
+--indent 2
+--indentcase false
+--linebreaks lf
+--maxwidth none
+--nospaceoperators "...,..<"
+--octalgrouping ignore
+--operatorfunc spaced
+--patternlet hoist
+--semicolons never
+--self remove
+--selfrequired true
+--stripunusedargs closure-only
+--tabwidth unspecified
+--trailingclosures true
+--trimwhitespace always
+--wrapcollections before-first
+--wrapparameters before-first
+--xcodeindentation disabled

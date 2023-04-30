@@ -6,5 +6,5 @@ project:
 	tuist fetch
 	tuist generate --no-open --xcframeworks
 	pod install
-	open projects.xcworkspace
+	open joosum.xcworkspace
 	
