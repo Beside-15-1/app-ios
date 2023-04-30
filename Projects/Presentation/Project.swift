@@ -21,8 +21,8 @@ let project = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       dependencies: []
-    )
-    ,Target(
+    ),
+    Target(
       name: Module.presentation.name,
       platform: .iOS,
       product: .staticFramework,
@@ -34,7 +34,8 @@ let project = Project(
         .target(name: "\(Module.designSystem.project)Interface"),
         Module.designSystem.project,
         .reactorKit,
-        .swinject
+        .swinject,
+        .sdWebImage
       ]
     ),
     Target(

@@ -20,6 +20,7 @@ let dependencies = Dependencies(
     .swiftyJson,
     .reactorKit,
     .swinject,
+    .sdWebImage,
   ],
   platforms: [.iOS]
 )
@@ -64,5 +65,9 @@ extension Package {
   public static let swinject: Package = .remote(
     url: "https://github.com/Swinject/Swinject",
     requirement: .upToNextMajor(from: "2.0.0")
+  )
+  public static let sdWebImage: Package = .remote(
+    url: "https://github.com/SDWebImage/SDWebImage.git",
+    requirement: .upToNextMajor(from: "5.0.0")
   )
 }
