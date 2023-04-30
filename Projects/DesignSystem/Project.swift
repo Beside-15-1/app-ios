@@ -1,7 +1,7 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.cheonsong"
+let bundleID = "com.pinkboss"
 let iosVersion = "14.0"
 
 let protject = Project(

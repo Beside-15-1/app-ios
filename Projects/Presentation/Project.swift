@@ -1,7 +1,7 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.cheonsong"
+let bundleID = "com.pinkboss"
 let iosVersion = "14.0"
 
 let project = Project(
@@ -11,7 +11,7 @@ let project = Project(
       name: "\(Module.presentation.name)Interface",
       platform: .iOS,
       product: .staticFramework,
-      bundleId: bundleID,
+      bundleId: bundleID + ".\(Module.presentation.name)Interface",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
@@ -22,13 +22,14 @@ let project = Project(
       name: Module.presentation.name,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: bundleID,
+      bundleId: bundleID + ".\(Module.presentation.name)",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(Module.designSystem.project)Interface"),
+        .target(name: "\(Module.presentation.name)Interface"),
+        Module.domain.project,
         Module.designSystem.project,
         .reactorKit,
         .swinject,
@@ -39,7 +40,7 @@ let project = Project(
       name: "\(Module.presentation.name)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: bundleID,
+      bundleId: bundleID + ".\(Module.presentation.name)Tests",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",

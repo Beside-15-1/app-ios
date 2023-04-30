@@ -6,7 +6,7 @@ import ProjectDescriptionHelpers
 //  dependencies: [.rxSwift, .rxCocoa, .rxRelay]
 // )
 
-let bundleID = "com.cheonsong"
+let bundleID = "com.pinkboss"
 let iosVersion = "14.0"
 
 let protject = Project(
@@ -24,7 +24,7 @@ let protject = Project(
       dependencies: [
         .rxSwift,
         .rxCocoa,
-        .rxRelay,
+        .rxRelay
       ]
     ),
     Target(
@@ -38,11 +38,10 @@ let protject = Project(
       scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "Domain"),
-        Module.core.project,
         .rxSwift,
         .rxCocoa,
         .rxRelay,
-        .swinject,
+        .swinject
       ]
     ),
     Target(
@@ -57,8 +56,8 @@ let protject = Project(
       dependencies: [
         .rxSwift,
         .rxCocoa,
-        .rxRelay,
+        .rxRelay
       ]
-    ),
+    )
   ]
 )

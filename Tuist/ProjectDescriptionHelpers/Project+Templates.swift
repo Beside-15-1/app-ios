@@ -6,7 +6,7 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
-  static let bundleID = "com.cheonsong"
+  static let bundleID = "com.pinkboss"
   static let iosVersion = "14.0"
 
   /// Helper function to create the Project for this ExampleApp
@@ -18,7 +18,7 @@ extension Project {
     project(
       name: name,
       product: .app,
-      bundleID: bundleID + "\(name.lowercased())",
+      bundleID: bundleID + ".\(name.lowercased())",
       dependencies: dependencies,
       resources: resources
     )
