@@ -5,7 +5,7 @@ use_frameworks!
 inhibit_all_warnings!
 
 
-workspace 'Projects'
+workspace 'joosum'
 project 'Projects/App.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
@@ -35,6 +35,5 @@ end
 
 target 'Core' do
   project 'Projects/Core/Core.xcodeproj'
-
 
 end
