@@ -8,7 +8,7 @@
 import Foundation
 
 public class PresentationTest {
-    public init() {
-        print("PresentationTest Success")
-    }
+  public init() {
+    print("PresentationTest Success")
+  }
 }

@@ -10,9 +10,6 @@ import Foundation
 import UIKit
 
 class MVVMViewController: UIViewController {
-
-
-
   override func viewDidLoad() {
     super.viewDidLoad()
   }

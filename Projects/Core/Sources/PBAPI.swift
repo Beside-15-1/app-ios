@@ -8,9 +8,13 @@
 import Foundation
 import Moya
 
+// MARK: - PBAPI
+
 enum PBAPI {
   case createUser(name: String, email: String)
 }
+
+// MARK: TargetType
 
 extension PBAPI: TargetType {
   var baseURL: URL {
@@ -19,7 +23,7 @@ extension PBAPI: TargetType {
 
   var path: String {
     switch self {
-    case .createUser(_, _):
+    case .createUser:
       return "/users"
     }
   }
@@ -41,7 +45,7 @@ extension PBAPI: TargetType {
     }
   }
 
-  var headers: [String : String]? {
+  var headers: [String: String]? {
     return ["Content-type": "application/json"]
   }
 }

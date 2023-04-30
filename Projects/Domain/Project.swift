@@ -24,7 +24,7 @@ let protject = Project(
       dependencies: [
         .rxSwift,
         .rxCocoa,
-        .rxRelay,
+        .rxRelay
       ]
     ),
     Target(
@@ -40,7 +40,7 @@ let protject = Project(
         Module.core.project,
         .rxSwift,
         .rxCocoa,
-        .rxRelay,
+        .rxRelay
       ]
     ),
     Target(
@@ -55,9 +55,9 @@ let protject = Project(
       dependencies: [
         .rxSwift,
         .rxCocoa,
-        .rxRelay,
+        .rxRelay
       ]
-    ),
+    )
   ]
 )
 
