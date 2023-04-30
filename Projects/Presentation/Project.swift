@@ -4,11 +4,6 @@ import ProjectDescriptionHelpers
 let bundleID = "com.cheonsong"
 let iosVersion = "14.0"
 
-let project2 = Project.framework(
-  name: Module.presentation.name,
-  dependencies: [Module.domain.project, Module.designSystem.project, .reactorKit, .swinject]
-)
-
 let project = Project(
   name: Module.presentation.name,
   targets: [
@@ -20,6 +15,7 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
+      scripts: [.SwiftFormatString],
       dependencies: []
     ),
     Target(
@@ -30,6 +26,7 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
+      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(Module.designSystem.project)Interface"),
         Module.designSystem.project,
@@ -46,6 +43,7 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
+      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(Module.presentation.name)"),
         .target(name: "\(Module.presentation.name)Interface")

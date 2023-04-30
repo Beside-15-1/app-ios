@@ -11,17 +11,21 @@ import UIKit
 import Swinject
 
 import Data
-import PresentationInterface
 import Presentation
+import PresentationInterface
+
+// MARK: - AppDependency
 
 struct AppDependency {
   let rootViewController: UIViewController
 }
 
+// MARK: - AppAssembly
+
 enum AppAssembly {
   static let container: Container = .init(defaultObjectScope: .container)
 
-  static func resolve()-> AppDependency {
+  static func resolve() -> AppDependency {
     let assemblies: [Assembly] = [
       DataAssembly(),
       PresentationAssembly()
@@ -29,7 +33,6 @@ enum AppAssembly {
 
     _ = Assembler(assemblies, container: container)
     let resolver = container
-
 
     let rootViewController = resolver.resolve(LoginBuildable.self)!.build(payload: .init())
 

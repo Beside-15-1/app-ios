@@ -12,17 +12,18 @@ import Swinject
 import Domain
 import PresentationInterface
 
+// MARK: - PresentationAssembly
+
 public final class PresentationAssembly: Assembly {
   public init() {}
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
-      registerLoginBuilder,
+      registerLoginBuilder
     ]
 
     registerFunctions.forEach { $0(container) }
   }
-
 
   private func registerLoginBuilder(container: Container) {
     container.register(LoginBuildable.self) { r in
@@ -31,11 +32,10 @@ public final class PresentationAssembly: Assembly {
   }
 }
 
-
 // MARK: - Resolver
 
-extension Resolver {
-  fileprivate func resolve<Service>() -> Service! {
+private extension Resolver {
+  func resolve<Service>() -> Service! {
     resolve(Service.self)
   }
 }

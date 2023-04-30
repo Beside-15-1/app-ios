@@ -10,11 +10,10 @@ import UIKit
 
 import FlexLayout
 import PinLayout
-import Then
 import SnapKit
+import Then
 
 class LoginView: UIView {
-
   private let flexContainer = UIView()
 
   private let googleButton = UIButton().then {
@@ -40,7 +39,6 @@ class LoginView: UIView {
   required init?(coder: NSCoder) {
     super.init(coder: coder)
   }
-
 
   // MARK: Layout
 

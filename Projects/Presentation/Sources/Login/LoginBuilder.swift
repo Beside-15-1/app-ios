@@ -12,12 +12,15 @@ import UIKit
 import Domain
 import PresentationInterface
 
+// MARK: - LoginDependency
+
 struct LoginDependency {
   let guideRepository: GuideRepository
 }
 
-final class LoginBuilder: LoginBuildable {
+// MARK: - LoginBuilder
 
+final class LoginBuilder: LoginBuildable {
   private let dependency: LoginDependency
 
   init(dependency: LoginDependency) {

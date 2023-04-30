@@ -10,7 +10,6 @@ import Foundation
 import Domain
 
 final class LoginViewModel {
-
   private let guideUseCase: GuideUseCase
 
   init(guideUseCase: GuideUseCase) {

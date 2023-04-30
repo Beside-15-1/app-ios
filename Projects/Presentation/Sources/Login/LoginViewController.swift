@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 final class LoginViewController: UIViewController {
-
   private let viewModel: LoginViewModel?
 
   private let contentView = LoginView()
@@ -20,6 +19,7 @@ final class LoginViewController: UIViewController {
     super.init(nibName: nil, bundle: nil)
   }
 
+  @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -33,6 +33,6 @@ final class LoginViewController: UIViewController {
   override func loadView() {
     super.loadView()
 
-    self.view = contentView
+    view = contentView
   }
 }

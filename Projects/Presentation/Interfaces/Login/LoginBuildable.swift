@@ -11,12 +11,14 @@ import UIKit
 
 import Domain
 
+// MARK: - LoginBuildable
+
 public protocol LoginBuildable {
-  func build(payload: LoginPayload)-> UIViewController
+  func build(payload: LoginPayload) -> UIViewController
 }
 
+// MARK: - LoginPayload
+
 public struct LoginPayload {
-
   public init() {}
-
 }

@@ -9,15 +9,14 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
   let dependency: AppDependency
 
-  static public func shared() -> AppDelegate? {
+  public static func shared() -> AppDelegate? {
     return UIApplication.shared.delegate as? AppDelegate
   }
 
-  private override init() {
-    self.dependency = AppAssembly.resolve()
+  override private init() {
+    dependency = AppAssembly.resolve()
     super.init()
   }
 
@@ -51,7 +50,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
     // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
   }
-
-
 }
-

@@ -20,6 +20,7 @@ let protject = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Domain/**"],
+      scripts: [.SwiftFormatString],
       dependencies: [
         .rxSwift,
         .rxCocoa,
@@ -34,6 +35,7 @@ let protject = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Data/**"],
+      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "Domain"),
         Module.core.project,
@@ -51,6 +53,7 @@ let protject = Project(
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Tests/**"],
+      scripts: [.SwiftFormatString],
       dependencies: [
         .rxSwift,
         .rxCocoa,
