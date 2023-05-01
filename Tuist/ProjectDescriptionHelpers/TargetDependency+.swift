@@ -24,4 +24,6 @@ extension TargetDependency {
   public static let rxGesture: TargetDependency = .external(name: "RxGesture")
   public static let swiftyJson: TargetDependency = .external(name: "SwiftyJSON")
   public static let reactorKit: TargetDependency = .external(name: "ReactorKit")
+  public static let swinject: TargetDependency = .external(name: "Swinject")
+  public static let sdWebImage: TargetDependency = .external(name: "SDWebImage")
 }

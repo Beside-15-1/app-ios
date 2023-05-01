@@ -6,17 +6,15 @@ inhibit_all_warnings!
 
 
 workspace 'joosum'
-project 'Projects/App.xcodeproj'
+project 'Projects/Joosum.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
 project 'Projects/Core.xcodeproj'
 
-target 'App' do
-  project 'Projects/App/App.xcodeproj'
+target 'Joosum' do
+  project 'Projects/Joosum/Joosum.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'
-  pod 'PINRemoteImage/PINCache', '~> 3.0'
-  pod 'PINRemoteImage/iOS', '~> 3.0'
 end
 
 target 'Domain' do
@@ -28,12 +26,10 @@ target 'Presentation' do
   project 'Projects/Presentation/Presentation.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'
-  pod 'PINRemoteImage/PINCache', '~> 3.0'
-  pod 'PINRemoteImage/iOS', '~> 3.0'
-
 end
 
 target 'Core' do
   project 'Projects/Core/Core.xcodeproj'
+
 
 end

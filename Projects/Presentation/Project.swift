@@ -1,7 +1,56 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = Project.framework(
+let bundleID = "com.pinkboss"
+let iosVersion = "14.0"
+
+let project = Project(
   name: Module.presentation.name,
-  dependencies: [Module.domain.project, Module.designSystem.project, .reactorKit]
+  targets: [
+    Target(
+      name: "\(Module.presentation.name)Interface",
+      platform: .iOS,
+      product: .staticFramework,
+      bundleId: bundleID + ".\(Module.presentation.name)Interface",
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: ["Interfaces/**"],
+      scripts: [.SwiftFormatString],
+      dependencies: [
+        .project(target: "Domain", path: .relativeToRoot("Projects/Domain"))
+      ]
+    ),
+    Target(
+      name: Module.presentation.name,
+      platform: .iOS,
+      product: .staticFramework,
+      bundleId: bundleID + ".\(Module.presentation.name)",
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: ["Sources/**"],
+      scripts: [.SwiftFormatString],
+      dependencies: [
+        .target(name: "\(Module.presentation.name)Interface"),
+        .project(target: "Domain", path: .relativeToRoot("Projects/Domain")),
+        Module.designSystem.project,
+        .reactorKit,
+        .swinject,
+        .sdWebImage
+      ]
+    ),
+    Target(
+      name: "\(Module.presentation.name)Tests",
+      platform: .iOS,
+      product: .unitTests,
+      bundleId: bundleID + ".\(Module.presentation.name)Tests",
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: "Tests/**",
+      scripts: [.SwiftFormatString],
+      dependencies: [
+        .target(name: "\(Module.presentation.name)"),
+        .target(name: "\(Module.presentation.name)Interface")
+      ]
+    )
+  ]
 )

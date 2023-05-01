@@ -6,8 +6,9 @@
 //
 
 import Foundation
+
 public class DesignTest {
-    public init() {
-        print("DesignTest Success")
-    }
+  public init() {
+    print("DesignTest Success")
+  }
 }

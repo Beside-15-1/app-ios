@@ -27,7 +27,7 @@ extension Module {
   public var name: String {
     switch self {
     case .app:
-      return "App"
+      return "Joosum"
     case .presentation:
       return "Presentation"
     case .domain:
