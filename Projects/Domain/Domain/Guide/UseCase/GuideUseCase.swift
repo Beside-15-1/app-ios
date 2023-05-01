@@ -7,12 +7,15 @@
 
 import Foundation
 
+// MARK: - GuideUseCase
+
 public protocol GuideUseCase {
-  func excute()-> String
+  func excute() -> String
 }
 
-public class GuideUseCaseImpl: GuideUseCase {
+// MARK: - GuideUseCaseImpl
 
+public class GuideUseCaseImpl: GuideUseCase {
   private let guideRepository: GuideRepository
 
   public init(guideRepository: GuideRepository) {

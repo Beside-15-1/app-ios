@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol GuideRepository {
-  func fetch()-> String
+  func fetch() -> String
 }

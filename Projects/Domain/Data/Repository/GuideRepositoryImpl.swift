@@ -10,9 +10,7 @@ import Foundation
 import Domain
 
 final class GuideRepositoryImpl: GuideRepository {
-
-  func fetch()-> String {
+  func fetch() -> String {
     return "Guide"
   }
-
 }

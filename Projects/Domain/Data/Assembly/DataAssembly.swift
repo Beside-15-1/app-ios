@@ -11,30 +11,30 @@ import Swinject
 
 import Domain
 
+// MARK: - DataAssembly
+
 public final class DataAssembly: Assembly {
   public init() {}
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
-      registerGuideRepository,
+      registerGuideRepository
     ]
 
     registerFunctions.forEach { $0(container) }
   }
 
-
   private func registerGuideRepository(container: Container) {
-    container.register(GuideRepository.self) { r in
+    container.register(GuideRepository.self) { _ in
       GuideRepositoryImpl()
     }
   }
 }
 
-
 // MARK: - Resolver
 
-extension Resolver {
-  fileprivate func resolve<Service>() -> Service! {
+private extension Resolver {
+  func resolve<Service>() -> Service! {
     resolve(Service.self)
   }
 }
