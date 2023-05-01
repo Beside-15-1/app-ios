@@ -16,7 +16,9 @@ let project = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
-      dependencies: []
+      dependencies: [
+        .project(target: "Domain", path: .relativeToRoot("Projects/Domain"))
+      ]
     ),
     Target(
       name: Module.presentation.name,
@@ -29,7 +31,7 @@ let project = Project(
       scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(Module.presentation.name)Interface"),
-        Module.domain.project,
+        .project(target: "Domain", path: .relativeToRoot("Projects/Domain")),
         Module.designSystem.project,
         .reactorKit,
         .swinject,
