@@ -9,8 +9,8 @@ import Foundation
 import Moya
 
 public protocol PBNetwork {
-  func request<T: Decodable>(
+  func request(
     _ target: TargetType,
-    completion: @escaping (Result<T, Error>) -> Void
+    completion: @escaping (Result<Response, Error>) -> Void
   )
 }

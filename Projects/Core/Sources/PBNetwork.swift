@@ -15,24 +15,13 @@ class PBNetworkImpl: PBNetwork {
   private let disposeBag = DisposeBag()
   private let provider = MoyaProvider<PBAPI>()
 
-  func request<T: Decodable>(
+  func request(
     _ target: TargetType,
-    completion: @escaping (Result<T, Error>) -> Void
+    completion: @escaping (Result<Response, Error>) -> Void
   ) {
     provider.rx.request(.createUser(name: "Hohyeon", email: "hohyeonmoon@gmail.com"))
       .subscribe { result in
-        switch result {
-        case let .success(response):
-          do {
-            let decoder = JSONDecoder()
-            let data = try decoder.decode(T.self, from: response.data)
-            completion(.success(data))
-          } catch {
-            completion(.failure(error))
-          }
-        case let .failure(error):
-          completion(.failure(error))
-        }
+        completion(result)
       }
       .disposed(by: disposeBag)
   }
