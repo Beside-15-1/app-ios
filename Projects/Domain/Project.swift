@@ -6,7 +6,7 @@ import ProjectDescriptionHelpers
 //  dependencies: [.rxSwift, .rxCocoa, .rxRelay]
 // )
 
-let bundleID = "com.cheonsong"
+let bundleID = "com.pinkboss"
 let iosVersion = "14.0"
 
 let protject = Project(
@@ -37,10 +37,11 @@ let protject = Project(
       sources: ["Data/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        Module.core.project,
+        .target(name: "Domain"),
         .rxSwift,
         .rxCocoa,
-        .rxRelay
+        .rxRelay,
+        .swinject
       ]
     ),
     Target(
@@ -60,63 +61,3 @@ let protject = Project(
     )
   ]
 )
-
-// Project {
-//  var target: [Target] = []
-//  if product == .app {
-//    target = [Target(
-//      name: name,
-//      platform: .iOS,
-//      product: product,
-//      bundleId: bundleID,
-//      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-//      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-//      sources: ["Sources/**"],
-//      resources: resources,
-//      dependencies: dependencies
-//    )]
-//  } else {
-//    target = [
-//      Target(
-//        name: "\(name)Interface",
-//        platform: .iOS,
-//        product: product,
-//        bundleId: bundleID,
-//        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-//        infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-//        sources: ["Interfaces/**"],
-//        resources: resources,
-//        dependencies: dependencies
-//      )
-//      ,Target(
-//        name: name,
-//        platform: .iOS,
-//        product: product,
-//        bundleId: bundleID,
-//        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-//        infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-//        sources: ["Sources/**"],
-//        resources: resources,
-//        dependencies: dependencies
-//      ),
-//      Target(
-//        name: "\(name)Tests",
-//        platform: .iOS,
-//        product: .unitTests,
-//        bundleId: bundleID,
-//        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-//        infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-//        sources: "Tests/**",
-//        dependencies: [
-//          .target(name: "\(name)"),
-//          .target(name: "\(name)Interface")
-//        ]
-//      )
-//    ]
-//  }
-//
-//  return Project(
-//    name: name,
-//    targets: target,
-//    schemes: schemes
-//  )

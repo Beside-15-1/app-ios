@@ -5,13 +5,13 @@ use_frameworks!
 inhibit_all_warnings!
 
 workspace 'joosum'
-project 'Projects/App.xcodeproj'
+project 'Projects/Joosum.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
 project 'Projects/Core.xcodeproj'
 
-target 'App' do
-  project 'Projects/App/App.xcodeproj'
+target 'Joosum' do
+  project 'Projects/Joosum/Joosum.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'  
 end
