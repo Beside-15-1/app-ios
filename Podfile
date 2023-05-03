@@ -9,7 +9,9 @@ workspace 'joosum'
 project 'Projects/Joosum.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
-project 'Projects/Core.xcodeproj'
+project 'Projects/DesignSystem.xcodeproj'
+# Core
+project 'Projects/Core/Networking/Networking.xcodeproj'
 
 target 'Joosum' do
   project 'Projects/Joosum/Joosum.xcodeproj'
@@ -28,8 +30,14 @@ target 'Presentation' do
   pod 'PinLayout', '~> 1.0'
 end
 
-target 'Core' do
-  project 'Projects/Core/Core.xcodeproj'
+target 'DesignSystem' do
+  project 'Projects/DesignSystem/DesignSystem.xcodeproj'
+  pod 'FlexLayout', '~> 1.0'
+  pod 'PinLayout', '~> 1.0'
+end
+
+target 'Networking' do
+  project 'Projects/Core/Networking/Networking.xcodeproj'
 
 
 end
