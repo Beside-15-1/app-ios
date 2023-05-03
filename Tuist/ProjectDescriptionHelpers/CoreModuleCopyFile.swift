@@ -1,14 +1,25 @@
+//
+//  CoreModuleCopyFile.swift
+//  ProjectDescriptionHelpers
+//
+//  Created by 박천송 on 2023/05/04.
+//
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 
+// ************************변경*************************
+let moduleName: String = CoreModule.Networking.rawValue
+// ****************************************************
+
 let project = Project(
-  name: CoreModule.Networking.rawValue,
+  name: moduleName,
   targets: [
     Target(
-      name: "\(CoreModule.Networking.rawValue)Interface",
+      name: "\(moduleName)Interface",
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)Interface".lowercased(),
+      bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
@@ -16,34 +27,35 @@ let project = Project(
       dependencies: []
     ),
     Target(
-      name: CoreModule.Networking.rawValue,
+      name: moduleName,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)".lowercased(),
+      bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(CoreModule.Networking.rawValue)Interface"),
+        .target(name: "\(moduleName)Interface"),
         // External
-        .rxMoya,
-        .swinject,
+        .swinject
       ]
     ),
     Target(
-      name: "\(CoreModule.Networking.rawValue)Tests",
+      name: "\(moduleName)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)Tests".lowercased(),
+      bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(CoreModule.Networking.rawValue)"),
-        .target(name: "\(CoreModule.Networking.rawValue)Interface")
+        .target(name: "\(moduleName)"),
+        .target(name: "\(moduleName)Interface"),
+        .xctest,
+        .rxSwift,
       ]
-    )
+    ),
   ]
 )
