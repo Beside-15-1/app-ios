@@ -1,9 +1,6 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.pinkboss"
-let iosVersion = "14.0"
-
 let protject = Project(
   name: Module.DesignSystem.rawValue,
   targets: [
@@ -11,8 +8,8 @@ let protject = Project(
       name: Module.DesignSystem.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".\(Module.DesignSystem.rawValue)".lowercased(),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       resources: .default,

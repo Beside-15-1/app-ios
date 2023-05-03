@@ -1,9 +1,6 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.pinkboss"
-let iosVersion = "14.0"
-
 let project = Project(
   name: Module.Presentation.rawValue,
   targets: [
@@ -11,8 +8,8 @@ let project = Project(
       name: "\(Module.Presentation.rawValue)Interface",
       platform: .iOS,
       product: .staticFramework,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Interface",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
@@ -24,8 +21,8 @@ let project = Project(
       name: Module.Presentation.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
@@ -45,8 +42,8 @@ let project = Project(
       name: "\(Module.Presentation.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Tests",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       scripts: [.SwiftFormatString],

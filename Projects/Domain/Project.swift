@@ -1,8 +1,6 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.pinkboss"
-let iosVersion = "14.0"
 let project = Project(
   name: Module.Domain.rawValue,
   targets: [
@@ -10,8 +8,8 @@ let project = Project(
       name: Module.Domain.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".domain",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Domain/**"],
       scripts: [.SwiftFormatString],
@@ -25,8 +23,8 @@ let project = Project(
       name: "Data",
       platform: .iOS,
       product: .staticFramework,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".data",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Data/**"],
       scripts: [.SwiftFormatString],
@@ -42,8 +40,8 @@ let project = Project(
       name: "\(Module.Domain.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       bundleId: Project.bundleID + ".domaintests",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Tests/**"],
       scripts: [.SwiftFormatString],
