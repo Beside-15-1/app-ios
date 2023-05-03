@@ -5,51 +5,57 @@ let bundleID = "com.pinkboss"
 let iosVersion = "14.0"
 
 let project = Project(
-  name: Module.presentation.name,
+  name: Module.Presentation.rawValue,
   targets: [
     Target(
-      name: "\(Module.presentation.name)Interface",
+      name: "\(Module.Presentation.rawValue)Interface",
       platform: .iOS,
       product: .staticFramework,
-      bundleId: bundleID + ".\(Module.presentation.name)Interface",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Interface",
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .project(target: "Domain", path: .relativeToRoot("Projects/Domain"))
+        .domain()
       ]
     ),
     Target(
-      name: Module.presentation.name,
+      name: Module.Presentation.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: bundleID + ".\(Module.presentation.name)",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)",
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(Module.presentation.name)Interface"),
-        .project(target: "Domain", path: .relativeToRoot("Projects/Domain")),
-        Module.designSystem.project,
+        // Target
+        .target(name: "\(Module.Presentation.rawValue)Interface"),
+        // Module
+        .domain(),
+        .designSystem(),
+        // External
         .reactorKit,
         .swinject,
         .sdWebImage
       ]
     ),
     Target(
-      name: "\(Module.presentation.name)Tests",
+      name: "\(Module.Presentation.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: bundleID + ".\(Module.presentation.name)Tests",
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Tests",
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(Module.presentation.name)"),
-        .target(name: "\(Module.presentation.name)Interface")
+        .xctest,
+        .target(name: "\(Module.Presentation.rawValue)"),
+        .target(name: "\(Module.Presentation.rawValue)Interface"),
+        // Module
+        .domain()
       ]
     )
   ]
