@@ -7,10 +7,8 @@
 
 import Foundation
 import Moya
+import RxSwift
 
 public protocol PBNetwork {
-  func request(
-    _ target: TargetType,
-    completion: @escaping (Result<Response, Error>) -> Void
-  )
+  func request(_ target: TargetType) -> Single<Result<Response, Error>>
 }
