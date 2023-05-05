@@ -11,11 +11,13 @@ project 'Projects/Presentation.xcodeproj'
 project 'Projects/DesignSystem.xcodeproj'
 # Core
 project 'Projects/Core/Networking/Networking.xcodeproj'
+project 'Projects/Core/LoginManager/LoginManager.xcodeproj'
 
 target 'Joosum' do
   project 'Projects/Joosum/Joosum.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
-  pod 'PinLayout', '~> 1.0'  
+  pod 'PinLayout', '~> 1.0'
+  pod 'GoogleSignIn'
 end
 
 target 'Domain' do
@@ -34,6 +36,14 @@ target 'DesignSystem' do
   pod 'PinLayout', '~> 1.0'
 end
 
+# Core
+
 target 'Networking' do
   project 'Projects/Core/Networking/Networking.xcodeproj'
+end
+
+target 'LoginManager' do
+  project 'Projects/Core/LoginManager/LoginManager.xcodeproj'
+  pod 'GoogleSignIn'
+
 end
