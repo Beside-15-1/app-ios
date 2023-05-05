@@ -20,7 +20,7 @@ let dependencies = Dependencies(
     .swiftyJson,
     .reactorKit,
     .swinject,
-    .sdWebImage,
+    .sdWebImage
   ],
   platforms: [.iOS]
 )
