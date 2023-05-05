@@ -32,6 +32,7 @@ let project = Project(
         // Module
         .domain(),
         .designSystem(),
+        .core(interface: .LoginManager),
         // External
         .reactorKit,
         .swinject,

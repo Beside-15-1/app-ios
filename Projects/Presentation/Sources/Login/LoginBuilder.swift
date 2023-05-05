@@ -10,11 +10,13 @@ import Foundation
 import UIKit
 
 import Domain
+import LoginManagerInterface
 import PresentationInterface
 
 // MARK: - LoginDependency
 
 struct LoginDependency {
+  let loginManager: LoginManager
   let guideRepository: GuideRepository
 }
 
@@ -29,6 +31,7 @@ final class LoginBuilder: LoginBuildable {
 
   func build(payload: LoginPayload) -> UIViewController {
     let viewModel = LoginViewModel(
+      loginManager: dependency.loginManager,
       guideUseCase: GuideUseCaseImpl(guideRepository: dependency.guideRepository)
     )
 
