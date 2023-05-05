@@ -6,8 +6,8 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
-  static let bundleID = "com.pinkboss"
-  static let iosVersion = "14.0"
+  public static let bundleID = "com.pinkboss"
+  public static let iosVersion = "14.0"
 
   /// Helper function to create the Project for this ExampleApp
   public static func app(
@@ -56,7 +56,7 @@ extension Project {
         platform: .iOS,
         product: product,
         bundleId: bundleID,
-        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
         infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
         sources: ["Sources/**"],
         resources: resources,
@@ -70,7 +70,7 @@ extension Project {
           platform: .iOS,
           product: product,
           bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: ["Interfaces/**"],
           resources: resources,
@@ -82,7 +82,7 @@ extension Project {
           platform: .iOS,
           product: product,
           bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: ["Sources/**"],
           resources: resources,
@@ -94,7 +94,7 @@ extension Project {
           platform: .iOS,
           product: .unitTests,
           bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
           infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
           sources: "Tests/**",
           scripts: [.SwiftFormatString],

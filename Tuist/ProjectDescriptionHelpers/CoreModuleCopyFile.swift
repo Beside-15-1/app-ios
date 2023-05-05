@@ -1,57 +1,61 @@
+//
+//  CoreModuleCopyFile.swift
+//  ProjectDescriptionHelpers
+//
+//  Created by 박천송 on 2023/05/04.
+//
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 
+// ************************변경*************************
+let moduleName: String = CoreModule.Networking.rawValue
+// ****************************************************
+
 let project = Project(
-  name: Module.Domain.rawValue,
+  name: moduleName,
   targets: [
     Target(
-      name: Module.Domain.rawValue,
+      name: "\(moduleName)Interface",
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".domain",
+      bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-      sources: ["Domain/**"],
+      sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
-      dependencies: [
-        .rxSwift,
-        .rxCocoa,
-        .rxRelay
-      ]
+      dependencies: []
     ),
     Target(
-      name: "Data",
+      name: moduleName,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".data",
+      bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-      sources: ["Data/**"],
+      sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "Domain"),
-        .rxSwift,
-        .rxCocoa,
-        .rxRelay,
+        .target(name: "\(moduleName)Interface"),
+        // External
         .swinject
       ]
     ),
     Target(
-      name: "\(Module.Domain.rawValue)Tests",
+      name: "\(moduleName)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: Project.bundleID + ".domaintests",
+      bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-      sources: ["Tests/**"],
+      sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "Domain"),
-        .target(name: "Data"),
+        .target(name: "\(moduleName)"),
+        .target(name: "\(moduleName)Interface"),
+        .xctest,
         .rxSwift,
-        .rxCocoa,
-        .rxRelay
       ]
-    )
+    ),
   ]
 )
