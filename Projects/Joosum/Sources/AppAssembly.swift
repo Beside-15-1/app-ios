@@ -11,6 +11,7 @@ import UIKit
 import Swinject
 
 import Data
+import LoginManager
 import Presentation
 import PresentationInterface
 
@@ -28,7 +29,8 @@ enum AppAssembly {
   static func resolve() -> AppDependency {
     let assemblies: [Assembly] = [
       DataAssembly(),
-      PresentationAssembly()
+      PresentationAssembly(),
+      LoginAssembly()
     ]
 
     _ = Assembler(assemblies, container: container)

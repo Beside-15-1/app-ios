@@ -20,6 +20,17 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+  <key>GIDClientID</key>
+  <string>1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg.apps.googleusercontent.com</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.googleusercontent.apps.1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg</string>
+      </array>
+    </dict>
+  </array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
