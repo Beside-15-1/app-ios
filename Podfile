@@ -4,7 +4,6 @@ platform :ios, '11.0'
 use_frameworks!
 inhibit_all_warnings!
 
-
 workspace 'joosum'
 project 'Projects/Joosum.xcodeproj'
 project 'Projects/Domain.xcodeproj'
@@ -16,12 +15,11 @@ project 'Projects/Core/Networking/Networking.xcodeproj'
 target 'Joosum' do
   project 'Projects/Joosum/Joosum.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
-  pod 'PinLayout', '~> 1.0'
+  pod 'PinLayout', '~> 1.0'  
 end
 
 target 'Domain' do
   project 'Projects/Domain/Domain.xcodeproj'
-
 end
 
 target 'Presentation' do
@@ -38,6 +36,4 @@ end
 
 target 'Networking' do
   project 'Projects/Core/Networking/Networking.xcodeproj'
-
-
 end
