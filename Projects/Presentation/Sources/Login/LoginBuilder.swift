@@ -33,6 +33,7 @@ final class LoginBuilder: LoginBuildable {
     )
 
     let viewController = LoginViewController(viewModel: viewModel)
+    viewModel.loginViewController = viewController
 
     return viewController
   }

@@ -13,6 +13,12 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+// MARK: - LoginResponse
+
+struct LoginResponse: Codable {
+  let accessToken: String
+}
+
 // MARK: - LoginViewController
 
 final class LoginViewController: UIViewController {
@@ -34,9 +40,7 @@ final class LoginViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    viewModel?.loginViewController = self
     view.backgroundColor = .white
-
     bind()
   }
 
@@ -62,23 +66,21 @@ final class LoginViewController: UIViewController {
 // MARK: ASAuthorizationControllerDelegate
 
 extension LoginViewController: ASAuthorizationControllerDelegate {
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+  func authorizationController(
+    controller: ASAuthorizationController,
+    didCompleteWithAuthorization authorization: ASAuthorization
+  ) {
     switch authorization.credential {
-    case let appleIDCredential as ASAuthorizationAppleIDCredential:
-      let userIdentifier = appleIDCredential.user
-      let fullName = appleIDCredential.fullName
-      let email = appleIDCredential.email
+    case let appleIdCredential as ASAuthorizationAppleIDCredential:
+      viewModel?.validateAppleIdCredential(appleIdCredential)
     case let passwordCredential as ASPasswordCredential:
-      let username = passwordCredential.user
-      let password = passwordCredential.password
+      viewModel?.handlePasswordCredential(passwordCredential)
     default:
       break
     }
   }
 
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-    // 에러 핸들링
-  }
+  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {}
 }
 
 // MARK: ASAuthorizationControllerPresentationContextProviding
