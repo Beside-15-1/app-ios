@@ -5,6 +5,7 @@
 //  Created by 박천송 on 2023/04/30.
 //
 
+import AuthenticationServices
 import Foundation
 import UIKit
 
@@ -22,11 +23,7 @@ class LoginView: UIView {
     $0.backgroundColor = .black
   }
 
-  private let appleButton = UIButton().then {
-    $0.setTitle("Apple", for: .normal)
-    $0.setTitleColor(.white, for: .normal)
-    $0.backgroundColor = .black
-  }
+  let appleButton = ASAuthorizationAppleIDButton()
 
   // MARK: Initializing
 
