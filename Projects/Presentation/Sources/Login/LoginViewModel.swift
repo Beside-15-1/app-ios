@@ -7,11 +7,13 @@
 
 import Foundation
 
+import RxMoya
 import RxSwift
 import UIKit
 
 import AuthenticationServices
 import Domain
+import Networking
 
 // MARK: - LoginViewModelInput
 
@@ -54,43 +56,21 @@ extension LoginViewModel: LoginViewModelInput {
   }
 
   func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
-    guard let token = credential.identityToken else { return }
-    let userIdentifier = credential.user
-    let fullName = credential.fullName
-    let email = credential.email
+    guard let tokenData = credential.authorizationCode,
+          let token = String(data: tokenData, encoding: .utf8),
+          let identityToken = credential.identityToken,
+          let identity = String(data: identityToken, encoding: .utf8) else { return }
 
-    let url = URL(string: "http://49.50.165.241/api/auth/apple")!
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-    let requestBody: [String: Any] = [
-      "token": token.base64EncodedString(),
-      "userIdentifier": userIdentifier,
-      "fullName": fullName?.description ?? "",
-      "email": email ?? ""
-    ]
-    let requestBodyData = try? JSONSerialization.data(withJSONObject: requestBody, options: [])
-    request.httpBody = requestBodyData
-
-    let task = URLSession.shared.dataTask(with: request) { data, response, error in
-      guard let data, error == nil else {
-        return
-      }
-
-      if let httpResponse = response as? HTTPURLResponse,
-         httpResponse.statusCode == 200 {
-        do {
-          let decoder = JSONDecoder()
-          let _ = try decoder.decode(LoginResponse.self, from: data)
-        } catch {
-          print("Error decoding server response: \(error.localizedDescription)")
+    provider.rx.request(.validateAppleUser(token: token, identity: identity))
+      .subscribe { result in
+        switch result {
+        case let .success(response):
+          print(response)
+        case .failure:
+          print("error")
         }
-      } else {
-        // 검증 실패
       }
-    }
-    task.resume()
+      .disposed(by: disposeBag)
   }
 
   func handlePasswordCredential(_ credential: ASPasswordCredential) {
