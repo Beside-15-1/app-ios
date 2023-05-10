@@ -5,6 +5,7 @@
 //  Created by cheonsong on 2022/09/05.
 //
 
+import FirebaseCore
 import UIKit
 
 @main
@@ -30,7 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     // Override point for customization after application launch.
-    true
+    dependency.configureFirebase()
+    return true
   }
 
   // MARK: UISceneSession Lifecycle

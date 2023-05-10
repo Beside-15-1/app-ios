@@ -16,7 +16,7 @@ let project = Project(
       dependencies: [
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
-        .external(dependency: .RxRelay),
+        .external(dependency: .RxRelay)
       ]
     ),
     Target(
@@ -52,7 +52,7 @@ let project = Project(
         .target(name: "Data"),
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
-        .external(dependency: .RxRelay),
+        .external(dependency: .RxRelay)
       ]
     )
   ]

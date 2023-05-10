@@ -26,6 +26,11 @@ public enum External: String {
   case ReactorKit
   case Swinject
   case SDWebImage
+
+  // firebase
+  case FirebaseAnalytics
+  case FirebaseCrashlytics
+  case FirebaseCore
 }
 
 extension TargetDependency {
