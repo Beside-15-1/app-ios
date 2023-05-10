@@ -17,6 +17,8 @@ let project = Project(
         // External
         .rxMoya,
         .swinject
+        .external(dependency: .RxMoya),
+        .external(dependency: .Swinject)
       ]
     ),
     Target(

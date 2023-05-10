@@ -33,9 +33,9 @@ let project = Project(
         .domain(),
         .designSystem(),
         // External
-        .reactorKit,
-        .swinject,
-        .sdWebImage
+        .external(dependency: .ReactorKit),
+        .external(dependency: .Swinject),
+        .external(dependency: .SDWebImage)
       ]
     ),
     Target(

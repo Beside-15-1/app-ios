@@ -10,7 +10,7 @@ let project = Project.app(
     // Core
     .core(impl: .Networking),
     // External
-    .swinject
+    .external(dependency: .Swinject)
   ],
   resources: .default
 )

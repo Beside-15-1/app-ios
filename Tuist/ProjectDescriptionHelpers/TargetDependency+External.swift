@@ -9,21 +9,27 @@ import Foundation
 
 import ProjectDescription
 
+public enum External: String {
+  case RxSwift
+  case RxCocoa
+  case RxRelay
+  case RxDataSources
+  case Alamofire
+  case Moya
+  case RxMoya
+  case SnapKit
+  case Then
+  case RxKeyboard
+  case Lottie
+  case RxGesture
+  case SwiftyJSON
+  case ReactorKit
+  case Swinject
+  case SDWebImage
+}
+
 extension TargetDependency {
-  public static let rxSwift: TargetDependency = .external(name: "RxSwift")
-  public static let rxCocoa: TargetDependency = .external(name: "RxCocoa")
-  public static let rxRelay: TargetDependency = .external(name: "RxRelay")
-  public static let rxDataSources: TargetDependency = .external(name: "RxDataSources")
-  public static let alamofire: TargetDependency = .external(name: "Alamofire")
-  public static let moya: TargetDependency = .external(name: "Moya")
-  public static let rxMoya: TargetDependency = .external(name: "RxMoya")
-  public static let snapKit: TargetDependency = .external(name: "SnapKit")
-  public static let then: TargetDependency = .external(name: "Then")
-  public static let rxKeyboard: TargetDependency = .external(name: "RxKeyboard")
-  public static let lottie: TargetDependency = .external(name: "Lottie")
-  public static let rxGesture: TargetDependency = .external(name: "RxGesture")
-  public static let swiftyJson: TargetDependency = .external(name: "SwiftyJSON")
-  public static let reactorKit: TargetDependency = .external(name: "ReactorKit")
-  public static let swinject: TargetDependency = .external(name: "Swinject")
-  public static let sdWebImage: TargetDependency = .external(name: "SDWebImage")
+  public static func external(dependency: External)-> TargetDependency {
+    .external(name: dependency.rawValue)
+  }
 }

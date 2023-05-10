@@ -38,7 +38,7 @@ let project = Project(
       dependencies: [
         .target(name: "\(moduleName)Interface"),
         // External
-        .swinject
+        .external(dependency: .Swinject)
       ]
     ),
     Target(
@@ -54,7 +54,7 @@ let project = Project(
         .target(name: "\(moduleName)"),
         .target(name: "\(moduleName)Interface"),
         .xctest,
-        .rxSwift,
+        .external(dependency: .RxSwift)
       ]
     ),
   ]

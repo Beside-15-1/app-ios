@@ -14,8 +14,8 @@ let protject = Project(
       sources: ["Sources/**"],
       resources: .default,
       dependencies: [
-        .snapKit,
-        .then
+        .external(dependency: .SnapKit),
+        .external(dependency: .Then)
       ]
     )
   ]
