@@ -15,6 +15,7 @@ import Data
 import JSAnalytics
 import Presentation
 import PresentationInterface
+import JSAnalytics
 
 // MARK: - AppDependency
 
@@ -33,6 +34,7 @@ enum AppAssembly {
     let assemblies: [Assembly] = [
       DataAssembly(),
       PresentationAssembly(),
+      JSAnalyticsAssembly()
     ]
 
     _ = Assembler(assemblies, container: container)

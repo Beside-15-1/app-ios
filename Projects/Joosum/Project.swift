@@ -23,6 +23,7 @@ let project = Project(
         .presentation(),
         // Core
         .core(impl: .Networking),
+        .core(impl: .JSAnalytics),
         // External
         .external(dependency: .Swinject),
         .external(dependency: .FirebaseAnalytics)

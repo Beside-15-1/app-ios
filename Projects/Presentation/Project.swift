@@ -32,10 +32,11 @@ let project = Project(
         // Module
         .domain(),
         .designSystem(),
+        .core(interface: .JSAnalytics),
         // External
         .external(dependency: .ReactorKit),
         .external(dependency: .Swinject),
-        .external(dependency: .SDWebImage)
+        .external(dependency: .SDWebImage),
       ]
     ),
     Target(
