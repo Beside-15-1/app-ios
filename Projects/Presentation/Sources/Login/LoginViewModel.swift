@@ -7,18 +7,18 @@
 
 import Foundation
 
-import RxMoya
 import RxSwift
 import UIKit
 
 import AuthenticationServices
 import Domain
-import Networking
+import LoginManagerInterface
 
 // MARK: - LoginViewModelInput
 
 protocol LoginViewModelInput {
   func appleLoginButtonTapped()
+  func googleLoginButtonTapped()
 }
 
 // MARK: - LoginViewModelOutput
@@ -28,13 +28,16 @@ protocol LoginViewModelOutput {}
 // MARK: - LoginViewModel
 
 final class LoginViewModel {
+  private let loginManager: LoginManager
   private let guideUseCase: GuideUseCase
-
-  weak var loginViewController: LoginViewController?
 
   private let disposeBag = DisposeBag()
 
-  init(guideUseCase: GuideUseCase) {
+  init(
+    loginManager: LoginManager,
+    guideUseCase: GuideUseCase
+  ) {
+    self.loginManager = loginManager
     self.guideUseCase = guideUseCase
   }
 }
@@ -42,6 +45,17 @@ final class LoginViewModel {
 // MARK: LoginViewModelInput
 
 extension LoginViewModel: LoginViewModelInput {
+  func googleLoginButtonTapped() {
+    loginManager.login(with: .google)
+      .subscribe(onSuccess: { token in
+        // TODO: 서버에 토큰 보내기
+        print(token)
+      }, onFailure: { error in
+        // TODO: 알럿 띄워주기
+        print(error)
+      })
+      .disposed(by: disposeBag)
+  }
   func appleLoginButtonTapped() {
     guard let loginViewController else { return }
 

@@ -13,19 +13,15 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-// MARK: - LoginResponse
-
-struct LoginResponse: Codable {
-  let accessToken: String
-}
-
-// MARK: - LoginViewController
-
 final class LoginViewController: UIViewController {
+  // MARK: Properties
+
   private let viewModel: LoginViewModel?
   private let disposeBag = DisposeBag()
 
   private let contentView = LoginView()
+
+  // MARK: Initializing
 
   init(viewModel: LoginViewModel) {
     self.viewModel = viewModel
@@ -37,10 +33,13 @@ final class LoginViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
+  // MARK: View Life Cycle
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
     view.backgroundColor = .white
+
     bind()
   }
 
@@ -50,12 +49,20 @@ final class LoginViewController: UIViewController {
     view = contentView
   }
 
+  // MARK: Binding
+
   private func bind() {
     bindButtons()
   }
 
   private func bindButtons() {
-    contentView.appleButton.rx.controlEvent(.touchUpInside)
+    contentView.googleButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.viewModel?.googleLoginButtonTapped()
+      }
+      .disposed(by: disposeBag)
+
+	contentView.appleButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { viewcontroller, _ in
         viewcontroller.viewModel?.appleLoginButtonTapped()
       }
@@ -63,9 +70,7 @@ final class LoginViewController: UIViewController {
   }
 }
 
-// MARK: ASAuthorizationControllerDelegate
-
-extension LoginViewController: ASAuthorizationControllerDelegate {
+xtension LoginViewController: ASAuthorizationControllerDelegate {
   func authorizationController(
     controller: ASAuthorizationController,
     didCompleteWithAuthorization authorization: ASAuthorization
@@ -90,3 +95,4 @@ extension LoginViewController: ASAuthorizationControllerPresentationContextProvi
     return view.window!
   }
 }
+

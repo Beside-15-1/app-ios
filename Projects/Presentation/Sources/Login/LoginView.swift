@@ -17,7 +17,7 @@ import Then
 class LoginView: UIView {
   private let flexContainer = UIView()
 
-  private let googleButton = UIButton().then {
+  let googleButton = UIButton().then {
     $0.setTitle("Google", for: .normal)
     $0.setTitleColor(.white, for: .normal)
     $0.backgroundColor = .black
