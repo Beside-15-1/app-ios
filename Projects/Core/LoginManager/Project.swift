@@ -1,59 +1,63 @@
+//
+//  CoreModuleCopyFile.swift
+//  ProjectDescriptionHelpers
+//
+//  Created by 박천송 on 2023/05/04.
+//
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 
+// ************************변경*************************
+let moduleName: String = CoreModule.LoginManager.rawValue
+// ****************************************************
+
 let project = Project(
-  name: Module.Presentation.rawValue,
+  name: moduleName,
   targets: [
     Target(
-      name: "\(Module.Presentation.rawValue)Interface",
+      name: "\(moduleName)Interface",
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Interface",
+      bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .domain()
+        .rxSwift
       ]
     ),
     Target(
-      name: Module.Presentation.rawValue,
+      name: moduleName,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)",
+      bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        // Target
-        .target(name: "\(Module.Presentation.rawValue)Interface"),
-        // Module
-        .domain(),
-        .designSystem(),
-        .core(interface: .LoginManager),
+        .target(name: "\(moduleName)Interface"),
         // External
-        .reactorKit,
         .swinject,
-        .sdWebImage
+        .rxSwift
       ]
     ),
     Target(
-      name: "\(Module.Presentation.rawValue)Tests",
+      name: "\(moduleName)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Tests",
+      bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
+        .target(name: "\(moduleName)"),
+        .target(name: "\(moduleName)Interface"),
         .xctest,
-        .target(name: "\(Module.Presentation.rawValue)"),
-        .target(name: "\(Module.Presentation.rawValue)Interface"),
-        // Module
-        .domain()
+        .rxSwift
       ]
     )
   ]

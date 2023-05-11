@@ -5,9 +5,9 @@
 //  Created by Hohyeon Moon on 2023/04/30.
 //
 
-import CoreInterface
 import Foundation
 import Moya
+import NetworkingInterface
 import RxMoya
 import RxSwift
 

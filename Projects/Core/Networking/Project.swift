@@ -28,7 +28,7 @@ let project = Project(
         .target(name: "\(CoreModule.Networking.rawValue)Interface"),
         // External
         .rxMoya,
-        .swinject,
+        .swinject
       ]
     ),
     Target(

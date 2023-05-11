@@ -26,8 +26,11 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerLoginBuilder(container: Container) {
-    container.register(LoginBuildable.self) { r in
-      LoginBuilder(dependency: .init(guideRepository: r.resolve()))
+    container.register(LoginBuildable.self) { resolver in
+      LoginBuilder(dependency: .init(
+        loginManager: resolver.resolve(),
+        guideRepository: resolver.resolve()
+      ))
     }
   }
 }
