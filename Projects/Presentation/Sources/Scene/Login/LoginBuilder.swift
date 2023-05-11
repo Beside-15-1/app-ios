@@ -10,12 +10,14 @@ import Foundation
 import UIKit
 
 import Domain
+import JSAnalyticsInterface
 import PresentationInterface
 
 // MARK: - LoginDependency
 
 struct LoginDependency {
   let loginRepository: LoginRepository
+  let analytics: JSAnalytics
 }
 
 // MARK: - LoginBuilder
@@ -31,6 +33,7 @@ final class LoginBuilder: LoginBuildable {
     let loginManager = LoginManager()
 
     let viewModel = LoginViewModel(
+      analytics: dependency.analytics,
       loginManager: loginManager,
       googleLoginUseCase: GoogleLoginUseCaseImpl(loginRepository: dependency.loginRepository),
       appleLoginUseCase: AppleLoginUseCaseImpl(loginRepository: dependency.loginRepository)

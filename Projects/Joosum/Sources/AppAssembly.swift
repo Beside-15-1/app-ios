@@ -15,7 +15,6 @@ import Data
 import JSAnalytics
 import Presentation
 import PresentationInterface
-import JSAnalytics
 
 // MARK: - AppDependency
 
