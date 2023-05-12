@@ -8,44 +8,58 @@
 import Foundation
 import Moya
 
+public let provider = MoyaProvider<PBAPI>()
+
 // MARK: - PBAPI
 
-enum PBAPI {
-  case createUser(name: String, email: String)
+public enum PBAPI {
+  case validateAppleUser(token: String, identity: String)
 }
 
 // MARK: TargetType
 
 extension PBAPI: TargetType {
-  var baseURL: URL {
-    URL(string: "https://joosum.com")!
+  public var baseURL: URL {
+    URL(string: "http://49.50.165.241")!
   }
 
-  var path: String {
+  public var path: String {
     switch self {
-    case .createUser:
-      return "/users"
+    case .validateAppleUser:
+      return "/api/auth/apple"
     }
   }
 
-  var method: Moya.Method {
+  public var method: Moya.Method {
     switch self {
-    case .createUser:
+    case .validateAppleUser:
       return .post
     }
   }
 
-  var task: Moya.Task {
+  public var task: Moya.Task {
     switch self {
-    case let .createUser(name, email):
+    case let .validateAppleUser(token, identity):
       return .requestParameters(
-        parameters: ["name": name, "email": email],
+        parameters: ["token": token, "id_token": identity],
         encoding: JSONEncoding.default
       )
     }
   }
 
-  var headers: [String: String]? {
+  public var headers: [String: String]? {
     return ["Content-type": "application/json"]
+  }
+}
+
+public extension Moya.Response {
+  func map<D: Decodable>(_ type: D.Type) throws -> D {
+    let decoder = JSONDecoder()
+
+    do {
+      return try decoder.decode(D.self, from: data)
+    } catch {
+      throw error
+    }
   }
 }

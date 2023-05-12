@@ -13,7 +13,9 @@ let project = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
-      dependencies: []
+      dependencies: [
+        .rxMoya
+      ]
     ),
     Target(
       name: CoreModule.Networking.rawValue,

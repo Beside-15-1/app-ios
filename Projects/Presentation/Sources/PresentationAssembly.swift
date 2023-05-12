@@ -1,16 +1,14 @@
 //
-//  DomainAssembly.swift
-//  Data
+//  PresentationAssembly.swift
+//  Presentation
 //
-//  Created by 박천송 on 2023/04/27.
+//  Created by Hohyeon Moon on 2023/05/12.
 //
-
-import Foundation
-
-import Swinject
 
 import Domain
+import Foundation
 import PresentationInterface
+import Swinject
 
 // MARK: - PresentationAssembly
 
@@ -28,7 +26,6 @@ public final class PresentationAssembly: Assembly {
   private func registerLoginBuilder(container: Container) {
     container.register(LoginBuildable.self) { resolver in
       LoginBuilder(dependency: .init(
-        loginManager: resolver.resolve(),
         guideRepository: resolver.resolve()
       ))
     }

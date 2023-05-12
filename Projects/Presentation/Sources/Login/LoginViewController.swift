@@ -5,12 +5,14 @@
 //  Created by 박천송 on 2023/04/27.
 //
 
+import AuthenticationServices
 import Foundation
-
 import UIKit
 
 import RxCocoa
 import RxSwift
+
+// MARK: - LoginViewController
 
 final class LoginViewController: UIViewController {
   // MARK: Properties
@@ -58,6 +60,12 @@ final class LoginViewController: UIViewController {
     contentView.googleButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.viewModel?.googleLoginButtonTapped()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.appleButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { viewcontroller, _ in
+        viewcontroller.viewModel?.appleLoginButtonTapped()
       }
       .disposed(by: disposeBag)
   }

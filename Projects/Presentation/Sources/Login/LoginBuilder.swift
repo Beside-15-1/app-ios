@@ -10,13 +10,11 @@ import Foundation
 import UIKit
 
 import Domain
-import LoginManagerInterface
 import PresentationInterface
 
 // MARK: - LoginDependency
 
 struct LoginDependency {
-  let loginManager: LoginManager
   let guideRepository: GuideRepository
 }
 
@@ -30,12 +28,16 @@ final class LoginBuilder: LoginBuildable {
   }
 
   func build(payload: LoginPayload) -> UIViewController {
+    let loginManager = LoginManager()
+
     let viewModel = LoginViewModel(
-      loginManager: dependency.loginManager,
+      loginManager: loginManager,
       guideUseCase: GuideUseCaseImpl(guideRepository: dependency.guideRepository)
     )
 
     let viewController = LoginViewController(viewModel: viewModel)
+    loginManager.viewController = viewController
+    loginManager.delegate = viewModel
 
     return viewController
   }
