@@ -44,7 +44,7 @@ final class LoginManager {
 
 extension LoginManager {
   private func googleLogin() -> Single<String> {
-    guard let viewController = UIApplication.shared.windows.first?.rootViewController else {
+    guard let viewController = loginViewController else {
       return .error(NSError(domain: "rootViewController", code: 0))
     }
 
