@@ -36,7 +36,7 @@ let project = Project(
         // External
         .external(dependency: .ReactorKit),
         .external(dependency: .Swinject),
-        .external(dependency: .SDWebImage),
+        .external(dependency: .SDWebImage)
       ]
     ),
     Target(
