@@ -27,7 +27,7 @@ public enum SocialLogin {
 final class LoginManager: NSObject {
   private let disposeBag = DisposeBag()
 
-  weak var loginViewController: LoginViewController?
+  weak var viewController: UIViewController?
 
   func login(with social: SocialLogin) -> Single<String> {
     switch social {
@@ -43,7 +43,7 @@ final class LoginManager: NSObject {
 
 extension LoginManager {
   private func googleLogin() -> Single<String> {
-    guard let viewController = loginViewController else {
+    guard let viewController else {
       return .error(NSError(domain: "rootViewController", code: 0))
     }
 
@@ -135,6 +135,6 @@ func authorizationController(
 
 extension LoginManager: ASAuthorizationControllerPresentationContextProviding {
   func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-    loginViewController!.view.window!
+    viewController!.view.window!
   }
 }
