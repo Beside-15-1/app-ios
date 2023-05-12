@@ -24,11 +24,10 @@ public enum SocialLogin {
 
 // MARK: - LoginManager
 
-final class LoginManager {
+final class LoginManager: NSObject {
   private let disposeBag = DisposeBag()
 
   weak var loginViewController: LoginViewController?
-  var loginSingleEvent: ((SingleEvent<String>) -> Void)?
 
   func login(with social: SocialLogin) -> Single<String> {
     switch social {
@@ -71,8 +70,8 @@ extension LoginManager {
 
     let authorizationController = ASAuthorizationController(authorizationRequests: [request])
 
-    authorizationController.delegate = loginViewController
-    authorizationController.presentationContextProvider = loginViewController
+    authorizationController.delegate = self
+    authorizationController.presentationContextProvider = self
     authorizationController.performRequests()
 
     return .create { [weak self] single in
@@ -83,27 +82,42 @@ extension LoginManager {
         authorizationController.presentationContextProvider = nil
       }
     }
+// MARK: ASAuthorizationControllerDelegate
+
+extension LoginManager: ASAuthorizationControllerDelegate {
+func authorizationController(
+  controller: ASAuthorizationController,
+  didCompleteWithAuthorization authorization: ASAuthorization
+) {
+  switch authorization.credential {
+  case let appleIdCredential as ASAuthorizationAppleIDCredential:
+    validateAppleIdCredential(appleIdCredential)
+  case let passwordCredential as ASPasswordCredential:
+    handlePasswordCredential(passwordCredential)
+  default:
+    break
   }
 }
 
-extension LoginManager {
+  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+    handleAuthorizeError(error: error)
+  }
+
   func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
     guard let tokenData = credential.authorizationCode,
           let token = String(data: tokenData, encoding: .utf8),
           let identityToken = credential.identityToken,
           let identity = String(data: identityToken, encoding: .utf8) else { return }
 
-    loginSingleEvent?(.success(identity))
-
     provider.rx.request(.validateAppleUser(token: token, identity: identity))
       .subscribe { result in
         switch result {
         case .success:
           // response -> token
-          print("hi")
+          print("TODO")
         case .failure:
           // error handle
-          print("hi")
+          print("TODO")
         }
       }
       .disposed(by: disposeBag)
@@ -112,5 +126,15 @@ extension LoginManager {
   func handlePasswordCredential(_ credential: ASPasswordCredential) {
     _ = credential.user
     _ = credential.password
+  }
+
+  func handleAuthorizeError(error: Error) {}
+}
+
+// MARK: ASAuthorizationControllerPresentationContextProviding
+
+extension LoginManager: ASAuthorizationControllerPresentationContextProviding {
+  func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+    loginViewController!.view.window!
   }
 }

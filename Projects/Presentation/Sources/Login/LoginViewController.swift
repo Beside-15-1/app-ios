@@ -5,9 +5,8 @@
 //  Created by 박천송 on 2023/04/27.
 //
 
-import Foundation
-
 import AuthenticationServices
+import Foundation
 import UIKit
 
 import RxCocoa
@@ -69,35 +68,5 @@ final class LoginViewController: UIViewController {
         viewcontroller.viewModel?.appleLoginButtonTapped()
       }
       .disposed(by: disposeBag)
-  }
-}
-
-// MARK: ASAuthorizationControllerDelegate
-
-extension LoginViewController: ASAuthorizationControllerDelegate {
-  func authorizationController(
-    controller: ASAuthorizationController,
-    didCompleteWithAuthorization authorization: ASAuthorization
-  ) {
-    switch authorization.credential {
-    case let appleIdCredential as ASAuthorizationAppleIDCredential:
-      viewModel?.validateAppleIdCredential(appleIdCredential)
-    case let passwordCredential as ASPasswordCredential:
-      viewModel?.handlePasswordCredential(passwordCredential)
-    default:
-      break
-    }
-  }
-
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-    viewModel?.handleError(error: error)
-  }
-}
-
-// MARK: ASAuthorizationControllerPresentationContextProviding
-
-extension LoginViewController: ASAuthorizationControllerPresentationContextProviding {
-  func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-    return view.window!
   }
 }

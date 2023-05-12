@@ -58,27 +58,5 @@ extension LoginViewModel: LoginViewModelInput {
 
   func appleLoginButtonTapped() {
     loginManager.login(with: .apple)
-      .subscribe(onSuccess: { token in
-        // TODO: Send token
-        print(token)
-      }, onFailure: { error in
-        // TODO: Alert
-        print(error)
-      })
-      .disposed(by: disposeBag)
-  }
-}
-
-extension LoginViewModel {
-  func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
-    loginManager.validateAppleIdCredential(credential)
-  }
-
-  func handlePasswordCredential(_ credential: ASPasswordCredential) {
-    loginManager.handlePasswordCredential(credential)
-  }
-
-  func handleError(error: Error) {
-    loginManager.loginSingleEvent?(.failure(error))
   }
 }
