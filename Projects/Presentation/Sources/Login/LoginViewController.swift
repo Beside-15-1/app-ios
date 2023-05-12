@@ -13,6 +13,8 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+// MARK: - LoginViewController
+
 final class LoginViewController: UIViewController {
   // MARK: Properties
 
@@ -62,7 +64,7 @@ final class LoginViewController: UIViewController {
       }
       .disposed(by: disposeBag)
 
-	contentView.appleButton.rx.controlEvent(.touchUpInside)
+    contentView.appleButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { viewcontroller, _ in
         viewcontroller.viewModel?.appleLoginButtonTapped()
       }
@@ -70,7 +72,9 @@ final class LoginViewController: UIViewController {
   }
 }
 
-xtension LoginViewController: ASAuthorizationControllerDelegate {
+// MARK: ASAuthorizationControllerDelegate
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
   func authorizationController(
     controller: ASAuthorizationController,
     didCompleteWithAuthorization authorization: ASAuthorization
@@ -85,7 +89,9 @@ xtension LoginViewController: ASAuthorizationControllerDelegate {
     }
   }
 
-  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {}
+  func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+    viewModel?.handleError(error: error)
+  }
 }
 
 // MARK: ASAuthorizationControllerPresentationContextProviding
@@ -95,4 +101,3 @@ extension LoginViewController: ASAuthorizationControllerPresentationContextProvi
     return view.window!
   }
 }
-

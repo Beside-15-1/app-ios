@@ -12,13 +12,12 @@ import UIKit
 
 import AuthenticationServices
 import Domain
-import LoginManagerInterface
 
 // MARK: - LoginViewModelInput
 
 protocol LoginViewModelInput {
-  func appleLoginButtonTapped()
   func googleLoginButtonTapped()
+  func appleLoginButtonTapped()
 }
 
 // MARK: - LoginViewModelOutput
@@ -56,39 +55,30 @@ extension LoginViewModel: LoginViewModelInput {
       })
       .disposed(by: disposeBag)
   }
+
   func appleLoginButtonTapped() {
-    guard let loginViewController else { return }
-
-    let appleIDProvider = ASAuthorizationAppleIDProvider()
-    let request = appleIDProvider.createRequest()
-    request.requestedScopes = [.fullName, .email]
-
-    let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-    authorizationController.delegate = loginViewController
-    authorizationController.presentationContextProvider = loginViewController
-    authorizationController.performRequests()
-  }
-
-  func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
-    guard let tokenData = credential.authorizationCode,
-          let token = String(data: tokenData, encoding: .utf8),
-          let identityToken = credential.identityToken,
-          let identity = String(data: identityToken, encoding: .utf8) else { return }
-
-    provider.rx.request(.validateAppleUser(token: token, identity: identity))
-      .subscribe { result in
-        switch result {
-        case let .success(response):
-          print(response)
-        case .failure:
-          print("error")
-        }
-      }
+    loginManager.login(with: .apple)
+      .subscribe(onSuccess: { token in
+        // TODO: Send token
+        print(token)
+      }, onFailure: { error in
+        // TODO: Alert
+        print(error)
+      })
       .disposed(by: disposeBag)
+  }
+}
+
+extension LoginViewModel {
+  func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
+    loginManager.validateAppleIdCredential(credential)
   }
 
   func handlePasswordCredential(_ credential: ASPasswordCredential) {
-    let _ = credential.user
-    let _ = credential.password
+    loginManager.handlePasswordCredential(credential)
+  }
+
+  func handleError(error: Error) {
+    loginManager.loginSingleEvent?(.failure(error))
   }
 }
