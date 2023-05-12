@@ -16,5 +16,4 @@ public enum Module: String, CaseIterable {
 
 public enum CoreModule: String, CaseIterable {
   case Networking
-  case LoginManager
 }

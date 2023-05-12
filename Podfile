@@ -28,6 +28,7 @@ target 'Presentation' do
   project 'Projects/Presentation/Presentation.xcodeproj'
   pod 'FlexLayout', '~> 1.0'
   pod 'PinLayout', '~> 1.0'
+  pod 'GoogleSignIn'
 end
 
 target 'DesignSystem' do
@@ -40,10 +41,4 @@ end
 
 target 'Networking' do
   project 'Projects/Core/Networking/Networking.xcodeproj'
-end
-
-target 'LoginManager' do
-  project 'Projects/Core/LoginManager/LoginManager.xcodeproj'
-  pod 'GoogleSignIn'
-
 end
