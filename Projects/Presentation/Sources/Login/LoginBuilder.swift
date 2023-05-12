@@ -37,6 +37,7 @@ final class LoginBuilder: LoginBuildable {
 
     let viewController = LoginViewController(viewModel: viewModel)
     loginManager.viewController = viewController
+    loginManager.delegate = viewModel
 
     return viewController
   }

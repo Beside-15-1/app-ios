@@ -46,17 +46,21 @@ final class LoginViewModel {
 extension LoginViewModel: LoginViewModelInput {
   func googleLoginButtonTapped() {
     loginManager.login(with: .google)
-      .subscribe(onSuccess: { token in
-        // TODO: 서버에 토큰 보내기
-        print(token)
-      }, onFailure: { error in
-        // TODO: 알럿 띄워주기
-        print(error)
-      })
-      .disposed(by: disposeBag)
   }
 
   func appleLoginButtonTapped() {
     loginManager.login(with: .apple)
+  }
+}
+
+// MARK: LoginManagerDelegate
+
+extension LoginViewModel: LoginManagerDelegate {
+  func loginManager(didSucceedWithResult result: String) {
+    // TODO: token to server
+  }
+
+  func loginManager(didFailWithError error: Error) {
+    // TODO: fail alert
   }
 }

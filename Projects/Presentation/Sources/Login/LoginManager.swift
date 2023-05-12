@@ -22,14 +22,22 @@ public enum SocialLogin {
   case apple
 }
 
+// MARK: - LoginManagerDelegate
+
+protocol LoginManagerDelegate: AnyObject {
+  func loginManager(didSucceedWithResult result: String)
+  func loginManager(didFailWithError error: Error)
+}
+
 // MARK: - LoginManager
 
 final class LoginManager: NSObject {
   private let disposeBag = DisposeBag()
 
   weak var viewController: UIViewController?
+  weak var delegate: LoginManagerDelegate?
 
-  func login(with social: SocialLogin) -> Single<String> {
+  func login(with social: SocialLogin) {
     switch social {
     case .apple:
       return appleLogin()
@@ -42,28 +50,19 @@ final class LoginManager: NSObject {
 // MARK: ASAuthorizationControllerPresentationContextProviding
 
 extension LoginManager {
-  private func googleLogin() -> Single<String> {
-    guard let viewController else {
-      return .error(NSError(domain: "rootViewController", code: 0))
-    }
-
-    return .create { single -> Disposable in
-
-      GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
-        if let error {
-          single(.failure(error))
-        }
-
-        if let accessToken = result?.user.accessToken {
-          single(.success(accessToken.tokenString))
-        }
+  private func googleLogin() {
+    guard let viewController else { return }
+    GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
+      if let error {
+        self.delegate?.loginManager(didFailWithError: error)
       }
-
-      return Disposables.create()
+      if let accessToken = result?.user.accessToken {
+        self.delegate?.loginManager(didSucceedWithResult: accessToken.tokenString)
+      }
     }
   }
 
-  private func appleLogin() -> Single<String>  {
+  private func appleLogin() {
     let appleIDProvider = ASAuthorizationAppleIDProvider()
     let request = appleIDProvider.createRequest()
     request.requestedScopes = [.fullName, .email]
@@ -73,62 +72,46 @@ extension LoginManager {
     authorizationController.delegate = self
     authorizationController.presentationContextProvider = self
     authorizationController.performRequests()
+  }
+}
 
-    return .create { [weak self] single in
-      self?.loginSingleEvent = single
-
-      return Disposables.create {
-        authorizationController.delegate = nil
-        authorizationController.presentationContextProvider = nil
-      }
-    }
 // MARK: ASAuthorizationControllerDelegate
 
 extension LoginManager: ASAuthorizationControllerDelegate {
-func authorizationController(
-  controller: ASAuthorizationController,
-  didCompleteWithAuthorization authorization: ASAuthorization
-) {
-  switch authorization.credential {
-  case let appleIdCredential as ASAuthorizationAppleIDCredential:
-    validateAppleIdCredential(appleIdCredential)
-  case let passwordCredential as ASPasswordCredential:
-    handlePasswordCredential(passwordCredential)
-  default:
-    break
+  func authorizationController(
+    controller: ASAuthorizationController,
+    didCompleteWithAuthorization authorization: ASAuthorization
+  ) {
+    switch authorization.credential {
+    case let appleIdCredential as ASAuthorizationAppleIDCredential:
+      validateAppleIdCredential(appleIdCredential)
+    case let passwordCredential as ASPasswordCredential:
+      handlePasswordCredential(passwordCredential)
+    default:
+      break
+    }
   }
-}
 
   func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
     handleAuthorizeError(error: error)
   }
 
-  func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
-    guard let tokenData = credential.authorizationCode,
-          let token = String(data: tokenData, encoding: .utf8),
-          let identityToken = credential.identityToken,
-          let identity = String(data: identityToken, encoding: .utf8) else { return }
+  private func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
+    guard let identityToken = credential.identityToken,
+          let token = String(data: identityToken, encoding: .utf8) else { return }
 
-    provider.rx.request(.validateAppleUser(token: token, identity: identity))
-      .subscribe { result in
-        switch result {
-        case .success:
-          // response -> token
-          print("TODO")
-        case .failure:
-          // error handle
-          print("TODO")
-        }
-      }
-      .disposed(by: disposeBag)
+    delegate?.loginManager(didSucceedWithResult: token)
   }
 
-  func handlePasswordCredential(_ credential: ASPasswordCredential) {
+  private func handlePasswordCredential(_ credential: ASPasswordCredential) {
+    // TODO: handle password
     _ = credential.user
     _ = credential.password
   }
 
-  func handleAuthorizeError(error: Error) {}
+  private func handleAuthorizeError(error: Error) {
+    delegate?.loginManager(didFailWithError: error)
+  }
 }
 
 // MARK: ASAuthorizationControllerPresentationContextProviding
