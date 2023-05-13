@@ -25,7 +25,7 @@ public enum SocialLogin {
 // MARK: - LoginManagerDelegate
 
 protocol LoginManagerDelegate: AnyObject {
-  func loginManager(didSucceedWithResult result: String)
+  func loginManager(_ type: SocialLogin, didSucceedWithResult result: [String: String])
   func loginManager(didFailWithError error: Error)
 }
 
@@ -57,7 +57,10 @@ extension LoginManager {
         self.delegate?.loginManager(didFailWithError: error)
       }
       if let accessToken = result?.user.accessToken {
-        self.delegate?.loginManager(didSucceedWithResult: accessToken.tokenString)
+        self.delegate?.loginManager(
+          .google,
+          didSucceedWithResult: ["acceccToken": accessToken.tokenString]
+        )
       }
     }
   }
@@ -98,9 +101,14 @@ extension LoginManager: ASAuthorizationControllerDelegate {
 
   private func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
     guard let identityToken = credential.identityToken,
-          let token = String(data: identityToken, encoding: .utf8) else { return }
+          let token = String(data: identityToken, encoding: .utf8),
+          let authorizationCode = credential.authorizationCode,
+          let code = String(data: authorizationCode, encoding: .utf8) else { return }
 
-    delegate?.loginManager(didSucceedWithResult: token)
+    delegate?.loginManager(.apple, didSucceedWithResult: [
+      "identityToken": token,
+      "authorizationCode": code
+    ])
   }
 
   private func handlePasswordCredential(_ credential: ASPasswordCredential) {

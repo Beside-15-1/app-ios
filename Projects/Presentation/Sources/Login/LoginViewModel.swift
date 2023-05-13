@@ -59,8 +59,35 @@ extension LoginViewModel: LoginViewModelInput {
 // MARK: LoginManagerDelegate
 
 extension LoginViewModel: LoginManagerDelegate {
-  func loginManager(didSucceedWithResult result: String) {
+  func loginManager(_ type: SocialLogin, didSucceedWithResult result: [String: String]) {
     // TODO: token to server
+    switch type {
+    case .google:
+      guard let access = result["accessToken"] else { return }
+
+      googleLoginUseCase.excute(access: access)
+        .subscribe(onSuccess: { _ in
+          // 라우팅
+        }, onFailure: { _ in
+          // 알럿
+        })
+        .disposed(by: disposeBag)
+
+    case .apple:
+      guard let identity = result["identityToken"],
+            let authorization = result["authorizationCode"] else { return }
+
+      appleLoginUseCase.excute(
+        identity: identity,
+        authorization: authorization
+      )
+      .subscribe(onSuccess: { _ in
+        // 라우팅
+      }, onFailure: { _ in
+        // 알럿
+      })
+      .disposed(by: disposeBag)
+    }
   }
 
   func loginManager(didFailWithError error: Error) {
