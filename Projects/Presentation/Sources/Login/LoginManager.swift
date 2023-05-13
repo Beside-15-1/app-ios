@@ -59,7 +59,7 @@ extension LoginManager {
       if let accessToken = result?.user.accessToken {
         self.delegate?.loginManager(
           .google,
-          didSucceedWithResult: ["acceccToken": accessToken.tokenString]
+          didSucceedWithResult: ["accessToken": accessToken.tokenString]
         )
       }
     }
