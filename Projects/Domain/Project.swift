@@ -30,9 +30,11 @@ let project = Project(
       scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "Domain"),
+        .core(impl: .Networking),
         .rxSwift,
         .rxCocoa,
         .rxRelay,
+        .moya,
         .swinject
       ]
     ),
