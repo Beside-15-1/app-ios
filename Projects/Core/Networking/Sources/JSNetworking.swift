@@ -1,5 +1,5 @@
 //
-//  JSNetworking.swift
+//  PBNetworking.swift
 //  Networking
 //
 //  Created by 박천송 on 2023/05/12.
@@ -11,9 +11,9 @@ import Moya
 import RxMoya
 import RxSwift
 
-// MARK: - JSNetworking
+// MARK: - PBNetworking
 
-public final class JSNetworking<T: TargetType> {
+public final class PBNetworking<T: TargetType> {
   private let provider: MoyaProvider<T>
 
   public init(isStub: Bool = false) {

@@ -13,11 +13,11 @@ import Domain
 import Networking
 
 final class LoginRepositoryImpl: LoginRepository {
-  private let provider: JSNetworking<LoginAPI>
+  private let provider: PBNetworking<LoginAPI>
 
   private let disposeBag = DisposeBag()
 
-  init(provider: JSNetworking<LoginAPI>) {
+  init(provider: PBNetworking<LoginAPI>) {
     self.provider = provider
   }
 
