@@ -50,61 +50,19 @@ extension Project {
   ) -> Project {
     var targets: [Target] = []
 
-    if product == .app {
-      targets = [Target(
-        name: name,
-        platform: .iOS,
-        product: product,
-        bundleId: bundleID,
-        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
-        infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-        sources: ["Sources/**"],
-        resources: resources,
-        scripts: [.SwiftFormatString],
-        dependencies: dependencies
-      )]
-    } else {
-      targets = [
-        Target(
-          name: "\(name)Interface",
-          platform: .iOS,
-          product: product,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: ["Interfaces/**"],
-          resources: resources,
-          scripts: [.SwiftFormatString],
-          dependencies: dependencies
-        ),
-        Target(
-          name: name,
-          platform: .iOS,
-          product: product,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: ["Sources/**"],
-          resources: resources,
-          scripts: [.SwiftFormatString],
-          dependencies: dependencies + [.target(name: "\(name)Interface")]
-        ),
-        Target(
-          name: "\(name)Tests",
-          platform: .iOS,
-          product: .unitTests,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: "Tests/**",
-          scripts: [.SwiftFormatString],
-          dependencies: [
-            .target(name: "\(name)"),
-            .target(name: "\(name)Interface")
-          ]
-        )
-      ]
-    }
+    targets = [Target(
+      name: name,
+      platform: .iOS,
+      product: product,
+      bundleId: bundleID,
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: ["Sources/**"],
+      resources: resources,
+      entitlements: .relativeToRoot("Projects/Joosum/Joosum.entitlements"),
+      scripts: [.SwiftFormatString],
+      dependencies: dependencies
+    )]
 
     return Project(
       name: name,
