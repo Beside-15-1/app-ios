@@ -28,16 +28,19 @@ protocol LoginViewModelOutput {}
 
 final class LoginViewModel {
   private let loginManager: LoginManager
-  private let guideUseCase: GuideUseCase
+  private let googleLoginUseCase: GoogleLoginUseCase
+  private let appleLoginUseCase: AppleLoginUseCase
 
   private let disposeBag = DisposeBag()
 
   init(
     loginManager: LoginManager,
-    guideUseCase: GuideUseCase
+    googleLoginUseCase: GoogleLoginUseCase,
+    appleLoginUseCase: AppleLoginUseCase
   ) {
     self.loginManager = loginManager
-    self.guideUseCase = guideUseCase
+    self.googleLoginUseCase = googleLoginUseCase
+    self.appleLoginUseCase = appleLoginUseCase
   }
 }
 
