@@ -10,6 +10,7 @@ import Foundation
 import Swinject
 
 import Domain
+import Networking
 
 // MARK: - DataAssembly
 
@@ -18,15 +19,15 @@ public final class DataAssembly: Assembly {
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
-      registerGuideRepository
+      registerLoginRepository
     ]
 
     registerFunctions.forEach { $0(container) }
   }
 
-  private func registerGuideRepository(container: Container) {
-    container.register(GuideRepository.self) { _ in
-      GuideRepositoryImpl()
+  private func registerLoginRepository(container: Container) {
+    container.register(LoginRepository.self) { _ in
+      LoginRepositoryImpl(provider: .init())
     }
   }
 }

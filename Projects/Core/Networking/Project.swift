@@ -5,19 +5,6 @@ let project = Project(
   name: CoreModule.Networking.rawValue,
   targets: [
     Target(
-      name: "\(CoreModule.Networking.rawValue)Interface",
-      platform: .iOS,
-      product: .staticFramework,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)Interface".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-      sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString],
-      dependencies: [
-        .rxMoya
-      ]
-    ),
-    Target(
       name: CoreModule.Networking.rawValue,
       platform: .iOS,
       product: .staticFramework,
@@ -27,7 +14,6 @@ let project = Project(
       sources: ["Sources/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(CoreModule.Networking.rawValue)Interface"),
         // External
         .rxMoya,
         .swinject
@@ -43,8 +29,7 @@ let project = Project(
       sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(CoreModule.Networking.rawValue)"),
-        .target(name: "\(CoreModule.Networking.rawValue)Interface")
+        .target(name: "\(CoreModule.Networking.rawValue)")
       ]
     )
   ]
