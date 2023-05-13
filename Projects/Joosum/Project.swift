@@ -9,6 +9,7 @@ let project = Project.app(
     .presentation(),
     // Core
     .core(impl: .Networking),
+    .core(impl: .Logging),
     // External
     .swinject
   ],
