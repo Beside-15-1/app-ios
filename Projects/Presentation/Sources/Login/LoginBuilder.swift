@@ -15,7 +15,7 @@ import PresentationInterface
 // MARK: - LoginDependency
 
 struct LoginDependency {
-  let guideRepository: GuideRepository
+  let loginRepository: LoginRepository
 }
 
 // MARK: - LoginBuilder
@@ -32,7 +32,8 @@ final class LoginBuilder: LoginBuildable {
 
     let viewModel = LoginViewModel(
       loginManager: loginManager,
-      guideUseCase: GuideUseCaseImpl(guideRepository: dependency.guideRepository)
+      googleLoginUseCase: GoogleLoginUseCaseImpl(loginRepository: dependency.loginRepository),
+      appleLoginUseCase: AppleLoginUseCaseImpl(loginRepository: dependency.loginRepository)
     )
 
     let viewController = LoginViewController(viewModel: viewModel)
