@@ -12,7 +12,7 @@ import FirebaseCore
 import Swinject
 
 import Data
-import JSAnalytics
+import PBAnalytics
 import Presentation
 import PresentationInterface
 
@@ -33,7 +33,7 @@ enum AppAssembly {
     let assemblies: [Assembly] = [
       DataAssembly(),
       PresentationAssembly(),
-      JSAnalyticsAssembly()
+      PBAnalyticsAssembly()
     ]
 
     _ = Assembler(assemblies, container: container)

@@ -12,7 +12,7 @@ import UIKit
 
 import AuthenticationServices
 import Domain
-import JSAnalyticsInterface
+import PBAnalyticsInterface
 
 // MARK: - LoginViewModelInput
 
@@ -28,7 +28,7 @@ protocol LoginViewModelOutput {}
 // MARK: - LoginViewModel
 
 final class LoginViewModel {
-  private let analytics: JSAnalytics
+  private let analytics: PBAnalytics
   private let loginManager: LoginManager
   private let googleLoginUseCase: GoogleLoginUseCase
   private let appleLoginUseCase: AppleLoginUseCase
@@ -36,7 +36,7 @@ final class LoginViewModel {
   private let disposeBag = DisposeBag()
 
   init(
-    analytics: JSAnalytics,
+    analytics: PBAnalytics,
     loginManager: LoginManager,
     googleLoginUseCase: GoogleLoginUseCase,
     appleLoginUseCase: AppleLoginUseCase

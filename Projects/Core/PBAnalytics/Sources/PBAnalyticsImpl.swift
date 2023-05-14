@@ -1,15 +1,15 @@
 //
-//  JSAnalyticsImpl.swift
-//  JSAnalytics
+//  PBAnalyticsImpl.swift
+//  PBAnalytics
 //
 //  Created by 박천송 on 2023/05/10.
 //
 
 import Foundation
 
-import JSAnalyticsInterface
+import PBAnalyticsInterface
 
-final class JSAnalyticsImpl: JSAnalytics {
+final class PBAnalyticsImpl: PBAnalytics {
   private let firebaseAnalytics: FirebaseAnalyticsProtocol.Type
 
   init(
@@ -18,7 +18,7 @@ final class JSAnalyticsImpl: JSAnalytics {
     self.firebaseAnalytics = firebaseAnalytics
   }
 
-  func log(type: JSAnalyticsType) {
+  func log(type: PBAnalyticsType) {
     firebaseAnalytics.logEvent(type.name, parameters: type.parameters)
   }
 }

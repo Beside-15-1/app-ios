@@ -1,6 +1,6 @@
 //
-//  JSAnalytics.swift
-//  JSAnalyticsInterface
+//  PBAnalytics.swift
+//  PBAnalyticsInterface
 //
 //  Created by 박천송 on 2023/05/10.
 //
@@ -9,10 +9,10 @@ import Foundation
 
 import FirebaseAnalytics
 
-// MARK: - JSAnalytics
+// MARK: - PBAnalytics
 
-public protocol JSAnalytics {
-  func log(type: JSAnalyticsType)
+public protocol PBAnalytics {
+  func log(type: PBAnalyticsType)
 }
 
 // MARK: - FirebaseAnalyticsProtocol

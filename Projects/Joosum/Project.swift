@@ -16,6 +16,7 @@ let project = Project(
         "Resources/**",
         .glob(pattern: .relativeToRoot("Supporting Files/GoogleService-Info.plist"))
       ],
+      entitlements: .relativeToRoot("Projects/Joosum/Joosum.entitlements"),
       scripts: [.SwiftFormatString],
       dependencies: [
         // Module
@@ -23,7 +24,7 @@ let project = Project(
         .presentation(),
         // Core
         .core(impl: .Networking),
-        .core(impl: .JSAnalytics),
+        .core(impl: .PBAnalytics),
         // External
         .external(dependency: .Swinject),
         .external(dependency: .FirebaseAnalytics)

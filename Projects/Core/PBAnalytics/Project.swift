@@ -9,7 +9,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 // ************************변경*************************
-let moduleName: String = CoreModule.JSAnalytics.rawValue
+let moduleName: String = CoreModule.PBAnalytics.rawValue
 // ****************************************************
 
 let project = Project(

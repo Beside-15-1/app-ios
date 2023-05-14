@@ -1,13 +1,13 @@
 //
-//  JSAnalyticsEventNameBuilder.swift
-//  JSAnalyticsInterface
+//  PBAnalyticsEventNameBuilder.swift
+//  PBAnalyticsInterface
 //
 //  Created by 박천송 on 2023/05/11.
 //
 
 import Foundation
 
-public class JSAnalyticsEventNameBuilder {
+public class PBAnalyticsEventNameBuilder {
   private var name = "client"
 
   // Required
@@ -16,12 +16,12 @@ public class JSAnalyticsEventNameBuilder {
 
   public init() {}
 
-  public func screen(with screen: String) -> JSAnalyticsEventNameBuilder {
+  public func screen(with screen: String) -> PBAnalyticsEventNameBuilder {
     self.screen = screen
     return self
   }
 
-  public func version(with version: Int) -> JSAnalyticsEventNameBuilder {
+  public func version(with version: Int) -> PBAnalyticsEventNameBuilder {
     self.version = "v\(version)"
     return self
   }

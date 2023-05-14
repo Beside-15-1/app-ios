@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 import Domain
-import JSAnalyticsInterface
+import PBAnalyticsInterface
 import PresentationInterface
 
 // MARK: - LoginDependency
 
 struct LoginDependency {
   let loginRepository: LoginRepository
-  let analytics: JSAnalytics
+  let analytics: PBAnalytics
 }
 
 // MARK: - LoginBuilder

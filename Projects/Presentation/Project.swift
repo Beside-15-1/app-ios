@@ -32,7 +32,7 @@ let project = Project(
         // Module
         .domain(),
         .designSystem(),
-        .core(interface: .JSAnalytics),
+        .core(interface: .PBAnalytics),
         // External
         .external(dependency: .ReactorKit),
         .external(dependency: .Swinject),

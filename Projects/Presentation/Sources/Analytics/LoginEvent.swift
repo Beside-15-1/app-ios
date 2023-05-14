@@ -7,7 +7,7 @@
 
 import Foundation
 
-import JSAnalyticsInterface
+import PBAnalyticsInterface
 
 // MARK: - LoginEvent
 
@@ -16,19 +16,19 @@ enum LoginEvent {
   case clickAppleLogin
 }
 
-// MARK: JSAnalyticsType
+// MARK: PBAnalyticsType
 
-extension LoginEvent: JSAnalyticsType {
+extension LoginEvent: PBAnalyticsType {
   var name: String {
     switch self {
     case .clickGoogleLogin:
-      return JSAnalyticsEventNameBuilder()
+      return PBAnalyticsEventNameBuilder()
         .screen(with: "login")
         .version(with: 1)
         .build()
 
     case .clickAppleLogin:
-      return JSAnalyticsEventNameBuilder()
+      return PBAnalyticsEventNameBuilder()
         .screen(with: "login")
         .version(with: 1)
         .build()
@@ -38,13 +38,13 @@ extension LoginEvent: JSAnalyticsType {
   var parameters: [String: Any]? {
     switch self {
     case .clickGoogleLogin:
-      return JSAnalyticsParameterBuilder()
+      return PBAnalyticsParameterBuilder()
         .action(with: .click)
         .component(with: "googleButton")
         .build()
 
     case .clickAppleLogin:
-      return JSAnalyticsParameterBuilder()
+      return PBAnalyticsParameterBuilder()
         .action(with: .click)
         .component(with: "appleButton")
         .build()
