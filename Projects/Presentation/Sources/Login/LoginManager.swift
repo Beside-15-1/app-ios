@@ -10,7 +10,6 @@ import UIKit
 
 import AuthenticationServices
 import GoogleSignIn
-import RxMoya
 import RxSwift
 
 import Networking
