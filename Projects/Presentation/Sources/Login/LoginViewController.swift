@@ -39,14 +39,10 @@ final class LoginViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.backgroundColor = .white
-
     bind()
   }
 
   override func loadView() {
-    super.loadView()
-
     view = contentView
   }
 
