@@ -12,8 +12,6 @@ import AuthenticationServices
 import GoogleSignIn
 import RxSwift
 
-import Networking
-
 // MARK: - SocialLogin
 
 public enum SocialLogin {
