@@ -12,7 +12,22 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString],
+      scripts: [.SwiftFormatString] + [
+        TargetScript.pre(
+          script: #"""
+          export PATH="$PATH:/opt/homebrew/bin"
+
+          if which mockolo; then
+            mockolo -s Interfaces -d Testing/PresentationMocks.swift -i PresentationInterface --enable-args-history --mock-final
+          else
+            echo "warning: mockolo not installed, download from https://github.com/uber/mockolo using Homebrew"
+          fi
+          """#,
+          name: "Mockolo",
+          outputPaths: ["Testing/PresentationMocks.swift"],
+          basedOnDependencyAnalysis: false
+        )
+      ],
       dependencies: [
         .domain()
       ]
@@ -40,6 +55,18 @@ let project = Project(
       ]
     ),
     Target(
+      name: "\(Module.Presentation.rawValue)Testing",
+      platform: .iOS,
+      product: .staticFramework,
+      bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Testing",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: "Testing/**",
+      dependencies: [
+        .target(name: "\(Module.Presentation.rawValue)Interface")
+      ]
+    ),
+    Target(
       name: "\(Module.Presentation.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
@@ -51,9 +78,10 @@ let project = Project(
       dependencies: [
         .xctest,
         .target(name: "\(Module.Presentation.rawValue)"),
-        .target(name: "\(Module.Presentation.rawValue)Interface"),
+        .target(name: "\(Module.Presentation.rawValue)Testing"),
         // Module
-        .domain()
+        .domain(),
+        .domainTesting()
       ]
     )
   ]

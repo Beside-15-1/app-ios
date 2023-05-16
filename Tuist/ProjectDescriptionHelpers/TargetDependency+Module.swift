@@ -13,6 +13,10 @@ extension TargetDependency {
   public static func presentation()-> TargetDependency {
     .project(target: "Presentation", path: .relativeToRoot("Projects/Presentation"))
   }
+
+  public static func presentationTesting()-> TargetDependency {
+    .project(target: "PresentationTesting", path: .relativeToRoot("Projects/Presentation"))
+  }
 }
 
 // MARK: DesignSystem
@@ -33,6 +37,10 @@ extension TargetDependency {
 
   public static func data()-> TargetDependency {
     .project(target: "Data", path: .relativeToRoot("Projects/Domain"))
+  }
+
+  public static func domainTesting()-> TargetDependency {
+    .project(target: "DomainTesting", path: .relativeToRoot("Projects/Domain"))
   }
 }
 

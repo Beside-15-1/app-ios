@@ -13,6 +13,7 @@ import Domain
 
 // MARK: - LoginBuildable
 
+/// @mockable
 public protocol LoginBuildable {
   func build(payload: LoginPayload) -> UIViewController
 }
