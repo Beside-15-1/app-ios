@@ -7,7 +7,14 @@ project:
 	tuist generate --no-open --xcframeworks
 	pod install
 	open joosum.xcworkspace
-	
+
+resource:
+	if [ `pgrep -x Xcode` ]; then \
+		killall -9 Xcode; \
+	fi
+	tuist generate --no-open --xcframeworks
+	pod install
+	open joosum.xcworkspace
 
 XCODE_USER_TEMPLATES_DIR=~/Library/Developer/Xcode/Templates/File\ Templates
 XCODE_USER_SNIPPETS_DIR=~/Library/Developer/Xcode/UserData/CodeSnippets
