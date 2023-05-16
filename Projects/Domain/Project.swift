@@ -12,7 +12,22 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Domain/**"],
-      scripts: [.SwiftFormatString],
+      scripts: [.SwiftFormatString] + [
+        TargetScript.pre(
+          script: #"""
+          export PATH="$PATH:/opt/homebrew/bin"
+
+          if which mockolo; then
+            mockolo -s Domain -d Testing/DomainMocks.swift -i Domain --enable-args-history --mock-final
+          else
+            echo "warning: mockolo not installed, download from https://github.com/uber/mockolo using Homebrew"
+          fi
+          """#,
+          name: "Mockolo",
+          outputPaths: ["Testing/DomainMocks.swift"],
+          basedOnDependencyAnalysis: false
+        )
+      ],
       dependencies: [
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
@@ -39,6 +54,18 @@ let project = Project(
       ]
     ),
     Target(
+      name: "\(Module.Domain.rawValue)Testing",
+      platform: .iOS,
+      product: .staticFramework,
+      bundleId: Project.bundleID + ".domaintesting",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: ["Testing/**"],
+      dependencies: [
+        .target(name: "Domain")
+      ]
+    ),
+    Target(
       name: "\(Module.Domain.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
@@ -50,6 +77,8 @@ let project = Project(
       dependencies: [
         .target(name: "Domain"),
         .target(name: "Data"),
+        .target(name: "DomainTesting"),
+        .core(impl: .Networking)
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
         .external(dependency: .RxRelay)
