@@ -65,6 +65,8 @@ extension LoginViewModel: LoginViewModelInput {
   }
 
   func appleLoginButtonTapped() {
+    analytics.log(type: LoginEvent.clickAppleLogin)
+
     loginManager.login(with: .apple)
   }
 }

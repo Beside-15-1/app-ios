@@ -82,6 +82,7 @@ let project = Project(
         // Module
         .domain(),
         .domainTesting(),
+        .core(testing: .PBAnalytics),
         .external(dependency: .Nimble)
       ]
     )

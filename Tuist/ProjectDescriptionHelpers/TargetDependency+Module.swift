@@ -54,5 +54,9 @@ extension TargetDependency {
   public static func core(interface module: CoreModule)-> TargetDependency {
     .project(target: module.rawValue + "Interface", path: .relativeToRoot("Projects/Core/" + module.rawValue))
   }
+
+  public static func core(testing module: CoreModule)-> TargetDependency {
+    .project(target: module.rawValue + "Testing", path: .relativeToRoot("Projects/Core/" + module.rawValue))
+  }
 }
 
