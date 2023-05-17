@@ -12,6 +12,12 @@ import AuthenticationServices
 import GoogleSignIn
 import RxSwift
 
+// MARK: - LoginManagerProtocol
+
+protocol LoginManagerProtocol: AnyObject {
+  func login(with social: SocialLogin)
+}
+
 // MARK: - SocialLogin
 
 public enum SocialLogin {
@@ -28,7 +34,7 @@ protocol LoginManagerDelegate: AnyObject {
 
 // MARK: - LoginManager
 
-final class LoginManager: NSObject {
+final class LoginManager: NSObject, LoginManagerProtocol {
   private let disposeBag = DisposeBag()
 
   weak var viewController: UIViewController?
