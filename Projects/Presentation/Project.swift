@@ -32,10 +32,11 @@ let project = Project(
         // Module
         .domain(),
         .designSystem(),
+        .core(interface: .PBAnalytics),
         // External
-        .reactorKit,
-        .swinject,
-        .sdWebImage
+        .external(dependency: .ReactorKit),
+        .external(dependency: .Swinject),
+        .external(dependency: .SDWebImage)
       ]
     ),
     Target(

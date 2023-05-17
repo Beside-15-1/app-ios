@@ -15,8 +15,8 @@ let project = Project(
       scripts: [.SwiftFormatString],
       dependencies: [
         // External
-        .rxMoya,
-        .swinject
+        .external(dependency: .RxMoya),
+        .external(dependency: .Swinject)
       ]
     ),
     Target(

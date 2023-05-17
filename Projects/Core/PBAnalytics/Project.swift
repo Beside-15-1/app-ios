@@ -9,7 +9,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 // ************************변경*************************
-let moduleName: String = CoreModule.Networking.rawValue
+let moduleName: String = CoreModule.PBAnalytics.rawValue
 // ****************************************************
 
 let project = Project(
@@ -24,7 +24,9 @@ let project = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [.SwiftFormatString],
-      dependencies: []
+      dependencies: [
+        .external(dependency: .FirebaseAnalytics)
+      ]
     ),
     Target(
       name: moduleName,
@@ -38,8 +40,13 @@ let project = Project(
       dependencies: [
         .target(name: "\(moduleName)Interface"),
         // External
-        .external(dependency: .Swinject)
-      ]
+        .external(dependency: .Swinject),
+        .external(dependency: .FirebaseAnalytics)
+      ],
+      settings: .settings(
+        base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
+        configurations: []
+      )
     ),
     Target(
       name: "\(moduleName)Tests",
@@ -56,6 +63,6 @@ let project = Project(
         .xctest,
         .external(dependency: .RxSwift)
       ]
-    ),
+    )
   ]
 )

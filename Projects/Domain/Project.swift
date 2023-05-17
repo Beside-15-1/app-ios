@@ -14,9 +14,9 @@ let project = Project(
       sources: ["Domain/**"],
       scripts: [.SwiftFormatString],
       dependencies: [
-        .rxSwift,
-        .rxCocoa,
-        .rxRelay
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay)
       ]
     ),
     Target(
@@ -31,11 +31,11 @@ let project = Project(
       dependencies: [
         .target(name: "Domain"),
         .core(impl: .Networking),
-        .rxSwift,
-        .rxCocoa,
-        .rxRelay,
-        .moya,
-        .swinject
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay),
+        .external(dependency: .Swinject),
+        .external(dependency: .Moya)
       ]
     ),
     Target(
@@ -50,9 +50,9 @@ let project = Project(
       dependencies: [
         .target(name: "Domain"),
         .target(name: "Data"),
-        .rxSwift,
-        .rxCocoa,
-        .rxRelay
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay)
       ]
     )
   ]
