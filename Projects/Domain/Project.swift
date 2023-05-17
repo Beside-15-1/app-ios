@@ -78,10 +78,11 @@ let project = Project(
         .target(name: "Domain"),
         .target(name: "Data"),
         .target(name: "DomainTesting"),
-        .core(impl: .Networking)
+        .core(impl: .Networking),
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
-        .external(dependency: .RxRelay)
+        .external(dependency: .RxRelay),
+        .external(dependency: .Nimble)
       ]
     )
   ]

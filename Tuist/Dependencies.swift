@@ -21,7 +21,8 @@ let dependencies = Dependencies(
     .reactorKit,
     .swinject,
     .sdWebImage,
-    .firebase
+    .firebase,
+    .nimble,
   ],
   platforms: [.iOS]
 )
@@ -74,5 +75,9 @@ extension Package {
   public static let firebase: Package = .remote(
     url: "https://github.com/firebase/firebase-ios-sdk.git",
     requirement: .upToNextMajor(from: "10.4.0")
+  )
+  public static let nimble: Package = .remote(
+    url: "https://github.com/Quick/Nimble.git",
+    requirement: .upToNextMajor(from: "12.0.0")
   )
 }

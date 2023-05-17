@@ -81,7 +81,8 @@ let project = Project(
         .target(name: "\(Module.Presentation.rawValue)Testing"),
         // Module
         .domain(),
-        .domainTesting()
+        .domainTesting(),
+        .external(dependency: .Nimble)
       ]
     )
   ]
