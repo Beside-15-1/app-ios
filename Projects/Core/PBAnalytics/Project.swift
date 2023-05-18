@@ -90,7 +90,8 @@ let project = Project(
         .target(name: "\(moduleName)Interface"),
         .target(name: "\(moduleName)Testing"),
         .xctest,
-        .external(dependency: .RxSwift)
+        .external(dependency: .RxSwift),
+        .external(dependency: .Nimble)
       ]
     )
   ]
