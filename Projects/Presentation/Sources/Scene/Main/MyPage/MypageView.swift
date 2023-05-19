@@ -1,5 +1,5 @@
 //
-//  MypageView.swift
+//  MyPageView.swift
 //  Presentation
 //
 //  Created by 박천송 on 2023/05/19.
@@ -12,13 +12,13 @@ import PinLayout
 import SnapKit
 import Then
 
-final class MypageView: UIView {
+final class MyPageView: UIView {
   // MARK: Initializing
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .gray1
+    backgroundColor = .gray1
   }
 
   @available(*, unavailable)

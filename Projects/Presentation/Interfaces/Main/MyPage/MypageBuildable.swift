@@ -1,5 +1,5 @@
 //
-//  MypageBuildable.swift
+//  MyPageBuildable.swift
 //  Presentation
 //
 //  Created by 박천송 on 2023/05/19.
@@ -10,13 +10,13 @@ import UIKit
 
 import Domain
 
-// MARK: - MypageBuildable
+// MARK: - MyPageBuildable
 
-public protocol MypageBuildable {
+public protocol MyPageBuildable {
   func build(payload: MyPagePayload) -> UIViewController
 }
 
-// MARK: - MypagePayload
+// MARK: - MyPagePayload
 
 public struct MyPagePayload {
   public init() {}

@@ -18,7 +18,7 @@ final class FolderView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .gray2
+    backgroundColor = .gray2
   }
 
   @available(*, unavailable)

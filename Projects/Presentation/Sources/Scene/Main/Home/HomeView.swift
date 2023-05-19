@@ -18,7 +18,7 @@ final class HomeView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .gray3
+    backgroundColor = .gray3
   }
 
   @available(*, unavailable)

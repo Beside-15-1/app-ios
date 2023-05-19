@@ -9,10 +9,24 @@ import UIKit
 
 import RxSwift
 
+import PresentationInterface
+
 final class MainTabBarViewController: UITabBarController {
+  private let homeBuilder: HomeBuildable
+  private let folderBuilder: FolderBuildable
+  private let myPageBuilder: MyPageBuildable
+
   // MARK: Initializing
 
-  init() {
+  init(
+    homeBuilder: HomeBuildable,
+    folderBuilder: FolderBuildable,
+    myPageBuilder: MyPageBuildable
+  ) {
+    self.homeBuilder = homeBuilder
+    self.folderBuilder = folderBuilder
+    self.myPageBuilder = myPageBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 

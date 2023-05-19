@@ -1,5 +1,5 @@
 //
-//  MypageViewController.swift
+//  MyPageViewController.swift
 //  Presentation
 //
 //  Created by 박천송 on 2023/05/19.
@@ -9,18 +9,18 @@ import UIKit
 
 import RxSwift
 
-final class MypageViewController: UIViewController {
+final class MyPageViewController: UIViewController {
   // MARK: UI
 
-  private lazy var contentView = MypageView()
+  private lazy var contentView = MyPageView()
 
   // MARK: Properties
 
-  private let viewModel: MypageViewModel
+  private let viewModel: MyPageViewModel
 
   // MARK: Initializing
 
-  init(viewModel: MypageViewModel) {
+  init(viewModel: MyPageViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -44,5 +44,5 @@ final class MypageViewController: UIViewController {
 
   // MARK: Binding
 
-  func bind(with viewModel: MypageViewModel) {}
+  func bind(with viewModel: MyPageViewModel) {}
 }

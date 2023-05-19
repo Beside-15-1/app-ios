@@ -9,6 +9,8 @@ import UIKit
 
 import RxSwift
 
+import PresentationInterface
+
 final class EntryViewController: UIViewController {
   // MARK: UI
 
@@ -18,10 +20,20 @@ final class EntryViewController: UIViewController {
 
   private let viewModel: EntryViewModel
 
+  private let loginBuilder: LoginBuildable
+  private let mainTabBuilder: MainTabBarBuildable
+
   // MARK: Initializing
 
-  init(viewModel: EntryViewModel) {
+  init(
+    viewModel: EntryViewModel,
+    loginBuilder: LoginBuildable,
+    mainTabBuilder: MainTabBarBuildable
+  ) {
     self.viewModel = viewModel
+    self.loginBuilder = loginBuilder
+    self.mainTabBuilder = mainTabBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 

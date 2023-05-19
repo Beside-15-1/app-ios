@@ -13,7 +13,10 @@ import PresentationInterface
 
 // MARK: - EntryDependency
 
-struct EntryDependency {}
+struct EntryDependency {
+  let loginBuilder: LoginBuildable
+  let mainTabBuilder: MainTabBarBuildable
+}
 
 // MARK: - EntryBuilder
 
@@ -28,7 +31,9 @@ final class EntryBuilder: EntryBuildable {
     let viewModel = EntryViewModel()
 
     let viewController = EntryViewController(
-      viewModel: viewModel
+      viewModel: viewModel,
+      loginBuilder: dependency.loginBuilder,
+      mainTabBuilder: dependency.mainTabBuilder
     )
 
     return viewController

@@ -1,5 +1,5 @@
 //
-//  MypageViewModel.swift
+//  MyPageViewModel.swift
 //  Presentation
 //
 //  Created by 박천송 on 2023/05/19.
@@ -9,17 +9,17 @@ import Foundation
 
 import RxSwift
 
-// MARK: - MypageViewModelInput
+// MARK: - MyPageViewModelInput
 
-protocol MypageViewModelInput {}
+protocol MyPageViewModelInput {}
 
-// MARK: - MypageViewModelOutput
+// MARK: - MyPageViewModelOutput
 
-protocol MypageViewModelOutput {}
+protocol MyPageViewModelOutput {}
 
-// MARK: - MypageViewModel
+// MARK: - MyPageViewModel
 
-final class MypageViewModel: MypageViewModelOutput {
+final class MyPageViewModel: MyPageViewModelOutput {
   // MARK: Properties
 
   private let disposeBag = DisposeBag()
@@ -35,6 +35,6 @@ final class MypageViewModel: MypageViewModelOutput {
   // MARK: Output
 }
 
-// MARK: MypageViewModelInput
+// MARK: MyPageViewModelInput
 
-extension MypageViewModel: MypageViewModelInput {}
+extension MyPageViewModel: MyPageViewModelInput {}
