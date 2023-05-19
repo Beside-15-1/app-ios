@@ -10,4 +10,6 @@ public protocol ___VARIABLE_sceneName___Buildable {
   func build(payload: ___VARIABLE_sceneName___Payload) -> UIViewController
 }
 
-public struct ___VARIABLE_sceneName___Payload {}
+public struct ___VARIABLE_sceneName___Payload {
+  public init() {}
+}
