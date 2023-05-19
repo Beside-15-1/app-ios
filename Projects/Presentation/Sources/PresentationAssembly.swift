@@ -17,7 +17,6 @@ public final class PresentationAssembly: Assembly {
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
-      registerEntryBuilder,
       registerLoginBuilder,
       registerMainTabBuilder,
       registerHomeBuilder,
@@ -26,15 +25,6 @@ public final class PresentationAssembly: Assembly {
     ]
 
     registerFunctions.forEach { $0(container) }
-  }
-
-  private func registerEntryBuilder(contianer: Container) {
-    contianer.register(EntryBuildable.self) { resolver in
-      EntryBuilder(dependency: .init(
-        loginBuilder: resolver.resolve(),
-        mainTabBuilder: resolver.resolve()
-      ))
-    }
   }
 
   private func registerLoginBuilder(container: Container) {

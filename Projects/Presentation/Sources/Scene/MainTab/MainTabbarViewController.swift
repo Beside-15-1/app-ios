@@ -12,6 +12,8 @@ import RxSwift
 import PresentationInterface
 
 final class MainTabBarViewController: UITabBarController {
+  // MARK: Properties
+
   private let homeBuilder: HomeBuildable
   private let folderBuilder: FolderBuildable
   private let myPageBuilder: MyPageBuildable
@@ -39,5 +41,19 @@ final class MainTabBarViewController: UITabBarController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    setViewControllers()
+  }
+
+  private func setViewControllers() {
+    let homeVC = homeBuilder.build(payload: .init())
+    let folderVC = folderBuilder.build(payload: .init())
+    let myPageVC = myPageBuilder.build(payload: .init())
+
+    homeVC.tabBarItem.title = "홈"
+    folderVC.tabBarItem.title = "폴더"
+    myPageVC.tabBarItem.title = "내정보"
+
+    viewControllers = [homeVC, folderVC, myPageVC]
   }
 }
