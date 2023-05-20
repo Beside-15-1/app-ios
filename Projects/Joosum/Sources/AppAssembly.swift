@@ -8,9 +8,11 @@
 import Foundation
 import UIKit
 
+import FirebaseCore
 import Swinject
 
 import Data
+import PBAnalytics
 import Presentation
 import PresentationInterface
 
@@ -18,6 +20,8 @@ import PresentationInterface
 
 struct AppDependency {
   let rootViewController: UIViewController
+
+  let configureFirebase: () -> Void
 }
 
 // MARK: - AppAssembly
@@ -28,7 +32,8 @@ enum AppAssembly {
   static func resolve() -> AppDependency {
     let assemblies: [Assembly] = [
       DataAssembly(),
-      PresentationAssembly()
+      PresentationAssembly(),
+      PBAnalyticsAssembly()
     ]
 
     _ = Assembler(assemblies, container: container)
@@ -37,7 +42,16 @@ enum AppAssembly {
     let rootViewController = resolver.resolve(LoginBuildable.self)!.build(payload: .init())
 
     return AppDependency(
-      rootViewController: rootViewController
+      rootViewController: rootViewController,
+      configureFirebase: {
+        configureFirebase()
+      }
     )
+  }
+}
+
+extension AppAssembly {
+  static func configureFirebase() {
+    FirebaseApp.configure()
   }
 }

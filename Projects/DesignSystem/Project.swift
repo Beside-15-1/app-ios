@@ -13,10 +13,9 @@ let protject = Project(
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       resources: .default,
-      scripts: [.SwiftFormatString],
       dependencies: [
-        .snapKit,
-        .then
+        .external(dependency: .SnapKit),
+        .external(dependency: .Then)
       ]
     )
   ]

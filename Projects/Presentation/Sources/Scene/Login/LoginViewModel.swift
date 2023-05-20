@@ -12,6 +12,7 @@ import UIKit
 
 import AuthenticationServices
 import Domain
+import PBAnalyticsInterface
 
 // MARK: - LoginViewModelInput
 
@@ -27,6 +28,7 @@ protocol LoginViewModelOutput {}
 // MARK: - LoginViewModel
 
 final class LoginViewModel {
+  private let analytics: PBAnalytics
   private let loginManager: LoginManager
   private let googleLoginUseCase: GoogleLoginUseCase
   private let appleLoginUseCase: AppleLoginUseCase
@@ -34,10 +36,12 @@ final class LoginViewModel {
   private let disposeBag = DisposeBag()
 
   init(
+    analytics: PBAnalytics,
     loginManager: LoginManager,
     googleLoginUseCase: GoogleLoginUseCase,
     appleLoginUseCase: AppleLoginUseCase
   ) {
+    self.analytics = analytics
     self.loginManager = loginManager
     self.googleLoginUseCase = googleLoginUseCase
     self.appleLoginUseCase = appleLoginUseCase
@@ -48,6 +52,8 @@ final class LoginViewModel {
 
 extension LoginViewModel: LoginViewModelInput {
   func googleLoginButtonTapped() {
+    analytics.log(type: LoginEvent.clickGoogleLogin)
+
     loginManager.login(with: .google)
   }
 

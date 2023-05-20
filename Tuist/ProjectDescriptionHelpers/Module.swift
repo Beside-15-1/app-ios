@@ -16,5 +16,6 @@ public enum Module: String, CaseIterable {
 
 public enum CoreModule: String, CaseIterable {
   case Networking
+  case PBAnalytics
   case Logging
 }

@@ -26,7 +26,8 @@ public final class PresentationAssembly: Assembly {
   private func registerLoginBuilder(container: Container) {
     container.register(LoginBuildable.self) { resolver in
       LoginBuilder(dependency: .init(
-        loginRepository: resolver.resolve()
+        loginRepository: resolver.resolve(),
+        analytics: resolver.resolve()
       ))
     }
   }
