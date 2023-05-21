@@ -11,6 +11,7 @@ import FirebaseAnalytics
 
 // MARK: - PBAnalytics
 
+/// @mockable
 public protocol PBAnalytics {
   func log(type: PBAnalyticsType)
 }

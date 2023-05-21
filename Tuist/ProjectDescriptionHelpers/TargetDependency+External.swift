@@ -26,6 +26,7 @@ public enum External: String {
   case ReactorKit
   case Swinject
   case SDWebImage
+  case Nimble
 
   // firebase
   case FirebaseAnalytics

@@ -11,6 +11,7 @@ import RxSwift
 
 // MARK: - GoogleLoginUseCase
 
+/// @mockable
 public protocol GoogleLoginUseCase {
   func excute(access: String) -> Single<String>
 }

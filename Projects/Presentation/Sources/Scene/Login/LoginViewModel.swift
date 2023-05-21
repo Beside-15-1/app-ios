@@ -7,6 +7,7 @@
 
 import Foundation
 
+import RxRelay
 import RxSwift
 import UIKit
 
@@ -23,13 +24,16 @@ protocol LoginViewModelInput {
 
 // MARK: - LoginViewModelOutput
 
-protocol LoginViewModelOutput {}
+protocol LoginViewModelOutput {
+  var isLoginSuccess: BehaviorRelay<Bool> { get }
+  var error: BehaviorRelay<Error?> { get }
+}
 
 // MARK: - LoginViewModel
 
-final class LoginViewModel {
+final class LoginViewModel: LoginViewModelOutput {
   private let analytics: PBAnalytics
-  private let loginManager: LoginManager
+  private let loginManager: LoginManagerProtocol
   private let googleLoginUseCase: GoogleLoginUseCase
   private let appleLoginUseCase: AppleLoginUseCase
 
@@ -37,7 +41,7 @@ final class LoginViewModel {
 
   init(
     analytics: PBAnalytics,
-    loginManager: LoginManager,
+    loginManager: LoginManagerProtocol,
     googleLoginUseCase: GoogleLoginUseCase,
     appleLoginUseCase: AppleLoginUseCase
   ) {
@@ -46,6 +50,9 @@ final class LoginViewModel {
     self.googleLoginUseCase = googleLoginUseCase
     self.appleLoginUseCase = appleLoginUseCase
   }
+
+  var isLoginSuccess: BehaviorRelay<Bool> = .init(value: false)
+  var error: BehaviorRelay<Error?> = .init(value: nil)
 }
 
 // MARK: LoginViewModelInput
@@ -58,6 +65,8 @@ extension LoginViewModel: LoginViewModelInput {
   }
 
   func appleLoginButtonTapped() {
+    analytics.log(type: LoginEvent.clickAppleLogin)
+
     loginManager.login(with: .apple)
   }
 }
@@ -72,10 +81,10 @@ extension LoginViewModel: LoginManagerDelegate {
       guard let access = result["accessToken"] else { return }
 
       googleLoginUseCase.excute(access: access)
-        .subscribe(onSuccess: { _ in
-          // 라우팅
-        }, onFailure: { _ in
-          // 알럿
+        .subscribe(onSuccess: { [weak self] _ in
+          self?.isLoginSuccess.accept(true)
+        }, onFailure: { [weak self] error in
+          self?.error.accept(error)
         })
         .disposed(by: disposeBag)
 
@@ -87,10 +96,10 @@ extension LoginViewModel: LoginManagerDelegate {
         identity: identity,
         authorization: authorization
       )
-      .subscribe(onSuccess: { _ in
-        // 라우팅
-      }, onFailure: { _ in
-        // 알럿
+      .subscribe(onSuccess: { [weak self] _ in
+        self?.isLoginSuccess.accept(true)
+      }, onFailure: { [weak self] error in
+        self?.error.accept(error)
       })
       .disposed(by: disposeBag)
     }
@@ -98,5 +107,6 @@ extension LoginViewModel: LoginManagerDelegate {
 
   func loginManager(didFailWithError error: Error) {
     // TODO: fail alert
+    self.error.accept(error)
   }
 }

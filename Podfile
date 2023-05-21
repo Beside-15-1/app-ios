@@ -31,6 +31,11 @@ target 'Presentation' do
   pod 'GoogleSignIn'
 end
 
+target 'PresentationTests' do
+  project 'Projects/Presentation/Presentation.xcodeproj'
+  pod 'GoogleSignIn'
+end
+
 target 'DesignSystem' do
   project 'Projects/DesignSystem/DesignSystem.xcodeproj'
   pod 'FlexLayout', '~> 1.0'

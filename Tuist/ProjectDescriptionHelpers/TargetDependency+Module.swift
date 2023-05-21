@@ -13,6 +13,10 @@ extension TargetDependency {
   public static func presentation()-> TargetDependency {
     .project(target: "Presentation", path: .relativeToRoot("Projects/Presentation"))
   }
+
+  public static func presentationTesting()-> TargetDependency {
+    .project(target: "PresentationTesting", path: .relativeToRoot("Projects/Presentation"))
+  }
 }
 
 // MARK: DesignSystem
@@ -34,6 +38,10 @@ extension TargetDependency {
   public static func data()-> TargetDependency {
     .project(target: "Data", path: .relativeToRoot("Projects/Domain"))
   }
+
+  public static func domainTesting()-> TargetDependency {
+    .project(target: "DomainTesting", path: .relativeToRoot("Projects/Domain"))
+  }
 }
 
 // MARK: Core
@@ -45,6 +53,10 @@ extension TargetDependency {
 
   public static func core(interface module: CoreModule)-> TargetDependency {
     .project(target: module.rawValue + "Interface", path: .relativeToRoot("Projects/Core/" + module.rawValue))
+  }
+
+  public static func core(testing module: CoreModule)-> TargetDependency {
+    .project(target: module.rawValue + "Testing", path: .relativeToRoot("Projects/Core/" + module.rawValue))
   }
 }
 

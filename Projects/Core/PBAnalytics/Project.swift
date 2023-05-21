@@ -23,7 +23,22 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString],
+      scripts: [.SwiftFormatString] + [
+        TargetScript.pre(
+          script: #"""
+          export PATH="$PATH:/opt/homebrew/bin"
+
+          if which mockolo; then
+            mockolo -s Interfaces -d Testing/PBAnalyticsMocks.swift -i PBAnalyticsInterface --enable-args-history --mock-final
+          else
+            echo "warning: mockolo not installed, download from https://github.com/uber/mockolo using Homebrew"
+          fi
+          """#,
+          name: "Mockolo",
+          outputPaths: ["Testing/PBAnalyticsMocks.swift"],
+          basedOnDependencyAnalysis: false
+        )
+      ],
       dependencies: [
         .external(dependency: .FirebaseAnalytics)
       ]
@@ -49,6 +64,19 @@ let project = Project(
       )
     ),
     Target(
+      name: "\(moduleName)Testing",
+      platform: .iOS,
+      product: .staticLibrary,
+      bundleId: Project.bundleID + ".\(moduleName)Testing".lowercased(),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: "Testing/**",
+      scripts: [.SwiftFormatString],
+      dependencies: [
+        .target(name: "\(moduleName)Interface")
+      ]
+    ),
+    Target(
       name: "\(moduleName)Tests",
       platform: .iOS,
       product: .unitTests,
@@ -60,8 +88,10 @@ let project = Project(
       dependencies: [
         .target(name: "\(moduleName)"),
         .target(name: "\(moduleName)Interface"),
+        .target(name: "\(moduleName)Testing"),
         .xctest,
-        .external(dependency: .RxSwift)
+        .external(dependency: .RxSwift),
+        .external(dependency: .Nimble)
       ]
     )
   ]

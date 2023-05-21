@@ -11,6 +11,7 @@ import RxSwift
 
 // MARK: - AppleLoginUseCase
 
+/// @mockable
 public protocol AppleLoginUseCase {
   func excute(identity: String, authorization: String) -> Single<String>
 }

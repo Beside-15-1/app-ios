@@ -9,6 +9,7 @@ import Foundation
 
 import RxSwift
 
+/// @mockable
 public protocol LoginRepository {
   func requestGoogleLogin(accessToken: String) -> Single<String>
   func requestAppleLogin(identity: String, authorization: String) -> Single<String>
