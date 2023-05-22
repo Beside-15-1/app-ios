@@ -41,7 +41,7 @@ enum AppAssembly {
 
     let rootViewController = UINavigationController()
     var vc: UIViewController {
-      if "keyChain" != "keyChain" {
+      if "keyChain" == "keyChain" {
         return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
       } else {
         return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
