@@ -16,8 +16,9 @@ import PresentationInterface
 // MARK: - LoginDependency
 
 struct LoginDependency {
-  let loginRepository: LoginRepository
   let analytics: PBAnalytics
+  let loginRepository: LoginRepository
+  let mainTabBuilder: MainTabBarBuildable
 }
 
 // MARK: - LoginBuilder
@@ -39,7 +40,10 @@ final class LoginBuilder: LoginBuildable {
       appleLoginUseCase: AppleLoginUseCaseImpl(loginRepository: dependency.loginRepository)
     )
 
-    let viewController = LoginViewController(viewModel: viewModel)
+    let viewController = LoginViewController(
+      viewModel: viewModel,
+      mainTabBuilder: dependency.mainTabBuilder
+    )
     loginManager.viewController = viewController
     loginManager.delegate = viewModel
 

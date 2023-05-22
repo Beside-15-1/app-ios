@@ -30,8 +30,9 @@ public final class PresentationAssembly: Assembly {
   private func registerLoginBuilder(container: Container) {
     container.register(LoginBuildable.self) { resolver in
       LoginBuilder(dependency: .init(
+        analytics: resolver.resolve(),
         loginRepository: resolver.resolve(),
-        analytics: resolver.resolve()
+        mainTabBuilder: resolver.resolve()
       ))
     }
   }
@@ -61,6 +62,8 @@ public final class PresentationAssembly: Assembly {
   private func registerMyPageBuilder(container: Container) {
     container.register(MyPageBuildable.self) { _ in
       MyPageBuilder(dependency: .init())
+    }.initCompleted { resolver, builder in
+      builder.configure(loginBuilder: resolver.resolve())
     }
   }
 }

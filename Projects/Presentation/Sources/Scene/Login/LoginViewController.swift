@@ -22,10 +22,16 @@ final class LoginViewController: UIViewController {
 
   private let contentView = LoginView()
 
+  private let mainTabBuilder: MainTabBarBuildable
+
   // MARK: Initializing
 
-  init(viewModel: LoginViewModel) {
+  init(
+    viewModel: LoginViewModel,
+    mainTabBuilder: MainTabBarBuildable
+  ) {
     self.viewModel = viewModel
+    self.mainTabBuilder = mainTabBuilder
     super.init(nibName: nil, bundle: nil)
   }
 

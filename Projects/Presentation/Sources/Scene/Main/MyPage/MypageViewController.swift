@@ -9,6 +9,10 @@ import UIKit
 
 import RxSwift
 
+import PresentationInterface
+
+// MARK: - MyPageViewController
+
 final class MyPageViewController: UIViewController {
   // MARK: UI
 
@@ -17,11 +21,16 @@ final class MyPageViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: MyPageViewModel
+  private let loginBuilder: LoginBuildable
 
   // MARK: Initializing
 
-  init(viewModel: MyPageViewModel) {
+  init(
+    viewModel: MyPageViewModel,
+    loginBuilder: LoginBuildable
+  ) {
     self.viewModel = viewModel
+    self.loginBuilder = loginBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
