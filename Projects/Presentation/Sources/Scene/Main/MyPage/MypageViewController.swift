@@ -21,6 +21,9 @@ final class MyPageViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: MyPageViewModel
+  private let disposeBag = DisposeBag()
+  private var transition: UIViewControllerAnimatedTransitioning?
+
   private let loginBuilder: LoginBuildable
 
   // MARK: Initializing
@@ -48,10 +51,34 @@ final class MyPageViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    tabBarController?.navigationController?.delegate = self
+
     bind(with: viewModel)
   }
 
   // MARK: Binding
 
-  func bind(with viewModel: MyPageViewModel) {}
+  func bind(with viewModel: MyPageViewModel) {
+    contentView.testButton.rx.tap
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.loginBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+        self.transition = nil
+      }
+      .disposed(by: disposeBag)
+  }
+}
+
+// MARK: UINavigationControllerDelegate
+
+extension MyPageViewController: UINavigationControllerDelegate {
+  func navigationController(
+    _ navigationController: UINavigationController,
+    animationControllerFor operation: UINavigationController.Operation,
+    from fromVC: UIViewController,
+    to toVC: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    transition
+  }
 }

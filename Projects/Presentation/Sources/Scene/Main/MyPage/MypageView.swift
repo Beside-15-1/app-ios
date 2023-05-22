@@ -13,12 +13,20 @@ import SnapKit
 import Then
 
 final class MyPageView: UIView {
+  // TODO: 테스트용
+  let testButton = UIButton().then {
+    $0.setTitle("LOGOUT", for: .normal)
+    $0.setTitleColor(.black, for: .normal)
+  }
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
     backgroundColor = .gray1
+
+    addSubview(testButton)
   }
 
   @available(*, unavailable)
@@ -30,5 +38,6 @@ final class MyPageView: UIView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
+    testButton.pin.center().sizeToFit()
   }
 }
