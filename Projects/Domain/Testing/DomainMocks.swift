@@ -34,6 +34,16 @@ public final class LoginRepositoryMock: LoginRepository {
     }
     fatalError("requestAppleLoginHandler returns can't have a default value thus its handler must be set")
   }
+
+  public private(set) var logoutCallCount = 0
+  public var logoutHandler: (() -> (Single<Bool>))?
+  public func logout() -> Single<Bool> {
+    logoutCallCount += 1
+    if let logoutHandler {
+      return logoutHandler()
+    }
+    fatalError("logoutHandler returns can't have a default value thus its handler must be set")
+  }
 }
 
 // MARK: - AppleLoginUseCaseMock
@@ -67,6 +77,22 @@ public final class GoogleLoginUseCaseMock: GoogleLoginUseCase {
     excuteArgValues.append(access)
     if let excuteHandler {
       return excuteHandler(access)
+    }
+    fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+  }
+}
+
+// MARK: - RequsetLogoutUseCaseMock
+
+public final class RequsetLogoutUseCaseMock: RequsetLogoutUseCase {
+  public init() {}
+
+  public private(set) var excuteCallCount = 0
+  public var excuteHandler: (() -> (Single<Bool>))?
+  public func excute() -> Single<Bool> {
+    excuteCallCount += 1
+    if let excuteHandler {
+      return excuteHandler()
     }
     fatalError("excuteHandler returns can't have a default value thus its handler must be set")
   }

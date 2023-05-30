@@ -57,4 +57,16 @@ final class LoginRepositoryImpl: LoginRepository {
         return token.isValid
       }
   }
+
+  func logout() -> Single<Bool> {
+    keychainDataSource.accessToken = nil
+    keychainDataSource.refreshToken = nil
+
+    guard keychainDataSource.accessToken == nil,
+          keychainDataSource.refreshToken == nil else {
+      return .just(false)
+    }
+
+    return .just(true)
+  }
 }
