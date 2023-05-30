@@ -1,5 +1,5 @@
 //
-//  RequsetLogoutUseCase.swift
+//  LogoutUseCase.swift
 //  Domain
 //
 //  Created by 박천송 on 2023/05/30.
@@ -9,16 +9,16 @@ import Foundation
 
 import RxSwift
 
-// MARK: - RequsetLogoutUseCase
+// MARK: - LogoutUseCase
 
 /// @mockable
-public protocol RequsetLogoutUseCase {
+public protocol LogoutUseCase {
   func excute() -> Single<Bool>
 }
 
-// MARK: - RequsetLogoutUseCaseImpl
+// MARK: - LogoutUseCaseImpl
 
-public final class RequsetLogoutUseCaseImpl: RequsetLogoutUseCase {
+public final class LogoutUseCaseImpl: LogoutUseCase {
   private let loginRepository: LoginRepository
 
   public init(loginRepository: LoginRepository) {

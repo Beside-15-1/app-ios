@@ -81,11 +81,6 @@ class LoginView: UIView {
     $0.textAlignment = .center
   }
 
-  // TODO: 가입,로그인 마무리되면 제거 예정
-  let testButton = UIButton().then {
-    $0.setTitle("MoveToMain", for: .normal)
-  }
-
   // MARK: Initializing
 
   override init(frame: CGRect) {
@@ -94,9 +89,6 @@ class LoginView: UIView {
     backgroundColor = .darkPurple
 
     defineLayout()
-
-    // TODO: 가입,로그인 마무리되면 제거 예정
-    addSubview(testButton)
   }
 
   required init?(coder: NSCoder) {
@@ -171,8 +163,5 @@ class LoginView: UIView {
 
     flexContainer.pin.all()
     flexContainer.flex.layout()
-
-    // TODO: 가입,로그인 마무리되면 제거 예정
-    testButton.pin.center().sizeToFit()
   }
 }

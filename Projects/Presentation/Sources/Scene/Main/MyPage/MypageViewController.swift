@@ -59,7 +59,21 @@ final class MyPageViewController: UIViewController {
   // MARK: Binding
 
   func bind(with viewModel: MyPageViewModel) {
+    bindButtons(with: viewModel)
+    bindRoute(with: viewModel)
+  }
+
+  func bindButtons(with viewModel: MyPageViewModel) {
     contentView.testButton.rx.tap
+      .subscribe(with: self) { `self`, _ in
+        self.viewModel.logoutButtonTapped()
+      }
+      .disposed(by: disposeBag)
+  }
+
+  func bindRoute(with viewModel: MyPageViewModel) {
+    viewModel.isLogoutSuccess
+      .filter { $0 }
       .subscribe(with: self) { `self`, _ in
         let vc = self.loginBuilder.build(payload: .init())
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)

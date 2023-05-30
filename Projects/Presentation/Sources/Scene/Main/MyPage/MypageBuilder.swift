@@ -13,7 +13,9 @@ import PresentationInterface
 
 // MARK: - MyPageDependency
 
-struct MyPageDependency {}
+struct MyPageDependency {
+  let loginRepository: LoginRepository
+}
 
 // MARK: - MyPageBuilder
 
@@ -26,7 +28,9 @@ final class MyPageBuilder: MyPageBuildable {
   }
 
   func build(payload: MyPagePayload) -> UIViewController {
-    let viewModel = MyPageViewModel()
+    let viewModel = MyPageViewModel(
+      logoutUseCase: LogoutUseCaseImpl(loginRepository: dependency.loginRepository)
+    )
 
     let viewController = MyPageViewController(
       viewModel: viewModel,
