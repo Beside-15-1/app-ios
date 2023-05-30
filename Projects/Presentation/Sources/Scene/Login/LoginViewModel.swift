@@ -81,27 +81,29 @@ extension LoginViewModel: LoginManagerDelegate {
       guard let access = result["accessToken"] else { return }
 
       googleLoginUseCase.excute(access: access)
-        .subscribe(onSuccess: { [weak self] _ in
-          self?.isLoginSuccess.accept(true)
+        .subscribe(onSuccess: { [weak self] canLogin in
+          guard let self else { return }
+
+          self.isLoginSuccess.accept(canLogin)
+
         }, onFailure: { [weak self] error in
           self?.error.accept(error)
         })
         .disposed(by: disposeBag)
 
     case .apple:
-      guard let identity = result["identityToken"],
-            let authorization = result["authorizationCode"] else { return }
+      guard let identity = result["identityToken"] else { return }
 
-      appleLoginUseCase.excute(
-        identity: identity,
-        authorization: authorization
-      )
-      .subscribe(onSuccess: { [weak self] _ in
-        self?.isLoginSuccess.accept(true)
-      }, onFailure: { [weak self] error in
-        self?.error.accept(error)
-      })
-      .disposed(by: disposeBag)
+      appleLoginUseCase.excute(identity: identity)
+        .subscribe(onSuccess: { [weak self] canLogin in
+          guard let self else { return }
+
+          self.isLoginSuccess.accept(canLogin)
+
+        }, onFailure: { [weak self] error in
+          self?.error.accept(error)
+        })
+        .disposed(by: disposeBag)
     }
   }
 

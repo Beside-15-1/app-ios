@@ -12,8 +12,8 @@ struct TokenResponse: Codable {
   let refreshToken: String
 
   enum CodingKeys: String, CodingKey {
-    case accessToken = "accessToken"
-    case refreshToken = "refreshToken"
+    case accessToken
+    case refreshToken
   }
 
   init(from decoder: Decoder) throws {
