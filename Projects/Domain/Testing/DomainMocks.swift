@@ -13,8 +13,8 @@ public final class LoginRepositoryMock: LoginRepository {
 
   public private(set) var requestGoogleLoginCallCount = 0
   public var requestGoogleLoginArgValues = [String]()
-  public var requestGoogleLoginHandler: ((String) -> (Single<String>))?
-  public func requestGoogleLogin(accessToken: String) -> Single<String> {
+  public var requestGoogleLoginHandler: ((String) -> (Single<Bool>))?
+  public func requestGoogleLogin(accessToken: String) -> Single<Bool> {
     requestGoogleLoginCallCount += 1
     requestGoogleLoginArgValues.append(accessToken)
     if let requestGoogleLoginHandler {
@@ -24,13 +24,13 @@ public final class LoginRepositoryMock: LoginRepository {
   }
 
   public private(set) var requestAppleLoginCallCount = 0
-  public var requestAppleLoginArgValues = [(String, String)]()
-  public var requestAppleLoginHandler: ((String, String) -> (Single<String>))?
-  public func requestAppleLogin(identity: String, authorization: String) -> Single<String> {
+  public var requestAppleLoginArgValues = [String]()
+  public var requestAppleLoginHandler: ((String) -> (Single<Bool>))?
+  public func requestAppleLogin(identity: String) -> Single<Bool> {
     requestAppleLoginCallCount += 1
-    requestAppleLoginArgValues.append((identity, authorization))
+    requestAppleLoginArgValues.append(identity)
     if let requestAppleLoginHandler {
-      return requestAppleLoginHandler(identity, authorization)
+      return requestAppleLoginHandler(identity)
     }
     fatalError("requestAppleLoginHandler returns can't have a default value thus its handler must be set")
   }
@@ -42,13 +42,13 @@ public final class AppleLoginUseCaseMock: AppleLoginUseCase {
   public init() {}
 
   public private(set) var excuteCallCount = 0
-  public var excuteArgValues = [(String, String)]()
-  public var excuteHandler: ((String, String) -> (Single<String>))?
-  public func excute(identity: String, authorization: String) -> Single<String> {
+  public var excuteArgValues = [String]()
+  public var excuteHandler: ((String) -> (Single<Bool>))?
+  public func excute(identity: String) -> Single<Bool> {
     excuteCallCount += 1
-    excuteArgValues.append((identity, authorization))
+    excuteArgValues.append(identity)
     if let excuteHandler {
-      return excuteHandler(identity, authorization)
+      return excuteHandler(identity)
     }
     fatalError("excuteHandler returns can't have a default value thus its handler must be set")
   }
@@ -61,8 +61,8 @@ public final class GoogleLoginUseCaseMock: GoogleLoginUseCase {
 
   public private(set) var excuteCallCount = 0
   public var excuteArgValues = [String]()
-  public var excuteHandler: ((String) -> (Single<String>))?
-  public func excute(access: String) -> Single<String> {
+  public var excuteHandler: ((String) -> (Single<Bool>))?
+  public func excute(access: String) -> Single<Bool> {
     excuteCallCount += 1
     excuteArgValues.append(access)
     if let excuteHandler {

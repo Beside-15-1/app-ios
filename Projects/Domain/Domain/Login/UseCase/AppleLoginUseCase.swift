@@ -13,7 +13,7 @@ import RxSwift
 
 /// @mockable
 public protocol AppleLoginUseCase {
-  func excute(identity: String, authorization: String) -> Single<String>
+  func excute(identity: String) -> Single<Bool>
 }
 
 // MARK: - AppleLoginUseCaseImpl
@@ -25,7 +25,7 @@ public final class AppleLoginUseCaseImpl: AppleLoginUseCase {
     self.loginRepository = loginRepository
   }
 
-  public func excute(identity: String, authorization: String) -> Single<String> {
-    loginRepository.requestAppleLogin(identity: identity, authorization: authorization)
+  public func excute(identity: String) -> Single<Bool> {
+    loginRepository.requestAppleLogin(identity: identity)
   }
 }

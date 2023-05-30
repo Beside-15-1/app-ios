@@ -11,6 +11,7 @@ import RxSwift
 
 import Domain
 import Networking
+import PBLog
 
 final class LoginRepositoryImpl: LoginRepository {
   private let provider: PBNetworking<LoginAPI>
@@ -21,21 +22,23 @@ final class LoginRepositoryImpl: LoginRepository {
     self.provider = provider
   }
 
-  func requestGoogleLogin(accessToken: String) -> Single<String> {
+  func requestGoogleLogin(accessToken: String) -> Single<Bool> {
     let target = LoginAPI.google(accessToken)
 
     return provider.request(target: target)
-      .flatMap {
-        .just(String(data: $0.data, encoding: .utf8) ?? "")
+      .map(TokenResponse.self)
+      .map { token in
+        return !token.accessToken.isEmpty
       }
   }
 
-  func requestAppleLogin(identity: String, authorization: String) -> Single<String> {
-    let target = LoginAPI.apple(identity: identity, authorization: authorization)
+  func requestAppleLogin(identity: String) -> Single<Bool> {
+    let target = LoginAPI.apple(identity)
 
     return provider.request(target: target)
-      .flatMap {
-        .just(String(data: $0.data, encoding: .utf8) ?? "")
+      .map(TokenResponse.self)
+      .map { token in
+        return !token.accessToken.isEmpty
       }
   }
 }
