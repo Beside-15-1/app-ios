@@ -19,7 +19,7 @@ public final class PBAuthAssembly: Assembly {
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
-      registerPBAuthLocalDataSource,
+      registerPBAuthLocalDataSource
     ]
 
     registerFunctions.forEach { $0(container) }

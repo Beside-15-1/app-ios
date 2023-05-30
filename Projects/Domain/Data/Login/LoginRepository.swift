@@ -11,15 +11,21 @@ import RxSwift
 
 import Domain
 import Networking
+import PBAuthInterface
 import PBLog
 
 final class LoginRepositoryImpl: LoginRepository {
   private let provider: PBNetworking<LoginAPI>
+  private var keychainDataSource: PBAuthLocalDataSource
 
   private let disposeBag = DisposeBag()
 
-  init(provider: PBNetworking<LoginAPI>) {
+  init(
+    provider: PBNetworking<LoginAPI>,
+    keychainDataSource: PBAuthLocalDataSource
+  ) {
     self.provider = provider
+    self.keychainDataSource = keychainDataSource
   }
 
   func requestGoogleLogin(accessToken: String) -> Single<Bool> {
@@ -27,8 +33,13 @@ final class LoginRepositoryImpl: LoginRepository {
 
     return provider.request(target: target)
       .map(TokenResponse.self)
-      .map { token in
-        return !token.accessToken.isEmpty
+      .map { [weak self] token in
+        if token.isValid {
+          self?.keychainDataSource.accessToken = token.accessToken
+          self?.keychainDataSource.refreshToken = token.refreshToken
+        }
+
+        return token.isValid
       }
   }
 
@@ -37,8 +48,13 @@ final class LoginRepositoryImpl: LoginRepository {
 
     return provider.request(target: target)
       .map(TokenResponse.self)
-      .map { token in
-        return !token.accessToken.isEmpty
+      .map { [weak self] token in
+        if token.isValid {
+          self?.keychainDataSource.accessToken = token.accessToken
+          self?.keychainDataSource.refreshToken = token.refreshToken
+        }
+
+        return token.isValid
       }
   }
 }

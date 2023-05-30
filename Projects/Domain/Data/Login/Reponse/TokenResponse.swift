@@ -11,6 +11,10 @@ struct TokenResponse: Codable {
   let accessToken: String
   let refreshToken: String
 
+  var isValid: Bool {
+    !accessToken.isEmpty && !refreshToken.isEmpty
+  }
+
   enum CodingKeys: String, CodingKey {
     case accessToken
     case refreshToken

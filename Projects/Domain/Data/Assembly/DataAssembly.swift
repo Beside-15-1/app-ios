@@ -11,6 +11,7 @@ import Swinject
 
 import Domain
 import Networking
+import PBAuthInterface
 
 // MARK: - DataAssembly
 
@@ -26,16 +27,19 @@ public final class DataAssembly: Assembly {
   }
 
   private func registerLoginRepository(container: Container) {
-    container.register(LoginRepository.self) { _ in
-      LoginRepositoryImpl(provider: .init())
+    container.register(LoginRepository.self) { resolver in
+      LoginRepositoryImpl(
+        provider: .init(),
+        keychainDataSource: resolver.resolve(PBAuthLocalDataSource.self)!
+      )
     }
   }
 }
 
 // MARK: - Resolver
 
-private extension Resolver {
-  func resolve<Service>() -> Service! {
+extension Resolver {
+  private func resolve<Service>() -> Service! {
     resolve(Service.self)
   }
 }
