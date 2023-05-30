@@ -39,7 +39,15 @@ enum AppAssembly {
     _ = Assembler(assemblies, container: container)
     let resolver = container
 
-    let rootViewController = resolver.resolve(LoginBuildable.self)!.build(payload: .init())
+    let rootViewController = UINavigationController()
+    var vc: UIViewController {
+      if "keyChain" == "keyChain" {
+        return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
+      } else {
+        return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
+      }
+    }
+    rootViewController.setViewControllers([vc], animated: false)
 
     return AppDependency(
       rootViewController: rootViewController,

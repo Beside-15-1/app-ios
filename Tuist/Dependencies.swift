@@ -23,6 +23,7 @@ let dependencies = Dependencies(
     .sdWebImage,
     .firebase,
     .nimble,
+    .keyChainAccess,
   ],
   platforms: [.iOS]
 )
@@ -79,5 +80,9 @@ extension Package {
   public static let nimble: Package = .remote(
     url: "https://github.com/Quick/Nimble.git",
     requirement: .upToNextMajor(from: "12.0.0")
+  )
+  public static let keyChainAccess: Package = .remote(
+    url: "https://github.com/kishikawakatsumi/KeychainAccess.git",
+    requirement: .upToNextMajor(from: "4.0.0")
   )
 }

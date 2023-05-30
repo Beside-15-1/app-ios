@@ -12,6 +12,8 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+import PresentationInterface
+
 // MARK: - LoginViewController
 
 final class LoginViewController: UIViewController {
@@ -19,13 +21,20 @@ final class LoginViewController: UIViewController {
 
   private let viewModel: LoginViewModel?
   private let disposeBag = DisposeBag()
+  private var transition: UIViewControllerAnimatedTransitioning?
 
   private let contentView = LoginView()
 
+  private let mainTabBuilder: MainTabBarBuildable
+
   // MARK: Initializing
 
-  init(viewModel: LoginViewModel) {
+  init(
+    viewModel: LoginViewModel,
+    mainTabBuilder: MainTabBarBuildable
+  ) {
     self.viewModel = viewModel
+    self.mainTabBuilder = mainTabBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -38,7 +47,7 @@ final class LoginViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
+    navigationController?.delegate = self
     bind()
   }
 
@@ -64,5 +73,27 @@ final class LoginViewController: UIViewController {
         viewcontroller.viewModel?.appleLoginButtonTapped()
       }
       .disposed(by: disposeBag)
+
+    contentView.testButton.rx.tap
+      .subscribe(with: self) { `self`, _ in
+        let mainTab = self.mainTabBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.transition = nil
+      }
+      .disposed(by: disposeBag)
+  }
+}
+
+// MARK: UINavigationControllerDelegate
+
+extension LoginViewController: UINavigationControllerDelegate {
+  func navigationController(
+    _ navigationController: UINavigationController,
+    animationControllerFor operation: UINavigationController.Operation,
+    from fromVC: UIViewController,
+    to toVC: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    transition
   }
 }

@@ -18,4 +18,5 @@ public enum CoreModule: String, CaseIterable {
   case Networking
   case PBAnalytics
   case PBLog
+  case PBAuth
 }
