@@ -2,13 +2,13 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project(
-  name: CoreModule.Networking.rawValue,
+  name: CoreModule.PBNetworking.rawValue,
   targets: [
     Target(
-      name: CoreModule.Networking.rawValue,
+      name: CoreModule.PBNetworking.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)".lowercased(),
+      bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
@@ -20,16 +20,16 @@ let project = Project(
       ]
     ),
     Target(
-      name: "\(CoreModule.Networking.rawValue)Tests",
+      name: "\(CoreModule.PBNetworking.rawValue)Tests",
       platform: .iOS,
       product: .unitTests,
-      bundleId: Project.bundleID + ".\(CoreModule.Networking.rawValue)Tests".lowercased(),
+      bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(CoreModule.Networking.rawValue)")
+        .target(name: "\(CoreModule.PBNetworking.rawValue)")
       ]
     )
   ]

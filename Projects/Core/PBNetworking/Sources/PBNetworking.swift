@@ -29,20 +29,20 @@ public final class PBNetworking<T: TargetType> {
       .flatMap {
         // 401(Unauthorized) 발생 시 자동으로 토큰을 재발급 받는다
         if $0.statusCode == 401 {
-          throw JSNetworkError.tokenExpired
+          throw PBNetworkError.tokenExpired
         } else {
           return Single.just($0)
         }
       }
-      .retry { (error: Observable<JSNetworkError>) in
+      .retry { (error: Observable<PBNetworkError>) in
         error.flatMap { [weak self] error -> Single<Response> in
-          guard let self else { return .error(JSNetworkError.unknown) }
+          guard let self else { return .error(PBNetworkError.unknown) }
 
           if error == .tokenExpired {
             return self.requestToken()
           }
 
-          return .error(JSNetworkError.unknown)
+          return .error(PBNetworkError.unknown)
         }
       }
       .handleResponse()
@@ -73,10 +73,10 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
       // TODO: Server에서 에러타입 정리되면 맞춰서 대응 필요
       let jsonDecoder = JSONDecoder()
       if let error = try? jsonDecoder.decode(ServerErrorDTO.self, from: response.data) {
-        return Single.error(JSNetworkError.serverError(code: error.code, message: error.message))
+        return Single.error(PBNetworkError.serverError(code: error.code, message: error.message))
       }
 
-      return Single.error(JSNetworkError.unknown)
+      return Single.error(PBNetworkError.unknown)
     }
   }
 }

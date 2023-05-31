@@ -17,7 +17,7 @@ private extension Moya.Response {
     do {
       return try decoder.decode(D.self, from: data)
     } catch {
-      throw JSNetworkError.decodingError
+      throw PBNetworkError.decodingError
     }
   }
 }

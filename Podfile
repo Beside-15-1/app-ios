@@ -10,7 +10,7 @@ project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
 project 'Projects/DesignSystem.xcodeproj'
 # Core
-project 'Projects/Core/Networking/Networking.xcodeproj'
+project 'Projects/Core/PBNetworking/PBNetworking.xcodeproj'
 project 'Projects/Core/LoginManager/LoginManager.xcodeproj'
 
 def flex_layout
@@ -48,6 +48,6 @@ end
 
 # Core
 
-target 'Networking' do
-  project 'Projects/Core/Networking/Networking.xcodeproj'
+target 'PBNetworking' do
+  project 'Projects/Core/PBNetworking/PBNetworking.xcodeproj'
 end
