@@ -10,6 +10,7 @@ final class HomeViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: HomeViewModel
+  private let disposeBag = DisposeBag()
 
   // MARK: Initializing
 
@@ -37,5 +38,13 @@ final class HomeViewController: UIViewController {
 
   // MARK: Binding
 
-  func bind(with viewModel: HomeViewModel) {}
+  func bind(with viewModel: HomeViewModel) {
+    contentView.testButton.rx.tap
+      .subscribe(with: self) { _, _ in
+        let linkBookViewController = LinkBookViewController()
+        let navigationViewController = UINavigationController(rootViewController: linkBookViewController)
+        self.present(navigationViewController, animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
 }
