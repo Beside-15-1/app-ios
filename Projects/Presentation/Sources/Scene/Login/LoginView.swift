@@ -37,7 +37,7 @@ class LoginView: UIView {
 
   private let subTitleLabel = UILabel().then {
     $0.attributedText = "링크를 주섬주섬 담아 어쩌구 저쩌구".styled(
-      font: .pretendard(.medium, size: 16),
+      font: .defaultRegular,
       color: .linen)
   }
 
@@ -76,7 +76,7 @@ class LoginView: UIView {
       .underLine(range: ["서비스이용약관", "개인정보처리방침"])
 
     $0.textColor = .linen.withAlphaComponent(0.6)
-    $0.font = .pretendard(.medium, size: 12)
+    $0.font = .captionRegular
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }

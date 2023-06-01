@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public enum Pretendard {
+enum Pretendard {
   case black
   case bold
   case extraBold
@@ -20,7 +20,7 @@ public enum Pretendard {
   case thin
 }
 
-public extension UIFont {
+extension UIFont {
   static func pretendard(_ type: Pretendard, size: CGFloat)-> UIFont {
     switch type {
     case .regular:
