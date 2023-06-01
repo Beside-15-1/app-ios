@@ -9,15 +9,15 @@ import UIKit
 
 public extension UIColor {
   /// #392A95
-  static let darkPurple = UIColor(hexString: "#392A95")
+  static let primary = UIColor(hexString: "#392A95")
   /// #7B63A4
-  static let purple = UIColor(hexString: "#7B63A4")
+  static let secondary1 = UIColor(hexString: "#7B63A4")
   /// #CBC7D8
-  static let lightPurple = UIColor(hexString: "#CBC7D8")
-  /// #FDEFE8
-  static let linen = UIColor(hexString: "#FDEFE8")
+  static let secondary2 = UIColor(hexString: "#CBC7D8")
   /// #F2B2AC"
-  static let pink = UIColor(hexString: "#F2B2AC")
+  static let secondary3 = UIColor(hexString: "#F2B2AC")
+  /// #FDEFE8
+  static let secondary4 = UIColor(hexString: "#FDEFE8")
 
   /// #f5f5f5
   static let gray1 = UIColor(hexString: "#f5f5f5")

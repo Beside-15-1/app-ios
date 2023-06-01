@@ -38,7 +38,7 @@ class LoginView: UIView {
   private let subTitleLabel = UILabel().then {
     $0.attributedText = "링크를 주섬주섬 담아 어쩌구 저쩌구".styled(
       font: .defaultRegular,
-      color: .linen)
+      color: .secondary4)
   }
 
   let googleButton = UIControl().then {
@@ -75,7 +75,7 @@ class LoginView: UIView {
     $0.attributedText = "가입을 진행할 경우, 아래의 정책에 동의한 것으로 간주됩니다\n서비스이용약관 및 개인정보처리방침"
       .underLine(range: ["서비스이용약관", "개인정보처리방침"])
 
-    $0.textColor = .linen.withAlphaComponent(0.6)
+    $0.textColor = .secondary4.withAlphaComponent(0.6)
     $0.font = .captionRegular
     $0.numberOfLines = 0
     $0.textAlignment = .center
@@ -91,7 +91,7 @@ class LoginView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .darkPurple
+    backgroundColor = .primary
 
     defineLayout()
 
