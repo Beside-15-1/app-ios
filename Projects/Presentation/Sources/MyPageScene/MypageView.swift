@@ -5,6 +5,8 @@ import PinLayout
 import SnapKit
 import Then
 
+import DesignSystem
+
 final class MyPageView: UIView {
   // TODO: 테스트용
   let testButton = UIButton().then {
@@ -17,7 +19,7 @@ final class MyPageView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .gray1
+    backgroundColor = .gray100
 
     addSubview(testButton)
   }
