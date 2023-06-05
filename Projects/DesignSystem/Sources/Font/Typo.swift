@@ -27,10 +27,10 @@ extension UIFont {
 
   // MARK: SubHead
 
-  public static let defaultExtraBold: UIFont = .pretendard(.bold, size: 16.0)
+  public static let defaultExtraBold: UIFont = .pretendard(.extraBold, size: 16.0)
   public static let defaultBold: UIFont = .pretendard(.bold, size: 16.0)
-  public static let defaultSemiBold: UIFont = .pretendard(.bold, size: 16.0)
-  public static let defaultRegular: UIFont = .pretendard(.bold, size: 16.0)
+  public static let defaultSemiBold: UIFont = .pretendard(.semiBold, size: 16.0)
+  public static let defaultRegular: UIFont = .pretendard(.regular, size: 16.0)
 
   // MARK: Body
 
