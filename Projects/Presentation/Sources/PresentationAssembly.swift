@@ -1,10 +1,3 @@
-//
-//  PresentationAssembly.swift
-//  Presentation
-//
-//  Created by Hohyeon Moon on 2023/05/12.
-//
-
 import Domain
 import Foundation
 import PresentationInterface

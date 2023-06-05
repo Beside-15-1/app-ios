@@ -1,10 +1,3 @@
-//
-//  PBLog.swift
-//  PBLog
-//
-//  Created by Hohyeon Moon on 2023/05/21.
-//
-
 import Foundation
 
 // MARK: - PBLogLevel

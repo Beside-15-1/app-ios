@@ -1,10 +1,3 @@
-//
-//  LogoutUseCase.swift
-//  Domain
-//
-//  Created by 박천송 on 2023/05/30.
-//
-
 import Foundation
 
 import RxSwift

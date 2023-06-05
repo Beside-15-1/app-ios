@@ -1,10 +1,3 @@
-//
-//  LoginViewController.swift
-//  PresentationInterface
-//
-//  Created by 박천송 on 2023/04/27.
-//
-
 import AuthenticationServices
 import Foundation
 import UIKit

@@ -20,7 +20,7 @@
 --exponentcase uppercase
 --exponentgrouping disabled
 --fractiongrouping disabled
---header ignore
+--header strip
 --hexgrouping ignore
 --hexliteralcase lowercase
 --ifdef indent

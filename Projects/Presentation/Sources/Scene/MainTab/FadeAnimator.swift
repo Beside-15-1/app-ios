@@ -1,10 +1,3 @@
-//
-//  FadeAnimator.swift
-//  Presentation
-//
-//  Created by 박천송 on 2023/05/22.
-//
-
 import Foundation
 import UIKit
 

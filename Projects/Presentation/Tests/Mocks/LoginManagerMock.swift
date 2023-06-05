@@ -1,10 +1,3 @@
-//
-//  LoginManagerMock.swift
-//  PresentationTests
-//
-//  Created by 박천송 on 2023/05/17.
-//
-
 import Foundation
 @testable import Presentation
 

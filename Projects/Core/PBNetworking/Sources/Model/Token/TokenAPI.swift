@@ -1,10 +1,3 @@
-//
-//  Network.swift
-//  Core
-//
-//  Created by Hohyeon Moon on 2023/04/28.
-//
-
 import Foundation
 import Moya
 

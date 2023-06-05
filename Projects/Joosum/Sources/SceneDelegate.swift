@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  av
-//
-//  Created by cheonsong on 2022/09/05.
-//
-
 import Domain
 import Presentation
 import UIKit

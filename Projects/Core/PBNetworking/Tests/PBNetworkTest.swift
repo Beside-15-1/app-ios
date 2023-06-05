@@ -1,10 +1,3 @@
-//
-//  PresentationTest.swift
-//  PresantationManifests
-//
-//  Created by cheonsong on 2022/09/19.
-//
-
 import XCTest
 
 final class PBNetworkTest: XCTestCase {
