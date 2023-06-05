@@ -8,8 +8,19 @@
 import UIKit
 
 public extension UIColor {
-  /// #392A95
-  static let primary = UIColor(hexString: "#392A95")
+
+  // MARK: Primary
+
+  static let primary100 = UIColor(hexString: "#EFECFF")
+  static let primary200 = UIColor(hexString: "#DFD9FF")
+  static let primary300 = UIColor(hexString: "#A299F6")
+  static let primary400 = UIColor(hexString: "#6B5FDE")
+  static let primary500 = UIColor(hexString: "#392A95")
+  static let primary600 = UIColor(hexString: "#2E2277")
+  static let primary700 = UIColor(hexString: "#221959")
+  static let primary800 = UIColor(hexString: "#17113C")
+  static let primary900 = UIColor(hexString: "#0B081E")
+
   /// #7B63A4
   static let secondary1 = UIColor(hexString: "#7B63A4")
   /// #CBC7D8
@@ -19,12 +30,19 @@ public extension UIColor {
   /// #FDEFE8
   static let secondary4 = UIColor(hexString: "#FDEFE8")
 
-  /// #f5f5f5
-  static let gray1 = UIColor(hexString: "#f5f5f5")
-  /// #e0e0e0
-  static let gray2 = UIColor(hexString: "#e0e0e0")
-  /// #969696
-  static let gray3 = UIColor(hexString: "#969696")
-  /// #777777
-  static let gray4 = UIColor(hexString: "#777777")
+  // MARK: Gray
+
+  static let gray100 = UIColor(hexString: "#F8F9FA")
+  static let gray200 = UIColor(hexString: "#F4F5F7")
+  static let gray300 = UIColor(hexString: "#EBECED")
+  static let gray400 = UIColor(hexString: "#D9D9D9")
+  static let gray500 = UIColor(hexString: "#BBBBBB")
+  static let gray600 = UIColor(hexString: "#909090")
+  static let gray700 = UIColor(hexString: "#6C6C6C")
+  static let gray800 = UIColor(hexString: "#444444")
+  static let gray900 = UIColor(hexString: "#252525")
+
+  // MARK: Error
+
+  static let error = UIColor(hexString: "#E34C4B")
 }
