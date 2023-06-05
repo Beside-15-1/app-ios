@@ -15,7 +15,10 @@ let protject = Project(
       resources: .default,
       dependencies: [
         .external(dependency: .SnapKit),
-        .external(dependency: .Then)
+        .external(dependency: .Then),
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay)
       ]
     )
   ]
