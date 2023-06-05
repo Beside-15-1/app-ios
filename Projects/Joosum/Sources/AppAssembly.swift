@@ -5,11 +5,11 @@ import FirebaseCore
 import Swinject
 
 import Data
-import Presentation
-import PresentationInterface
 import PBAnalytics
 import PBAuth
 import PBAuthInterface
+import Presentation
+import PresentationInterface
 
 // MARK: - AppDependency
 

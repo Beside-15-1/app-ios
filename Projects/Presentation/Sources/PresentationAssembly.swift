@@ -1,7 +1,9 @@
-import Domain
 import Foundation
-import PresentationInterface
+
 import Swinject
+
+import Domain
+import PresentationInterface
 
 // MARK: - PresentationAssembly
 
@@ -17,7 +19,9 @@ public final class PresentationAssembly: Assembly {
       registerMyPageBuilder
     ]
 
-    registerFunctions.forEach { $0(container) }
+    registerFunctions.forEach { function in
+      function(container)
+    }
   }
 
   private func registerLoginBuilder(container: Container) {

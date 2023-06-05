@@ -1,6 +1,6 @@
 import Foundation
 
-struct ServerErrorDTO: Codable {
+struct PBServerErrorDTO: Codable {
   let code: String
   let message: String
 

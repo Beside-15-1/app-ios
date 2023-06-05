@@ -65,7 +65,7 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
 
       // TODO: Server에서 에러타입 정리되면 맞춰서 대응 필요
       let jsonDecoder = JSONDecoder()
-      if let error = try? jsonDecoder.decode(ServerErrorDTO.self, from: response.data) {
+      if let error = try? jsonDecoder.decode(PBServerErrorDTO.self, from: response.data) {
         return Single.error(PBNetworkError.serverError(code: error.code, message: error.message))
       }
 
