@@ -12,17 +12,17 @@ import FirebaseCore
 import Swinject
 
 import Data
+import Presentation
+import PresentationInterface
+
 import PBAnalytics
 import PBAuth
 import PBAuthInterface
-import Presentation
-import PresentationInterface
 
 // MARK: - AppDependency
 
 struct AppDependency {
   let rootViewController: UIViewController
-
   let configureFirebase: () -> Void
 }
 
@@ -46,8 +46,7 @@ enum AppAssembly {
     let localDataSource = resolver.resolve(PBAuthLocalDataSource.self)!
 
     var vc: UIViewController {
-      if let accessToken = localDataSource.accessToken,
-         !accessToken.isEmpty {
+      if let accessToken = localDataSource.accessToken, !accessToken.isEmpty {
         return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
       } else {
         return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
@@ -58,14 +57,8 @@ enum AppAssembly {
     return AppDependency(
       rootViewController: rootViewController,
       configureFirebase: {
-        configureFirebase()
+        FirebaseApp.configure()
       }
     )
-  }
-}
-
-extension AppAssembly {
-  static func configureFirebase() {
-    FirebaseApp.configure()
   }
 }
