@@ -19,15 +19,18 @@ final class LoginViewController: UIViewController {
   private let contentView = LoginView()
 
   private let mainTabBuilder: MainTabBarBuildable
+  private let signUpBuilder: SignUpBuildable
 
   // MARK: Initializing
 
   init(
     viewModel: LoginViewModel,
-    mainTabBuilder: MainTabBarBuildable
+    mainTabBuilder: MainTabBarBuildable,
+    signUpBuilder: SignUpBuildable
   ) {
     self.viewModel = viewModel
     self.mainTabBuilder = mainTabBuilder
+    self.signUpBuilder = signUpBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -71,15 +74,23 @@ final class LoginViewController: UIViewController {
 
   private func bindRoute(with viewModel: LoginViewModel) {
     viewModel.isLoginSuccess
-      .subscribe(with: self) { `self`, canLogin in
-        if canLogin {
-          let mainTab = self.mainTabBuilder.build(payload: .init())
-          self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-          self.navigationController?.setViewControllers([mainTab], animated: true)
-          self.transition = nil
-        } else {
-          // TODO: 회원가입 페이지 이동
-        }
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        let mainTab = self.mainTabBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.transition = nil
+      }
+      .disposed(by: disposeBag)
+
+    viewModel.needSignUp
+      .subscribe(with: self) { `self`, data in
+        let signUp = self.signUpBuilder
+          .build(payload: .init(
+            accessToken: data.0,
+            social: data.1
+          ))
+        self.navigationController?.pushViewController(signUp, animated: true)
       }
       .disposed(by: disposeBag)
   }

@@ -30,7 +30,8 @@ public final class PresentationAssembly: Assembly {
       LoginBuilder(dependency: .init(
         analytics: resolver.resolve(),
         loginRepository: resolver.resolve(),
-        mainTabBuilder: resolver.resolve()
+        mainTabBuilder: resolver.resolve(),
+        signUpBuilder: resolver.resolve()
       ))
     }
   }

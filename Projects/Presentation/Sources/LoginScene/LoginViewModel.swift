@@ -76,8 +76,11 @@ extension LoginViewModel: LoginManagerDelegate {
       googleLoginUseCase.excute(access: access)
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
-
-          self.isLoginSuccess.accept(canLogin)
+          if canLogin {
+            self.isLoginSuccess.accept(true)
+          } else {
+            self.needSignUp.accept((access, "google"))
+          }
 
         }, onFailure: { [weak self] error in
           self?.error.accept(error)
@@ -91,7 +94,11 @@ extension LoginViewModel: LoginManagerDelegate {
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
 
-          self.isLoginSuccess.accept(canLogin)
+          if canLogin {
+            self.isLoginSuccess.accept(true)
+          } else {
+            self.needSignUp.accept((identity, "apple"))
+          }
 
         }, onFailure: { [weak self] error in
           self?.error.accept(error)
