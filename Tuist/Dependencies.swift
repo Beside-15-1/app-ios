@@ -24,6 +24,7 @@ let dependencies = Dependencies(
     .firebase,
     .nimble,
     .keyChainAccess,
+    .panModal
   ],
   platforms: [.iOS]
 )
@@ -84,5 +85,9 @@ extension Package {
   public static let keyChainAccess: Package = .remote(
     url: "https://github.com/kishikawakatsumi/KeychainAccess.git",
     requirement: .upToNextMajor(from: "4.0.0")
+  )
+  public static let panModal: Package = .remote(
+    url: "https://github.com/slackhq/PanModal.git",
+    requirement: .upToNextMajor(from: "1.0.0")
   )
 }

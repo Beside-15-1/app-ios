@@ -28,6 +28,7 @@ public enum External: String {
   case SDWebImage
   case Nimble
   case KeychainAccess
+  case PanModal
 
   // firebase
   case FirebaseAnalytics
