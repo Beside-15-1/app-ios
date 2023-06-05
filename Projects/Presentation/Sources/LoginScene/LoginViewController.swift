@@ -5,6 +5,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 // MARK: - LoginViewController
@@ -49,6 +50,8 @@ final class LoginViewController: UIViewController {
 
   override func loadView() {
     view = contentView
+
+    moveToMain()
   }
 
   // MARK: Binding
@@ -91,6 +94,26 @@ final class LoginViewController: UIViewController {
             social: data.1
           ))
         self.navigationController?.pushViewController(signUp, animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  // TODO: 메인화면 이동 테스트코드 추후 제거
+  func moveToMain() {
+    let button = BasicButton(priority: .primary).then {
+      $0.text = "메인으로"
+    }
+    contentView.addSubview(button)
+    button.snp.makeConstraints {
+      $0.center.equalToSuperview()
+      $0.width.equalTo(100)
+    }
+    button.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let mainTab = self.mainTabBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.transition = nil
       }
       .disposed(by: disposeBag)
   }
