@@ -57,6 +57,12 @@ public class InputField: UIView {
     }
   }
 
+  public var keyboardType: UIKeyboardType = .default {
+    didSet {
+      textField.keyboardType = keyboardType
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
@@ -225,7 +231,7 @@ public class InputField: UIView {
 
 
 extension Reactive where Base: InputField {
-  var text: ControlProperty<String?> {
-    base.textField.rx.text
+  public var text: ControlProperty<String> {
+    base.textField.rx.text.orEmpty
   }
 }

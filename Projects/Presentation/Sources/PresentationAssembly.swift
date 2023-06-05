@@ -16,7 +16,8 @@ public final class PresentationAssembly: Assembly {
       registerMainTabBuilder,
       registerHomeBuilder,
       registerFolderBuilder,
-      registerMyPageBuilder
+      registerMyPageBuilder,
+      registerSignUpBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -63,6 +64,15 @@ public final class PresentationAssembly: Assembly {
       ))
     }.initCompleted { resolver, builder in
       builder.configure(loginBuilder: resolver.resolve())
+    }
+  }
+
+  private func registerSignUpBuilder(container: Container) {
+    container.register(SignUpBuildable.self) { resolver in
+      SignUpBuilder(dependency: .init(
+        loginRepository: resolver.resolve(),
+        mainTabBuilder: resolver.resolve()
+      ))
     }
   }
 }
