@@ -21,11 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     super.init()
   }
 
-  init(dependency: AppDependency) {
-    self.dependency = dependency
-    super.init()
-  }
-
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
