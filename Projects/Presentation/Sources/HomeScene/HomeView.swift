@@ -10,7 +10,6 @@ import Then
 import DesignSystem
 
 final class HomeView: UIView {
-
   // MARK: Initializing
 
   override init(frame: CGRect) {

@@ -57,7 +57,7 @@ final class MyPageViewController: UIViewController {
   }
 
   func bindButtons(with viewModel: MyPageViewModel) {
-    contentView.testButton.rx.tap
+    contentView.logoutButton.rx.tap
       .subscribe(with: self) { `self`, _ in
         self.viewModel.logoutButtonTapped()
       }
