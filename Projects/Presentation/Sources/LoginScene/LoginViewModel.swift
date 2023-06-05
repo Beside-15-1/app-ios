@@ -19,6 +19,7 @@ protocol LoginViewModelInput {
 
 protocol LoginViewModelOutput {
   var isLoginSuccess: BehaviorRelay<Bool> { get }
+  var needSignUp: PublishRelay<(String, String)> { get }
   var error: BehaviorRelay<Error?> { get }
 }
 
@@ -45,6 +46,7 @@ final class LoginViewModel: LoginViewModelOutput {
   }
 
   var isLoginSuccess: BehaviorRelay<Bool> = .init(value: false)
+  var needSignUp: PublishRelay<(String, String)> = .init()
   var error: BehaviorRelay<Error?> = .init(value: nil)
 }
 
@@ -71,7 +73,7 @@ extension LoginViewModel: LoginManagerDelegate {
     // TODO: token to server
     switch type {
     case .google:
-      guard let access = result["accessToken"] else { return }
+      guard let access = result["identityToken"] else { return }
 
       googleLoginUseCase.excute(access: access)
         .subscribe(onSuccess: { [weak self] canLogin in

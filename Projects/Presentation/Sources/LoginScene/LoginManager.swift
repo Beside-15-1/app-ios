@@ -52,10 +52,12 @@ extension LoginManager {
       if let error {
         self.delegate?.loginManager(didFailWithError: error)
       }
-      if let accessToken = result?.user.accessToken {
+      if let idToken = result?.user.idToken {
         self.delegate?.loginManager(
           .google,
-          didSucceedWithResult: ["accessToken": accessToken.tokenString]
+          didSucceedWithResult: [
+            "identityToken": idToken.tokenString
+          ]
         )
       }
     }
@@ -97,13 +99,12 @@ extension LoginManager: ASAuthorizationControllerDelegate {
 
   private func validateAppleIdCredential(_ credential: ASAuthorizationAppleIDCredential) {
     guard let identityToken = credential.identityToken,
-          let token = String(data: identityToken, encoding: .utf8),
-          let authorizationCode = credential.authorizationCode,
-          let code = String(data: authorizationCode, encoding: .utf8) else { return }
+          let token = String(data: identityToken, encoding: .utf8) else {
+      return
+    }
 
     delegate?.loginManager(.apple, didSucceedWithResult: [
-      "identityToken": token,
-      "authorizationCode": code
+      "identityToken": token
     ])
   }
 
