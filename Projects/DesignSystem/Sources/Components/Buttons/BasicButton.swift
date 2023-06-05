@@ -19,7 +19,7 @@ public enum ButtonPriority {
   var color: UIColor {
     switch self {
     case .primary:
-      return .primary
+      return .primary500
     }
   }
 
@@ -35,7 +35,9 @@ public class BasicButton: UIControl {
 
   // MARK: Constants
 
-  public static let height: CGFloat = 56.0
+  private enum Metric {
+    static let buttonHeight: CGFloat = 56.0
+  }
 
   // MARK: Properties
 
@@ -98,31 +100,25 @@ public class BasicButton: UIControl {
 
   private func defineLayout() {
     addSubview(flexContainer)
+    [titleLabel].forEach { flexContainer.addSubview($0) }
 
-    flexContainer.flex
-      .alignItems(.center)
-      .justifyContent(.center)
-      .height(BasicButton.height)
-      .width(100%)
-      .define { flex in
-        flex.addItem(titleLabel)
-      }
-  }
+    flexContainer.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+      $0.height.equalTo(Metric.buttonHeight)
+    }
 
-  override public func layoutSubviews() {
-    super.layoutSubviews()
-
-    flexContainer.pin.all()
-    flexContainer.flex.layout()
+    titleLabel.snp.makeConstraints {
+      $0.center.equalToSuperview()
+    }
   }
 
   private func enable(isEnabled: Bool) {
     if isEnabled {
-      flexContainer.backgroundColor = priority?.color ?? .primary
+      flexContainer.backgroundColor = priority?.color ?? .primary500
       titleLabel.textColor = .white
     } else {
-      flexContainer.backgroundColor = .gray2
-      titleLabel.textColor = .gray3
+      flexContainer.backgroundColor = .gray300
+      titleLabel.textColor = .gray500
     }
   }
 

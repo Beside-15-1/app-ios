@@ -6,17 +6,37 @@
 import Foundation
 import RxSwift
 
-// MARK: - LogoutUseCaseMock
+// MARK: - AppleLoginUseCaseMock
 
-public final class LogoutUseCaseMock: LogoutUseCase {
+public final class AppleLoginUseCaseMock: AppleLoginUseCase {
   public init() {}
 
   public private(set) var excuteCallCount = 0
-  public var excuteHandler: (() -> (Single<Bool>))?
-  public func excute() -> Single<Bool> {
+  public var excuteArgValues = [String]()
+  public var excuteHandler: ((String) -> (Single<Bool>))?
+  public func excute(identity: String) -> Single<Bool> {
     excuteCallCount += 1
+    excuteArgValues.append(identity)
     if let excuteHandler {
-      return excuteHandler()
+      return excuteHandler(identity)
+    }
+    fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+  }
+}
+
+// MARK: - GoogleLoginUseCaseMock
+
+public final class GoogleLoginUseCaseMock: GoogleLoginUseCase {
+  public init() {}
+
+  public private(set) var excuteCallCount = 0
+  public var excuteArgValues = [String]()
+  public var excuteHandler: ((String) -> (Single<Bool>))?
+  public func excute(access: String) -> Single<Bool> {
+    excuteCallCount += 1
+    excuteArgValues.append(access)
+    if let excuteHandler {
+      return excuteHandler(access)
     }
     fatalError("excuteHandler returns can't have a default value thus its handler must be set")
   }
@@ -62,37 +82,17 @@ public final class LoginRepositoryMock: LoginRepository {
   }
 }
 
-// MARK: - AppleLoginUseCaseMock
+// MARK: - LogoutUseCaseMock
 
-public final class AppleLoginUseCaseMock: AppleLoginUseCase {
+public final class LogoutUseCaseMock: LogoutUseCase {
   public init() {}
 
   public private(set) var excuteCallCount = 0
-  public var excuteArgValues = [String]()
-  public var excuteHandler: ((String) -> (Single<Bool>))?
-  public func excute(identity: String) -> Single<Bool> {
+  public var excuteHandler: (() -> (Single<Bool>))?
+  public func excute() -> Single<Bool> {
     excuteCallCount += 1
-    excuteArgValues.append(identity)
     if let excuteHandler {
-      return excuteHandler(identity)
-    }
-    fatalError("excuteHandler returns can't have a default value thus its handler must be set")
-  }
-}
-
-// MARK: - GoogleLoginUseCaseMock
-
-public final class GoogleLoginUseCaseMock: GoogleLoginUseCase {
-  public init() {}
-
-  public private(set) var excuteCallCount = 0
-  public var excuteArgValues = [String]()
-  public var excuteHandler: ((String) -> (Single<Bool>))?
-  public func excute(access: String) -> Single<Bool> {
-    excuteCallCount += 1
-    excuteArgValues.append(access)
-    if let excuteHandler {
-      return excuteHandler(access)
+      return excuteHandler()
     }
     fatalError("excuteHandler returns can't have a default value thus its handler must be set")
   }
