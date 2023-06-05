@@ -1,10 +1,3 @@
-//
-//  Project.swift
-//  ProjectDescriptionHelpers
-//
-//  Created by Hohyeon Moon on 2023/05/13.
-//
-
 import ProjectDescription
 import ProjectDescriptionHelpers
 

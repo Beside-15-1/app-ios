@@ -1,10 +1,3 @@
-//
-//  AppAssembly.swift
-//  App
-//
-//  Created by 박천송 on 2023/04/27.
-//
-
 import Foundation
 import UIKit
 
@@ -22,7 +15,6 @@ import PresentationInterface
 
 struct AppDependency {
   let rootViewController: UIViewController
-
   let configureFirebase: () -> Void
 }
 
@@ -46,8 +38,7 @@ enum AppAssembly {
     let localDataSource = resolver.resolve(PBAuthLocalDataSource.self)!
 
     var vc: UIViewController {
-      if let accessToken = localDataSource.accessToken,
-         !accessToken.isEmpty {
+      if let accessToken = localDataSource.accessToken, !accessToken.isEmpty {
         return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
       } else {
         return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
@@ -58,14 +49,8 @@ enum AppAssembly {
     return AppDependency(
       rootViewController: rootViewController,
       configureFirebase: {
-        configureFirebase()
+        FirebaseApp.configure()
       }
     )
-  }
-}
-
-extension AppAssembly {
-  static func configureFirebase() {
-    FirebaseApp.configure()
   }
 }

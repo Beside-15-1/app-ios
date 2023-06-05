@@ -1,10 +1,3 @@
-//
-//  LoginViewModelTest.swift
-//  PresantationManifests
-//
-//  Created by cheonsong on 2022/09/19.
-//
-
 import XCTest
 
 import Nimble

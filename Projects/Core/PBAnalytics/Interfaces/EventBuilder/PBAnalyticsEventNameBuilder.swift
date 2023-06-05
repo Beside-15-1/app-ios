@@ -1,16 +1,8 @@
-//
-//  PBAnalyticsEventNameBuilder.swift
-//  PBAnalyticsInterface
-//
-//  Created by 박천송 on 2023/05/11.
-//
-
 import Foundation
 
 public class PBAnalyticsEventNameBuilder {
   private var name = "client"
 
-  // Required
   private var screen = ""
   private var version = "v1"
 

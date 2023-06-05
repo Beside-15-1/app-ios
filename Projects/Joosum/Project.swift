@@ -23,7 +23,7 @@ let project = Project(
         .data(),
         .presentation(),
         // Core
-        .core(impl: .Networking),
+        .core(impl: .PBNetworking),
         .core(impl: .PBAnalytics),
         .core(impl: .PBLog),
         .core(impl: .PBAuth),

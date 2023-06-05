@@ -9,7 +9,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 // ************************변경*************************
-let moduleName: String = CoreModule.Networking.rawValue
+let moduleName: String = CoreModule.PBNetworking.rawValue
 // ****************************************************
 
 let project = Project(

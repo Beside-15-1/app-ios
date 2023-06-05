@@ -1,10 +1,3 @@
-//
-//  PBAnalyticsImplTest.swift
-//  PBAnalyticsTests
-//
-//  Created by 박천송 on 2023/05/17.
-//
-
 import XCTest
 
 import Nimble

@@ -1,14 +1,9 @@
-//
-//  PresentationAssembly.swift
-//  Presentation
-//
-//  Created by Hohyeon Moon on 2023/05/12.
-//
+import Foundation
+
+import Swinject
 
 import Domain
-import Foundation
 import PresentationInterface
-import Swinject
 
 // MARK: - PresentationAssembly
 
@@ -24,7 +19,9 @@ public final class PresentationAssembly: Assembly {
       registerMyPageBuilder
     ]
 
-    registerFunctions.forEach { $0(container) }
+    registerFunctions.forEach { function in
+      function(container)
+    }
   }
 
   private func registerLoginBuilder(container: Container) {

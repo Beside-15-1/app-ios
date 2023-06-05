@@ -1,10 +1,3 @@
-//
-//  PBAnalytics.swift
-//  PBAnalyticsInterface
-//
-//  Created by 박천송 on 2023/05/10.
-//
-
 import Foundation
 
 import FirebaseAnalytics

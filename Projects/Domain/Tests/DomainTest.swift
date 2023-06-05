@@ -1,10 +1,3 @@
-//
-//  DomainTest.swift
-//  DomainManifests
-//
-//  Created by cheonsong on 2022/09/19.
-//
-
 import XCTest
 
 final class DomainTest: XCTestCase {
