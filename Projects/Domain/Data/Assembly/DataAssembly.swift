@@ -10,8 +10,8 @@ import Foundation
 import Swinject
 
 import Domain
-import Networking
 import PBAuthInterface
+import PBNetworking
 
 // MARK: - DataAssembly
 
