@@ -5,9 +5,7 @@ import PBAnalyticsInterface
 final class PBAnalyticsImpl: PBAnalytics {
   private let firebaseAnalytics: FirebaseAnalyticsProtocol.Type
 
-  init(
-    firebaseAnalytics: FirebaseAnalyticsProtocol.Type
-  ) {
+  init(firebaseAnalytics: FirebaseAnalyticsProtocol.Type) {
     self.firebaseAnalytics = firebaseAnalytics
   }
 

@@ -3,7 +3,6 @@ import Foundation
 public class PBAnalyticsEventNameBuilder {
   private var name = "client"
 
-  // Required
   private var screen = ""
   private var version = "v1"
 

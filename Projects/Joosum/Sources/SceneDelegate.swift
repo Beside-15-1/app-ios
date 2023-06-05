@@ -1,6 +1,7 @@
+import UIKit
+
 import Domain
 import Presentation
-import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var dependency: AppDependency?
