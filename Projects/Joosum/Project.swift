@@ -26,6 +26,8 @@ let project = Project(
         .core(impl: .Networking),
         .core(impl: .PBAnalytics),
         .core(impl: .PBLog),
+        .core(impl: .PBAuth),
+        .core(interface: .PBAuth),
         // External
         .external(dependency: .Swinject),
         .external(dependency: .FirebaseAnalytics)

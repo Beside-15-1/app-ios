@@ -62,7 +62,7 @@ extension LoginViewModelTest {
       viewModel.loginManager(socialLogin, didSucceedWithResult: ["accessToken": "sonny"])
     }
     googleLoginUseCase.excuteHandler = { _ in
-      .just("success")
+      .just(true)
     }
 
     // when
@@ -150,8 +150,8 @@ extension LoginViewModelTest {
         "authorizationCode": "code"
       ])
     }
-    appleLoginUseCase.excuteHandler = { _, _ in
-      .just("success")
+    appleLoginUseCase.excuteHandler = { _ in
+      .just(true)
     }
 
     // when
@@ -170,7 +170,7 @@ extension LoginViewModelTest {
         "authorizationCode": "code"
       ])
     }
-    appleLoginUseCase.excuteHandler = { _, _ in
+    appleLoginUseCase.excuteHandler = { _ in
       .error(NSError(domain: "", code: 200))
     }
 

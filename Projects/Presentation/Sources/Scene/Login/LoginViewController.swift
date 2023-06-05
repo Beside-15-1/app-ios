@@ -19,7 +19,7 @@ import PresentationInterface
 final class LoginViewController: UIViewController {
   // MARK: Properties
 
-  private let viewModel: LoginViewModel?
+  private let viewModel: LoginViewModel
   private let disposeBag = DisposeBag()
   private var transition: UIViewControllerAnimatedTransitioning?
 
@@ -48,7 +48,7 @@ final class LoginViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationController?.delegate = self
-    bind()
+    bind(with: viewModel)
   }
 
   override func loadView() {
@@ -57,29 +57,36 @@ final class LoginViewController: UIViewController {
 
   // MARK: Binding
 
-  private func bind() {
-    bindButtons()
+  private func bind(with viewModel: LoginViewModel) {
+    bindButtons(with: viewModel)
+    bindRoute(with: viewModel)
   }
 
-  private func bindButtons() {
+  private func bindButtons(with viewModel: LoginViewModel) {
     contentView.googleButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        self.viewModel?.googleLoginButtonTapped()
+        self.viewModel.googleLoginButtonTapped()
       }
       .disposed(by: disposeBag)
 
     contentView.appleButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { viewcontroller, _ in
-        viewcontroller.viewModel?.appleLoginButtonTapped()
+        viewcontroller.viewModel.appleLoginButtonTapped()
       }
       .disposed(by: disposeBag)
+  }
 
-    contentView.testButton.rx.tap
-      .subscribe(with: self) { `self`, _ in
-        let mainTab = self.mainTabBuilder.build(payload: .init())
-        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.navigationController?.setViewControllers([mainTab], animated: true)
-        self.transition = nil
+  private func bindRoute(with viewModel: LoginViewModel) {
+    viewModel.isLoginSuccess
+      .subscribe(with: self) { `self`, canLogin in
+        if canLogin {
+          let mainTab = self.mainTabBuilder.build(payload: .init())
+          self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+          self.navigationController?.setViewControllers([mainTab], animated: true)
+          self.transition = nil
+        } else {
+          // TODO: 회원가입 페이지 이동
+        }
       }
       .disposed(by: disposeBag)
   }

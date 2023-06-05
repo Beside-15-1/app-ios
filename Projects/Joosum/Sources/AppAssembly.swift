@@ -13,6 +13,8 @@ import Swinject
 
 import Data
 import PBAnalytics
+import PBAuth
+import PBAuthInterface
 import Presentation
 import PresentationInterface
 
@@ -33,18 +35,22 @@ enum AppAssembly {
     let assemblies: [Assembly] = [
       DataAssembly(),
       PresentationAssembly(),
-      PBAnalyticsAssembly()
+      PBAnalyticsAssembly(),
+      PBAuthAssembly()
     ]
 
     _ = Assembler(assemblies, container: container)
     let resolver = container
 
     let rootViewController = UINavigationController()
+    let localDataSource = resolver.resolve(PBAuthLocalDataSource.self)!
+
     var vc: UIViewController {
-      if "keyChain" == "keyChain" {
-        return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
-      } else {
+      if let accessToken = localDataSource.accessToken,
+         !accessToken.isEmpty {
         return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
+      } else {
+        return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
       }
     }
     rootViewController.setViewControllers([vc], animated: false)

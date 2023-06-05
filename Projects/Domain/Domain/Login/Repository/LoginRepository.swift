@@ -11,6 +11,7 @@ import RxSwift
 
 /// @mockable
 public protocol LoginRepository {
-  func requestGoogleLogin(accessToken: String) -> Single<String>
-  func requestAppleLogin(identity: String, authorization: String) -> Single<String>
+  func requestGoogleLogin(accessToken: String) -> Single<Bool>
+  func requestAppleLogin(identity: String) -> Single<Bool>
+  func logout() -> Single<Bool>
 }

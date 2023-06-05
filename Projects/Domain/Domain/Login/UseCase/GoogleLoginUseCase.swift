@@ -13,7 +13,7 @@ import RxSwift
 
 /// @mockable
 public protocol GoogleLoginUseCase {
-  func excute(access: String) -> Single<String>
+  func excute(access: String) -> Single<Bool>
 }
 
 // MARK: - GoogleLoginUseCaseImpl
@@ -25,7 +25,7 @@ public final class GoogleLoginUseCaseImpl: GoogleLoginUseCase {
     self.loginRepository = loginRepository
   }
 
-  public func excute(access: String) -> Single<String> {
+  public func excute(access: String) -> Single<Bool> {
     loginRepository.requestGoogleLogin(accessToken: access)
   }
 }

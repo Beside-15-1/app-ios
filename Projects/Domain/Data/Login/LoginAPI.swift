@@ -13,43 +13,43 @@ import Moya
 
 enum LoginAPI {
   case google(String)
-  case apple(identity: String, authorization: String)
+  case apple(String)
 }
 
 // MARK: TargetType
 
 extension LoginAPI: TargetType {
   var baseURL: URL {
-    URL(string: "http://49.50.165.241")!
+    URL(string: "http://49.50.165.241/api")!
   }
 
   var path: String {
     switch self {
     case .google:
-      return "api"
+      return "auth/google"
 
     case .apple:
-      return "api"
+      return "auth/apple"
     }
   }
 
   var method: Moya.Method {
     switch self {
     case .google:
-      return .get
+      return .post
 
     case .apple:
-      return .get
+      return .post
     }
   }
 
   var task: Moya.Task {
     switch self {
-    case .google:
-      return .requestPlain
+    case let .google(token):
+      return .requestJSONEncodable(["accessToken": token])
 
-    case .apple:
-      return .requestPlain
+    case let .apple(token):
+      return .requestJSONEncodable(["idToken": token])
     }
   }
 
