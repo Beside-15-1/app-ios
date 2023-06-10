@@ -144,4 +144,22 @@ public extension UIColor {
   // MARK: Error
 
   static let error = UIColor(hexString: "#E34C4B")
+
+  // MARK: Component Color
+
+  static let fabBackgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+    if traitCollection.userInterfaceStyle == .dark {
+      return .primary200
+    } else {
+      return .primary400
+    }
+  }
+
+  static let fabTextColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+    if traitCollection.userInterfaceStyle == .dark {
+      return .primary700
+    } else {
+      return .white
+    }
+  }
 }
