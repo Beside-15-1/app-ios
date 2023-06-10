@@ -47,14 +47,6 @@ extension UIColor {
 
   // MARK: BasicButton
 
-  public static let basicButtonBackgroundColor = UIColor { (trait: UITraitCollection) -> UIColor in
-    if trait.userInterfaceStyle == .dark {
-      return .primary400
-    } else {
-      return .primary500
-    }
-  }
-
   public static let basicButtonPressedColor = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
       return UIColor(hexString: "#392A95")

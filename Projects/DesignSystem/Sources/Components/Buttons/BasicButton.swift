@@ -26,7 +26,7 @@ public enum ButtonPriority {
   var pressColor: UIColor {
     switch self {
     case .primary:
-      return UIColor(hexString: "#241775")
+      return .basicButtonPressedColor
     }
   }
 }
@@ -118,7 +118,7 @@ public class BasicButton: UIControl {
       titleLabel.textColor = .white
     } else {
       flexContainer.backgroundColor = .gray300
-      titleLabel.textColor = .gray500
+      titleLabel.textColor = .basicButtonDisabledTextColor
     }
   }
 
