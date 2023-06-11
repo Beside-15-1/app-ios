@@ -73,4 +73,13 @@ extension UIColor {
     }
   }
 
+  // MARK: InputField
+
+  public static let inputContainerEditing = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#2E2277")
+    } else {
+      return UIColor(hexString: "#EFECFF")
+    }
+  }
 }

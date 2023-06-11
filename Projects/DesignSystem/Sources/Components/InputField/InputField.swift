@@ -92,12 +92,12 @@ public class InputField: UIView {
   private let container = UIView().then {
     $0.backgroundColor = .gray200
     $0.layer.cornerRadius = 8
-    $0.layer.borderColor = UIColor.primary500.cgColor
     $0.clipsToBounds = true
   }
 
   let textField = UITextField().then {
     $0.font = .defaultRegular
+    $0.textColor = .staticBlack
   }
 
   private let rightIcon = UIImageView().then {
@@ -198,7 +198,7 @@ public class InputField: UIView {
 
     textField.addAction(UIAction(handler: { [weak self] _ in
       self?.textField.font = .defaultSemiBold
-      self?.container.backgroundColor = .primary100
+      self?.container.backgroundColor = .inputContainerEditing
       self?.container.layer.borderWidth = 1
       self?.rightIcon.image = self?.rightIcon.image?.withTintColor(.gray600)
     }), for: .editingDidBegin)
@@ -226,6 +226,12 @@ public class InputField: UIView {
       titleLabel.textColor = .gray500
       rightIcon.image = rightIcon.image?.withTintColor(.gray500)
     }
+  }
+
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+
+    container.layer.borderColor = UIColor.primary500.cgColor
   }
 }
 
