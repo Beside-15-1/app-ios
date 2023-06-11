@@ -7,6 +7,7 @@ import Moya
 enum LoginAPI {
   case google(String)
   case apple(String)
+  case signUp(SignUpRequest)
 }
 
 // MARK: TargetType
@@ -23,6 +24,9 @@ extension LoginAPI: TargetType {
 
     case .apple:
       return "auth/apple"
+
+    case .signUp:
+      return "auth/signup"
     }
   }
 
@@ -32,6 +36,9 @@ extension LoginAPI: TargetType {
       return .post
 
     case .apple:
+      return .post
+
+    case .signUp:
       return .post
     }
   }
@@ -43,6 +50,9 @@ extension LoginAPI: TargetType {
 
     case let .apple(token):
       return .requestJSONEncodable(["idToken": token])
+
+    case let .signUp(request):
+      return .requestJSONEncodable(request)
     }
   }
 

@@ -80,6 +80,18 @@ public final class LoginRepositoryMock: LoginRepository {
     }
     fatalError("logoutHandler returns can't have a default value thus its handler must be set")
   }
+
+  public private(set) var requestSignUpCallCount = 0
+  public var requestSignUpArgValues = [(String, Int, String, String, String)]()
+  public var requestSignUpHandler: ((String, Int, String, String, String) -> (Single<Bool>))?
+  public func requestSignUp(accessToken: String, age: Int, gender: String, nickname: String, social: String) -> Single<Bool> {
+    requestSignUpCallCount += 1
+    requestSignUpArgValues.append((accessToken, age, gender, nickname, social))
+    if let requestSignUpHandler {
+      return requestSignUpHandler(accessToken, age, gender, nickname, social)
+    }
+    fatalError("requestSignUpHandler returns can't have a default value thus its handler must be set")
+  }
 }
 
 // MARK: - LogoutUseCaseMock
@@ -93,6 +105,24 @@ public final class LogoutUseCaseMock: LogoutUseCase {
     excuteCallCount += 1
     if let excuteHandler {
       return excuteHandler()
+    }
+    fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+  }
+}
+
+// MARK: - SignUpUseCaseMock
+
+public final class SignUpUseCaseMock: SignUpUseCase {
+  public init() {}
+
+  public private(set) var excuteCallCount = 0
+  public var excuteArgValues = [(String, Int, String, String, String)]()
+  public var excuteHandler: ((String, Int, String, String, String) -> (Single<Bool>))?
+  public func excute(accessToken: String, age: Int, gender: String, nickname: String, social: String) -> Single<Bool> {
+    excuteCallCount += 1
+    excuteArgValues.append((accessToken, age, gender, nickname, social))
+    if let excuteHandler {
+      return excuteHandler(accessToken, age, gender, nickname, social)
     }
     fatalError("excuteHandler returns can't have a default value thus its handler must be set")
   }

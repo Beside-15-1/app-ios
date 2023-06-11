@@ -12,6 +12,7 @@ struct LoginDependency {
   let analytics: PBAnalytics
   let loginRepository: LoginRepository
   let mainTabBuilder: MainTabBarBuildable
+  let signUpBuilder: SignUpBuildable
 }
 
 // MARK: - LoginBuilder
@@ -35,7 +36,8 @@ final class LoginBuilder: LoginBuildable {
 
     let viewController = LoginViewController(
       viewModel: viewModel,
-      mainTabBuilder: dependency.mainTabBuilder
+      mainTabBuilder: dependency.mainTabBuilder,
+      signUpBuilder: dependency.signUpBuilder
     )
     loginManager.viewController = viewController
     loginManager.delegate = viewModel

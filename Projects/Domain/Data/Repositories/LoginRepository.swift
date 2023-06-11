@@ -62,4 +62,30 @@ final class LoginRepositoryImpl: LoginRepository {
 
     return .just(true)
   }
+
+  func requestSignUp(
+    accessToken: String,
+    age: Int,
+    gender: String,
+    nickname: String,
+    social: String
+  ) -> Single<Bool> {
+    let target = LoginAPI.signUp(.init(
+      accessToken: accessToken,
+      age: age,
+      gender: gender,
+      nickname: nickname,
+      social: social
+    ))
+    return provider.request(target: target)
+      .map(TokenResponse.self)
+      .map { [weak self] token in
+        if token.isValid {
+          self?.keychainDataSource.accessToken = token.accessToken
+          self?.keychainDataSource.refreshToken = token.refreshToken
+        }
+
+        return token.isValid
+      }
+  }
 }
