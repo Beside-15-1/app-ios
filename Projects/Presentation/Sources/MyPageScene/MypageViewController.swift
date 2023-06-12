@@ -2,6 +2,7 @@ import UIKit
 
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 // MARK: - MyPageViewController
@@ -18,6 +19,8 @@ final class MyPageViewController: UIViewController {
   private var transition: UIViewControllerAnimatedTransitioning?
 
   private let loginBuilder: LoginBuildable
+
+  private var backgroundColorTestFlag = true
 
   // MARK: Initializing
 
@@ -57,11 +60,40 @@ final class MyPageViewController: UIViewController {
   }
 
   func bindButtons(with viewModel: MyPageViewModel) {
-    contentView.logoutButton.rx.tap
+    contentView.logoutButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.viewModel.logoutButtonTapped()
       }
       .disposed(by: disposeBag)
+
+    contentView.fab.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.contentView.fab.expand()
+        self.contentView.fab.contract()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.enableButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        if self.backgroundColorTestFlag {
+          self.contentView.backgroundColor = .paperWihte
+
+        } else {
+          self.contentView.backgroundColor = .paperGray
+        }
+
+        self.backgroundColorTestFlag.toggle()
+      }
+      .disposed(by: disposeBag)
+
+    // TabView의 이벤트를 처리하는방법
+    // 1. Realy로 처리
+    contentView.tab.selectedTab
+      .map { "Relay: \($0)" }
+      .bind(to: contentView.tabRelayLabel.rx.text)
+      .disposed(by: disposeBag)
+    // 2. Delegate로 처리
+    contentView.tab.delegate = self
   }
 
   func bindRoute(with viewModel: MyPageViewModel) {
@@ -87,5 +119,13 @@ extension MyPageViewController: UINavigationControllerDelegate {
     to toVC: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
     transition
+  }
+}
+
+// MARK: TabViewDelegate
+
+extension MyPageViewController: TabViewDelegate {
+  func tabView(_ tabView: TabView, didSelectedTab: String) {
+    contentView.tabDelegateLabel.text = "Delegate: \(didSelectedTab)"
   }
 }
