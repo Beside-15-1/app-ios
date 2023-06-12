@@ -8,11 +8,17 @@
 import Foundation
 import UIKit
 
+import RxRelay
+import RxSwift
 import SnapKit
 import Then
 
 enum TabSection: Hashable {
   case normal
+}
+
+public protocol TabViewDelegate: AnyObject {
+  func tabView(_ tabView: TabView, didSelectedTab: String)
 }
 
 public final class TabView: UIView {
@@ -26,6 +32,7 @@ public final class TabView: UIView {
     $0.backgroundColor = .clear
     $0.showsHorizontalScrollIndicator = false
     $0.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
+    $0.delegate = self
   }
 
 
@@ -34,6 +41,9 @@ public final class TabView: UIView {
   private var tabs: [String] = []
 
   private lazy var diffableDataSource = self.collectionViewDataSource()
+
+  public weak var delegate: TabViewDelegate?
+  public var selectedTab: PublishRelay<String> = .init()
 
 
   // MARK: Initialize
@@ -64,6 +74,16 @@ public final class TabView: UIView {
     snapshot.appendItems(tabs, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
+
+    if !tabs.isEmpty {
+      collectionView.selectItem(
+        at: IndexPath(item: 0, section: 0),
+        animated: true,
+        scrollPosition: .centeredHorizontally
+      )
+      delegate?.tabView(self, didSelectedTab: tabs.first!)
+      selectedTab.accept(tabs.first!)
+    }
   }
 
   private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
@@ -105,7 +125,7 @@ public final class TabView: UIView {
         withReuseIdentifier: TabCell.identifier, for: indexPath
       ).then {
         guard let cell = $0 as? TabCell else { return }
-        cell.configureTitle(title: item, row: indexPath.row)
+        cell.configureTitle(title: item)
       }
     }
 
@@ -123,5 +143,16 @@ public final class TabView: UIView {
       $0.left.right.equalToSuperview()
       $0.top.bottom.equalToSuperview().inset(8.0)
     }
+  }
+}
+
+
+extension TabView: UICollectionViewDelegate {
+  public func collectionView(
+    _ collectionView: UICollectionView,
+    didSelectItemAt indexPath: IndexPath
+  ) {
+    delegate?.tabView(self, didSelectedTab: tabs[indexPath.row])
+    selectedTab.accept(tabs[indexPath.row])
   }
 }

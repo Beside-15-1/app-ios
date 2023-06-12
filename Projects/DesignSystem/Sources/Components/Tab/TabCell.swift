@@ -53,24 +53,8 @@ class TabCell: UICollectionViewCell {
 
   // MARK: Configuring
 
-  func configureTitle(title: String, row: Int) {
+  func configureTitle(title: String) {
     titleLabel.text = title
-
-    var width: CGFloat {
-      let label = UILabel()
-      label.text = title
-      label.font = .subTitleBold
-      return label.frame.width
-    }
-
-    titleLabel.snp.updateConstraints {
-      $0.width.equalTo(max(width+16.0, 68.0))
-    }
-
-    DispatchQueue.main.async {
-      self.isSelected = row == 0
-    }
-
   }
 
   func configure(isSelected: Bool) {
@@ -100,7 +84,7 @@ class TabCell: UICollectionViewCell {
     titleLabel.snp.makeConstraints {
       $0.left.right.equalToSuperview()
       $0.top.equalToSuperview().inset(4.0)
-      $0.width.equalTo(68.0)
+      $0.width.greaterThanOrEqualTo(68.0)
     }
 
     underBar.snp.makeConstraints {
