@@ -1,0 +1,85 @@
+//
+//  ComponentsDarkModeColor.swift
+//  DesignSystem
+//
+//  Created by 박천송 on 2023/06/10.
+//
+
+import Foundation
+import UIKit
+
+extension UIColor {
+  // MARK: Paper - Background
+
+  public static let paperWihte = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return .black
+    } else {
+      return .white
+    }
+  }
+
+  public static let paperGray = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#2F2F2F")
+    } else {
+      return UIColor(hexString: "#D9D9D9")
+    }
+  }
+
+  public static let paperCard = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#1D1D1D")
+    } else {
+      return .white
+    }
+  }
+
+  // MARK: FAB
+
+  public static let fabTextColor = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#221959")
+    } else {
+      return .white
+    }
+  }
+
+  // MARK: BasicButton
+
+  public static let basicButtonPressedColor = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#392A95")
+    } else {
+      return UIColor(hexString: "#2E2277")
+    }
+  }
+
+  public static let basicButtonDisabledTextColor = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return .gray600
+    } else {
+      return .gray500
+    }
+  }
+
+  // MARK: TextButton
+
+  public static let textButtonColor = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return .white
+    } else {
+      return UIColor(hexString: "#6C6C6C")
+    }
+  }
+
+  // MARK: InputField
+
+  public static let inputContainerEditing = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#2E2277")
+    } else {
+      return UIColor(hexString: "#EFECFF")
+    }
+  }
+}

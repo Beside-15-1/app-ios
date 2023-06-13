@@ -38,13 +38,13 @@ public class TextButton: UIControl {
 
   public var leftIconImage: UIImage? {
     didSet {
-      leftIcon.image = leftIconImage?.withTintColor(.gray700)
+      leftIcon.image = leftIconImage?.withTintColor(.textButtonColor)
     }
   }
 
   public var rightIconImage: UIImage? {
     didSet {
-      rightIcon.image = rightIconImage?.withTintColor(.gray700)
+      rightIcon.image = rightIconImage?.withTintColor(.textButtonColor)
     }
   }
 
@@ -63,7 +63,7 @@ public class TextButton: UIControl {
   }
 
   private let titleLabel = UILabel().then {
-    $0.textColor = .gray700
+    $0.textColor = .textButtonColor
     $0.font = .defaultSemiBold
   }
 
