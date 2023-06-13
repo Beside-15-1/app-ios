@@ -19,39 +19,41 @@ class LinkBookViewController: UIViewController {
     return button
   }()
 
-  let previewView = LinkBookPreviewView()
+  private lazy var previewView = LinkBookPreviewView()
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    view.backgroundColor = .staticWhite
 
-    view.backgroundColor = .systemBackground
     setNavigationBar()
     setPreview()
     bind()
   }
 
-  func setNavigationBar() {
+  private func setNavigationBar() {
     title = "새 폴더"
     navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
 
     let navigationBarAppearance = UINavigationBarAppearance()
-    navigationBarAppearance.backgroundColor = .systemBackground
+    navigationBarAppearance.backgroundColor = .staticWhite
     navigationController?.navigationBar.standardAppearance = navigationBarAppearance
     navigationController?.navigationBar.compactAppearance = navigationBarAppearance
     navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
   }
 
-  func setPreview() {
+  private func setPreview() {
     view.addSubview(previewView)
     previewView.snp.makeConstraints { make in
-      make.width.equalToSuperview()
-      make.centerX.equalToSuperview()
+      make.width.centerX.equalToSuperview()
       make.height.equalTo(260)
-      make.top.equalToSuperview()
+      make.top.equalTo(view.safeAreaLayoutGuide)
     }
   }
 
-  func bind() {
+    }
+  }
+
+  private func bind() {
     closeButton.rx.tap
       .subscribe(with: self) { _, _ in
         self.dismiss(animated: true)

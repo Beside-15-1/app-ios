@@ -138,7 +138,6 @@ public class InputField: UIView {
     $0.image = DesignSystemAsset.iconAlertCircleFill.image.withTintColor(.error)
   }
 
-
   // MARK: Initialize
 
   public convenience init(type: InputType) {
