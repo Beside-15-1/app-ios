@@ -12,7 +12,13 @@ import RxSwift
 class LinkBookViewController: UIViewController {
   private let disposeBag = DisposeBag()
 
-  let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: nil, action: nil)
+  private lazy var closeButton = {
+    let button = UIButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
+    button.setImage(UIImage(systemName: "xmark"), for: .normal)
+    button.tintColor = .label
+    return button
+  }()
+
   let previewView = LinkBookPreviewView()
 
   override func viewDidLoad() {
@@ -26,8 +32,7 @@ class LinkBookViewController: UIViewController {
 
   func setNavigationBar() {
     title = "새 폴더"
-    closeButton.tintColor = .label
-    navigationItem.rightBarButtonItem = closeButton
+    navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
 
     let navigationBarAppearance = UINavigationBarAppearance()
     navigationBarAppearance.backgroundColor = .systemBackground
