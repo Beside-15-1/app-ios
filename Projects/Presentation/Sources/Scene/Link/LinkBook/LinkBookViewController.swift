@@ -21,12 +21,16 @@ class LinkBookViewController: UIViewController {
 
   private lazy var previewView = LinkBookPreviewView()
 
+  private lazy var linkBookTabView = LinkBookTabView()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .staticWhite
 
     setNavigationBar()
     setPreview()
+    setTabView()
+
     bind()
   }
 
@@ -50,6 +54,11 @@ class LinkBookViewController: UIViewController {
     }
   }
 
+  private func setTabView() {
+    view.addSubview(linkBookTabView)
+    linkBookTabView.snp.makeConstraints { make in
+      make.width.centerX.bottom.equalToSuperview()
+      make.top.equalTo(previewView.snp.bottom)
     }
   }
 
