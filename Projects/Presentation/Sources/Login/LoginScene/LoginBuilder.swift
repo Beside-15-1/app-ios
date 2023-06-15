@@ -13,6 +13,7 @@ struct LoginDependency {
   let loginRepository: LoginRepository
   let mainTabBuilder: MainTabBarBuildable
   let signUpBuilder: SignUpBuildable
+  let termsOfUseBuilder: TermsOfUseBuildable
 }
 
 // MARK: - LoginBuilder
@@ -37,7 +38,8 @@ final class LoginBuilder: LoginBuildable {
     let viewController = LoginViewController(
       viewModel: viewModel,
       mainTabBuilder: dependency.mainTabBuilder,
-      signUpBuilder: dependency.signUpBuilder
+      signUpBuilder: dependency.signUpBuilder,
+      termsOfUseBuilder: dependency.termsOfUseBuilder
     )
     loginManager.viewController = viewController
     loginManager.delegate = viewModel

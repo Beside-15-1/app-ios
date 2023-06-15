@@ -19,6 +19,7 @@ protocol LoginViewModelInput {
 
 protocol LoginViewModelOutput {
   var isLoginSuccess: BehaviorRelay<Bool> { get }
+  var showTermsOfUse: BehaviorRelay<Bool> { get }
   var needSignUp: PublishRelay<(String, String)> { get }
   var error: BehaviorRelay<Error?> { get }
 }
@@ -46,8 +47,12 @@ final class LoginViewModel: LoginViewModelOutput {
   }
 
   var isLoginSuccess: BehaviorRelay<Bool> = .init(value: false)
+  var showTermsOfUse: BehaviorRelay<Bool> = .init(value: false)
   var needSignUp: PublishRelay<(String, String)> = .init()
   var error: BehaviorRelay<Error?> = .init(value: nil)
+
+  private var idToken: String = ""
+  private var latestSocialLogin = ""
 }
 
 // MARK: LoginViewModelInput
@@ -73,15 +78,18 @@ extension LoginViewModel: LoginManagerDelegate {
     // TODO: token to server
     switch type {
     case .google:
-      guard let access = result["identityToken"] else { return }
+      guard let idToken = result["identityToken"] else { return }
 
-      googleLoginUseCase.excute(access: access)
+      self.idToken = idToken
+      latestSocialLogin = "google"
+
+      googleLoginUseCase.excute(access: idToken)
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
           if canLogin {
             self.isLoginSuccess.accept(true)
           } else {
-            self.needSignUp.accept((access, "google"))
+            self.showTermsOfUse.accept(true)
           }
 
         }, onFailure: { [weak self] error in
@@ -90,16 +98,19 @@ extension LoginViewModel: LoginManagerDelegate {
         .disposed(by: disposeBag)
 
     case .apple:
-      guard let identity = result["identityToken"] else { return }
+      guard let idToken = result["identityToken"] else { return }
 
-      appleLoginUseCase.excute(identity: identity)
+      self.idToken = idToken
+      latestSocialLogin = "apple"
+
+      appleLoginUseCase.excute(identity: idToken)
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
 
           if canLogin {
             self.isLoginSuccess.accept(true)
           } else {
-            self.needSignUp.accept((identity, "apple"))
+            self.showTermsOfUse.accept(true)
           }
 
         }, onFailure: { [weak self] error in
