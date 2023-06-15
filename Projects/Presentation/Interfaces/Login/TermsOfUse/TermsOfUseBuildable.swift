@@ -12,5 +12,11 @@ public protocol TermsOfUseBuildable {
 // MARK: - TermsOfUsePayload
 
 public struct TermsOfUsePayload {
-  public init() {}
+  public let delegate: TermsOfUseDelegate?
+
+  public init(
+    delegate: TermsOfUseDelegate?
+  ) {
+    self.delegate = delegate
+  }
 }

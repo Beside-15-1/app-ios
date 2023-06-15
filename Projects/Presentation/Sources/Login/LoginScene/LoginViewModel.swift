@@ -13,6 +13,7 @@ import PBAnalyticsInterface
 protocol LoginViewModelInput {
   func googleLoginButtonTapped()
   func appleLoginButtonTapped()
+  func termsOfUseNextButtonTapped()
 }
 
 // MARK: - LoginViewModelOutput
@@ -68,6 +69,12 @@ extension LoginViewModel: LoginViewModelInput {
     analytics.log(type: LoginEvent.clickAppleLogin)
 
     loginManager.login(with: .apple)
+  }
+
+  func termsOfUseNextButtonTapped() {
+    guard !idToken.isEmpty, !latestSocialLogin.isEmpty else { return }
+
+    needSignUp.accept((idToken, latestSocialLogin))
   }
 }
 

@@ -22,7 +22,9 @@ final class TermsOfUseBuilder: TermsOfUseBuildable {
 
     let viewController = TermsOfUseViewController(
       viewModel: viewModel
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

@@ -4,6 +4,8 @@ import PanModal
 import RxCocoa
 import RxSwift
 
+import PresentationInterface
+
 // MARK: - TermsOfUseViewController
 
 final class TermsOfUseViewController: UIViewController {
@@ -15,6 +17,8 @@ final class TermsOfUseViewController: UIViewController {
 
   private let viewModel: TermsOfUseViewModel
   private let disposeBag = DisposeBag()
+
+  weak var delegate: TermsOfUseDelegate?
 
   // MARK: Initializing
 
@@ -79,6 +83,14 @@ final class TermsOfUseViewController: UIViewController {
 
     viewModel.isPersonalSelected
       .bind(to: contentView.checkPersonalButton.rx.isSelected)
+      .disposed(by: disposeBag)
+
+    contentView.nextButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true) {
+          self.delegate?.termsOfUseNextButtonTapped()
+        }
+      }
       .disposed(by: disposeBag)
   }
 }

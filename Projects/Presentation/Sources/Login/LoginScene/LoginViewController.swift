@@ -93,7 +93,9 @@ final class LoginViewController: UIViewController {
     viewModel.showTermsOfUse
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
-        guard let termsOfUse = self.termsOfuseBuilder.build(payload: .init())
+        guard let termsOfUse = self.termsOfuseBuilder.build(payload: .init(
+          delegate: self
+        ))
           as? PanModalPresentable.LayoutType else { return }
 
         self.presentPanModal(termsOfUse)
@@ -143,5 +145,13 @@ extension LoginViewController: UINavigationControllerDelegate {
     to toVC: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
     transition
+  }
+}
+
+// MARK: TermsOfUseDelegate
+
+extension LoginViewController: TermsOfUseDelegate {
+  func termsOfUseNextButtonTapped() {
+    viewModel.termsOfUseNextButtonTapped()
   }
 }
