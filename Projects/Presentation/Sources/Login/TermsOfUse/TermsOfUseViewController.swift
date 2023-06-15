@@ -1,6 +1,7 @@
 import UIKit
 
 import PanModal
+import RxCocoa
 import RxSwift
 
 // MARK: - TermsOfUseViewController
@@ -13,6 +14,7 @@ final class TermsOfUseViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: TermsOfUseViewModel
+  private let disposeBag = DisposeBag()
 
   // MARK: Initializing
 
@@ -40,7 +42,45 @@ final class TermsOfUseViewController: UIViewController {
 
   // MARK: Binding
 
-  func bind(with viewModel: TermsOfUseViewModel) {}
+  func bind(with viewModel: TermsOfUseViewModel) {
+    bindButtons(with: viewModel)
+  }
+
+  private func bindButtons(with viewModel: TermsOfUseViewModel) {
+    contentView.checkAllButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.viewModel.allCheckButtonTapped()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.checkServiceButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.viewModel.serviceCheckButtonTapped()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.checkPersonalButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.viewModel.personalCheckButtonTapped()
+      }
+      .disposed(by: disposeBag)
+
+    viewModel.isAllSelected
+      .bind(to: contentView.checkAllButton.rx.isSelected)
+      .disposed(by: disposeBag)
+
+    viewModel.isAllSelected
+      .bind(to: contentView.nextButton.rx.isEnabled)
+      .disposed(by: disposeBag)
+
+    viewModel.isServiceSelected
+      .bind(to: contentView.checkServiceButton.rx.isSelected)
+      .disposed(by: disposeBag)
+
+    viewModel.isPersonalSelected
+      .bind(to: contentView.checkPersonalButton.rx.isSelected)
+      .disposed(by: disposeBag)
+  }
 }
 
 // MARK: PanModalPresentable
