@@ -7,6 +7,13 @@ let moduleName: String = CoreModule.PBAnalytics.rawValue
 
 let project = Project(
   name: moduleName,
+  options: .options(
+    textSettings: .textSettings(
+      indentWidth: 2,
+      tabWidth: 2,
+      wrapsLines: true
+    )
+  ),
   targets: [
     Target(
       name: "\(moduleName)Interface",
