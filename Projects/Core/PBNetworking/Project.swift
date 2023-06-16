@@ -3,6 +3,13 @@ import ProjectDescriptionHelpers
 
 let project = Project(
   name: CoreModule.PBNetworking.rawValue,
+  options: .options(
+    textSettings: .textSettings(
+      indentWidth: 2,
+      tabWidth: 2,
+      wrapsLines: true
+    )
+  ),
   targets: [
     Target(
       name: CoreModule.PBNetworking.rawValue,

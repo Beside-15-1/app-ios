@@ -3,6 +3,13 @@ import ProjectDescriptionHelpers
 
 let protject = Project(
   name: Module.DesignSystem.rawValue,
+  options: .options(
+    textSettings: .textSettings(
+      indentWidth: 2,
+      tabWidth: 2,
+      wrapsLines: true
+    )
+  ),
   targets: [
     Target(
       name: Module.DesignSystem.rawValue,

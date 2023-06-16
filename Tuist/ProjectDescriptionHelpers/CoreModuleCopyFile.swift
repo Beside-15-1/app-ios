@@ -14,6 +14,13 @@ let moduleName: String = CoreModule.PBNetworking.rawValue
 
 let project = Project(
   name: moduleName,
+  options: .options(
+    textSettings: .textSettings(
+      indentWidth: 2,
+      tabWidth: 2,
+      wrapsLines: true
+    )
+  ),
   targets: [
     Target(
       name: "\(moduleName)Interface",
