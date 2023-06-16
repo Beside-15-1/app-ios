@@ -47,7 +47,7 @@ final class TagAddViewController: UIViewController {
 
 extension TagAddViewController: PanModalPresentable {
   var panScrollable: UIScrollView? {
-    nil
+    contentView.tagListView.tableView
   }
 
   var shortFormHeight: PanModalHeight {
@@ -63,6 +63,10 @@ extension TagAddViewController: PanModalPresentable {
   }
 
   var showDragIndicator: Bool {
-    false
+    true
+  }
+
+  var panModalBackgroundColor: UIColor {
+    .black.withAlphaComponent(0.6)
   }
 }
