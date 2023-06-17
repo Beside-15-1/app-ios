@@ -27,14 +27,14 @@ class LinkBookViewController: UIViewController {
     super.viewDidLoad()
     view.backgroundColor = .staticWhite
 
-    setNavigationBar()
+    setNavigation()
     setPreview()
     setTabView()
 
     bind()
   }
 
-  private func setNavigationBar() {
+  private func setNavigation() {
     title = "새 폴더"
     navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
 
