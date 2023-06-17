@@ -30,7 +30,7 @@ class LinkBookPreviewView: UIView {
     label.text = "일이삼사오\n육칠팔구십"
     label.numberOfLines = 3
     label.textColor = .white
-    label.font = .subTitleBold
+    label.font = .bodyBold
     return label
   }()
 
