@@ -3,6 +3,8 @@ import UIKit
 // MARK: - LinkBookIllustView
 
 class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
+  // MARK: UI
+
   private lazy var scrollView = UIScrollView()
 
   private lazy var titleLabel = {
@@ -14,8 +16,12 @@ class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
 
   private var illustGrid: UICollectionView!
 
+  // MARK: Life Cycle
+
   override init(frame: CGRect) {
     super.init(frame: frame)
+
+    setCollection()
     setView()
   }
 
@@ -24,7 +30,7 @@ class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
     fatalError("init(coder:) has not been implemented")
   }
 
-  private func setView() {
+  private func setCollection() {
     let layout = UICollectionViewFlowLayout()
     layout.itemSize = CGSize(width: 106, height: 106)
     layout.minimumInteritemSpacing = 8
@@ -35,7 +41,9 @@ class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
     illustGrid.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
     illustGrid.dataSource = self
     illustGrid.delegate = self
+  }
 
+  private func setView() {
     addSubview(scrollView)
     scrollView.snp.makeConstraints { make in
       make.top.bottom.equalToSuperview()

@@ -3,6 +3,8 @@ import UIKit
 // MARK: - LinkBookColorView
 
 class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
+  // MARK: UI
+
   private lazy var bgLabel = {
     let label = UILabel()
     label.text = "배경 컬러"
@@ -21,8 +23,13 @@ class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
 
   private var titleColorGrid: UICollectionView!
 
+  // MARK: Life Cycle
+
   override init(frame: CGRect) {
     super.init(frame: frame)
+    backgroundColor = .staticWhite
+
+    setCollection()
     setView()
   }
 
@@ -31,9 +38,7 @@ class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
     fatalError("init(coder:) has not been implemented")
   }
 
-  private func setView() {
-    backgroundColor = .staticWhite
-
+  private func setCollection() {
     let bgLayout = UICollectionViewFlowLayout()
     bgLayout.itemSize = CGSize(width: 50, height: 50)
     bgLayout.minimumInteritemSpacing = 8
@@ -55,7 +60,9 @@ class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
     titleColorGrid.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "TitleCell")
     titleColorGrid.dataSource = self
     titleColorGrid.delegate = self
+  }
 
+  private func setView() {
     addSubview(bgLabel)
     bgLabel.snp.makeConstraints { make in
       make.leading.equalToSuperview().offset(20)

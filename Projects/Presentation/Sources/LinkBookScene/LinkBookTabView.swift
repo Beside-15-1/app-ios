@@ -6,7 +6,11 @@ import Then
 import DesignSystem
 
 class LinkBookTabView: UIView {
+  // MARK: Properties
+
   private let disposeBag = DisposeBag()
+
+  // MARK: UI
 
   lazy var tabView = TabView().then {
     $0.applyTabs(by: ["폴더명", "컬러", "일러스트"])
@@ -20,34 +24,15 @@ class LinkBookTabView: UIView {
     $0.text = "만들기"
   }
 
+  // MARK: Life Cycle
+
   override init(frame: CGRect) {
     super.init(frame: frame)
+
     backgroundColor = .staticWhite
 
     setViews()
-
-    tabView.selectedTab
-      .subscribe { [weak self] tab in
-        switch tab.element {
-        case "폴더명":
-          self?.folderView.isHidden = false
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = true
-        case "컬러":
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = false
-          self?.illustView.isHidden = true
-        case "일러스트":
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = false
-        default:
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = true
-        }
-      }
-      .disposed(by: disposeBag)
+    bind()
   }
 
   @available(*, unavailable)
@@ -95,5 +80,30 @@ class LinkBookTabView: UIView {
       make.bottom.equalToSuperview().offset(-40)
       make.height.equalTo(56)
     }
+  }
+
+  private func bind() {
+    tabView.selectedTab
+      .subscribe { [weak self] tab in
+        switch tab.element {
+        case "폴더명":
+          self?.folderView.isHidden = false
+          self?.colorView.isHidden = true
+          self?.illustView.isHidden = true
+        case "컬러":
+          self?.folderView.isHidden = true
+          self?.colorView.isHidden = false
+          self?.illustView.isHidden = true
+        case "일러스트":
+          self?.folderView.isHidden = true
+          self?.colorView.isHidden = true
+          self?.illustView.isHidden = false
+        default:
+          self?.folderView.isHidden = true
+          self?.colorView.isHidden = true
+          self?.illustView.isHidden = true
+        }
+      }
+      .disposed(by: disposeBag)
   }
 }

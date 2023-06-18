@@ -2,10 +2,14 @@ import DesignSystem
 import UIKit
 
 class LinkBookFolderView: UIView {
+  // MARK: UI
+
   let inputField = InputField(type: .normal).then {
     $0.placeHolder = "폴더명"
     $0.title = "링크북명"
   }
+
+  // MARK: Life Cycle
 
   override init(frame: CGRect) {
     super.init(frame: frame)
