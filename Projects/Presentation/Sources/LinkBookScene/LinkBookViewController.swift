@@ -9,8 +9,10 @@ import UIKit
 
 import RxSwift
 
-class LinkBookViewController: UIViewController {
+final class LinkBookViewController: UIViewController {
   private let disposeBag = DisposeBag()
+
+  // MARK: UI
 
   private lazy var closeButton = {
     let button = UIButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
@@ -20,8 +22,25 @@ class LinkBookViewController: UIViewController {
   }()
 
   private lazy var previewView = LinkBookPreviewView()
-
   private lazy var linkBookTabView = LinkBookTabView()
+
+  // MARK: Properties
+
+  private let viewModel: LinkBookViewModel
+
+  // MARK: Initializing
+
+  init(viewModel: LinkBookViewModel) {
+    self.viewModel = viewModel
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  @available(*, unavailable)
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  // MARK: View Life Cycle
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -32,6 +51,7 @@ class LinkBookViewController: UIViewController {
     setTabView()
 
     bind()
+    bind(with: viewModel)
   }
 
   private func setNavigation() {
@@ -61,6 +81,10 @@ class LinkBookViewController: UIViewController {
       make.top.equalTo(previewView.snp.bottom)
     }
   }
+
+  // MARK: Binding
+
+  func bind(with viewModel: LinkBookViewModel) {}
 
   private func bind() {
     closeButton.rx.tap
