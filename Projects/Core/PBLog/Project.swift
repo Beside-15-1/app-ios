@@ -30,7 +30,8 @@ let project = Project(
         .target(name: "\(CoreModule.PBLog.rawValue)Interface"),
         // External
         .external(dependency: .RxMoya),
-        .external(dependency: .Swinject)
+        .external(dependency: .Swinject),
+        .external(dependency: .SwiftyJSON)
       ]
     ),
     Target(

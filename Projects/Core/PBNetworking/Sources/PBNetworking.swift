@@ -3,6 +3,9 @@ import Foundation
 import Moya
 import RxMoya
 import RxSwift
+import SwiftyJSON
+
+import PBLog
 
 // MARK: - PBNetworking
 
@@ -52,6 +55,8 @@ public final class PBNetworking<T: TargetType> {
 extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
   func handleResponse() -> Single<Element> {
     return flatMap { response in
+
+      PBLog.api(response.request?.url, JSON(response.data))
 
       // TODO: Token관련 API 작업되면 대응 필요
       if let _ = try? response.map(Token.self) {
