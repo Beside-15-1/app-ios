@@ -78,8 +78,14 @@ public extension UIColor {
     }
   }
 
-  /// static: #F8F9FA
-  static let gray100 = UIColor(hexString: "#F8F9FA")
+  /// light: #F8F9FA / dark: #1D1D1D
+  static let gray100 = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#1D1D1D")
+    } else {
+      return UIColor(hexString: "#F8F9FA")
+    }
+  }
 
   /// light: #F3F4F5 / dark: #1D1D1D
   static let gray200 = UIColor { (trait: UITraitCollection) -> UIColor in
@@ -108,11 +114,23 @@ public extension UIColor {
     }
   }
 
-  /// static: #BBBBBB
-  static let gray500 = UIColor(hexString: "#BBBBBB")
+  /// light: #BBBBBB / dark: #909090
+  static let gray500 = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#909090")
+    } else {
+      return UIColor(hexString: "#BBBBBB")
+    }
+  }
 
-  /// static: #909090
-  static let gray600 = UIColor(hexString: "#909090")
+  /// light: #909090 / dark: #BBBBBB
+  static let gray600 = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#BBBBBB")
+    } else {
+      return UIColor(hexString: "#909090")
+    }
+  }
 
   /// light: #6C6C6C / dark: #D9D9D9
   static let gray700 = UIColor { (trait: UITraitCollection) -> UIColor in

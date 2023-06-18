@@ -54,15 +54,7 @@ extension UIColor {
       return UIColor(hexString: "#2E2277")
     }
   }
-
-  public static let basicButtonDisabledTextColor = UIColor { (trait: UITraitCollection) -> UIColor in
-    if trait.userInterfaceStyle == .dark {
-      return .gray600
-    } else {
-      return .gray500
-    }
-  }
-
+  
   // MARK: TextButton
 
   public static let textButtonColor = UIColor { (trait: UITraitCollection) -> UIColor in
@@ -82,4 +74,6 @@ extension UIColor {
       return UIColor(hexString: "#EFECFF")
     }
   }
+
+  public static let modalBackgorund: UIColor = .black.withAlphaComponent(0.6)
 }

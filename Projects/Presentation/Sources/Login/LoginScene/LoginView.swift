@@ -79,7 +79,7 @@ class LoginView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .primary500
+    backgroundColor = UIColor(hexString: "#392A95")
 
     defineLayout()
   }

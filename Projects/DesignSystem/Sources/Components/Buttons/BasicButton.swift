@@ -118,7 +118,7 @@ public class BasicButton: UIControl {
       titleLabel.textColor = .white
     } else {
       flexContainer.backgroundColor = .gray300
-      titleLabel.textColor = .basicButtonDisabledTextColor
+      titleLabel.textColor = .gray500
     }
   }
 

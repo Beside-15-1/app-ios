@@ -46,7 +46,7 @@ extension LoginAPI: TargetType {
   var task: Moya.Task {
     switch self {
     case let .google(token):
-      return .requestJSONEncodable(["accessToken": token])
+      return .requestJSONEncodable(["idToken": token])
 
     case let .apple(token):
       return .requestJSONEncodable(["idToken": token])

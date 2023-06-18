@@ -52,7 +52,7 @@ extension LoginViewModelTest {
     // given
     let viewModel = createViewModel()
     loginManager.loginHandler = { socialLogin in
-      viewModel.loginManager(socialLogin, didSucceedWithResult: ["accessToken": "sonny"])
+      viewModel.loginManager(socialLogin, didSucceedWithResult: ["identityToken": "sonny"])
     }
     googleLoginUseCase.excuteHandler = { _ in
       .just(true)
@@ -69,7 +69,7 @@ extension LoginViewModelTest {
     // given
     let viewModel = createViewModel()
     loginManager.loginHandler = { socialLogin in
-      viewModel.loginManager(socialLogin, didSucceedWithResult: ["accessToken": "sonny"])
+      viewModel.loginManager(socialLogin, didSucceedWithResult: ["identityToken": "sonny"])
     }
     googleLoginUseCase.excuteHandler = { _ in
       .error(NSError(domain: "", code: 200))

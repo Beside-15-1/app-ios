@@ -2,6 +2,7 @@ import AuthenticationServices
 import Foundation
 import UIKit
 
+import PanModal
 import RxCocoa
 import RxSwift
 
@@ -21,17 +22,20 @@ final class LoginViewController: UIViewController {
 
   private let mainTabBuilder: MainTabBarBuildable
   private let signUpBuilder: SignUpBuildable
+  private let termsOfuseBuilder: TermsOfUseBuildable
 
   // MARK: Initializing
 
   init(
     viewModel: LoginViewModel,
     mainTabBuilder: MainTabBarBuildable,
-    signUpBuilder: SignUpBuildable
+    signUpBuilder: SignUpBuildable,
+    termsOfUseBuilder: TermsOfUseBuildable
   ) {
     self.viewModel = viewModel
     self.mainTabBuilder = mainTabBuilder
     self.signUpBuilder = signUpBuilder
+    termsOfuseBuilder = termsOfUseBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -86,6 +90,18 @@ final class LoginViewController: UIViewController {
       }
       .disposed(by: disposeBag)
 
+    viewModel.showTermsOfUse
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        guard let termsOfUse = self.termsOfuseBuilder.build(payload: .init(
+          delegate: self
+        ))
+          as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(termsOfUse)
+      }
+      .disposed(by: disposeBag)
+
     viewModel.needSignUp
       .subscribe(with: self) { `self`, data in
         let signUp = self.signUpBuilder
@@ -129,5 +145,13 @@ extension LoginViewController: UINavigationControllerDelegate {
     to toVC: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
     transition
+  }
+}
+
+// MARK: TermsOfUseDelegate
+
+extension LoginViewController: TermsOfUseDelegate {
+  func termsOfUseNextButtonTapped() {
+    viewModel.termsOfUseNextButtonTapped()
   }
 }

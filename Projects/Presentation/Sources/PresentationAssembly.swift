@@ -17,7 +17,8 @@ public final class PresentationAssembly: Assembly {
       registerHomeBuilder,
       registerFolderBuilder,
       registerMyPageBuilder,
-      registerSignUpBuilder
+      registerSignUpBuilder,
+      registerTermsOfUseBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -31,7 +32,8 @@ public final class PresentationAssembly: Assembly {
         analytics: resolver.resolve(),
         loginRepository: resolver.resolve(),
         mainTabBuilder: resolver.resolve(),
-        signUpBuilder: resolver.resolve()
+        signUpBuilder: resolver.resolve(),
+        termsOfUseBuilder: resolver.resolve()
       ))
     }
   }
@@ -74,6 +76,12 @@ public final class PresentationAssembly: Assembly {
         loginRepository: resolver.resolve(),
         mainTabBuilder: resolver.resolve()
       ))
+    }
+  }
+
+  private func registerTermsOfUseBuilder(contaier: Container) {
+    contaier.register(TermsOfUseBuildable.self) { _ in
+      TermsOfUseBuilder(dependency: .init())
     }
   }
 }
