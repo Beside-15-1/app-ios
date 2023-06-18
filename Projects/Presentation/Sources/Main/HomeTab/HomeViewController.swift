@@ -9,13 +9,18 @@ final class HomeViewController: UIViewController {
 
   // MARK: Properties
 
+  private let linkBookBuilder: LinkBookBuildable
   private let viewModel: HomeViewModel
   private let disposeBag = DisposeBag()
 
   // MARK: Initializing
 
-  init(viewModel: HomeViewModel) {
+  init(
+    viewModel: HomeViewModel,
+    linkBookBuilder: LinkBookBuildable
+  ) {
     self.viewModel = viewModel
+    self.linkBookBuilder = linkBookBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -41,7 +46,7 @@ final class HomeViewController: UIViewController {
   func bind(with viewModel: HomeViewModel) {
     contentView.testButton.rx.tap
       .subscribe(with: self) { _, _ in
-        let linkBookViewController = LinkBookViewController()
+        let linkBookViewController = LinkBookViewController(viewModel: LinkBookViewModel())
         let navigationViewController = UINavigationController(rootViewController: linkBookViewController)
         self.present(navigationViewController, animated: true)
       }

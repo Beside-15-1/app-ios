@@ -6,7 +6,9 @@ import PresentationInterface
 
 // MARK: - HomeDependency
 
-struct HomeDependency {}
+struct HomeDependency {
+  let linkBookBuilder: LinkBookBuildable
+}
 
 // MARK: - HomeBuilder
 
@@ -21,7 +23,8 @@ final class HomeBuilder: HomeBuildable {
     let viewModel = HomeViewModel()
 
     let viewController = HomeViewController(
-      viewModel: viewModel
+      viewModel: viewModel,
+      linkBookBuilder: dependency.linkBookBuilder
     )
 
     return viewController
