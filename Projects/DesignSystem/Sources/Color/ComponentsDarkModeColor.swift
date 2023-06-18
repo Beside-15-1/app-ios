@@ -74,4 +74,6 @@ extension UIColor {
       return UIColor(hexString: "#EFECFF")
     }
   }
+
+  public static let modalBackgorund: UIColor = .black.withAlphaComponent(0.6)
 }

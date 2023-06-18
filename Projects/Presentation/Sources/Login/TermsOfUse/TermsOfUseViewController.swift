@@ -115,10 +115,10 @@ extension TermsOfUseViewController: PanModalPresentable {
   }
 
   var panModalBackgroundColor: UIColor {
-    .black.withAlphaComponent(0.6)
+    .modalBackgorund
   }
 
   var showDragIndicator: Bool {
-    false
+    true
   }
 }

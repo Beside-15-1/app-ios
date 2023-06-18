@@ -19,10 +19,10 @@ final class TermsOfUseAllCheckView: UIControl {
   private let container = UIView().then {
     $0.isUserInteractionEnabled = false
     $0.layer.cornerRadius = 8
-    $0.layer.borderWidth = 1
+    $0.backgroundColor = .gray200
   }
 
-  private let checkBox = CheckBox().then {
+  private let checkBox = CheckBox(type: .fill).then {
     $0.isUserInteractionEnabled = false
   }
 
@@ -56,17 +56,13 @@ final class TermsOfUseAllCheckView: UIControl {
     }
 
     checkBox.snp.makeConstraints {
-      $0.top.bottom.equalToSuperview().inset(10)
-      $0.left.equalToSuperview().inset(10)
+      $0.top.bottom.equalToSuperview().inset(11)
+      $0.left.equalToSuperview().inset(16)
     }
 
     titleLabel.snp.makeConstraints {
       $0.left.equalTo(checkBox.snp.right).offset(8)
       $0.centerY.equalToSuperview()
     }
-  }
-
-  override func layoutSubviews() {
-    container.layer.borderColor = UIColor.gray500.cgColor
   }
 }

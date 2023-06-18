@@ -11,6 +11,11 @@ import UIKit
 import SnapKit
 import Then
 
+public enum CheckBoxType {
+  case fill
+  case outline
+}
+
 public final class CheckBox: UIControl {
 
   // MARK: Interfaces
@@ -18,11 +23,20 @@ public final class CheckBox: UIControl {
   public override var isSelected: Bool {
     didSet {
       guard isSelected != oldValue else { return }
-      if isSelected {
-        container.backgroundColor = .primary500
+      if self.type == .fill {
+        if isSelected {
+          container.backgroundColor = .primary500
+        } else {
+          container.backgroundColor = .gray400
+        }
       } else {
-        container.backgroundColor = .gray400
+        if isSelected {
+          checkIcon.image = checkIcon.image?.withTintColor(.primary500)
+        } else {
+          checkIcon.image = checkIcon.image?.withTintColor(.gray500)
+        }
       }
+
     }
   }
 
@@ -38,16 +52,27 @@ public final class CheckBox: UIControl {
   private let container = UIView().then {
     $0.isUserInteractionEnabled = false
     $0.layer.cornerRadius = Metric.checkBoxSize.height / 2
-    $0.backgroundColor = .gray400
     $0.clipsToBounds = true
   }
 
-  private let checkIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconCheck.image.withTintColor(.staticWhite)
-  }
+  private let checkIcon = UIImageView()
+
+  private var type: CheckBoxType = .outline
 
 
   // MARK: Initialize
+
+  public convenience init(type: CheckBoxType) {
+    self.init(frame: .zero)
+    self.type = type
+    if type == .fill {
+      container.backgroundColor = .gray400
+      checkIcon.image = DesignSystemAsset.iconCheck.image.withTintColor(.staticWhite)
+    } else {
+      container.backgroundColor = .clear
+      checkIcon.image = DesignSystemAsset.iconCheck.image.withTintColor(.gray500)
+    }
+  }
 
   public override init(frame: CGRect) {
     super.init(frame: frame)

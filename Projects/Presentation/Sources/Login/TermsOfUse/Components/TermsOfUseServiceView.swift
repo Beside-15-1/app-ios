@@ -20,7 +20,7 @@ final class TermsOfUseServiceView: UIControl {
     $0.isUserInteractionEnabled = false
   }
 
-  private let checkBox = CheckBox().then {
+  private let checkBox = CheckBox(type: .outline).then {
     $0.isUserInteractionEnabled = false
   }
 
@@ -54,8 +54,8 @@ final class TermsOfUseServiceView: UIControl {
     [checkBox, titleLabel, showPageButton].forEach { addSubview($0) }
 
     checkBox.snp.makeConstraints {
-      $0.top.bottom.equalToSuperview().inset(10)
-      $0.left.equalToSuperview().inset(10)
+      $0.top.bottom.equalToSuperview().inset(11)
+      $0.left.equalToSuperview().inset(16)
     }
 
     titleLabel.snp.makeConstraints {
@@ -64,7 +64,7 @@ final class TermsOfUseServiceView: UIControl {
     }
 
     showPageButton.snp.makeConstraints {
-      $0.right.equalToSuperview().inset(10)
+      $0.right.equalToSuperview()
       $0.size.equalTo(CGSize(width: 24, height: 24))
       $0.centerY.equalToSuperview()
     }
