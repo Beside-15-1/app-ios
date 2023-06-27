@@ -24,7 +24,9 @@ final class TagAddBuilder: TagAddBuildable {
 
     let viewController = TagAddViewController(
       viewModel: viewModel
-    )
+    ).then {
+      $0.delegate = payload.tagAddDelegate
+    }
 
     return viewController
   }

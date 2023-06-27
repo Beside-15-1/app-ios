@@ -3,6 +3,8 @@ import UIKit
 import PanModal
 import RxSwift
 
+import PresentationInterface
+
 // MARK: - TagAddViewController
 
 final class TagAddViewController: UIViewController {
@@ -14,6 +16,8 @@ final class TagAddViewController: UIViewController {
 
   private let viewModel: TagAddViewModel
   private let disposeBag = DisposeBag()
+
+  weak var delegate: TagAddDelegate?
 
   // MARK: Initializing
 
@@ -47,6 +51,7 @@ final class TagAddViewController: UIViewController {
 
   func bind(with viewModel: TagAddViewModel) {
     bindContent(with: viewModel)
+    bindButton(with: viewModel)
   }
 
   private func bindContent(with viewModel: TagAddViewModel) {
@@ -62,6 +67,18 @@ final class TagAddViewController: UIViewController {
         guard !local.isEmpty else { return }
         self?.contentView.tagListView.applyTagList(by: local, selected: viewModel.addedTagList.value)
       })
+      .disposed(by: disposeBag)
+  }
+
+  private func bindButton(with viewModel: TagAddViewModel) {
+    contentView.makeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true) {
+          self.delegate?.tagAddViewControllerMakeButtonTapped(
+            tagList: self.viewModel.addedTagList.value
+          )
+        }
+      }
       .disposed(by: disposeBag)
   }
 }
