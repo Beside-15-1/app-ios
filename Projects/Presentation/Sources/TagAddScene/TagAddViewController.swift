@@ -13,6 +13,7 @@ final class TagAddViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: TagAddViewModel
+  private let disposeBag = DisposeBag()
 
   // MARK: Initializing
 
@@ -30,6 +31,8 @@ final class TagAddViewController: UIViewController {
 
   override func loadView() {
     view = contentView
+
+    contentView.inputField.setDelegate(self)
   }
 
   override func viewDidLoad() {
@@ -40,7 +43,23 @@ final class TagAddViewController: UIViewController {
 
   // MARK: Binding
 
-  func bind(with viewModel: TagAddViewModel) {}
+  func bind(with viewModel: TagAddViewModel) {
+    bindContent(with: viewModel)
+  }
+
+  private func bindContent(with viewModel: TagAddViewModel) {
+    viewModel.addedTagList
+      .subscribe(with: self) { `self`, list in
+        self.contentView.addedTagView.applyAddedTag(by: list)
+      }
+      .disposed(by: disposeBag)
+
+    viewModel.localTagList
+      .subscribe(with: self) { `self`, list in
+        self.contentView.tagListView.applyTagList(by: list)
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 // MARK: PanModalPresentable
@@ -68,5 +87,21 @@ extension TagAddViewController: PanModalPresentable {
 
   var panModalBackgroundColor: UIColor {
     .black.withAlphaComponent(0.6)
+  }
+}
+
+// MARK: UITextFieldDelegate
+
+extension TagAddViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    guard let text = textField.text,
+          !text.isEmpty else {
+      view.endEditing(true)
+      return false
+    }
+
+    view.endEditing(true)
+    viewModel.addTag(text: text)
+    return true
   }
 }

@@ -63,6 +63,12 @@ public class InputField: UIView {
     }
   }
 
+  public var returnKeyType: UIReturnKeyType = .default {
+    didSet {
+      textField.returnKeyType = returnKeyType
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {

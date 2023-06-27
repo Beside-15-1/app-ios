@@ -14,15 +14,12 @@ final class TagAddView: UIView {
 
   let inputField = InputField(type: .normal).then {
     $0.placeHolder = "태그를 선택 또는 생성 해주세요."
+    $0.returnKeyType = .done
   }
 
-  let addedTagView = AddedTagView().then {
-    $0.applyAddedTag(by: ["asdsf1", "asdsf", "asd1", "a123sdsf1", "as151dsf1", "3asdsf1"])
-  }
+  let addedTagView = AddedTagView()
 
-  let tagListView = TagListView().then {
-    $0.applyTagList(by: ["asdsf1", "asdsf", "asd1", "a123sdsf1", "as151dsf1", "3asdsf1"])
-  }
+  let tagListView = TagListView()
 
   let makeButton = BasicButton(priority: .primary).then {
     $0.text = "만들기"
