@@ -30,7 +30,11 @@ final class TagAddViewModel: TagAddViewModelOutput {
 
   // MARK: initializing
 
-  init() {}
+  init(
+    addedTagList: [String]
+  ) {
+    self.addedTagList.accept(addedTagList)
+  }
 
   deinit {
     print("🗑️ deinit: \(type(of: self))")

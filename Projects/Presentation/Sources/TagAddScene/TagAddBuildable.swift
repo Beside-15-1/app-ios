@@ -12,5 +12,11 @@ public protocol TagAddBuildable {
 // MARK: - TagAddPayload
 
 public struct TagAddPayload {
-  public init() {}
+  public let addedTagList: [String]
+
+  public init(
+    addedTagList: [String]
+  ) {
+    self.addedTagList = addedTagList
+  }
 }

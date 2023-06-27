@@ -18,7 +18,9 @@ final class TagAddBuilder: TagAddBuildable {
   }
 
   func build(payload: TagAddPayload) -> UIViewController {
-    let viewModel = TagAddViewModel()
+    let viewModel = TagAddViewModel(
+      addedTagList: payload.addedTagList
+    )
 
     let viewController = TagAddViewController(
       viewModel: viewModel
