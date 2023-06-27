@@ -6,6 +6,7 @@ import RxSwift
 // MARK: - TagAddViewModelInput
 
 protocol TagAddViewModelInput {
+  func inputText(text: String)
   func addTag(text: String)
   func removeAddedTag(at row: Int)
   func removeTagListTag(at row: Int)
@@ -16,6 +17,7 @@ protocol TagAddViewModelInput {
 protocol TagAddViewModelOutput {
   var addedTagList: BehaviorRelay<[String]> { get }
   var localTagList: BehaviorRelay<[String]> { get }
+  var validatedText: PublishRelay<String> { get }
 }
 
 // MARK: - TagAddViewModel
@@ -25,8 +27,11 @@ final class TagAddViewModel: TagAddViewModelOutput {
 
   private let disposeBag = DisposeBag()
 
+  // MARK: Output
+
   var addedTagList: BehaviorRelay<[String]> = .init(value: [])
   var localTagList: BehaviorRelay<[String]> = .init(value: [])
+  var validatedText: PublishRelay<String> = .init()
 
   // MARK: initializing
 
@@ -84,5 +89,12 @@ extension TagAddViewModel: TagAddViewModelInput {
     localTagList.accept(local)
 
     removeAddedTag(at: removedRowInAddedList)
+  }
+
+  func inputText(text: String) {
+    if text.count > 9 {
+      let validatedText = text[text.startIndex...text.index(text.startIndex, offsetBy: 9)]
+      self.validatedText.accept(String(validatedText))
+    }
   }
 }

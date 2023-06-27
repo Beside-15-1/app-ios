@@ -68,6 +68,16 @@ final class TagAddViewController: UIViewController {
         self?.contentView.tagListView.applyTagList(by: local, selected: viewModel.addedTagList.value)
       })
       .disposed(by: disposeBag)
+
+    contentView.inputField.rx.text
+      .subscribe(with: self) { `self`, text in
+        self.viewModel.inputText(text: text)
+      }
+      .disposed(by: disposeBag)
+
+    viewModel.validatedText
+      .bind(to: contentView.inputField.rx.text)
+      .disposed(by: disposeBag)
   }
 
   private func bindButton(with viewModel: TagAddViewModel) {

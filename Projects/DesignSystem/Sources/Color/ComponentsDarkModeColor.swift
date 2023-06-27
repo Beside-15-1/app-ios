@@ -23,7 +23,7 @@ extension UIColor {
     if trait.userInterfaceStyle == .dark {
       return UIColor(hexString: "#2F2F2F")
     } else {
-      return UIColor(hexString: "#D9D9D9")
+      return UIColor(hexString: "#EFECFF")
     }
   }
 
