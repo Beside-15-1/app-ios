@@ -1,9 +1,3 @@
-// MARK: - TagListSection
-
-enum TagListSection {
-  case normal
-}
-
 import Foundation
 import UIKit
 
@@ -11,6 +5,20 @@ import SnapKit
 import Then
 
 import DesignSystem
+
+// MARK: - TagListSection
+
+enum TagListSection {
+  case normal
+}
+
+// MARK: - TagListViewDelegate
+
+protocol TagListViewDelegate: AnyObject {
+  func tagListView(_ tagListView: TagListView, didSelectedRow at: Int)
+  func updateTagList(_ tagListView: TagListView, tagList: [String])
+  func removeTag(_ tagListView: TagListView, row at: Int)
+}
 
 // MARK: - TagListView
 
@@ -42,6 +50,7 @@ final class TagListView: UIView {
   // MARK: Properties
 
   private var tags: [String] = []
+  weak var delegate: TagListViewDelegate?
 
   // MARK: Initialize
 
@@ -57,12 +66,20 @@ final class TagListView: UIView {
 
   // MARK: TableView
 
-  func applyTagList(by tags: [String]) {
+  func applyTagList(by tags: [String], selected list: [String]) {
     self.tags = tags
 
     emptyLabel.isHidden = !tags.isEmpty
 
     tableView.reloadData()
+    print(list)
+    list.forEach {
+      if let index = tags.firstIndex(of: $0) {
+        guard let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0))
+          as? TagListCell else { return }
+        cell.configureSelected(isSelected: true)
+      }
+    }
   }
 
   // MARK: Layout
@@ -130,12 +147,18 @@ extension TagListView: UITableViewDataSource {
     let movedObject = tags[sourceIndexPath.row]
     tags.remove(at: sourceIndexPath.row)
     tags.insert(movedObject, at: destinationIndexPath.row)
+    delegate?.updateTagList(self, tagList: tags)
   }
 
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       tags.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
+      delegate?.removeTag(self, row: indexPath.row)
     }
+  }
+
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    delegate?.tagListView(self, didSelectedRow: indexPath.row)
   }
 }

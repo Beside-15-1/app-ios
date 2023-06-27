@@ -9,13 +9,6 @@ import DesignSystem
 class TagListCell: UITableViewCell {
   static let identifier = "TagListCell"
 
-  override var isSelected: Bool {
-    didSet {
-      iconCheck.isHidden = !isSelected
-      titleLabel.font = isSelected ? .bodyBold : .bodyRegular
-    }
-  }
-
   // MARK: UI
 
   private let iconHamburger = UIImageView().then {
@@ -43,10 +36,19 @@ class TagListCell: UITableViewCell {
     super.init(coder: coder)
   }
 
+  override func prepareForReuse() {
+    configureSelected(isSelected: false)
+  }
+
   // MARK: Configuring
 
   func configureText(text: String) {
     titleLabel.text = text
+  }
+
+  func configureSelected(isSelected: Bool) {
+    iconCheck.isHidden = !isSelected
+    titleLabel.font = isSelected ? .bodyBold : .bodyRegular
   }
 
   // MARK: Layout

@@ -1,5 +1,6 @@
 import UIKit
 
+import RxSwift
 import SnapKit
 import Then
 
@@ -26,9 +27,11 @@ class AddedTagCell: UICollectionViewCell {
     $0.textAlignment = .center
   }
 
-  private let deleteButton = UIButton().then {
+  let deleteButton = UIButton().then {
     $0.setImage(DesignSystemAsset.iconCloseFill.image.withTintColor(.gray500), for: .normal)
   }
+
+  var disposeBag = DisposeBag()
 
   // MARK: Initialize
 
@@ -40,6 +43,10 @@ class AddedTagCell: UICollectionViewCell {
 
   required init?(coder: NSCoder) {
     super.init(coder: coder)
+  }
+
+  override func prepareForReuse() {
+    disposeBag = DisposeBag()
   }
 
   // MARK: Configuring

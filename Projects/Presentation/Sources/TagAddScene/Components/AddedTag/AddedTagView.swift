@@ -1,5 +1,7 @@
 import UIKit
 
+import RxCocoa
+import RxSwift
 import SnapKit
 import Then
 
@@ -9,6 +11,19 @@ import DesignSystem
 
 enum AddedTagSection {
   case normal
+}
+
+// MARK: - AddedTagItem
+
+struct AddedTagItem: Hashable {
+  let tag: String
+  let row: Int
+}
+
+// MARK: - AddedTagViewDelegate
+
+protocol AddedTagViewDelegate: AnyObject {
+  func removeAddedTag(at row: Int)
 }
 
 // MARK: - AddedTagView
@@ -37,6 +52,8 @@ class AddedTagView: UIView {
 
   private lazy var diffableDataSource = self.collectionViewDataSource()
 
+  weak var delegate: AddedTagViewDelegate?
+
   // MARK: Initialize
 
   override init(frame: CGRect) {
@@ -54,10 +71,12 @@ class AddedTagView: UIView {
   func applyAddedTag(by tags: [String]) {
     emptyLabel.isHidden = !tags.isEmpty
 
-    var snapshot = NSDiffableDataSourceSnapshot<AddedTagSection, String>()
+    var snapshot = NSDiffableDataSourceSnapshot<AddedTagSection, AddedTagItem>()
+
+    let items = tags.map { AddedTagItem(tag: $0, row: tags.firstIndex(of: $0) ?? 0) }
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tags, toSection: .normal)
+    snapshot.appendItems(items, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
   }
@@ -90,15 +109,20 @@ class AddedTagView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<AddedTagSection, String> {
-    let dataSource = UICollectionViewDiffableDataSource<AddedTagSection, String>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<AddedTagSection, AddedTagItem> {
+    let dataSource = UICollectionViewDiffableDataSource<AddedTagSection, AddedTagItem>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
         withReuseIdentifier: AddedTagCell.identifier, for: indexPath
       ).then {
         guard let cell = $0 as? AddedTagCell else { return }
-        cell.configureText(text: item)
+        cell.configureText(text: item.tag)
+        cell.deleteButton.rx.tap
+          .subscribe(onNext: { [weak self] in
+            self?.delegate?.removeAddedTag(at: item.row)
+          })
+          .disposed(by: cell.disposeBag)
       }
     }
 
