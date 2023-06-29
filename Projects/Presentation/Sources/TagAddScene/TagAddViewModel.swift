@@ -8,8 +8,10 @@ import RxSwift
 protocol TagAddViewModelInput {
   func inputText(text: String)
   func addTag(text: String)
+  func editTag(text: String)
   func removeAddedTag(at row: Int)
   func removeTagListTag(at row: Int)
+  func changeEditMode(text: String)
 }
 
 // MARK: - TagAddViewModelOutput
@@ -23,9 +25,17 @@ protocol TagAddViewModelOutput {
 // MARK: - TagAddViewModel
 
 final class TagAddViewModel: TagAddViewModelOutput {
+  enum TagInputMode {
+    case input
+    case edit
+  }
+
   // MARK: Properties
 
   private let disposeBag = DisposeBag()
+
+  var tagInputMode: TagInputMode = .input
+  var editedTag: String? = nil
 
   // MARK: Output
 
@@ -52,21 +62,43 @@ final class TagAddViewModel: TagAddViewModelOutput {
 
 extension TagAddViewModel: TagAddViewModelInput {
   func addTag(text: String) {
-    // AddedTag에 추가
-    var addedTag = addedTagList.value
-    if !addedTag.contains(where: { $0 == text }) {
-      addedTag.append(text)
-      addedTagList.accept(addedTag)
+    if tagInputMode == .input {
+      // AddedTag에 추가
+      var addedTag = addedTagList.value
+      if !addedTag.contains(where: { $0 == text }) {
+        addedTag.append(text)
+        addedTagList.accept(addedTag)
+      }
+
+      // 태그 리스트에 추가
+      var tagList = localTagList.value
+      if !tagList.contains(where: { $0 == text }) {
+        tagList.append(text)
+      }
+      localTagList.accept(tagList)
+      // 유저디폴트에 저장
+    }
+  }
+
+  func editTag(text: String) {
+    if tagInputMode == .edit {
+      guard let editedTag else { return }
+
+      var addedTag = addedTagList.value
+      if let index = addedTag.firstIndex(of: editedTag) {
+        addedTag[index] = text
+        addedTagList.accept(addedTag)
+      }
+
+      var tagList = localTagList.value
+      if let index = tagList.firstIndex(of: editedTag) {
+        tagList[index] = text
+      }
+      localTagList.accept(tagList)
     }
 
-    // 태그 리스트에 추가
-    var tagList = localTagList.value
-    if !tagList.contains(where: { $0 == text }) {
-      tagList.append(text)
-    }
-    localTagList.accept(tagList)
-
-    // 유저디폴트에 저장
+    tagInputMode = .input
+    editedTag = nil
   }
 
   func removeAddedTag(at row: Int) {
@@ -96,5 +128,11 @@ extension TagAddViewModel: TagAddViewModelInput {
       let validatedText = text[text.startIndex...text.index(text.startIndex, offsetBy: 9)]
       self.validatedText.accept(String(validatedText))
     }
+  }
+
+  func changeEditMode(text: String) {
+    tagInputMode = .edit
+    editedTag = text
+    validatedText.accept(text)
   }
 }

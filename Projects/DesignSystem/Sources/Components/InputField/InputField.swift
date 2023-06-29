@@ -83,6 +83,11 @@ public class InputField: UIView {
     textField.delegate = delegate
   }
 
+  @discardableResult
+  public override func becomeFirstResponder() -> Bool {
+    textField.becomeFirstResponder()
+  }
+
   // MARK: UI
 
   private let stackView = UIStackView().then {

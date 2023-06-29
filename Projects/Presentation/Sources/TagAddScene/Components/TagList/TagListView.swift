@@ -23,6 +23,8 @@ protocol TagListViewDelegate: AnyObject {
 // MARK: - TagListView
 
 final class TagListView: UIView {
+  var editHandler: ((String) -> Void)? = nil
+
   // MARK: UI
 
   private let titleLabel = UILabel().then {
@@ -162,6 +164,7 @@ extension TagListView: UITableViewDelegate, UITableViewDataSource {
     let editAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
       guard let self else { return }
       // TODO: 편집 기능
+      self.editHandler?(self.tags[indexPath.row])
       completion(true)
     }
     deleteAction.backgroundColor = .error

@@ -39,6 +39,10 @@ final class TagAddViewController: UIViewController {
     contentView.inputField.setDelegate(self)
     contentView.addedTagView.delegate = self
     contentView.tagListView.delegate = self
+    contentView.tagListView.editHandler = { [weak self] text in
+      self?.contentView.inputField.becomeFirstResponder()
+      self?.viewModel.changeEditMode(text: text)
+    }
   }
 
   override func viewDidLoad() {
@@ -133,8 +137,19 @@ extension TagAddViewController: UITextFieldDelegate {
 
     view.endEditing(true)
     textField.text = ""
-    viewModel.addTag(text: text)
+
+    if viewModel.tagInputMode == .input {
+      viewModel.addTag(text: text)
+    } else {
+      viewModel.editTag(text: text)
+    }
+
     return true
+  }
+
+  func textFieldDidBeginEditing(_ textField: UITextField) {
+    viewModel.editedTag = nil
+    viewModel.tagInputMode = .input
   }
 }
 
