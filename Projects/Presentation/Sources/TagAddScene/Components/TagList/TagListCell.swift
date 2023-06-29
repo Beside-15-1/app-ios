@@ -30,6 +30,7 @@ class TagListCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
 
     defineLayout()
+    contentView.backgroundColor = .paperWihte
   }
 
   required init?(coder: NSCoder) {

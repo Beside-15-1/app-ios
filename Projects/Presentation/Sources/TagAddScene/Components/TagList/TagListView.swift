@@ -105,10 +105,6 @@ final class TagListView: UIView {
   }
 }
 
-// MARK: UITableViewDelegate
-
-extension TagListView: UITableViewDelegate {}
-
 // MARK: UITableViewDragDelegate
 
 extension TagListView: UITableViewDragDelegate {
@@ -117,9 +113,9 @@ extension TagListView: UITableViewDragDelegate {
   }
 }
 
-// MARK: UITableViewDataSource
+// MARK: UITableViewDelegate, UITableViewDataSource
 
-extension TagListView: UITableViewDataSource {
+extension TagListView: UITableViewDelegate, UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     1
   }
@@ -150,15 +146,35 @@ extension TagListView: UITableViewDataSource {
     delegate?.updateTagList(self, tagList: tags)
   }
 
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    if editingStyle == .delete {
-      tags.remove(at: indexPath.row)
-      tableView.deleteRows(at: [indexPath], with: .fade)
-      delegate?.removeTag(self, row: indexPath.row)
-    }
-  }
-
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     delegate?.tagListView(self, didSelectedRow: indexPath.row)
+  }
+
+  func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+      guard let self else { return }
+      self.tags.remove(at: indexPath.row)
+      tableView.deleteRows(at: [indexPath], with: .fade)
+      self.delegate?.removeTag(self, row: indexPath.row)
+      completion(true)
+    }
+
+    let editAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
+      guard let self else { return }
+      // TODO: 편집 기능
+      completion(true)
+    }
+    deleteAction.backgroundColor = .error
+    deleteAction.image = DesignSystemAsset.textDelete.image
+    editAction.backgroundColor = .blue
+    editAction.image = DesignSystemAsset.textEdit.image
+
+    if tableView.isEditing {
+      return nil
+    }
+
+    return .init(actions: [deleteAction, editAction]).then {
+      $0.performsFirstActionWithFullSwipe = false
+    }
   }
 }
