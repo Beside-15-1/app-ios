@@ -37,10 +37,10 @@ let project = Project(
           name: "Mockolo",
           outputPaths: ["Testing/PBAuthMocks.swift"],
           basedOnDependencyAnalysis: false
-        ),
+        )
       ],
       dependencies: [
-        .external(dependency: .FirebaseAnalytics),
+        .external(dependency: .FirebaseAnalytics)
       ]
     ),
     Target(
@@ -56,7 +56,7 @@ let project = Project(
         .target(name: "\(moduleName)Interface"),
         // External
         .external(dependency: .Swinject),
-        .external(dependency: .KeychainAccess),
+        .external(dependency: .KeychainAccess)
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
@@ -73,7 +73,7 @@ let project = Project(
       sources: "Testing/**",
       scripts: [.SwiftFormatString],
       dependencies: [
-        .target(name: "\(moduleName)Interface"),
+        .target(name: "\(moduleName)Interface")
       ]
     ),
     Target(
@@ -91,8 +91,8 @@ let project = Project(
         .target(name: "\(moduleName)Testing"),
         .xctest,
         .external(dependency: .RxSwift),
-        .external(dependency: .Nimble),
+        .external(dependency: .Nimble)
       ]
-    ),
+    )
   ]
 )
