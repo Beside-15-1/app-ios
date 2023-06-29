@@ -57,6 +57,7 @@ final class TagListView: UIView {
   // MARK: Properties
 
   private var tags: [String] = []
+  private var selectedTags: [String] = []
   weak var delegate: TagListViewDelegate?
 
   // MARK: Initialize
@@ -81,11 +82,12 @@ final class TagListView: UIView {
 
   func applyTagList(by tags: [String], selected list: [String]) {
     self.tags = tags
+    selectedTags = list
 
     emptyLabel.isHidden = !tags.isEmpty
 
     tableView.reloadData()
-    print(list)
+
     list.forEach {
       if let index = tags.firstIndex(of: $0) {
         guard let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0))
@@ -148,9 +150,12 @@ extension TagListView: UITableViewDelegate, UITableViewDataSource {
       withIdentifier: TagListCell.identifier, for: indexPath
     ) as? TagListCell else { return UITableViewCell() }
 
+    var isSelected = selectedTags.contains(where: { $0 == tags[indexPath.row] })
+
     return cell.then {
       $0.selectionStyle = .none
       $0.configureText(text: self.tags[indexPath.row])
+      $0.configureSelected(isSelected: isSelected)
     }
   }
 
@@ -196,5 +201,9 @@ extension TagListView: UITableViewDelegate, UITableViewDataSource {
     return .init(actions: [deleteAction, editAction]).then {
       $0.performsFirstActionWithFullSwipe = false
     }
+  }
+
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 44
   }
 }

@@ -84,7 +84,9 @@ final class MyPageViewController: UIViewController {
           addedTagList: []
         )) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(vc)
+        vc.modalPresentationStyle = .popover
+
+        self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
 

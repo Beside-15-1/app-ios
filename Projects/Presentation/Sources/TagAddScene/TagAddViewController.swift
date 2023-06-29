@@ -163,6 +163,10 @@ extension TagAddViewController: PanModalPresentable {
   var allowsDragToDismiss: Bool {
     false
   }
+
+  func shouldRespond(to panModalGestureRecognizer: UIPanGestureRecognizer) -> Bool {
+    return false
+  }
 }
 
 // MARK: UITextFieldDelegate
