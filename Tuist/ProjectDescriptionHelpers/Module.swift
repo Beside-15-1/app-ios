@@ -19,4 +19,5 @@ public enum CoreModule: String, CaseIterable {
   case PBAnalytics
   case PBLog
   case PBAuth
+  case PBUserDefaults
 }

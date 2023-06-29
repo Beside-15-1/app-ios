@@ -55,6 +55,7 @@ let project = Project(
         .domain(),
         .designSystem(),
         .core(interface: .PBAnalytics),
+        .core(impl: .PBUserDefaults),
         // External
         .external(dependency: .ReactorKit),
         .external(dependency: .Swinject),
