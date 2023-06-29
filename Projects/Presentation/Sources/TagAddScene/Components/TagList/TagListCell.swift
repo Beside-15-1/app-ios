@@ -22,6 +22,7 @@ class TagListCell: UITableViewCell {
 
   private let iconCheck = UIImageView().then {
     $0.image = DesignSystemAsset.iconCheck.image.withTintColor(.primary500)
+    $0.isHidden = true
   }
 
   // MARK: Initialize

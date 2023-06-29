@@ -3,6 +3,8 @@ import Foundation
 import RxRelay
 import RxSwift
 
+import PBUserDefaults
+
 // MARK: - TagAddViewModelInput
 
 protocol TagAddViewModelInput {
@@ -39,6 +41,8 @@ final class TagAddViewModel: TagAddViewModelOutput {
   var tagInputMode: TagInputMode = .input
   var editedTag: String? = nil
 
+  private let userDefaults: UserDefaultsRepository
+
   // MARK: Output
 
   var addedTagList: BehaviorRelay<[String]> = .init(value: [])
@@ -50,9 +54,12 @@ final class TagAddViewModel: TagAddViewModelOutput {
   // MARK: initializing
 
   init(
+    userDefaults: UserDefaultsRepository,
     addedTagList: [String]
   ) {
+    self.userDefaults = userDefaults
     self.addedTagList.accept(addedTagList)
+    localTagList.accept(userDefaults.tagList)
   }
 
   deinit {
@@ -74,6 +81,7 @@ extension TagAddViewModel: TagAddViewModelInput {
           tagList.append(text)
         }
         localTagList.accept(tagList)
+        userDefaults.tagList = tagList
         return
       }
 
@@ -91,6 +99,7 @@ extension TagAddViewModel: TagAddViewModelInput {
         tagList.append(text)
       }
       localTagList.accept(tagList)
+      userDefaults.tagList = tagList
       // 유저디폴트에 저장
     }
   }
@@ -110,6 +119,7 @@ extension TagAddViewModel: TagAddViewModelInput {
         tagList[index] = text
       }
       localTagList.accept(tagList)
+      userDefaults.tagList = tagList
     }
 
     tagInputMode = .input
@@ -130,11 +140,13 @@ extension TagAddViewModel: TagAddViewModelInput {
     guard let removedRowInAddedList = addedTagList.value.firstIndex(of: removedTag) else {
       local.remove(at: row)
       localTagList.accept(local)
+      userDefaults.tagList = local
       return
     }
 
     local.remove(at: row)
     localTagList.accept(local)
+    userDefaults.tagList = local
 
     removeAddedTag(at: removedRowInAddedList)
   }

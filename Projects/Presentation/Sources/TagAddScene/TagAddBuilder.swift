@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 import Domain
+import PBUserDefaults
 import PresentationInterface
 
 // MARK: - TagAddDependency
@@ -19,6 +20,7 @@ final class TagAddBuilder: TagAddBuildable {
 
   func build(payload: TagAddPayload) -> UIViewController {
     let viewModel = TagAddViewModel(
+      userDefaults: UserDefaultsRepository(),
       addedTagList: payload.addedTagList
     )
 
