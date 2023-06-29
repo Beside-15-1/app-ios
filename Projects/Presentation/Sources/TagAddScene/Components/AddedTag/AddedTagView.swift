@@ -43,9 +43,11 @@ class AddedTagView: UIView {
   }
 
   let emptyLabel = UILabel().then {
-    $0.text = "아직 선택된 태그가 없어요"
+    $0.text = "아직 선택된 태그가 없어요\n태그는 10개까지 선택할 수 있어요"
     $0.textColor = .gray500
+    $0.textAlignment = .center
     $0.font = .bodyRegular
+    $0.numberOfLines = 0
   }
 
   // MARK: Propeties

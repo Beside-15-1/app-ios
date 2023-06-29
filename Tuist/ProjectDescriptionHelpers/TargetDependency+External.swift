@@ -29,6 +29,7 @@ public enum External: String {
   case Nimble
   case KeychainAccess
   case PanModal
+  case Toaster
 
   // firebase
   case FirebaseAnalytics

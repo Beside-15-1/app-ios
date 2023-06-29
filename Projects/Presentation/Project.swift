@@ -60,7 +60,8 @@ let project = Project(
         .external(dependency: .ReactorKit),
         .external(dependency: .Swinject),
         .external(dependency: .SDWebImage),
-        .external(dependency: .PanModal)
+        .external(dependency: .PanModal),
+        .external(dependency: .Toaster)
       ]
     ),
     Target(

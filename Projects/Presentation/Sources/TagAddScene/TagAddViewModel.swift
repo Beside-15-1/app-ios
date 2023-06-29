@@ -20,6 +20,7 @@ protocol TagAddViewModelOutput {
   var addedTagList: BehaviorRelay<[String]> { get }
   var localTagList: BehaviorRelay<[String]> { get }
   var validatedText: PublishRelay<String> { get }
+  var shouldShowTagLimitToast: PublishRelay<Void> { get }
 }
 
 // MARK: - TagAddViewModel
@@ -42,6 +43,7 @@ final class TagAddViewModel: TagAddViewModelOutput {
   var addedTagList: BehaviorRelay<[String]> = .init(value: [])
   var localTagList: BehaviorRelay<[String]> = .init(value: [])
   var validatedText: PublishRelay<String> = .init()
+  var shouldShowTagLimitToast: PublishRelay<Void> = .init()
 
   // MARK: initializing
 
@@ -63,6 +65,11 @@ final class TagAddViewModel: TagAddViewModelOutput {
 extension TagAddViewModel: TagAddViewModelInput {
   func addTag(text: String) {
     if tagInputMode == .input {
+      guard addedTagList.value.count < 10 else {
+        shouldShowTagLimitToast.accept(())
+        return
+      }
+
       // AddedTag에 추가
       var addedTag = addedTagList.value
       if !addedTag.contains(where: { $0 == text }) {

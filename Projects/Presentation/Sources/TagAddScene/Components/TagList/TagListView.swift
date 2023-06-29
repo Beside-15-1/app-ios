@@ -33,6 +33,11 @@ final class TagListView: UIView {
     $0.font = .subTitleSemiBold
   }
 
+  private let tagCountLabel = UILabel().then {
+    $0.textColor = .gray600
+    $0.font = .defaultRegular
+  }
+
   lazy var tableView = UITableView(frame: .zero, style: .plain).then {
     $0.register(TagListCell.self, forCellReuseIdentifier: TagListCell.identifier)
     $0.backgroundColor = .clear
@@ -66,6 +71,12 @@ final class TagListView: UIView {
     super.init(coder: coder)
   }
 
+  // MARK: Configuring
+
+  func configureTagCount(count: Int) {
+    tagCountLabel.text = "\(count)/10"
+  }
+
   // MARK: TableView
 
   func applyTagList(by tags: [String], selected list: [String]) {
@@ -88,11 +99,17 @@ final class TagListView: UIView {
 
   private func defineLayout() {
     addSubview(titleLabel)
+    addSubview(tagCountLabel)
     addSubview(emptyLabel)
     addSubview(tableView)
 
     titleLabel.snp.makeConstraints {
-      $0.top.left.right.equalToSuperview()
+      $0.top.left.equalToSuperview()
+    }
+
+    tagCountLabel.snp.makeConstraints {
+      $0.left.equalTo(titleLabel.snp.right).offset(8.0)
+      $0.bottom.equalTo(titleLabel)
     }
 
     tableView.snp.makeConstraints {
