@@ -8,6 +8,7 @@ import PresentationInterface
 
 struct MyPageDependency {
   let loginRepository: LoginRepository
+  let tagAddBuilder: TagAddBuildable
 }
 
 // MARK: - MyPageBuilder
@@ -27,7 +28,8 @@ final class MyPageBuilder: MyPageBuildable {
 
     let viewController = MyPageViewController(
       viewModel: viewModel,
-      loginBuilder: loginBuilder!
+      loginBuilder: loginBuilder!,
+      tagAddBuilder: dependency.tagAddBuilder
     )
 
     return viewController

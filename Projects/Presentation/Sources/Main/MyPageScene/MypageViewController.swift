@@ -1,5 +1,6 @@
 import UIKit
 
+import PanModal
 import RxSwift
 
 import DesignSystem
@@ -19,6 +20,7 @@ final class MyPageViewController: UIViewController {
   private var transition: UIViewControllerAnimatedTransitioning?
 
   private let loginBuilder: LoginBuildable
+  private let tagAddBuilder: TagAddBuildable
 
   private var backgroundColorTestFlag = true
 
@@ -26,10 +28,12 @@ final class MyPageViewController: UIViewController {
 
   init(
     viewModel: MyPageViewModel,
-    loginBuilder: LoginBuildable
+    loginBuilder: LoginBuildable,
+    tagAddBuilder: TagAddBuildable
   ) {
     self.viewModel = viewModel
     self.loginBuilder = loginBuilder
+    self.tagAddBuilder = tagAddBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -75,14 +79,11 @@ final class MyPageViewController: UIViewController {
 
     contentView.enableButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        if self.backgroundColorTestFlag {
-          self.contentView.backgroundColor = .paperWihte
+        guard let vc = self.tagAddBuilder.build(payload: .init(
+          tagAddDelegate: nil,
+          addedTagList: [])) as? PanModalPresentable.LayoutType else { return }
 
-        } else {
-          self.contentView.backgroundColor = .paperGray
-        }
-
-        self.backgroundColorTestFlag.toggle()
+        self.presentPanModal(vc)
       }
       .disposed(by: disposeBag)
 
