@@ -81,7 +81,8 @@ final class MyPageViewController: UIViewController {
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.tagAddBuilder.build(payload: .init(
           tagAddDelegate: nil,
-          addedTagList: [])) as? PanModalPresentable.LayoutType else { return }
+          addedTagList: []
+        )) as? PanModalPresentable.LayoutType else { return }
 
         self.presentPanModal(vc)
       }

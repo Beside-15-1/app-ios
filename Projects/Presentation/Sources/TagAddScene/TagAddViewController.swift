@@ -111,6 +111,12 @@ final class TagAddViewController: UIViewController {
         }
       }
       .disposed(by: disposeBag)
+
+    contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -134,11 +140,15 @@ extension TagAddViewController: PanModalPresentable {
   }
 
   var showDragIndicator: Bool {
-    true
+    false
   }
 
   var panModalBackgroundColor: UIColor {
     .black.withAlphaComponent(0.6)
+  }
+
+  var allowsDragToDismiss: Bool {
+    false
   }
 }
 
