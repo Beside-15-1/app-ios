@@ -67,6 +67,11 @@ extension TagAddViewModel: TagAddViewModelInput {
     if tagInputMode == .input {
       guard addedTagList.value.count < 10 else {
         shouldShowTagLimitToast.accept(())
+        var tagList = localTagList.value
+        if !tagList.contains(where: { $0 == text }) {
+          tagList.append(text)
+        }
+        localTagList.accept(tagList)
         return
       }
 
