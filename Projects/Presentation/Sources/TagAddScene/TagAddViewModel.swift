@@ -21,6 +21,7 @@ protocol TagAddViewModelOutput {
   var localTagList: BehaviorRelay<[String]> { get }
   var validatedText: PublishRelay<String> { get }
   var shouldShowTagLimitToast: PublishRelay<Void> { get }
+  var tagListIndexToScroll: PublishRelay<Int> { get }
 }
 
 // MARK: - TagAddViewModel
@@ -44,6 +45,7 @@ final class TagAddViewModel: TagAddViewModelOutput {
   var localTagList: BehaviorRelay<[String]> = .init(value: [])
   var validatedText: PublishRelay<String> = .init()
   var shouldShowTagLimitToast: PublishRelay<Void> = .init()
+  var tagListIndexToScroll: PublishRelay<Int> = .init()
 
   // MARK: initializing
 
@@ -80,6 +82,7 @@ extension TagAddViewModel: TagAddViewModelInput {
       if !addedTag.contains(where: { $0 == text }) {
         addedTag.append(text)
         addedTagList.accept(addedTag)
+        tagListIndexToScroll.accept(addedTag.count - 1)
       }
 
       // 태그 리스트에 추가
@@ -117,6 +120,7 @@ extension TagAddViewModel: TagAddViewModelInput {
     var addedTag = addedTagList.value
     addedTag.remove(at: row)
     addedTagList.accept(addedTag)
+    tagListIndexToScroll.accept(row - 1)
   }
 
   func removeTagListTag(at row: Int) {

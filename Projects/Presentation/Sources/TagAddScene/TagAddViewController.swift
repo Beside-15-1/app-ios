@@ -99,6 +99,19 @@ final class TagAddViewController: UIViewController {
         }
       }
       .disposed(by: disposeBag)
+
+    viewModel.tagListIndexToScroll
+      .subscribe(with: self) { `self`, row in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+          self.contentView.addedTagView.collectionView
+            .scrollToItem(
+              at: IndexPath(item: row, section: 0),
+              at: .centeredHorizontally,
+              animated: true
+            )
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindButton(with viewModel: TagAddViewModel) {
