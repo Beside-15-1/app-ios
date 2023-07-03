@@ -19,7 +19,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         // External
         .external(dependency: .RxMoya),
@@ -37,7 +36,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(CoreModule.PBNetworking.rawValue)")
       ]

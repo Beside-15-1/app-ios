@@ -4,7 +4,6 @@ import ReactorKit
 import RxSwift
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
-  typealias Reactor = CreateLinkViewModel
 
   var disposeBag = DisposeBag()
 
@@ -14,7 +13,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   // MARK: Initializing
 
-  init(viewModel: CreateLinkViewModel) {
+  init(viewModel: CreateLinkViewReactor) {
     defer { self.reactor = viewModel }
     super.init(nibName: nil, bundle: nil)
   }
@@ -36,5 +35,15 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor viewModel: CreateLinkViewModel) {}
+  func bind(reactor: CreateLinkViewReactor) {
+    bindButtons(with: reactor)
+  }
+
+  private func bindButtons(with reactor: CreateLinkViewReactor) {
+    contentView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
 }

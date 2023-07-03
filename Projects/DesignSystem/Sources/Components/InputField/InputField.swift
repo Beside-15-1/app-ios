@@ -169,7 +169,7 @@ public class InputField: UIView {
     [textField, rightIcon].forEach { container.addSubview($0) }
     [errorIcon, errorLabel].forEach { errorContainer.addSubview($0) }
 
-    stackView.setCustomSpacing(4.0, after: titleLabel)
+    stackView.setCustomSpacing(8.0, after: titleLabel)
     stackView.setCustomSpacing(2.0, after: container)
 
     stackView.snp.makeConstraints {

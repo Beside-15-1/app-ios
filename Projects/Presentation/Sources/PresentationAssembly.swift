@@ -19,7 +19,8 @@ public final class PresentationAssembly: Assembly {
       registerMyPageBuilder,
       registerSignUpBuilder,
       registerTermsOfUseBuilder,
-      registerTagAddBuilder
+      registerTagAddBuilder,
+      registerCreateLinkBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -28,23 +29,23 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerLoginBuilder(container: Container) {
-    container.register(LoginBuildable.self) { resolver in
+    container.register(LoginBuildable.self) { r in
       LoginBuilder(dependency: .init(
-        analytics: resolver.resolve(),
-        loginRepository: resolver.resolve(),
-        mainTabBuilder: resolver.resolve(),
-        signUpBuilder: resolver.resolve(),
-        termsOfUseBuilder: resolver.resolve()
+        analytics: r.resolve(),
+        loginRepository: r.resolve(),
+        mainTabBuilder: r.resolve(),
+        signUpBuilder: r.resolve(),
+        termsOfUseBuilder: r.resolve()
       ))
     }
   }
 
   private func registerMainTabBuilder(contianer: Container) {
-    contianer.register(MainTabBarBuildable.self) { resolver in
+    contianer.register(MainTabBarBuildable.self) { r in
       MainTabBarBuilder(dependency: .init(
-        homeBuilder: resolver.resolve(),
-        folderBuilder: resolver.resolve(),
-        myPageBuilder: resolver.resolve()
+        homeBuilder: r.resolve(),
+        folderBuilder: r.resolve(),
+        myPageBuilder: r.resolve()
       ))
     }
   }
@@ -62,21 +63,22 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerMyPageBuilder(container: Container) {
-    container.register(MyPageBuildable.self) { resolver in
+    container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
-        loginRepository: resolver.resolve(),
-        tagAddBuilder: resolver.resolve()
+        loginRepository: r.resolve(),
+        tagAddBuilder: r.resolve(),
+        createLinkBuilder: r.resolve()
       ))
-    }.initCompleted { resolver, builder in
-      builder.configure(loginBuilder: resolver.resolve())
+    }.initCompleted { r, builder in
+      builder.configure(loginBuilder: r.resolve())
     }
   }
 
   private func registerSignUpBuilder(container: Container) {
-    container.register(SignUpBuildable.self) { resolver in
+    container.register(SignUpBuildable.self) { r in
       SignUpBuilder(dependency: .init(
-        loginRepository: resolver.resolve(),
-        mainTabBuilder: resolver.resolve()
+        loginRepository: r.resolve(),
+        mainTabBuilder: r.resolve()
       ))
     }
   }
@@ -90,6 +92,12 @@ public final class PresentationAssembly: Assembly {
   private func registerTagAddBuilder(container: Container) {
     container.register(TagAddBuildable.self) { _ in
       TagAddBuilder(dependency: .init())
+    }
+  }
+
+  private func registerCreateLinkBuilder(container: Container) {
+    container.register(CreateLinkBuildable.self) { r in
+      CreateLinkBuilder(dependency: .init())
     }
   }
 }

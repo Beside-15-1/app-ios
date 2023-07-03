@@ -24,7 +24,6 @@ let project = Project(
         .glob(pattern: .relativeToRoot("Supporting Files/GoogleService-Info.plist"))
       ],
       entitlements: .relativeToRoot("Projects/Joosum/Joosum.entitlements"),
-      scripts: [.SwiftFormatString],
       dependencies: [
         // Module
         .data(),

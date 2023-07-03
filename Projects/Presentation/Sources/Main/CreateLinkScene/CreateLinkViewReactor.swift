@@ -3,10 +3,10 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-final class CreateLinkViewModel: Reactor {
+final class CreateLinkViewReactor: Reactor {
   enum Action {}
 
-  enum Mutate {}
+  enum Mutation {}
 
   struct State {}
 
@@ -27,7 +27,7 @@ final class CreateLinkViewModel: Reactor {
     print("🗑️ deinit: \(type(of: self))")
   }
 
-  func mutate(action: Action) -> Observable<Action> {}
+  func mutate(action: Action) -> Observable<Mutation> {}
 
-  func reduce(state: State, mutation: Action) -> State {}
+  func reduce(state: State, mutation: Mutation) -> State {}
 }

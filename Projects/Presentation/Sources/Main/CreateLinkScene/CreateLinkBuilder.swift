@@ -18,7 +18,7 @@ final class CreateLinkBuilder: CreateLinkBuildable {
   }
 
   func build(payload: CreateLinkPayload) -> UIViewController {
-    let viewModel = CreateLinkViewModel()
+    let viewModel = CreateLinkViewReactor()
 
     let viewController = CreateLinkViewController(
       viewModel: viewModel

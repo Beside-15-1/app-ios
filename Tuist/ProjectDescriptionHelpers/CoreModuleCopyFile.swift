@@ -30,7 +30,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString],
       dependencies: []
     ),
     Target(
@@ -41,7 +40,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(moduleName)Interface"),
         // External
@@ -56,7 +54,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(moduleName)"),
         .target(name: "\(moduleName)Interface"),
