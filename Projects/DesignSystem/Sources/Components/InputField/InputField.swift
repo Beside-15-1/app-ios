@@ -63,6 +63,12 @@ public class InputField: UIView {
     }
   }
 
+  public var returnKeyType: UIReturnKeyType = .default {
+    didSet {
+      textField.returnKeyType = returnKeyType
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
@@ -75,6 +81,11 @@ public class InputField: UIView {
 
   public func setDelegate(_ delegate: UITextFieldDelegate) {
     textField.delegate = delegate
+  }
+
+  @discardableResult
+  public override func becomeFirstResponder() -> Bool {
+    textField.becomeFirstResponder()
   }
 
   // MARK: UI

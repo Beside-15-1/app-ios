@@ -16,7 +16,7 @@ final class MyPageView: UIView {
   }
 
   let enableButton = BasicButton(priority: .primary).then {
-    $0.text = "배경화면 Color 바꾸기"
+    $0.text = "태그"
   }
 
   let disableButton = BasicButton(priority: .primary).then {

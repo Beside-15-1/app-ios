@@ -24,7 +24,8 @@ let dependencies = Dependencies(
     .firebase,
     .nimble,
     .keyChainAccess,
-    .panModal
+    .panModal,
+    .toaster
   ],
   platforms: [.iOS]
 )
@@ -89,5 +90,9 @@ extension Package {
   public static let panModal: Package = .remote(
     url: "https://github.com/slackhq/PanModal.git",
     requirement: .upToNextMajor(from: "1.0.0")
+  )
+  public static let toaster: Package = .remote(
+    url: "https://github.com/devxoul/Toaster.git",
+    requirement: .branch("master")
   )
 }
