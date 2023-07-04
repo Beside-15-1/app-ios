@@ -30,6 +30,7 @@ public enum External: String {
   case KeychainAccess
   case PanModal
   case Toaster
+  case SwiftSoup
 
   // firebase
   case FirebaseAnalytics

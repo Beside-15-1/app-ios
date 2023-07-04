@@ -19,7 +19,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         .external(dependency: .RxMoya)
       ]
@@ -32,7 +31,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(CoreModule.PBLog.rawValue)Interface"),
         // External
@@ -49,7 +47,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "\(CoreModule.PBLog.rawValue)"),
         .target(name: "\(CoreModule.PBLog.rawValue)Interface")

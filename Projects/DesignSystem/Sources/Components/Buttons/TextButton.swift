@@ -38,13 +38,27 @@ public class TextButton: UIControl {
 
   public var leftIconImage: UIImage? {
     didSet {
-      leftIcon.image = leftIconImage?.withTintColor(.textButtonColor)
+      guard let leftIconImage else {
+        return
+      }
+
+      leftIcon.image = leftIconImage.withTintColor(.textButtonColor).withTintColor(color)
+      leftIcon.snp.updateConstraints {
+        $0.size.equalTo(type.iconSize)
+      }
     }
   }
 
   public var rightIconImage: UIImage? {
     didSet {
-      rightIcon.image = rightIconImage?.withTintColor(.textButtonColor)
+      guard let rightIconImage else {
+        return
+      }
+
+      rightIcon.image = rightIconImage.withTintColor(.textButtonColor).withTintColor(color)
+      rightIcon.snp.updateConstraints {
+        $0.size.equalTo(type.iconSize)
+      }
     }
   }
 
@@ -52,6 +66,7 @@ public class TextButton: UIControl {
     didSet {
       guard text != oldValue else { return }
       titleLabel.text = text
+      titleLabel.textColor = color
     }
   }
 
@@ -74,13 +89,15 @@ public class TextButton: UIControl {
   // MARK: Properties
 
   private var type: TextButtonType = .regular
+  private var color: UIColor = .gray700
 
 
   // MARK: Initialize
 
-  public convenience init(type: TextButtonType) {
+  public convenience init(type: TextButtonType, color: UIColor = .gray700) {
     self.init(frame: .zero)
     self.type = type
+    self.color = color
 
     titleLabel.font = type.font
   }
@@ -111,13 +128,13 @@ public class TextButton: UIControl {
     leftIcon.snp.makeConstraints {
       $0.left.centerY.equalToSuperview()
       $0.right.equalTo(titleLabel.snp.left)
-      $0.size.equalTo(self.type.iconSize)
+      $0.size.equalTo(0)
     }
 
     rightIcon.snp.makeConstraints {
       $0.right.centerY.equalToSuperview()
       $0.left.equalTo(titleLabel.snp.right)
-      $0.size.equalTo(self.type.iconSize)
+      $0.size.equalTo(0)
     }
 
   }

@@ -19,7 +19,7 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
-      scripts: [.SwiftFormatString] + [
+      scripts: [
         TargetScript.pre(
           script: #"""
           export PATH="$PATH:/opt/homebrew/bin"
@@ -47,7 +47,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         // Target
         .target(name: "\(Module.Presentation.rawValue)Interface"),
@@ -84,7 +83,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
-      scripts: [.SwiftFormatString],
       dependencies: [
         .xctest,
         .target(name: "\(Module.Presentation.rawValue)"),

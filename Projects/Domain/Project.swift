@@ -19,7 +19,7 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Domain/**"],
-      scripts: [.SwiftFormatString] + [
+      scripts: [
         TargetScript.pre(
           script: #"""
           export PATH="$PATH:/opt/homebrew/bin"
@@ -49,7 +49,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Data/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "Domain"),
         .core(impl: .PBNetworking),
@@ -58,7 +57,8 @@ let project = Project(
         .external(dependency: .RxCocoa),
         .external(dependency: .RxRelay),
         .external(dependency: .Swinject),
-        .external(dependency: .Moya)
+        .external(dependency: .Moya),
+        .external(dependency: .SwiftSoup)
       ]
     ),
     Target(
@@ -81,7 +81,6 @@ let project = Project(
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Tests/**"],
-      scripts: [.SwiftFormatString],
       dependencies: [
         .target(name: "Domain"),
         .target(name: "Data"),

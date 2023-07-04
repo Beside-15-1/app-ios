@@ -17,10 +17,10 @@ final class ___VARIABLE_sceneName___Builder: ___VARIABLE_sceneName___Buildable {
   }
 
   func build(payload: ___VARIABLE_sceneName___Payload) -> UIViewController {
-    let viewModel = ___VARIABLE_sceneName___ViewModel()
+    let reactor = ___VARIABLE_sceneName___ViewReactor()
 
     let viewController = ___VARIABLE_sceneName___ViewController(
-      viewModel: viewModel
+      reactor: reactor
     )
 
     return viewController

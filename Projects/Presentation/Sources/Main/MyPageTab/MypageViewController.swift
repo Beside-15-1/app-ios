@@ -21,6 +21,7 @@ final class MyPageViewController: UIViewController {
 
   private let loginBuilder: LoginBuildable
   private let tagAddBuilder: TagAddBuildable
+  private let createLinkBuilder: CreateLinkBuildable
 
   private var backgroundColorTestFlag = true
 
@@ -29,11 +30,13 @@ final class MyPageViewController: UIViewController {
   init(
     viewModel: MyPageViewModel,
     loginBuilder: LoginBuildable,
-    tagAddBuilder: TagAddBuildable
+    tagAddBuilder: TagAddBuildable,
+    createLinkBuilder: CreateLinkBuildable
   ) {
     self.viewModel = viewModel
     self.loginBuilder = loginBuilder
     self.tagAddBuilder = tagAddBuilder
+    self.createLinkBuilder = createLinkBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -108,6 +111,15 @@ final class MyPageViewController: UIViewController {
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
         self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
         self.transition = nil
+      }
+      .disposed(by: disposeBag)
+
+    contentView.fab.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createLinkBuilder.build(payload: .init())
+        vc.modalPresentationStyle = .fullScreen
+
+        self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
   }
