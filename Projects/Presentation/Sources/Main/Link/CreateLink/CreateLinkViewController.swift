@@ -3,6 +3,9 @@ import UIKit
 import ReactorKit
 import RxSwift
 import Toaster
+import PanModal
+
+import PresentationInterface
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -12,10 +15,20 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   private lazy var contentView = CreateLinkView()
 
+
+  // MARK: Properties
+
+  private let selectFolderBuilder: SelectFolderBuildable
+
+
   // MARK: Initializing
 
-  init(viewModel: CreateLinkViewReactor) {
-    defer { self.reactor = viewModel }
+  init(
+    reactor: CreateLinkViewReactor,
+    selectFolderBuilder: SelectFolderBuildable
+  ) {
+    defer { self.reactor = reactor }
+    self.selectFolderBuilder = selectFolderBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -58,6 +71,23 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .bind(to: contentView.saveButton.rx.isEnabled)
       .disposed(by: disposeBag
       )
+
+    contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let vc = self.selectFolderBuilder.build(
+          payload: .init(
+            folders: [.init(),
+                      .init(title: "asdfknals", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
+                      .init(title: "1245124", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
+                      .init(title: "asgf2g", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
+                      .init(title: "6173473", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0)],
+            selectedFolder: self.reactor?.currentState.folder ?? .init()
+          )
+        ) as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(vc)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: CreateLinkViewReactor) {

@@ -6,7 +6,7 @@ import Then
 import Domain
 import DesignSystem
 
-final class SelectFolderView: UIView {
+final class SelectFolderButton: UIView {
   // MARK: Constant
 
   private enum Metric {

@@ -20,7 +20,8 @@ public final class PresentationAssembly: Assembly {
       registerSignUpBuilder,
       registerTermsOfUseBuilder,
       registerTagAddBuilder,
-      registerCreateLinkBuilder
+      registerCreateLinkBuilder,
+      registerSelectFolderBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -97,7 +98,15 @@ public final class PresentationAssembly: Assembly {
 
   private func registerCreateLinkBuilder(container: Container) {
     container.register(CreateLinkBuildable.self) { r in
-      CreateLinkBuilder(dependency: .init())
+      CreateLinkBuilder(dependency: .init(
+        selectFolderBuilder: r.resolve()
+      ))
+    }
+  }
+
+  private func registerSelectFolderBuilder(container: Container) {
+    container.register(SelectFolderBuildable.self) { r in
+      SelectFolderBuilder(dependency: .init())
     }
   }
 }

@@ -39,7 +39,7 @@ final class CreateLinkView: UIView {
     $0.returnKeyType = .done
   }
 
-  let selectFolderView = SelectFolderView()
+  let selectFolderView = SelectFolderButton()
 
   let tagView = TagView()
 

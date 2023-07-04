@@ -2,11 +2,11 @@
 
 import UIKit
 
+import ReactorKit
 import RxSwift
 
 
-
-final class ___VARIABLE_sceneName___ViewController: UIViewController {
+final class ___VARIABLE_sceneName___ViewController: UIViewController, StoryboardView {
 
   // MARK: UI
 
@@ -15,13 +15,13 @@ final class ___VARIABLE_sceneName___ViewController: UIViewController {
 
   // MARK: Properties
 
-  private let viewModel: ___VARIABLE_sceneName___ViewModel
+  var disposeBag = DisposeBag()
 
 
   // MARK: Initializing
 
-  init(viewModel: ___VARIABLE_sceneName___ViewModel) {
-    self.viewModel = viewModel
+  init(reactor: ___VARIABLE_sceneName___ViewReactor) {
+    defer { self.reactor = reactor }
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -38,12 +38,10 @@ final class ___VARIABLE_sceneName___ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    bind(with: viewModel)
   }
 
 
   // MARK: Binding
 
-  func bind(with viewModel: ___VARIABLE_sceneName___ViewModel) {}
+  func bind(reactor: ___VARIABLE_sceneName___ViewReactor) {}
 }

@@ -94,9 +94,9 @@
 		</dict>
 		<dict>
 			<key>Default</key>
-			<string>___VARIABLE_sceneName:identifier___ViewModel</string>
+			<string>___VARIABLE_sceneName:identifier___ViewReactor</string>
 			<key>Description</key>
-			<string>The ViewModel name</string>
+			<string>The ViewReactor name</string>
 			<key>Identifier</key>
 			<string>reactorName</string>
 			<key>Name</key>

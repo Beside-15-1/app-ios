@@ -22,7 +22,7 @@ final class TagView: UIView {
     $0.font = .subTitleSemiBold
   }
 
-  private let addTagButton = TextButton(type: .regular, color: .primary500).then {
+  let addTagButton = TextButton(type: .regular, color: .primary500).then {
     $0.leftIconImage = DesignSystemAsset.iconPlus.image
     $0.text = "태그추가"
   }
