@@ -14,6 +14,7 @@ public final class PresentationAssembly: Assembly {
     let registerFunctions: [(Container) -> Void] = [
       registerLoginBuilder,
       registerMainTabBuilder,
+      registerCreateFolderBuilder,
       registerHomeBuilder,
       registerFolderBuilder,
       registerMyPageBuilder,
@@ -21,7 +22,8 @@ public final class PresentationAssembly: Assembly {
       registerTermsOfUseBuilder,
       registerTagAddBuilder,
       registerCreateLinkBuilder,
-      registerSelectFolderBuilder
+      registerSelectFolderBuilder,
+      registerSignUpBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -52,7 +54,7 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerHomeBuilder(container: Container) {
-    container.register(HomeBuildable.self) { _ in
+    container.register(HomeBuildable.self) { resolver in
       HomeBuilder(dependency: .init())
     }
   }
@@ -100,7 +102,8 @@ public final class PresentationAssembly: Assembly {
     container.register(CreateLinkBuildable.self) { r in
       CreateLinkBuilder(dependency: .init(
         selectFolderBuilder: r.resolve(),
-        tagAddBuilder: r.resolve()
+        tagAddBuilder: r.resolve(),
+        createFolderBuilder: r.resolve()
       ))
     }
   }
@@ -108,6 +111,12 @@ public final class PresentationAssembly: Assembly {
   private func registerSelectFolderBuilder(container: Container) {
     container.register(SelectFolderBuildable.self) { r in
       SelectFolderBuilder(dependency: .init())
+    }
+  }
+
+  private func registerCreateFolderBuilder(container: Container) {
+    container.register(CreateFolderBuildable.self) { _ in
+      CreateFolderBuilder(dependency: .init())
     }
   }
 }

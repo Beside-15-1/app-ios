@@ -52,6 +52,10 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
     super.viewDidLoad()
   }
 
+  deinit {
+    delegate?.selectFolderViewControllerDismissed()
+  }
+
 
   // MARK: Binding
 

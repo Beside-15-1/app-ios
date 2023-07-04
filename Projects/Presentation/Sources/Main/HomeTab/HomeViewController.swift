@@ -2,6 +2,8 @@ import UIKit
 
 import RxSwift
 
+import PresentationInterface
+
 final class HomeViewController: UIViewController {
   // MARK: UI
 
@@ -11,9 +13,13 @@ final class HomeViewController: UIViewController {
 
   private let viewModel: HomeViewModel
 
+  private let disposeBag = DisposeBag()
+
   // MARK: Initializing
 
-  init(viewModel: HomeViewModel) {
+  init(
+    viewModel: HomeViewModel
+  ) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }

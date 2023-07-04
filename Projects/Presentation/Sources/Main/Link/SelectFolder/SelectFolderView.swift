@@ -36,7 +36,6 @@ final class SelectFolderView: UIView {
     $0.backgroundColor = .clear
     $0.showsVerticalScrollIndicator = false
     $0.register(SelectFolderCell.self, forCellWithReuseIdentifier: SelectFolderCell.identifier)
-    //    $0.delegate = self
   }
 
   private lazy var diffableDataSource = self.collectionViewDataSource()

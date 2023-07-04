@@ -11,7 +11,6 @@ project 'Projects/Presentation.xcodeproj'
 project 'Projects/DesignSystem.xcodeproj'
 # Core
 project 'Projects/Core/PBNetworking/PBNetworking.xcodeproj'
-project 'Projects/Core/LoginManager/LoginManager.xcodeproj'
 
 def flex_layout
   pod 'FlexLayout', :git => 'git@github.com:pink-boss/FlexLayout.git'

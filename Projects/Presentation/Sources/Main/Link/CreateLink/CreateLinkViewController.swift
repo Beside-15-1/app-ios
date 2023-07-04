@@ -21,6 +21,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   private let selectFolderBuilder: SelectFolderBuildable
   private let tagAddBuilder: TagAddBuildable
+  private let createFolderBuilder: CreateFolderBuildable
 
 
   // MARK: Initializing
@@ -28,11 +29,13 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   init(
     reactor: CreateLinkViewReactor,
     selectFolderBuilder: SelectFolderBuildable,
-    tagAddBuilder: TagAddBuildable
+    tagAddBuilder: TagAddBuildable,
+    createFolderBuilder: CreateFolderBuildable
   ) {
     defer { self.reactor = reactor }
     self.selectFolderBuilder = selectFolderBuilder
     self.tagAddBuilder = tagAddBuilder
+    self.createFolderBuilder = createFolderBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -83,17 +86,18 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           payload: .init(
             folders: [
               .init(),
-              .init(title: "기획", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "개발", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "집에", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
+              .init(title: "기획", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "개발", backgroundColor: "as", titleColor: "asd", illustration: "fd"),
+              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "집에", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", illustration: "df"),
             ],
             selectedFolder: self.reactor?.currentState.folder ?? .init(),
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
+
         self.contentView.selectFolderView.select()
         self.presentPanModal(vc)
       }
@@ -106,6 +110,15 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           tagAddDelegate: self,
           addedTagList: reactor.currentState.tags)
         )
+
+        vc.modalPresentationStyle = .popover
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createFolderBuilder.build(payload: .init())
 
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
@@ -197,6 +210,9 @@ extension CreateLinkViewController: UITextFieldDelegate {
 extension CreateLinkViewController: SelectFolderDelegate {
   func selectFolderViewItemTapped(folder: Folder) {
     reactor?.action.onNext(.updateFolder(folder))
+  }
+
+  func selectFolderViewControllerDismissed() {
     contentView.selectFolderView.deselect()
   }
 }

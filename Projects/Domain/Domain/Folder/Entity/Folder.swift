@@ -11,14 +11,14 @@ public struct Folder: Hashable {
   public var title: String
   public var backgroundColor: String
   public var titleColor: String
-  public var image: String?
+  public var illustration: String?
   public var linkCount: Int
 
   public init() {
     title = "기본"
     backgroundColor = "#6D6D6F"
     titleColor = "#FFFFFF"
-    image = nil
+    illustration = nil
     linkCount = 0
   }
 
@@ -26,13 +26,13 @@ public struct Folder: Hashable {
     title: String,
     backgroundColor: String,
     titleColor: String,
-    image: String,
-    linkCount: Int
+    illustration: String?,
+    linkCount: Int = 0
   ) {
     self.title = title
     self.backgroundColor = backgroundColor
     self.titleColor = titleColor
-    self.image = image
+    self.illustration = illustration
     self.linkCount = linkCount
   }
 }
