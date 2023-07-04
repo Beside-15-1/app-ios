@@ -11,12 +11,14 @@ final class CreateLinkViewReactor: Reactor {
     case fetchThumbnail(String)
     case updateTitle(String)
     case updateFolder(Folder)
+    case updateTag([String])
   }
 
   enum Mutation {
     case setThumbnail(Thumbnail?)
     case setLinkError(String)
     case setFolder(Folder)
+    case setTag([String])
   }
 
   struct State {
@@ -74,6 +76,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .updateFolder(let folder):
       return .just(Mutation.setFolder(folder))
+
+    case .updateTag(let tags):
+      return .just(Mutation.setTag(tags))
     }
   }
 
@@ -89,6 +94,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .setLinkError(let error):
       newState.linkError = error
+
+    case .setTag(let tags):
+      newState.tags = tags
     }
 
     return newState

@@ -99,7 +99,8 @@ public final class PresentationAssembly: Assembly {
   private func registerCreateLinkBuilder(container: Container) {
     container.register(CreateLinkBuildable.self) { r in
       CreateLinkBuilder(dependency: .init(
-        selectFolderBuilder: r.resolve()
+        selectFolderBuilder: r.resolve(),
+        tagAddBuilder: r.resolve()
       ))
     }
   }
