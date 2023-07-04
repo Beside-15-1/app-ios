@@ -1,8 +1,8 @@
 import UIKit
 
-// MARK: - LinkBookIllustView
+// MARK: - CreateFolderIllustView
 
-class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
+class CreateFolderIllustView: UIView, UICollectionViewDelegateFlowLayout {
   // MARK: UI
 
   private lazy var scrollView = UIScrollView()
@@ -69,7 +69,7 @@ class LinkBookIllustView: UIView, UICollectionViewDelegateFlowLayout {
 
 // MARK: UICollectionViewDelegate, UICollectionViewDataSource
 
-extension LinkBookIllustView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CreateFolderIllustView: UICollectionViewDelegate, UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return 12
   }

@@ -21,6 +21,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   private let selectFolderBuilder: SelectFolderBuildable
   private let tagAddBuilder: TagAddBuildable
+  private let createFolderBuilder: CreateFolderBuildable
 
 
   // MARK: Initializing
@@ -28,11 +29,13 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   init(
     reactor: CreateLinkViewReactor,
     selectFolderBuilder: SelectFolderBuildable,
-    tagAddBuilder: TagAddBuildable
+    tagAddBuilder: TagAddBuildable,
+    createFolderBuilder: CreateFolderBuildable
   ) {
     defer { self.reactor = reactor }
     self.selectFolderBuilder = selectFolderBuilder
     self.tagAddBuilder = tagAddBuilder
+    self.createFolderBuilder = createFolderBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -106,6 +109,15 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           tagAddDelegate: self,
           addedTagList: reactor.currentState.tags)
         )
+
+        vc.modalPresentationStyle = .popover
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createFolderBuilder.build(payload: .init())
 
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)

@@ -9,6 +9,7 @@ import PresentationInterface
 struct CreateLinkDependency {
   let selectFolderBuilder: SelectFolderBuildable
   let tagAddBuilder: TagAddBuildable
+  let createFolderBuilder: CreateFolderBuildable
 }
 
 // MARK: - CreateLinkBuilder
@@ -28,7 +29,8 @@ final class CreateLinkBuilder: CreateLinkBuildable {
     let viewController = CreateLinkViewController(
       reactor: reactor,
       selectFolderBuilder: dependency.selectFolderBuilder,
-      tagAddBuilder: dependency.tagAddBuilder
+      tagAddBuilder: dependency.tagAddBuilder,
+      createFolderBuilder: dependency.createFolderBuilder
     )
 
     return viewController

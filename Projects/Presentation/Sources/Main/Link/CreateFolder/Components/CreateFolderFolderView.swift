@@ -1,7 +1,7 @@
 import DesignSystem
 import UIKit
 
-class LinkBookFolderView: UIView {
+class CreateFolderFolderView: UIView {
   // MARK: UI
 
   let inputField = InputField(type: .normal).then {

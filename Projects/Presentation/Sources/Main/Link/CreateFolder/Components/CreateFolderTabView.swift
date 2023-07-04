@@ -5,7 +5,7 @@ import Then
 
 import DesignSystem
 
-class LinkBookTabView: UIView {
+class CreateFolderTabView: UIView {
   // MARK: Properties
 
   private let disposeBag = DisposeBag()
@@ -16,9 +16,9 @@ class LinkBookTabView: UIView {
     $0.applyTabs(by: ["폴더명", "컬러", "일러스트"])
   }
 
-  lazy var folderView = LinkBookFolderView()
-  lazy var colorView = LinkBookColorView()
-  lazy var illustView = LinkBookIllustView()
+  lazy var folderView = CreateFolderFolderView()
+  lazy var colorView = CreateFolderColorView()
+  lazy var illustView = CreateFolderIllustView()
 
   let makeButton = BasicButton(priority: .primary).then {
     $0.text = "만들기"

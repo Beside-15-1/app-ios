@@ -1,13 +1,13 @@
 import UIKit
 
-// MARK: - LinkBookColorView
+// MARK: - CreateFolderColorView
 
-class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
+class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
   // MARK: UI
 
   private lazy var bgLabel = {
     let label = UILabel()
-    label.text = "배경 컬러"
+    label.text = "배경"
     label.font = .subTitleSemiBold
     return label
   }()
@@ -16,7 +16,7 @@ class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
 
   private lazy var titleLabel = {
     let label = UILabel()
-    label.text = "제목 색상"
+    label.text = "제목"
     label.font = .subTitleSemiBold
     return label
   }()
@@ -95,7 +95,7 @@ class LinkBookColorView: UIView, UICollectionViewDelegateFlowLayout {
 
 // MARK: UICollectionViewDelegate, UICollectionViewDataSource
 
-extension LinkBookColorView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CreateFolderColorView: UICollectionViewDelegate, UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     switch collectionView {
     case backgroundColorGrid:

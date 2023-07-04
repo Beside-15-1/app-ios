@@ -3,14 +3,14 @@ import UIKit
 
 import Domain
 
-// MARK: - LinkBookBuildable
+// MARK: - CreateFolderBuildable
 
-public protocol LinkBookBuildable {
-  func build(payload: LinkBookPayload) -> UIViewController
+public protocol CreateFolderBuildable {
+  func build(payload: CreateFolderPayload) -> UIViewController
 }
 
-// MARK: - LinkBookPayload
+// MARK: - CreateFolderPayload
 
-public struct LinkBookPayload {
+public struct CreateFolderPayload {
   public init() {}
 }
