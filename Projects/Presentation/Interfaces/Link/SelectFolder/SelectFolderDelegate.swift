@@ -11,4 +11,5 @@ import Domain
 
 public protocol SelectFolderDelegate: AnyObject {
   func selectFolderViewItemTapped(folder: Folder)
+  func selectFolderViewControllerDismissed()
 }

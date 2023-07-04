@@ -1,8 +1,14 @@
 import UIKit
 
+protocol CreateFolderColorViewDelegate: AnyObject {
+  func backgroundColorDidTap(at row: Int)
+  func titleColorDidTap(at row: Int)
+}
+
 // MARK: - CreateFolderColorView
 
 class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
+
   // MARK: UI
 
   private lazy var bgLabel = {
@@ -23,6 +29,14 @@ class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
 
   private var titleColorGrid: UICollectionView!
 
+
+  // MARK: Properties
+
+  weak var delegate: CreateFolderColorViewDelegate?
+
+  private var backgroundColors: [String] = []
+  private var titleColors: [String] = []
+
   // MARK: Life Cycle
 
   override init(frame: CGRect) {
@@ -38,6 +52,35 @@ class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
     fatalError("init(coder:) has not been implemented")
   }
 
+
+  // MARK: Configuring
+
+  func configureBackground(colors: [String], selectedColor: String) {
+    self.backgroundColors = colors
+    backgroundColorGrid.reloadData()
+
+    if let row = colors.firstIndex(of: selectedColor) {
+      backgroundColorGrid.selectItem(
+        at: IndexPath(item: row, section: 0),
+        animated: true,
+        scrollPosition: .centeredHorizontally
+      )
+    }
+  }
+
+  func configureTitleColor(colors: [String], selectedColor: String) {
+    self.titleColors = colors
+    titleColorGrid.reloadData()
+
+    if let row = colors.firstIndex(of: selectedColor) {
+      titleColorGrid.selectItem(
+        at: IndexPath(item: row, section: 0),
+        animated: true,
+        scrollPosition: .centeredHorizontally
+      )
+    }
+  }
+
   private func setCollection() {
     let bgLayout = UICollectionViewFlowLayout()
     bgLayout.itemSize = CGSize(width: 50, height: 50)
@@ -46,9 +89,12 @@ class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
 
     backgroundColorGrid = UICollectionView(frame: bounds, collectionViewLayout: bgLayout)
     backgroundColorGrid.backgroundColor = .clear
-    backgroundColorGrid.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "BgCell")
     backgroundColorGrid.dataSource = self
     backgroundColorGrid.delegate = self
+    backgroundColorGrid.register(
+      CreateFolderBackgroundColorCell.self,
+      forCellWithReuseIdentifier: CreateFolderBackgroundColorCell.identifier
+    )
 
     let titleLayout = UICollectionViewFlowLayout()
     titleLayout.itemSize = CGSize(width: 50, height: 50)
@@ -57,9 +103,12 @@ class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
 
     titleColorGrid = UICollectionView(frame: bounds, collectionViewLayout: titleLayout)
     titleColorGrid.backgroundColor = .clear
-    titleColorGrid.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "TitleCell")
     titleColorGrid.dataSource = self
     titleColorGrid.delegate = self
+    titleColorGrid.register(
+      CreateFolderTitleColorCell.self,
+      forCellWithReuseIdentifier: CreateFolderTitleColorCell.identifier
+    )
   }
 
   private func setView() {
@@ -99,9 +148,9 @@ extension CreateFolderColorView: UICollectionViewDelegate, UICollectionViewDataS
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     switch collectionView {
     case backgroundColorGrid:
-      return 12
+      return backgroundColors.count
     case titleColorGrid:
-      return 2
+      return titleColors.count
     default:
       return 0
     }
@@ -110,17 +159,41 @@ extension CreateFolderColorView: UICollectionViewDelegate, UICollectionViewDataS
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     switch collectionView {
     case backgroundColorGrid:
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BgCell", for: indexPath)
-      cell.backgroundColor = .systemPink
+      guard let cell = collectionView.dequeueReusableCell(
+        withReuseIdentifier: CreateFolderBackgroundColorCell.identifier, for: indexPath
+      ) as? CreateFolderBackgroundColorCell else { return UICollectionViewCell() }
+
       cell.layer.cornerRadius = 5
+      cell.backgroundColor = UIColor(hexString: backgroundColors[indexPath.row])
       return cell
     case titleColorGrid:
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TitleCell", for: indexPath)
-      cell.backgroundColor = .systemBlue
+      guard let cell = collectionView.dequeueReusableCell(
+        withReuseIdentifier: CreateFolderTitleColorCell.identifier, for: indexPath
+      ) as? CreateFolderTitleColorCell else { return UICollectionViewCell() }
+
+      if indexPath.row == 0 {
+        cell.layer.borderColor = UIColor.gray300.cgColor
+        cell.layer.borderWidth = 1
+        cell.checkImage.image = cell.checkImage.image?.withTintColor(.black)
+      }
       cell.layer.cornerRadius = 5
+      cell.backgroundColor = UIColor(hexString: titleColors[indexPath.row])
       return cell
     default:
       return collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+    }
+  }
+
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    switch collectionView {
+    case backgroundColorGrid:
+      delegate?.backgroundColorDidTap(at: indexPath.row)
+
+    case titleColorGrid:
+      delegate?.titleColorDidTap(at: indexPath.row)
+
+    default:
+      break
     }
   }
 }

@@ -21,9 +21,9 @@ class CreateFolderView: UIView {
     $0.title = "새폴더"
   }
 
-  private let previewView = CreateFolderPreviewView()
+  let previewView = CreateFolderPreviewView()
 
-  private let linkBookTabView = CreateFolderTabView()
+  let linkBookTabView = CreateFolderTabView()
 
 
   override init(frame: CGRect) {

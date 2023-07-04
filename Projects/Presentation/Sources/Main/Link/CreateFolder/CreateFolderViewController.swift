@@ -38,6 +38,8 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     super.loadView()
 
     self.view = contentView
+
+    contentView.linkBookTabView.colorView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -48,6 +50,8 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   func bind(reactor: CreateFolderViewReactor) {
     bindButtons(with: reactor)
+    bindContent(with: reactor)
+    bindTextField(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateFolderViewReactor) {
@@ -56,5 +60,64 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.isMakeButtonEnabled)
+      .distinctUntilChanged()
+      .asObservable()
+      .bind(to: contentView.linkBookTabView.makeButton.rx.isEnabled)
+      .disposed(by: disposeBag)
+  }
+
+  private func bindContent(with reactor: CreateFolderViewReactor) {
+
+    reactor.state.map(\.backgroundColors)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, colors in
+        self.contentView.linkBookTabView.colorView.configureBackground(
+          colors: colors,
+          selectedColor: reactor.currentState.folder.backgroundColor
+        )
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.map(\.titleColors)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, colors in
+        self.contentView.linkBookTabView.colorView.configureTitleColor(
+          colors: colors,
+          selectedColor: reactor.currentState.folder.titleColor
+        )
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.map(\.folder)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.previewView.configure(with: viewModel)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindTextField(with reactor: CreateFolderViewReactor) {
+    contentView.linkBookTabView.folderView.inputField.rx.text
+      .map { Reactor.Action.updateTitle($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+}
+
+
+// MARK: - CreateFolderColorViewDelegate
+
+extension CreateFolderViewController: CreateFolderColorViewDelegate {
+  func backgroundColorDidTap(at row: Int) {
+    reactor?.action.onNext(.updateBackgroundColor(row))
+  }
+
+  func titleColorDidTap(at row: Int) {
+    reactor?.action.onNext(.updateTitleColor(row))
   }
 }

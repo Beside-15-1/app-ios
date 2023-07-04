@@ -86,17 +86,18 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           payload: .init(
             folders: [
               .init(),
-              .init(title: "기획", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "개발", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "집에", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
-              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
+              .init(title: "기획", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "개발", backgroundColor: "as", titleColor: "asd", illustration: "fd"),
+              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "집에", backgroundColor: "as", titleColor: "asd", illustration: "df"),
+              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", illustration: "df"),
             ],
             selectedFolder: self.reactor?.currentState.folder ?? .init(),
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
+
         self.contentView.selectFolderView.select()
         self.presentPanModal(vc)
       }
@@ -209,6 +210,9 @@ extension CreateLinkViewController: UITextFieldDelegate {
 extension CreateLinkViewController: SelectFolderDelegate {
   func selectFolderViewItemTapped(folder: Folder) {
     reactor?.action.onNext(.updateFolder(folder))
+  }
+
+  func selectFolderViewControllerDismissed() {
     contentView.selectFolderView.deselect()
   }
 }

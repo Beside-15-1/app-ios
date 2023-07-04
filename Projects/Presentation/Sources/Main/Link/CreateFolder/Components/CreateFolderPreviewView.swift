@@ -7,13 +7,23 @@
 
 import UIKit
 
+import Domain
+
 class CreateFolderPreviewView: UIView {
+
+  struct ViewModel: Hashable {
+    var backgroundColor: String
+    var titleColor: String
+    var title: String
+    var illuste: String
+  }
+
   // MARK: UI
 
   private lazy var bookCover = {
     let view = UIView()
     view.layer.cornerRadius = 6
-    view.backgroundColor = UIColor(hexString: "#FF6854")
+    view.backgroundColor = UIColor(hexString: "#91B0C4")
     view.layer.shadowColor = UIColor.black.cgColor
     view.layer.shadowOpacity = 0.5
     view.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -29,7 +39,7 @@ class CreateFolderPreviewView: UIView {
 
   private lazy var bookText = {
     let label = UILabel()
-    label.text = "일이삼사오\n육칠팔구십"
+    label.text = "제목을 입력하세요"
     label.numberOfLines = 3
     label.textColor = .white
     label.font = .bodyBold
@@ -40,7 +50,7 @@ class CreateFolderPreviewView: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    backgroundColor = .gray400
+    backgroundColor = .paperGray
     setView()
   }
 
@@ -48,6 +58,18 @@ class CreateFolderPreviewView: UIView {
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
+
+  // MARK: Configuring
+
+  func configure(with folder: Folder) {
+    bookCover.backgroundColor = UIColor(hexString: folder.backgroundColor)
+    bookText.text = folder.title
+    bookText.textColor = UIColor(hexString: folder.titleColor)
+  }
+
+
+  // MARK: Layout
 
   private func setView() {
     addSubview(bookCover)
