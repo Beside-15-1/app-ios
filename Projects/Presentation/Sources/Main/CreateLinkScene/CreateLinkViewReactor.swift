@@ -9,16 +9,19 @@ final class CreateLinkViewReactor: Reactor {
 
   enum Action {
     case fetchThumbnail(String)
-    case inputTitle(String)
+    case updateTitle(String)
+    case updateFolder(Folder)
   }
 
   enum Mutation {
     case setThumbnail(Thumbnail?)
     case setLinkError(String)
+    case setFolder(Folder)
   }
 
   struct State {
     var thumbnail: Thumbnail?
+    var folder: Folder = .init()
 
     var isSaveButtonEnabled: Bool {
       guard let thumbnail,
@@ -62,11 +65,14 @@ final class CreateLinkViewReactor: Reactor {
 
       return fetchThumbnail(url: url)
 
-    case .inputTitle(let title):
+    case .updateTitle(let title):
       var thumbnail = currentState.thumbnail
       thumbnail?.title = title
 
       return .just(Mutation.setThumbnail(thumbnail))
+
+    case .updateFolder(let folder):
+      return .just(Mutation.setFolder(folder))
     }
   }
 
@@ -76,6 +82,9 @@ final class CreateLinkViewReactor: Reactor {
     switch mutation {
     case .setThumbnail(let thumbnail):
       newState.thumbnail = thumbnail
+
+    case .setFolder(let folder):
+      newState.folder = folder
 
     case .setLinkError(let error):
       newState.linkError = error

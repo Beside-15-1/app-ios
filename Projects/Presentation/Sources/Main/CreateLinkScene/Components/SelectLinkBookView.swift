@@ -3,20 +3,21 @@ import UIKit
 import SnapKit
 import Then
 
+import Domain
 import DesignSystem
 
-final class SelectLinkBookView: UIView {
+final class SelectFolderView: UIView {
   // MARK: Constant
 
   private enum Metric {
-    static let linkBookIconSize = CGSize(width: 19.0, height: 19.0)
+    static let folderIconSize = CGSize(width: 19.0, height: 19.0)
     static let caretDownSize = CGSize(width: 24.0, height: 24.0)
   }
 
   // MARK: UI
 
   private let titleLabel = UILabel().then {
-    $0.text = "저장할 링크북"
+    $0.text = "저장할 폴더"
     $0.textColor = .staticBlack
     $0.font = .subTitleSemiBold
   }
@@ -27,9 +28,9 @@ final class SelectLinkBookView: UIView {
     $0.clipsToBounds = true
   }
 
-  private let linkBookTitleLabel = UILabel().then {
+  private let folderTitleLabel = UILabel().then {
     $0.font = .defaultRegular
-    $0.textColor = .gray600
+    $0.textColor = .gray600 
     $0.text = "기본"
   }
 
@@ -37,7 +38,7 @@ final class SelectLinkBookView: UIView {
     $0.image = DesignSystemAsset.iconDown.image.withTintColor(.gray500)
   }
 
-  let createLinkBookButton = TextButton(type: .regular, color: .primary500).then {
+  let createFolderButton = TextButton(type: .regular, color: .primary500).then {
     $0.leftIconImage = DesignSystemAsset.iconPlus.image
     $0.text = "새폴더"
   }
@@ -55,17 +56,24 @@ final class SelectLinkBookView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
+
+  // MARK: Configuring
+
+  func configure(withFolder folder: Folder) {
+    folderTitleLabel.text = folder.title
+  }
+
   // MARK: Layout
 
   private func defineLayout() {
-    [titleLabel, createLinkBookButton, container].forEach { addSubview($0) }
-    [linkBookTitleLabel, dropDownImage].forEach { container.addSubview($0) }
+    [titleLabel, createFolderButton, container].forEach { addSubview($0) }
+    [folderTitleLabel, dropDownImage].forEach { container.addSubview($0) }
 
     titleLabel.snp.makeConstraints {
       $0.left.top.equalToSuperview()
     }
 
-    createLinkBookButton.snp.makeConstraints {
+    createFolderButton.snp.makeConstraints {
       $0.top.equalToSuperview()
       $0.right.equalToSuperview().inset(4.0)
     }
@@ -76,7 +84,7 @@ final class SelectLinkBookView: UIView {
       $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
     }
 
-    linkBookTitleLabel.snp.makeConstraints {
+    folderTitleLabel.snp.makeConstraints {
       $0.left.equalToSuperview().inset(12.0)
       $0.centerY.equalToSuperview()
     }

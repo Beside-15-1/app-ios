@@ -39,7 +39,7 @@ final class CreateLinkView: UIView {
     $0.returnKeyType = .done
   }
 
-  let selectLinkBookView = SelectLinkBookView()
+  let selectFolderView = SelectFolderView()
 
   let tagView = TagView()
 
@@ -71,7 +71,7 @@ final class CreateLinkView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [colorBackground, titleInputField, selectLinkBookView, tagView, saveButton].forEach {
+    [colorBackground, titleInputField, selectFolderView, tagView, saveButton].forEach {
       addSubview($0)
     }
     [titleLabel, closeButton, linkInputField].forEach { colorBackground.addSubview($0) }
@@ -102,14 +102,14 @@ final class CreateLinkView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    selectLinkBookView.snp.makeConstraints {
+    selectFolderView.snp.makeConstraints {
       $0.left.right.equalToSuperview().inset(20.0)
       $0.top.equalTo(titleInputField.snp.bottom).offset(54.0)
     }
 
     tagView.snp.makeConstraints {
       $0.left.right.equalToSuperview().inset(20.0)
-      $0.top.equalTo(selectLinkBookView.snp.bottom).offset(32.0)
+      $0.top.equalTo(selectFolderView.snp.bottom).offset(32.0)
     }
 
     saveButton.snp.makeConstraints {

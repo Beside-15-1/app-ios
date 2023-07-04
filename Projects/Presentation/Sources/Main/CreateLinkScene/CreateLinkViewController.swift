@@ -76,11 +76,19 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         self.contentView.linkInputField.showError()
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.folder)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, folder in
+        self.contentView.selectFolderView.configure(withFolder: folder)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: CreateLinkViewReactor) {
     contentView.titleInputField.rx.text
-      .map { Reactor.Action.inputTitle($0) }
+      .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
