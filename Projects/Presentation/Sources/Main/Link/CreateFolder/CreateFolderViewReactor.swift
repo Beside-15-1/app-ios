@@ -11,10 +11,12 @@ final class CreateFolderViewReactor: Reactor {
     case updateTitle(String)
     case updateBackgroundColor(Int)
     case updateTitleColor(Int)
+    case makeButtonTapped
   }
 
   enum Mutation {
     case updateFolder(Folder)
+    case setSucceed
   }
 
   struct State {
@@ -27,6 +29,8 @@ final class CreateFolderViewReactor: Reactor {
     var isMakeButtonEnabled: Bool {
       return !folder.title.isEmpty
     }
+
+    var isSuccess: Bool = false
   }
 
   // MARK: Properties
@@ -74,6 +78,10 @@ final class CreateFolderViewReactor: Reactor {
       var folder = currentState.folder
       folder.titleColor = currentState.titleColors[index]
       return .just(Mutation.updateFolder(folder))
+
+    case .makeButtonTapped:
+      // TODO: 링크북 생성
+      return .empty()
     }
   }
 
@@ -83,6 +91,9 @@ final class CreateFolderViewReactor: Reactor {
     switch mutation {
     case .updateFolder(let folder):
       newState.folder = folder
+
+    case .setSucceed:
+      newState.isSuccess = true
     }
 
     return newState

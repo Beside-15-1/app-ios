@@ -1,5 +1,8 @@
 import UIKit
 
+import SnapKit
+import Then
+
 protocol CreateFolderColorViewDelegate: AnyObject {
   func backgroundColorDidTap(at row: Int)
   func titleColorDidTap(at row: Int)
@@ -10,6 +13,11 @@ protocol CreateFolderColorViewDelegate: AnyObject {
 class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
 
   // MARK: UI
+
+  private let scrollView = UIScrollView().then {
+    $0.showsVerticalScrollIndicator = false
+    $0.showsHorizontalScrollIndicator = false
+  }
 
   private lazy var bgLabel = {
     let label = UILabel()
@@ -112,32 +120,37 @@ class CreateFolderColorView: UIView, UICollectionViewDelegateFlowLayout {
   }
 
   private func setView() {
-    addSubview(bgLabel)
+    addSubview(scrollView)
+    scrollView.snp.makeConstraints {
+      $0.top.bottom.equalToSuperview()
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    scrollView.addSubview(bgLabel)
     bgLabel.snp.makeConstraints { make in
-      make.leading.equalToSuperview().offset(20)
+      make.width.left.right.equalToSuperview()
       make.top.equalToSuperview().offset(16)
     }
 
-    addSubview(backgroundColorGrid)
+    scrollView.addSubview(backgroundColorGrid)
     backgroundColorGrid.snp.makeConstraints { make in
-      make.leading.equalToSuperview().offset(20)
-      make.trailing.equalToSuperview().offset(-20)
+      make.width.left.right.equalToSuperview()
       make.top.equalTo(bgLabel.snp.bottom).offset(12)
       make.height.equalTo(108)
     }
 
-    addSubview(titleLabel)
+    scrollView.addSubview(titleLabel)
     titleLabel.snp.makeConstraints { make in
-      make.leading.equalToSuperview().offset(20)
+      make.width.left.right.equalToSuperview()
       make.top.equalTo(backgroundColorGrid.snp.bottom).offset(24)
     }
 
-    addSubview(titleColorGrid)
+    scrollView.addSubview(titleColorGrid)
     titleColorGrid.snp.makeConstraints { make in
-      make.leading.equalToSuperview().offset(20)
-      make.trailing.equalToSuperview().offset(-20)
+      make.width.left.right.equalToSuperview()
       make.top.equalTo(titleLabel.snp.bottom).offset(12)
-      make.height.equalTo(108)
+      make.height.equalTo(50)
+      make.bottom.equalToSuperview()
     }
   }
 }

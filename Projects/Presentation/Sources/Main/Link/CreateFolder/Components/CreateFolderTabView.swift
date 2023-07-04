@@ -42,30 +42,31 @@ class CreateFolderTabView: UIView {
 
   private func setViews() {
     addSubview(tabView)
+    addSubview(folderView)
+    addSubview(colorView)
+    addSubview(illustView)
+    addSubview(makeButton)
     tabView.snp.makeConstraints { make in
       make.top.equalToSuperview().offset(8)
       make.left.equalToSuperview().offset(20)
       make.right.equalToSuperview().offset(-20)
     }
 
-    addSubview(folderView)
     folderView.snp.makeConstraints { make in
       make.top.equalTo(tabView.snp.bottom)
-      make.bottom.equalToSuperview()
+      make.bottom.equalTo(makeButton.snp.top).offset(-12.0)
       make.width.centerX.equalToSuperview()
     }
 
-    addSubview(colorView)
     colorView.snp.makeConstraints { make in
       make.top.equalTo(tabView.snp.bottom)
-      make.bottom.equalToSuperview()
+      make.bottom.equalTo(makeButton.snp.top).offset(-12.0)
       make.width.centerX.equalToSuperview()
     }
 
-    addSubview(illustView)
     illustView.snp.makeConstraints { make in
       make.top.equalTo(tabView.snp.bottom)
-      make.bottom.equalToSuperview().offset(-108)
+      make.bottom.equalTo(makeButton.snp.top).offset(-12.0)
       make.width.centerX.equalToSuperview()
     }
 
@@ -73,12 +74,9 @@ class CreateFolderTabView: UIView {
     colorView.isHidden = true
     illustView.isHidden = true
 
-    addSubview(makeButton)
     makeButton.snp.makeConstraints { make in
-      make.width.equalToSuperview().offset(-40)
-      make.centerX.equalToSuperview()
-      make.bottom.equalToSuperview().offset(-40)
-      make.height.equalTo(56)
+      make.left.right.equalToSuperview().inset(20.0)
+      make.bottom.equalTo(safeAreaLayoutGuide).inset(20.0)
     }
   }
 

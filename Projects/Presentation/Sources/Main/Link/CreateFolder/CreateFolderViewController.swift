@@ -52,6 +52,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     bindButtons(with: reactor)
     bindContent(with: reactor)
     bindTextField(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateFolderViewReactor) {
@@ -105,6 +106,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     contentView.linkBookTabView.folderView.inputField.rx.text
       .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+
+  private func bindRoute(with reactor: CreateFolderViewReactor) {
+    reactor.state.map(\.isSuccess)
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
+      }
       .disposed(by: disposeBag)
   }
 }
