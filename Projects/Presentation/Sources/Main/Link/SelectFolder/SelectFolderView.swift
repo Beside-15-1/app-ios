@@ -36,7 +36,7 @@ final class SelectFolderView: UIView {
     $0.backgroundColor = .clear
     $0.showsVerticalScrollIndicator = false
     $0.register(SelectFolderCell.self, forCellWithReuseIdentifier: SelectFolderCell.identifier)
-//    $0.delegate = self
+    //    $0.delegate = self
   }
 
   private lazy var diffableDataSource = self.collectionViewDataSource()
@@ -107,10 +107,10 @@ final class SelectFolderView: UIView {
       collectionView: collectionView
     ) { [weak self] collectionView, indexPath, item in
 
-        guard let cell = collectionView.dequeueReusableCell(
-          withReuseIdentifier: SelectFolderCell.identifier,
-          for: indexPath
-        ) as? SelectFolderCell else { return UICollectionViewCell() }
+      guard let cell = collectionView.dequeueReusableCell(
+        withReuseIdentifier: SelectFolderCell.identifier,
+        for: indexPath
+      ) as? SelectFolderCell else { return UICollectionViewCell() }
 
       return cell.then {
         $0.configure(
@@ -139,7 +139,7 @@ final class SelectFolderView: UIView {
       $0.top.equalTo(titleView.snp.bottom).offset(12.0)
       $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalToSuperview().inset(8.0)
-//      $0.height.equalTo(0)
+      //      $0.height.equalTo(0)
     }
   }
 

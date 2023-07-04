@@ -28,7 +28,7 @@ public final class TitleView: UIView {
     $0.font = .defaultSemiBold
   }
 
-  let closeButton = UIButton().then {
+  public let closeButton = UIButton().then {
     $0.setImage(
       DesignSystemAsset.iconCloseOutline.image.withTintColor(.gray900),
       for: .normal

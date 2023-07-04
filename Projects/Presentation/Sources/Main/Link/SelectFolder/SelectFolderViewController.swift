@@ -12,6 +12,7 @@ import RxSwift
 import PanModal
 
 import DesignSystem
+import PresentationInterface
 
 final class SelectFolderViewController: UIViewController, StoryboardView {
 
@@ -23,6 +24,8 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  weak var delegate: SelectFolderDelegate?
 
 
   // MARK: Initializing
@@ -41,6 +44,8 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.collectionView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -52,6 +57,7 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
 
   func bind(reactor: SelectFolderViewReactor) {
     bindContent(with: reactor)
+    bindButtons(with: reactor)
   }
 
   private func bindContent(with reactor: SelectFolderViewReactor) {
@@ -62,6 +68,14 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
           by: folders,
           selectedFolder: reactor.currentState.selectedFolder
         )
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindButtons(with reactor: SelectFolderViewReactor) {
+    contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -100,3 +114,14 @@ extension SelectFolderViewController: PanModalPresentable {
   }
 }
 
+
+// MARK: CollectionView
+
+extension SelectFolderViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    guard let reactor else { return }
+    dismiss(animated: true) {
+      self.delegate?.selectFolderViewItemTapped(folder: reactor.currentState.folders[indexPath.row])
+    }
+  }
+}

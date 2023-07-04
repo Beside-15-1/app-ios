@@ -6,6 +6,7 @@ import Toaster
 import PanModal
 
 import PresentationInterface
+import Domain
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -81,7 +82,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
                       .init(title: "1245124", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
                       .init(title: "asgf2g", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0),
                       .init(title: "6173473", backgroundColor: "as", titleColor: "asd", image: "df", linkCount: 0)],
-            selectedFolder: self.reactor?.currentState.folder ?? .init()
+            selectedFolder: self.reactor?.currentState.folder ?? .init(),
+            delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
@@ -157,5 +159,14 @@ extension CreateLinkViewController: UITextFieldDelegate {
     default:
       return false
     }
+  }
+}
+
+
+// MARK: SelectFolderDelegate
+
+extension CreateLinkViewController: SelectFolderDelegate {
+  func selectFolderViewItemTapped(folder: Folder) {
+    reactor?.action.onNext(.updateFolder(folder))
   }
 }

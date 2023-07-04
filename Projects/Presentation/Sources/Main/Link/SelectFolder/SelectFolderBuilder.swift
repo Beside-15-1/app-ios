@@ -29,7 +29,9 @@ final class SelectFolderBuilder: SelectFolderBuildable {
 
     let viewController = SelectFolderViewController(
       reactor: reactor
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }
