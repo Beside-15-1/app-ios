@@ -26,6 +26,7 @@ final class SelectFolderButton: UIView {
     $0.backgroundColor = .gray200
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
+    $0.layer.borderColor = UIColor.primary500.cgColor
   }
 
   private let folderTitleLabel = UILabel().then {
@@ -61,6 +62,16 @@ final class SelectFolderButton: UIView {
 
   func configure(withFolder folder: Folder) {
     folderTitleLabel.text = folder.title
+  }
+
+  func select() {
+    container.backgroundColor = .primary100
+    container.layer.borderWidth = 1
+  }
+
+  func deselect() {
+    container.backgroundColor = .gray200
+    container.layer.borderWidth = 0
   }
 
   // MARK: Layout

@@ -5,6 +5,10 @@ import Then
 
 import DesignSystem
 
+protocol TagViewDelegate: AnyObject {
+  func removeAddedTag(at: Int)
+}
+
 // MARK: - TagSection
 
 enum TagSection {
@@ -14,6 +18,7 @@ enum TagSection {
 // MARK: - TagViewView
 
 final class TagView: UIView {
+
   // MARK: UI
 
   private let titleLabel = UILabel().then {
@@ -55,6 +60,8 @@ final class TagView: UIView {
 
   private lazy var diffableDataSource = collectionViewDataSource()
 
+  weak var delegate: TagViewDelegate?
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
@@ -73,10 +80,12 @@ final class TagView: UIView {
   func applyAddedTag(by tags: [String]) {
     emptyView.isHidden = !tags.isEmpty
 
-    var snapshot = NSDiffableDataSourceSnapshot<TagSection, String>()
+    var snapshot = NSDiffableDataSourceSnapshot<TagSection, AddedTagItem>()
+
+    let items = tags.map { AddedTagItem(tag: $0, row: tags.firstIndex(of: $0) ?? 0) }
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tags, toSection: .normal)
+    snapshot.appendItems(items, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
   }
@@ -108,15 +117,20 @@ final class TagView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TagSection, String> {
-    let dataSource = UICollectionViewDiffableDataSource<TagSection, String>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TagSection, AddedTagItem> {
+    let dataSource = UICollectionViewDiffableDataSource<TagSection, AddedTagItem>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
         withReuseIdentifier: AddedTagCell.identifier, for: indexPath
       ).then {
         guard let cell = $0 as? AddedTagCell else { return }
-        cell.configureText(text: item)
+        cell.configureText(text: item.tag)
+        cell.deleteButton.rx.tap
+          .subscribe(onNext: { [weak self] in
+            self?.delegate?.removeAddedTag(at: item.row)
+          })
+          .disposed(by: cell.disposeBag)
       }
     }
 

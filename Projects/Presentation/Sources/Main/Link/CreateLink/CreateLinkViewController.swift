@@ -48,6 +48,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.linkInputField.setDelegate(self)
     contentView.titleInputField.setDelegate(self)
+    contentView.tagView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -93,7 +94,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
-
+        self.contentView.selectFolderView.select()
         self.presentPanModal(vc)
       }
       .disposed(by: disposeBag)
@@ -196,6 +197,7 @@ extension CreateLinkViewController: UITextFieldDelegate {
 extension CreateLinkViewController: SelectFolderDelegate {
   func selectFolderViewItemTapped(folder: Folder) {
     reactor?.action.onNext(.updateFolder(folder))
+    contentView.selectFolderView.deselect()
   }
 }
 
@@ -205,5 +207,18 @@ extension CreateLinkViewController: SelectFolderDelegate {
 extension CreateLinkViewController: TagAddDelegate {
   func tagAddViewControllerMakeButtonTapped(tagList: [String]) {
     reactor?.action.onNext(.updateTag(tagList))
+  }
+}
+
+
+// MARK: TagViewDelegate
+
+extension CreateLinkViewController: TagViewDelegate {
+  func removeAddedTag(at: Int) {
+    guard let reactor else { return }
+
+    var tags = reactor.currentState.tags
+    tags.remove(at: at)
+    reactor.action.onNext(.updateTag(tags))
   }
 }
