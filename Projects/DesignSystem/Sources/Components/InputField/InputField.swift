@@ -78,11 +78,15 @@ public class InputField: UIView {
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
-    errorContainer.isHidden = false
+    DispatchQueue.main.async {
+      self.errorContainer.isHidden = false
+    }
   }
 
   public func hideError() {
-    errorContainer.isHidden = true
+    DispatchQueue.main.async {
+      self.errorContainer.isHidden = true
+    }
   }
 
   public func setDelegate(_ delegate: UITextFieldDelegate) {
@@ -170,13 +174,13 @@ public class InputField: UIView {
 
   private func defineLayout() {
     addSubview(stackView)
+    addSubview(errorContainer)
 
-    [titleLabel, container, errorContainer].forEach { stackView.addArrangedSubview($0) }
+    [titleLabel, container].forEach { stackView.addArrangedSubview($0) }
     [textField, rightIcon].forEach { container.addSubview($0) }
     [errorIcon, errorLabel].forEach { errorContainer.addSubview($0) }
 
     stackView.setCustomSpacing(8.0, after: titleLabel)
-    stackView.setCustomSpacing(2.0, after: container)
 
     stackView.snp.makeConstraints {
       $0.edges.equalToSuperview()
@@ -196,6 +200,11 @@ public class InputField: UIView {
       $0.size.equalTo(24.0)
       $0.right.equalToSuperview().inset(12.0)
       $0.centerY.equalToSuperview()
+    }
+
+    errorContainer.snp.makeConstraints {
+      $0.top.equalTo(container.snp.bottom).offset(2.0)
+      $0.left.right.equalToSuperview()
     }
 
     errorIcon.snp.makeConstraints {

@@ -36,6 +36,7 @@ final class CreateLinkView: UIView {
     $0.title = "제목"
     $0.placeHolder = "제목을 입력하세요"
     $0.tag = 2
+    $0.returnKeyType = .done
   }
 
   let selectLinkBookView = SelectLinkBookView()
@@ -59,6 +60,12 @@ final class CreateLinkView: UIView {
   @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
+
+    endEditing(true)
   }
 
   // MARK: Layout

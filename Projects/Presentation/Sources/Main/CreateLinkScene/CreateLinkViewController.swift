@@ -30,6 +30,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     view = contentView
 
     contentView.linkInputField.setDelegate(self)
+    contentView.titleInputField.setDelegate(self)
   }
 
   override func viewDidLoad() {
@@ -41,6 +42,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   func bind(reactor: CreateLinkViewReactor) {
     bindButtons(with: reactor)
     bindContent(with: reactor)
+    bindTextField(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateLinkViewReactor) {
@@ -49,13 +51,37 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.isSaveButtonEnabled)
+      .distinctUntilChanged()
+      .asObservable()
+      .bind(to: contentView.saveButton.rx.isEnabled)
+      .disposed(by: disposeBag
+      )
   }
 
   private func bindContent(with reactor: CreateLinkViewReactor) {
-    reactor.state.map(\.thumbnail)
+    reactor.state.compactMap(\.thumbnail)
+      .distinctUntilChanged()
       .subscribe(with: self) { `self`, thumbnail in
-        self.contentView.titleInputField.text = thumbnail?.title
+        self.contentView.titleInputField.text = thumbnail.title
+        self.contentView.linkInputField.hideError()
       }
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$linkError)
+      .compactMap { $0 }
+      .subscribe(with: self) { `self`, errorDescription in
+        self.contentView.linkInputField.errorDescription = errorDescription
+        self.contentView.linkInputField.showError()
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindTextField(with reactor: CreateLinkViewReactor) {
+    contentView.titleInputField.rx.text
+      .map { Reactor.Action.inputTitle($0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
 }
@@ -87,6 +113,7 @@ extension CreateLinkViewController: UITextFieldDelegate {
       return true
 
     case 2:
+      self.view.endEditing(true)
       return true
 
     default:

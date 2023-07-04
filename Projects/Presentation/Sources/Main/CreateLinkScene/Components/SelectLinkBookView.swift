@@ -27,13 +27,10 @@ final class SelectLinkBookView: UIView {
     $0.clipsToBounds = true
   }
 
-  private let linkBookColorView = UIView().then {
-    $0.layer.cornerRadius = Metric.linkBookIconSize.height / 2
-  }
-
   private let linkBookTitleLabel = UILabel().then {
     $0.font = .defaultRegular
-    $0.textColor = .staticBlack
+    $0.textColor = .gray600
+    $0.text = "기본"
   }
 
   private let dropDownImage = UIImageView().then {
@@ -62,7 +59,7 @@ final class SelectLinkBookView: UIView {
 
   private func defineLayout() {
     [titleLabel, createLinkBookButton, container].forEach { addSubview($0) }
-    [linkBookColorView, linkBookTitleLabel, dropDownImage].forEach { container.addSubview($0) }
+    [linkBookTitleLabel, dropDownImage].forEach { container.addSubview($0) }
 
     titleLabel.snp.makeConstraints {
       $0.left.top.equalToSuperview()
@@ -79,14 +76,8 @@ final class SelectLinkBookView: UIView {
       $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
     }
 
-    linkBookColorView.snp.makeConstraints {
-      $0.left.equalToSuperview().inset(12.0)
-      $0.centerY.equalToSuperview()
-      $0.size.equalTo(Metric.linkBookIconSize)
-    }
-
     linkBookTitleLabel.snp.makeConstraints {
-      $0.left.equalTo(linkBookColorView.snp.right).offset(8.0)
+      $0.left.equalToSuperview().inset(12.0)
       $0.centerY.equalToSuperview()
     }
 

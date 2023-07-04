@@ -9,14 +9,28 @@ final class CreateLinkViewReactor: Reactor {
 
   enum Action {
     case fetchThumbnail(String)
+    case inputTitle(String)
   }
 
   enum Mutation {
     case setThumbnail(Thumbnail?)
+    case setLinkError(String)
   }
 
   struct State {
     var thumbnail: Thumbnail?
+
+    var isSaveButtonEnabled: Bool {
+      guard let thumbnail,
+            let title = thumbnail.title,
+            !title.isEmpty else {
+        return false
+      }
+
+      return true
+    }
+
+    @Pulse var linkError: String?
   }
 
   // MARK: Properties
@@ -47,6 +61,12 @@ final class CreateLinkViewReactor: Reactor {
       guard let url = URL(string: url) else { return .empty() }
 
       return fetchThumbnail(url: url)
+
+    case .inputTitle(let title):
+      var thumbnail = currentState.thumbnail
+      thumbnail?.title = title
+
+      return .just(Mutation.setThumbnail(thumbnail))
     }
   }
 
@@ -56,6 +76,9 @@ final class CreateLinkViewReactor: Reactor {
     switch mutation {
     case .setThumbnail(let thumbnail):
       newState.thumbnail = thumbnail
+
+    case .setLinkError(let error):
+      newState.linkError = error
     }
 
     return newState
@@ -70,5 +93,8 @@ extension CreateLinkViewReactor {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
       .map { Mutation.setThumbnail($0) }
+      .catch { _ in
+        .just(Mutation.setLinkError("올바른 링크를 입력하세요"))
+      }
   }
 }

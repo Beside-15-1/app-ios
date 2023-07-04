@@ -8,8 +8,8 @@
 import Foundation
 import UIKit
 
-public struct Thumbnail {
-  public let title: String?
+public struct Thumbnail: Hashable {
+  public var title: String?
   public let url: String?
   public let imageURL: String?
 }
