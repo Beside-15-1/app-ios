@@ -3,14 +3,25 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import Domain
+
 final class CreateLinkViewReactor: Reactor {
-  enum Action {}
 
-  enum Mutation {}
+  enum Action {
+    case fetchThumbnail(String)
+  }
 
-  struct State {}
+  enum Mutation {
+    case setThumbnail(Thumbnail?)
+  }
+
+  struct State {
+    var thumbnail: Thumbnail?
+  }
 
   // MARK: Properties
+
+  private let fetchThumbnailUseCase: FetchThumbnailUseCase
 
   private let disposeBag = DisposeBag()
 
@@ -18,8 +29,11 @@ final class CreateLinkViewReactor: Reactor {
 
   // MARK: initializing
 
-  init() {
+  init(
+    fetchThumbnailUseCase: FetchThumbnailUseCase
+  ) {
     defer { _ = self.state }
+    self.fetchThumbnailUseCase = fetchThumbnailUseCase
     initialState = State()
   }
 
@@ -27,7 +41,34 @@ final class CreateLinkViewReactor: Reactor {
     print("🗑️ deinit: \(type(of: self))")
   }
 
-  func mutate(action: Action) -> Observable<Mutation> {}
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .fetchThumbnail(let url):
+      guard let url = URL(string: url) else { return .empty() }
 
-  func reduce(state: State, mutation: Mutation) -> State {}
+      return fetchThumbnail(url: url)
+    }
+  }
+
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+    
+    switch mutation {
+    case .setThumbnail(let thumbnail):
+      newState.thumbnail = thumbnail
+    }
+
+    return newState
+  }
+}
+
+
+// MARK: - Private
+
+extension CreateLinkViewReactor {
+  private func fetchThumbnail(url: URL) -> Observable<Mutation> {
+    fetchThumbnailUseCase.execute(url: url)
+      .asObservable()
+      .map { Mutation.setThumbnail($0) }
+  }
 }

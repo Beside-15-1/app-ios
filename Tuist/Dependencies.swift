@@ -25,7 +25,8 @@ let dependencies = Dependencies(
     .nimble,
     .keyChainAccess,
     .panModal,
-    .toaster
+    .toaster,
+    .swiftSoup
   ],
   platforms: [.iOS]
 )
@@ -94,5 +95,9 @@ extension Package {
   public static let toaster: Package = .remote(
     url: "https://github.com/devxoul/Toaster.git",
     requirement: .branch("master")
+  )
+  public static let swiftSoup: Package = .remote(
+    url: "https://github.com/scinfu/SwiftSoup.git",
+    requirement: .upToNextMajor(from: "2.0.0")
   )
 }

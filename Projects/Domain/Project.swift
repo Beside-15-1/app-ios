@@ -57,7 +57,8 @@ let project = Project(
         .external(dependency: .RxCocoa),
         .external(dependency: .RxRelay),
         .external(dependency: .Swinject),
-        .external(dependency: .Moya)
+        .external(dependency: .Moya),
+        .external(dependency: .SwiftSoup)
       ]
     ),
     Target(

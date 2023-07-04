@@ -28,11 +28,14 @@ final class CreateLinkView: UIView {
   let linkInputField = InputField(type: .normal).then {
     $0.title = "링크"
     $0.placeHolder = "링크를 입력하세요"
+    $0.returnKeyType = .done
+    $0.tag = 1
   }
 
   let titleInputField = InputField(type: .normal).then {
     $0.title = "제목"
     $0.placeHolder = "제목을 입력하세요"
+    $0.tag = 2
   }
 
   let selectLinkBookView = SelectLinkBookView()

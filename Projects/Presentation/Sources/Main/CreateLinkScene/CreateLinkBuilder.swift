@@ -18,7 +18,9 @@ final class CreateLinkBuilder: CreateLinkBuildable {
   }
 
   func build(payload: CreateLinkPayload) -> UIViewController {
-    let viewModel = CreateLinkViewReactor()
+    let viewModel = CreateLinkViewReactor(
+      fetchThumbnailUseCase: FetchThumbnailUseCaseImpl(metadataProvider: .init())
+    )
 
     let viewController = CreateLinkViewController(
       viewModel: viewModel

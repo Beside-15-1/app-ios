@@ -69,6 +69,12 @@ public class InputField: UIView {
     }
   }
 
+  public override var tag: Int {
+    didSet {
+      textField.tag = tag
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
