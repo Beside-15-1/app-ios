@@ -126,10 +126,16 @@ final class LoginViewController: UIViewController {
     }
     button.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let mainTab = self.mainTabBuilder.build(payload: .init())
-        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.navigationController?.setViewControllers([mainTab], animated: true)
-        self.transition = nil
+//        let mainTab = self.mainTabBuilder.build(payload: .init())
+//        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+//        self.navigationController?.setViewControllers([mainTab], animated: true)
+//        self.transition = nil
+        let signUp = self.signUpBuilder
+          .build(payload: .init(
+            accessToken: "",
+            social: "google"
+          ))
+        self.navigationController?.pushViewController(signUp, animated: true)
       }
       .disposed(by: disposeBag)
   }
