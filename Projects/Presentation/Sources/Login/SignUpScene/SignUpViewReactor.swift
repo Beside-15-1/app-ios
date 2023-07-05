@@ -1,11 +1,12 @@
-//___FILEHEADER___
-
 import Foundation
 
-import ReactorKit
+import RxRelay
 import RxSwift
+import ReactorKit
 
-final class ___VARIABLE_sceneName___ViewReactor: Reactor {
+import Domain
+
+final class SignUpViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
 
@@ -13,7 +14,11 @@ final class ___VARIABLE_sceneName___ViewReactor: Reactor {
 
   enum Mutation {}
 
-  struct State {}
+  struct State {
+    let accessToken: String
+    let social: String
+  }
+
 
   // MARK: Properties
 
@@ -22,11 +27,26 @@ final class ___VARIABLE_sceneName___ViewReactor: Reactor {
   let initialState: State
 
 
+  // MARK: UseCase
+
+  private let signUpUseCase: SignUpUseCase
+
+
   // MARK: initializing
 
-  init() {
+  init(
+    signUpUseCase: SignUpUseCase,
+    accessToken: String,
+    social: String
+  ) {
     defer { _ = self.state }
-    initialState = State()
+
+    self.signUpUseCase = signUpUseCase
+
+    initialState = State(
+      accessToken: accessToken,
+      social: social
+    )
   }
 
   deinit {

@@ -21,14 +21,14 @@ final class SignUpBuilder: SignUpBuildable {
   }
 
   func build(payload: SignUpPayload) -> UIViewController {
-    let viewModel = SignUpViewModel(
+    let reactor = SignUpViewReactor(
       signUpUseCase: SignUpUseCaseImpl(loginRepository: dependency.loginRepository),
       accessToken: payload.accessToken,
       social: payload.social
     )
 
     let viewController = SignUpViewController(
-      viewModel: viewModel,
+      reactor: reactor,
       mainTabBuilder: dependency.mainTabBuilder
     )
 
