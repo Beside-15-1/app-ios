@@ -10,13 +10,18 @@ final class SignUpViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
 
-  enum Action {}
+  enum Action {
+    case genderButtonTapped(String)
+  }
 
-  enum Mutation {}
+  enum Mutation {
+    case setGender(String)
+  }
 
   struct State {
     let accessToken: String
     let social: String
+    var gender: String?
   }
 
 
@@ -56,7 +61,21 @@ final class SignUpViewReactor: Reactor {
 
   // MARK: Mutate & Reduce
 
-  func mutate(action: Action) -> Observable<Mutation> {}
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .genderButtonTapped(let gender):
+      return .just(Mutation.setGender(gender))
+    }
+  }
 
-  func reduce(state: State, mutation: Mutation) -> State {}
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+
+    switch mutation {
+    case .setGender(let gender):
+      newState.gender = gender
+    }
+
+    return newState
+  }
 }

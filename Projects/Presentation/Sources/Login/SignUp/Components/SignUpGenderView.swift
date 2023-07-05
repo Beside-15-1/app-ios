@@ -28,7 +28,7 @@ final class SignUpGenderView: UIView {
     $0.distribution = .fillEqually
   }
 
-  private let manButton = UIButton().then {
+  let manButton = UIButton().then {
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
     $0.setTitle("남자", for: .normal)
@@ -37,7 +37,7 @@ final class SignUpGenderView: UIView {
     $0.titleLabel?.font = .defaultSemiBold
   }
 
-  private let womanButton = UIButton().then {
+  let womanButton = UIButton().then {
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
     $0.setTitle("여자", for: .normal)
@@ -46,7 +46,7 @@ final class SignUpGenderView: UIView {
     $0.titleLabel?.font = .defaultSemiBold
   }
 
-  private let etcButton = UIButton().then {
+  let etcButton = UIButton().then {
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
     $0.setTitle("기타", for: .normal)
@@ -76,6 +76,7 @@ final class SignUpGenderView: UIView {
   // MARK: Configuring
 
   func configureButtons(selectedButton: String) {
+
     buttons.forEach {
       if $0.titleLabel?.text == selectedButton {
         select(button: $0)

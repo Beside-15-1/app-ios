@@ -52,7 +52,46 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: SignUpViewReactor) {}
+  func bind(reactor: SignUpViewReactor) {
+    bindButtons(with: reactor)
+    bindContents(with: reactor)
+  }
+
+  private func bindButtons(with reactor: SignUpViewReactor) {
+    contentView.genderView.manButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.genderButtonTapped("m") }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.genderView.womanButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.genderButtonTapped("w") }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.genderView.etcButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.genderButtonTapped("etc") }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+
+  private func bindContents(with reactor: SignUpViewReactor) {
+    reactor.state.compactMap(\.gender)
+      .subscribe(with: self) { `self`, gender in
+        let selectedButton: String
+        switch gender {
+        case "m":
+          selectedButton = "남자"
+        case "w":
+          selectedButton = "여자"
+        case "etc":
+          selectedButton = "기타"
+        default:
+          selectedButton = ""
+        }
+        self.contentView.genderView.configureButtons(selectedButton: selectedButton)
+      }
+      .disposed(by: disposeBag)
+  }
 
   private func bindRoute(with reactor: SignUpViewReactor) {
 //    viewModel.isSignUpSuccess
