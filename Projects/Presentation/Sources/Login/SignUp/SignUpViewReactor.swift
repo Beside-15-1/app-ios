@@ -13,11 +13,15 @@ final class SignUpViewReactor: Reactor {
   enum Action {
     case genderButtonTapped(String)
     case selectYear(Int)
+    case completeButtonTapped
+    case passButtonTapped
   }
 
   enum Mutation {
     case setGender(String)
     case setYear(Int)
+    case setSucceed
+    case setError(Error)
   }
 
   struct State {
@@ -27,16 +31,19 @@ final class SignUpViewReactor: Reactor {
     var year: Int?
 
     var isCompleteButtonisEnabled: Bool {
-      if let gender {
+      if gender != nil {
         return true
       }
 
-      if let year {
+      if year != nil {
         return true
       }
-      
+
       return false
     }
+
+    var isSucceed: Bool = false
+    @Pulse var error: Error?
   }
 
 
@@ -83,6 +90,12 @@ final class SignUpViewReactor: Reactor {
 
     case .selectYear(let year):
       return .just(Mutation.setYear(year))
+
+    case .completeButtonTapped:
+      return signUp()
+
+    case .passButtonTapped:
+      return pass()
     }
   }
 
@@ -95,8 +108,65 @@ final class SignUpViewReactor: Reactor {
 
     case .setYear(let year):
       newState.year = year
+
+    case .setSucceed:
+      newState.isSucceed = true
+
+    case .setError(let error):
+      newState.error = error
     }
 
     return newState
   }
 }
+
+
+// MARK: - Private
+
+extension SignUpViewReactor {
+
+  private func signUp() -> Observable<Mutation> {
+    signUpUseCase.excute(
+      accessToken: currentState.accessToken,
+      age: currentState.year,
+      gender: currentState.gender,
+      nickname: nil,
+      social: currentState.social
+    )
+    .asObservable()
+    .flatMap { isSuccess -> Observable<Mutation> in
+
+      if isSuccess {
+        return .just(Mutation.setSucceed)
+      } else {
+        return .just(Mutation.setError(RxError.unknown))
+      }
+    }
+    .catch {
+      .just(Mutation.setError($0))
+    }
+  }
+
+  private func pass() -> Observable<Mutation> {
+    signUpUseCase.excute(
+      accessToken: currentState.accessToken,
+      age: nil,
+      gender: nil,
+      nickname: nil,
+      social: currentState.social
+    )
+    .asObservable()
+    .flatMap { isSuccess -> Observable<Mutation> in
+
+      if isSuccess {
+        return .just(Mutation.setSucceed)
+      } else {
+        return .just(Mutation.setError(RxError.unknown))
+      }
+    }
+    .catch {
+      .just(Mutation.setError($0))
+    }
+  }
+}
+

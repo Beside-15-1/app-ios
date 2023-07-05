@@ -2,6 +2,7 @@ import UIKit
 
 import RxSwift
 import ReactorKit
+import Toaster
 
 import PresentationInterface
 import DesignSystem
@@ -55,6 +56,7 @@ final class SignUpViewController: UIViewController, StoryboardView {
   func bind(reactor: SignUpViewReactor) {
     bindButtons(with: reactor)
     bindContents(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindButtons(with reactor: SignUpViewReactor) {
@@ -72,10 +74,23 @@ final class SignUpViewController: UIViewController, StoryboardView {
       .map { Reactor.Action.genderButtonTapped("etc") }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.isCompleteButtonisEnabled)
+      .distinctUntilChanged()
+      .asObservable()
+      .bind(to: contentView.completeButton.rx.isEnabled)
+      .disposed(by: disposeBag)
+
+    contentView.completeButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.completeButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
 
   private func bindContents(with reactor: SignUpViewReactor) {
     reactor.state.compactMap(\.gender)
+      .distinctUntilChanged()
+      .asObservable()
       .subscribe(with: self) { `self`, gender in
         let selectedButton: String
         switch gender {
@@ -93,16 +108,31 @@ final class SignUpViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
   }
 
+  private func bindError(with reactor: SignUpViewReactor) {
+    reactor.pulse(\.$error)
+      .compactMap { $0 }
+      .subscribe(with: self) { `self`, error in
+        Toast(
+          attributedText: error.localizedDescription.styled(
+            font: .defaultRegular,
+            color: .white
+          )
+        ).show()
+      }
+      .disposed(by: disposeBag)
+  }
+
   private func bindRoute(with reactor: SignUpViewReactor) {
-//    viewModel.isSignUpSuccess
-//      .filter { $0 }
-//      .subscribe(with: self) { `self`, _ in
-//        let mainTab = self.mainTabBuilder.build(payload: .init())
-//        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-//        self.navigationController?.setViewControllers([mainTab], animated: true)
-//        self.transition = nil
-//      }
-//      .disposed(by: disposeBag)
+    reactor.state.map(\.isSucceed)
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        let mainTab = self.mainTabBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.transition = nil
+      }
+      .disposed(by: disposeBag)
   }
 
 
@@ -149,7 +179,7 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   @objc
   private func passButtonTapped() {
-
+    reactor?.action.onNext(.passButtonTapped)
   }
 }
 

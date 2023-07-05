@@ -84,9 +84,9 @@ public final class LoginRepositoryMock: LoginRepository {
     }
 
     public private(set) var requestSignUpCallCount = 0
-    public var requestSignUpArgValues = [(String, Int, String, String, String)]()
-    public var requestSignUpHandler: ((String, Int, String, String, String) -> (Single<Bool>))?
-    public func requestSignUp(accessToken: String, age: Int, gender: String, nickname: String, social: String) -> Single<Bool> {
+    public var requestSignUpArgValues = [(String, Int?, String?, String?, String)]()
+    public var requestSignUpHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
+    public func requestSignUp(accessToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
         requestSignUpCallCount += 1
         requestSignUpArgValues.append((accessToken, age, gender, nickname, social))
         if let requestSignUpHandler = requestSignUpHandler {
@@ -116,9 +116,9 @@ public final class SignUpUseCaseMock: SignUpUseCase {
 
 
     public private(set) var excuteCallCount = 0
-    public var excuteArgValues = [(String, Int, String, String, String)]()
-    public var excuteHandler: ((String, Int, String, String, String) -> (Single<Bool>))?
-    public func excute(accessToken: String, age: Int, gender: String, nickname: String, social: String) -> Single<Bool> {
+    public var excuteArgValues = [(String, Int?, String?, String?, String)]()
+    public var excuteHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
+    public func excute(accessToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
         excuteCallCount += 1
         excuteArgValues.append((accessToken, age, gender, nickname, social))
         if let excuteHandler = excuteHandler {
