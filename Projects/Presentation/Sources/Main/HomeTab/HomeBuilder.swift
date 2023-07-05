@@ -1,16 +1,20 @@
-import Foundation
+//
+//  HomeBuilder.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/07/05.
+//
+
 import UIKit
+import Foundation
 
 import Domain
 import PresentationInterface
 
-// MARK: - HomeDependency
-
 struct HomeDependency {}
 
-// MARK: - HomeBuilder
-
 final class HomeBuilder: HomeBuildable {
+
   private let dependency: HomeDependency
 
   init(dependency: HomeDependency) {
@@ -18,10 +22,10 @@ final class HomeBuilder: HomeBuildable {
   }
 
   func build(payload: HomePayload) -> UIViewController {
-    let viewModel = HomeViewModel()
+    let reactor = HomeViewReactor()
 
     let viewController = HomeViewController(
-      viewModel: viewModel
+      reactor: reactor
     )
 
     return viewController

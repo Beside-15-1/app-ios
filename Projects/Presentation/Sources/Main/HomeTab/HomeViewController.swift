@@ -1,33 +1,39 @@
+//
+//  HomeViewController.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/07/05.
+//
+
 import UIKit
 
+import ReactorKit
 import RxSwift
 
-import PresentationInterface
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController, StoryboardView {
+
   // MARK: UI
 
   private lazy var contentView = HomeView()
 
+
   // MARK: Properties
 
-  private let viewModel: HomeViewModel
+  var disposeBag = DisposeBag()
 
-  private let disposeBag = DisposeBag()
 
   // MARK: Initializing
 
-  init(
-    viewModel: HomeViewModel
-  ) {
-    self.viewModel = viewModel
+  init(reactor: HomeViewReactor) {
+    defer { self.reactor = reactor }
     super.init(nibName: nil, bundle: nil)
   }
 
-  @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
 
   // MARK: View Life Cycle
 
@@ -37,11 +43,10 @@ final class HomeViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    bind(with: viewModel)
   }
+
 
   // MARK: Binding
 
-  func bind(with viewModel: HomeViewModel) {}
+  func bind(reactor: HomeViewReactor) {}
 }
