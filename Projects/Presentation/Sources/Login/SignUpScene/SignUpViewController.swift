@@ -3,6 +3,7 @@ import UIKit
 import RxSwift
 
 import PresentationInterface
+import DesignSystem
 
 // MARK: - SignUpViewController
 
@@ -36,8 +37,6 @@ final class SignUpViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
-  private let tf = UITextField()
-
   // MARK: View Life Cycle
 
   override func loadView() {
@@ -47,6 +46,8 @@ final class SignUpViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationController?.delegate = self
+    configureNavigationBar()
+
     bind(with: viewModel)
   }
 
@@ -91,6 +92,53 @@ final class SignUpViewController: UIViewController {
         self.transition = nil
       }
       .disposed(by: disposeBag)
+  }
+
+
+  // MARK: NavigationBar
+
+  private func configureNavigationBar() {
+    let backButton = UIBarButtonItem(
+      image: DesignSystemAsset.iconLeft.image.withTintColor(.staticBlack),
+      style: .plain,
+      target: self,
+      action: #selector(pop)
+    )
+
+    let passButton = UIBarButtonItem(
+      title: "건너뛰기",
+      style: .plain,
+      target: self,
+      action: #selector(passButtonTapped)
+    )
+
+    navigationItem.leftBarButtonItem = backButton
+    navigationItem.leftBarButtonItem?.tintColor = .staticBlack
+    navigationItem.title = "회원가입"
+    navigationItem.rightBarButtonItem = passButton
+    navigationItem.rightBarButtonItem?.tintColor = .gray700
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes([
+      NSAttributedString.Key.font: UIFont.captionRegular
+    ], for: .normal)
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes([
+      NSAttributedString.Key.font: UIFont.captionRegular
+    ], for: .highlighted)
+
+    let attributes = [
+      NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
+      NSAttributedString.Key.font: UIFont.defaultRegular
+    ]
+    navigationController?.navigationBar.titleTextAttributes = attributes
+  }
+
+  @objc
+  private func pop() {
+    navigationController?.popViewController(animated: true)
+  }
+
+  @objc
+  private func passButtonTapped() {
+
   }
 }
 
