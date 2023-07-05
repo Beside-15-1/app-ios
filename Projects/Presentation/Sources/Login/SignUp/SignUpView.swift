@@ -6,37 +6,50 @@ import Then
 import DesignSystem
 
 final class SignUpView: UIView {
+
   // MARK: UI
 
   private let container = UIView()
 
-  let nicknameTextField = InputField(type: .normal).then {
-    $0.title = "Nickname"
-    $0.placeHolder = "닉네임 입력 고고"
+  private let titleLabel = UILabel().then {
+    $0.text = "만나서 반가워요!\n성별과 연령을 입력해주세요."
+    $0.font = .titleRegular
+    $0.textColor = .staticBlack
+    $0.numberOfLines = 0
   }
 
-  let ageTextField = InputField(type: .normal).then {
-    $0.title = "Age"
-    $0.placeHolder = "나이 숫자로 입력하세요."
-    $0.keyboardType = .numberPad
+  private let subtitle = UILabel().then {
+    $0.text = "※"
+    $0.font = .captionRegular
+    $0.textColor = .gray600
+    $0.numberOfLines = 0
   }
 
-  let genderTextField = InputField(type: .normal).then {
-    $0.title = "Gender"
-    $0.placeHolder = "성별 m(남),w(여) 입력하세요."
+  private let subtitleLabel = UILabel().then {
+    $0.text = "입력한 성별/연령 정보는 주섬 앱 개선을 위해서만 사용되며\n다른 용도로 사용되지 않아요."
+    $0.font = .captionRegular
+    $0.textColor = .gray600
+    $0.numberOfLines = 0
   }
 
-  let signUpButton = BasicButton(priority: .primary).then {
-    $0.text = "Sign Up"
-    $0.isEnabled = false
+  let genderView = SignUpGenderView()
+
+  let ageInputField = InputField(type: .dropdown).then {
+    $0.title = "출생연도를 선택해주세요"
+    $0.placeHolder = "선택"
   }
+
+  let completeButton = BasicButton(priority: .primary).then {
+    $0.text = "완료"
+  }
+
 
   // MARK: Initializing
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .gray100
+    backgroundColor = .paperWihte
 
     defineLayout()
   }
@@ -51,30 +64,42 @@ final class SignUpView: UIView {
   private func defineLayout() {
     addSubview(container)
 
-    [nicknameTextField, ageTextField, genderTextField, signUpButton].forEach {
+    [titleLabel, subtitle, subtitleLabel, genderView, ageInputField, completeButton].forEach {
       container.addSubview($0)
     }
 
     container.snp.makeConstraints {
-      $0.top.bottom.equalTo(self.safeAreaLayoutGuide)
+      $0.top.bottom.equalTo(safeAreaLayoutGuide)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    nicknameTextField.snp.makeConstraints {
-      $0.top.left.right.equalToSuperview()
-    }
-
-    ageTextField.snp.makeConstraints {
+    titleLabel.snp.makeConstraints {
+      $0.top.equalToSuperview().offset(24.0)
       $0.left.right.equalToSuperview()
-      $0.top.equalTo(nicknameTextField.snp.bottom).offset(20.0)
     }
 
-    genderTextField.snp.makeConstraints {
+    subtitle.snp.makeConstraints {
+      $0.top.equalTo(titleLabel.snp.bottom).offset(4.0)
+      $0.left.equalToSuperview()
+    }
+
+    subtitleLabel.snp.makeConstraints {
+      $0.top.equalTo(titleLabel.snp.bottom).offset(4.0)
+      $0.left.equalTo(subtitle.snp.right).offset(4.0)
+      $0.right.equalToSuperview()
+    }
+
+    genderView.snp.makeConstraints {
+      $0.top.equalTo(subtitleLabel.snp.bottom).offset(40.0)
       $0.left.right.equalToSuperview()
-      $0.top.equalTo(ageTextField.snp.bottom).offset(20.0)
     }
 
-    signUpButton.snp.makeConstraints {
+    ageInputField.snp.makeConstraints {
+      $0.top.equalTo(genderView.snp.bottom).offset(44.0)
+      $0.left.right.equalToSuperview()
+    }
+
+    completeButton.snp.makeConstraints {
       $0.left.right.equalToSuperview()
       $0.bottom.equalToSuperview().inset(20.0)
     }
