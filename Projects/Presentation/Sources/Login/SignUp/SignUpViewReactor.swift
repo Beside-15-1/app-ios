@@ -12,16 +12,31 @@ final class SignUpViewReactor: Reactor {
 
   enum Action {
     case genderButtonTapped(String)
+    case selectYear(Int)
   }
 
   enum Mutation {
     case setGender(String)
+    case setYear(Int)
   }
 
   struct State {
     let accessToken: String
     let social: String
     var gender: String?
+    var year: Int?
+
+    var isCompleteButtonisEnabled: Bool {
+      if let gender {
+        return true
+      }
+
+      if let year {
+        return true
+      }
+      
+      return false
+    }
   }
 
 
@@ -65,6 +80,9 @@ final class SignUpViewReactor: Reactor {
     switch action {
     case .genderButtonTapped(let gender):
       return .just(Mutation.setGender(gender))
+
+    case .selectYear(let year):
+      return .just(Mutation.setYear(year))
     }
   }
 
@@ -74,6 +92,9 @@ final class SignUpViewReactor: Reactor {
     switch mutation {
     case .setGender(let gender):
       newState.gender = gender
+
+    case .setYear(let year):
+      newState.year = year
     }
 
     return newState

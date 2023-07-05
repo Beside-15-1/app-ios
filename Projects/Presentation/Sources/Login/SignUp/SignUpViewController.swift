@@ -165,3 +165,12 @@ extension SignUpViewController: UINavigationControllerDelegate {
     transition
   }
 }
+
+
+// MARK: SignUpViewDelegate
+
+extension SignUpViewController: SignUpViewDelegate {
+  func inputFieldDidSelectYear(year: Int) {
+    reactor?.action.onNext(.selectYear(year))
+  }
+}

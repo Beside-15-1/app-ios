@@ -5,6 +5,10 @@ import Then
 
 import DesignSystem
 
+protocol SignUpViewDelegate: AnyObject {
+  func inputFieldDidSelectYear(year: Int)
+}
+
 final class SignUpView: UIView {
 
   // MARK: UI
@@ -34,14 +38,41 @@ final class SignUpView: UIView {
 
   let genderView = SignUpGenderView()
 
-  let ageInputField = InputField(type: .dropdown).then {
+  lazy var ageInputField = InputField(type: .dropdown).then {
     $0.title = "출생연도를 선택해주세요"
     $0.placeHolder = "선택"
+    $0.textFieldInputView = pickerView
+    $0.textFieldInputAccessoryView = toolbar
   }
 
   let completeButton = BasicButton(priority: .primary).then {
     $0.text = "완료"
   }
+
+  private let years = Array(Array((Calendar.current.component(.year, from: Date()) - 100)...Calendar.current.component(.year, from: Date())).reversed())
+
+  private lazy var pickerView = UIPickerView().then {
+    $0.delegate = self
+    $0.dataSource = self
+  }
+
+  private lazy var toolbar = UIToolbar().then {
+    $0.sizeToFit()
+    $0.setItems([flexibleSpace, doneButton], animated: true)
+  }
+
+  private lazy var flexibleSpace = UIBarButtonItem(
+    barButtonSystemItem: .flexibleSpace, target: nil, action: nil
+  )
+
+  private lazy var doneButton = UIBarButtonItem(
+    barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped)
+  )
+
+
+  // MARK: Properties
+
+  weak var delegate: SignUpViewDelegate?
 
 
   // MARK: Initializing
@@ -108,5 +139,34 @@ final class SignUpView: UIView {
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     super.touchesBegan(touches, with: event)
     endEditing(true)
+  }
+
+  @objc
+  private func doneButtonTapped() {
+    let selectedRow = pickerView.selectedRow(inComponent: 0)
+    let selectedYear = years[selectedRow]
+
+    // 선택된 년도를 UITextField에 설정합니다.
+    ageInputField.text = "\(selectedYear)년"
+    delegate?.inputFieldDidSelectYear(year: selectedYear)
+
+    // UITextField의 입력 포커스를 해제합니다.
+    ageInputField.resignFirstResponder()
+  }
+}
+
+
+extension SignUpView: UIPickerViewDelegate, UIPickerViewDataSource {
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    1
+  }
+
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    years.count
+  }
+
+  func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    let year = years[row]
+    return "\(year)년"
   }
 }

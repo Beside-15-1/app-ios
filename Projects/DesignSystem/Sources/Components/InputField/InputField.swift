@@ -82,6 +82,12 @@ public class InputField: UIView {
     }
   }
 
+  public var textFieldInputAccessoryView: UIView? {
+    didSet {
+      textField.inputAccessoryView = textFieldInputAccessoryView
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
@@ -103,6 +109,11 @@ public class InputField: UIView {
   @discardableResult
   public override func becomeFirstResponder() -> Bool {
     textField.becomeFirstResponder()
+  }
+
+  @discardableResult
+  public override func resignFirstResponder() -> Bool {
+    textField.resignFirstResponder()
   }
 
   // MARK: UI
