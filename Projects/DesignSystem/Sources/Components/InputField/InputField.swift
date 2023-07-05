@@ -16,6 +16,7 @@ import Then
 public enum InputType {
   case normal
   case search
+  case dropdown
 }
 
 public class InputField: UIView {
@@ -75,6 +76,18 @@ public class InputField: UIView {
     }
   }
 
+  public var textFieldInputView: UIView? {
+    didSet {
+      textField.inputView = textFieldInputView
+    }
+  }
+
+  public var textFieldInputAccessoryView: UIView? {
+    didSet {
+      textField.inputAccessoryView = textFieldInputAccessoryView
+    }
+  }
+
   public var iconActionHandler: (()->Void)? = nil
 
   public func showError() {
@@ -96,6 +109,11 @@ public class InputField: UIView {
   @discardableResult
   public override func becomeFirstResponder() -> Bool {
     textField.becomeFirstResponder()
+  }
+
+  @discardableResult
+  public override func resignFirstResponder() -> Bool {
+    textField.resignFirstResponder()
   }
 
   // MARK: UI
@@ -153,6 +171,14 @@ public class InputField: UIView {
     case .search:
       textField.clearButtonMode = .never
       rightIcon.image = DesignSystemAsset.iconSearchOutline.image.withTintColor(.gray500)
+      rightIcon.isHidden = false
+      textField.snp.updateConstraints {
+        $0.right.equalToSuperview().inset(48.0)
+      }
+
+    case .dropdown:
+      textField.clearButtonMode = .never
+      rightIcon.image = DesignSystemAsset.iconDown.image.withTintColor(.gray500)
       rightIcon.isHidden = false
       textField.snp.updateConstraints {
         $0.right.equalToSuperview().inset(48.0)

@@ -8,9 +8,9 @@ import RxSwift
 public protocol SignUpUseCase {
   func excute(
     accessToken: String,
-    age: Int,
-    gender: String,
-    nickname: String,
+    age: Int?,
+    gender: String?,
+    nickname: String?,
     social: String
   ) -> Single<Bool>
 }
@@ -26,9 +26,9 @@ public final class SignUpUseCaseImpl: SignUpUseCase {
 
   public func excute(
     accessToken: String,
-    age: Int,
-    gender: String,
-    nickname: String,
+    age: Int?,
+    gender: String?,
+    nickname: String?,
     social: String
   ) -> Single<Bool> {
     loginRepository.requestSignUp(

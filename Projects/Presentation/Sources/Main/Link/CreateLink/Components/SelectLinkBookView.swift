@@ -10,7 +10,6 @@ final class SelectFolderButton: UIView {
   // MARK: Constant
 
   private enum Metric {
-    static let folderIconSize = CGSize(width: 19.0, height: 19.0)
     static let caretDownSize = CGSize(width: 24.0, height: 24.0)
   }
 

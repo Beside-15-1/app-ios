@@ -5,14 +5,15 @@ import Foundation
 import ReactorKit
 import RxSwift
 
-enum Action {}
-
-enum Mutation {}
-
-struct State {}
-
-
 final class ___VARIABLE_sceneName___ViewReactor: Reactor {
+
+  // MARK: Action & Mutation & State
+
+  enum Action {}
+
+  enum Mutation {}
+
+  struct State {}
 
   // MARK: Properties
 

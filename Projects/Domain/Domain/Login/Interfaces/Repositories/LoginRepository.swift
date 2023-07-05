@@ -9,9 +9,9 @@ public protocol LoginRepository {
   func logout() -> Single<Bool>
   func requestSignUp(
     accessToken: String,
-    age: Int,
-    gender: String,
-    nickname: String,
+    age: Int?,
+    gender: String?,
+    nickname: String?,
     social: String
   ) -> Single<Bool>
 }
