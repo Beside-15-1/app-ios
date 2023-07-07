@@ -111,7 +111,10 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = self.createFolderBuilder.build(payload: .init(folder: nil))
+        let vc = self.createFolderBuilder.build(payload: .init(
+          folder: nil,
+          delegate: self
+        ))
 
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
@@ -229,5 +232,14 @@ extension CreateLinkViewController: TagViewDelegate {
     var tags = reactor.currentState.tags
     tags.remove(at: at)
     reactor.action.onNext(.updateTag(tags))
+  }
+}
+
+
+// MARK: CreateFolderDelegate
+
+extension CreateLinkViewController: CreateFolderDelegate {
+  func createFolderSucceed() {
+    reactor?.action.onNext(.updateFolderList)
   }
 }

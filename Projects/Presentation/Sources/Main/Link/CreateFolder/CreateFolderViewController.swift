@@ -10,6 +10,8 @@ import UIKit
 import RxSwift
 import ReactorKit
 
+import PresentationInterface
+
 final class CreateFolderViewController: UIViewController, StoryboardView {
 
   // MARK: UI
@@ -19,6 +21,8 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  weak var delegate: CreateFolderDelegate?
 
   // MARK: Initializing
 
@@ -119,7 +123,9 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+          self.delegate?.createFolderSucceed()
+        }
       }
       .disposed(by: disposeBag)
   }

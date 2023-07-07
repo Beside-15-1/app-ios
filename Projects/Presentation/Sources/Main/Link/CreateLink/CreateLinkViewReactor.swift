@@ -13,6 +13,7 @@ final class CreateLinkViewReactor: Reactor {
     case updateTitle(String)
     case updateFolder(Folder)
     case updateTag([String])
+    case updateFolderList
   }
 
   enum Mutation {
@@ -88,6 +89,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .updateTag(let tags):
       return .just(Mutation.setTag(tags))
+
+    case .updateFolderList:
+      return fetchFolderList()
     }
   }
 

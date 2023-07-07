@@ -14,10 +14,13 @@ public protocol CreateFolderBuildable {
 public struct CreateFolderPayload {
 
   public let folder: Folder?
+  public let delegate: CreateFolderDelegate?
 
   public init(
-    folder: Folder?
+    folder: Folder?,
+    delegate: CreateFolderDelegate?
   ) {
     self.folder = folder
+    self.delegate = delegate
   }
 }

@@ -29,7 +29,9 @@ final class CreateFolderBuilder: CreateFolderBuildable {
 
     let viewController = CreateFolderViewController(
       reactor: reactor
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }
