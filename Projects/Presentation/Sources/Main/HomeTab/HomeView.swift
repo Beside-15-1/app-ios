@@ -54,6 +54,10 @@ final class HomeView: UIView {
     $0.backgroundColor = .paperGray
   }
 
+  let fab = FAB().then {
+    $0.expand()
+  }
+
 
   // MARK: Initializing
 
@@ -75,6 +79,7 @@ final class HomeView: UIView {
   private func defineLayout() {
     addSubview(safeArea)
     addSubview(scrollView)
+    addSubview(fab)
     scrollView.addSubview(colorBackground)
     [logoImage, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { scrollView.addSubview($0) }
 
@@ -122,6 +127,11 @@ final class HomeView: UIView {
       $0.width.equalToSuperview()
       $0.centerX.equalToSuperview()
       $0.bottom.equalToSuperview()
+    }
+
+    fab.snp.makeConstraints {
+      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide).inset(12.0)
     }
   }
 

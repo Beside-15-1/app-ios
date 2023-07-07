@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import PresentationInterface
 
 final class HomeViewController: UIViewController, StoryboardView {
 
@@ -22,11 +23,18 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let createLinkBuilder: CreateLinkBuildable
+
 
   // MARK: Initializing
 
-  init(reactor: HomeViewReactor) {
+  init(
+    reactor: HomeViewReactor,
+    createLinkBuilder: CreateLinkBuildable
+  ) {
     defer { self.reactor = reactor }
+    self.createLinkBuilder = createLinkBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -49,5 +57,17 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: HomeViewReactor) {}
+  func bind(reactor: HomeViewReactor) {
+    bindButtons(with: reactor)
+  }
+
+  private func bindButtons(with reactor: HomeViewReactor) {
+    contentView.fab.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createLinkBuilder.build(payload: .init())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
 }

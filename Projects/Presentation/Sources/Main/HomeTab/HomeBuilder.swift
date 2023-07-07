@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct HomeDependency {}
+struct HomeDependency {
+  let createLinkBuilder: CreateLinkBuildable
+}
 
 final class HomeBuilder: HomeBuildable {
 
@@ -25,7 +27,8 @@ final class HomeBuilder: HomeBuildable {
     let reactor = HomeViewReactor()
 
     let viewController = HomeViewController(
-      reactor: reactor
+      reactor: reactor,
+      createLinkBuilder: dependency.createLinkBuilder
     )
 
     return viewController

@@ -54,8 +54,10 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerHomeBuilder(container: Container) {
-    container.register(HomeBuildable.self) { resolver in
-      HomeBuilder(dependency: .init())
+    container.register(HomeBuildable.self) { r in
+      HomeBuilder(dependency: .init(
+        createLinkBuilder: r.resolve()
+      ))
     }
   }
 
