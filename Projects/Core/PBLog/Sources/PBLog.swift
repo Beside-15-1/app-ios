@@ -35,9 +35,9 @@ public enum PBLog {
   public static func api(_ url: URL?, _ response: JSON) {
     if let error = response["error"].string {
       print("\(Date().toString()) [❗️Failure]: Request: \(url?.description ?? "")\n Error: \(error)")
+    } else {
+      print("\(Date().toString()) [✅Success]: Request: \(url?.description ?? "")\n Response: \(response)")
     }
-
-    print("\(Date().toString()) [✅Success]: Request: \(url?.description ?? "")\n Response: \(response)")
   }
 
   private static func log(level: PBLogLevel, message: Any) {

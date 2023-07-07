@@ -43,6 +43,7 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    navigationController?.isNavigationBarHidden = true
   }
 
 

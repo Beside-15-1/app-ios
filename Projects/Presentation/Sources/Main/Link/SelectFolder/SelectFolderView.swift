@@ -47,7 +47,7 @@ final class SelectFolderView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .paperWihte
+    self.backgroundColor = .paperWhite
 
     defineLayout()
   }

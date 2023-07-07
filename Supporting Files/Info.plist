@@ -9,6 +9,7 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>KimjungchulMyungjo-Regular.otf</string>
 		<string>Pretendard-Thin.otf</string>
 		<string>Pretendard-SemiBold.otf</string>
 		<string>Pretendard-Regular.otf</string>
