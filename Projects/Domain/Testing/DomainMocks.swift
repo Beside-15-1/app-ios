@@ -86,11 +86,11 @@ public final class LoginRepositoryMock: LoginRepository {
     public private(set) var requestSignUpCallCount = 0
     public var requestSignUpArgValues = [(String, Int?, String?, String?, String)]()
     public var requestSignUpHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
-    public func requestSignUp(accessToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
+    public func requestSignUp(idToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
         requestSignUpCallCount += 1
-        requestSignUpArgValues.append((accessToken, age, gender, nickname, social))
+        requestSignUpArgValues.append((idToken, age, gender, nickname, social))
         if let requestSignUpHandler = requestSignUpHandler {
-            return requestSignUpHandler(accessToken, age, gender, nickname, social)
+            return requestSignUpHandler(idToken, age, gender, nickname, social)
         }
         fatalError("requestSignUpHandler returns can't have a default value thus its handler must be set")
     }
@@ -118,11 +118,11 @@ public final class SignUpUseCaseMock: SignUpUseCase {
     public private(set) var excuteCallCount = 0
     public var excuteArgValues = [(String, Int?, String?, String?, String)]()
     public var excuteHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
-    public func excute(accessToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
+    public func excute(idToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
         excuteCallCount += 1
-        excuteArgValues.append((accessToken, age, gender, nickname, social))
+        excuteArgValues.append((idToken, age, gender, nickname, social))
         if let excuteHandler = excuteHandler {
-            return excuteHandler(accessToken, age, gender, nickname, social)
+            return excuteHandler(idToken, age, gender, nickname, social)
         }
         fatalError("excuteHandler returns can't have a default value thus its handler must be set")
     }
