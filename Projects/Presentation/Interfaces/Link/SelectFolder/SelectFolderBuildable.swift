@@ -18,12 +18,12 @@ public protocol SelectFolderBuildable {
 public struct SelectFolderPayload {
 
   public let folders: [Folder]
-  public let selectedFolder: Folder
+  public let selectedFolder: Folder?
   public let delegate: SelectFolderDelegate?
 
   public init(
     folders: [Folder],
-    selectedFolder: Folder,
+    selectedFolder: Folder?,
     delegate: SelectFolderDelegate?
   ) {
     self.folders = folders

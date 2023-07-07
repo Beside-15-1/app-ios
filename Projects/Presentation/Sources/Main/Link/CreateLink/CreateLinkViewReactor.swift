@@ -23,7 +23,7 @@ final class CreateLinkViewReactor: Reactor {
 
   struct State {
     var thumbnail: Thumbnail?
-    var folder: Folder = .init()
+    var folder: Folder?
     var tags: [String] = []
 
     var isSaveButtonEnabled: Bool {

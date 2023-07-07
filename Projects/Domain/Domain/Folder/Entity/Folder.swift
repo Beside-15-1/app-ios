@@ -8,31 +8,37 @@
 import Foundation
 
 public struct Folder: Hashable {
+  public let id: String
+  public let userID: String
+
   public var title: String
   public var backgroundColor: String
   public var titleColor: String
   public var illustration: String?
   public var linkCount: Int
 
-  public init() {
-    title = "기본"
-    backgroundColor = "#6D6D6F"
-    titleColor = "#FFFFFF"
-    illustration = nil
-    linkCount = 0
-  }
+  public let createdAt: String
+  public let lastSavedAt: String
 
   public init(
+    id: String,
+    userID: String,
     title: String,
     backgroundColor: String,
     titleColor: String,
-    illustration: String?,
-    linkCount: Int = 0
+    illustration: String? = nil,
+    linkCount: Int,
+    createdAt: String,
+    lastSavedAt: String
   ) {
+    self.id = id
+    self.userID = userID
     self.title = title
     self.backgroundColor = backgroundColor
     self.titleColor = titleColor
     self.illustration = illustration
     self.linkCount = linkCount
+    self.createdAt = createdAt
+    self.lastSavedAt = lastSavedAt
   }
 }

@@ -77,7 +77,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, colors in
         self.contentView.linkBookTabView.colorView.configureBackground(
           colors: colors,
-          selectedColor: reactor.currentState.folder.backgroundColor
+          selectedColor: reactor.currentState.viewModel.backgroundColor
         )
       }
       .disposed(by: disposeBag)
@@ -88,12 +88,12 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, colors in
         self.contentView.linkBookTabView.colorView.configureTitleColor(
           colors: colors,
-          selectedColor: reactor.currentState.folder.titleColor
+          selectedColor: reactor.currentState.viewModel.titleColor
         )
       }
       .disposed(by: disposeBag)
 
-    reactor.state.map(\.folder)
+    reactor.state.map(\.viewModel)
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in

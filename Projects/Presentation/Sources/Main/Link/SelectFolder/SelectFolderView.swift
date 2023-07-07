@@ -40,7 +40,7 @@ final class SelectFolderView: UIView {
 
   private lazy var diffableDataSource = self.collectionViewDataSource()
 
-  private var selectedFolder: Folder = .init()
+  private var selectedFolder: Folder?
 
   // MARK: Initializing
 
@@ -61,7 +61,7 @@ final class SelectFolderView: UIView {
 
   func applyCollectionViewDataSource(
     by folders: [Folder],
-    selectedFolder folder: Folder
+    selectedFolder folder: Folder?
   ) {
     self.selectedFolder = folder
 
@@ -114,7 +114,7 @@ final class SelectFolderView: UIView {
       return cell.then {
         $0.configure(
           with: item,
-          isSelected: item == self?.selectedFolder ?? .init()
+          isSelected: item == self?.selectedFolder
         )
       }
     }

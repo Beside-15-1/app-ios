@@ -12,5 +12,12 @@ public protocol CreateFolderBuildable {
 // MARK: - CreateFolderPayload
 
 public struct CreateFolderPayload {
-  public init() {}
+
+  public let folder: Folder?
+
+  public init(
+    folder: Folder?
+  ) {
+    self.folder = folder
+  }
 }

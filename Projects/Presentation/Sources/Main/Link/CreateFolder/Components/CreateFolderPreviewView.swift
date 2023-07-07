@@ -15,7 +15,7 @@ class CreateFolderPreviewView: UIView {
     var backgroundColor: String
     var titleColor: String
     var title: String
-    var illuste: String
+    var illuste: String?
   }
 
   // MARK: UI
@@ -62,7 +62,7 @@ class CreateFolderPreviewView: UIView {
 
   // MARK: Configuring
 
-  func configure(with folder: Folder) {
+  func configure(with folder: ViewModel) {
     bookCover.backgroundColor = UIColor(hexString: folder.backgroundColor)
     bookText.text = folder.title
     bookText.textColor = UIColor(hexString: folder.titleColor)

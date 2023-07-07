@@ -84,16 +84,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.selectFolderBuilder.build(
           payload: .init(
-            folders: [
-              .init(),
-              .init(title: "기획", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "개발", backgroundColor: "as", titleColor: "asd", illustration: "fd"),
-              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "집에", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-            ],
-            selectedFolder: self.reactor?.currentState.folder ?? .init(),
+            folders: [],
+            selectedFolder: self.reactor?.currentState.folder,
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
@@ -118,7 +110,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = self.createFolderBuilder.build(payload: .init())
+        let vc = self.createFolderBuilder.build(payload: .init(folder: nil))
 
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
@@ -143,7 +135,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
-    reactor.state.map(\.folder)
+    reactor.state.compactMap(\.folder)
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, folder in

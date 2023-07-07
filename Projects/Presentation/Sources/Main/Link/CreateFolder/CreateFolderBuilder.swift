@@ -18,7 +18,9 @@ final class CreateFolderBuilder: CreateFolderBuildable {
   }
 
   func build(payload: CreateFolderPayload) -> UIViewController {
-    let reactor = CreateFolderViewReactor()
+    let reactor = CreateFolderViewReactor(
+      folder: payload.folder
+    )
 
     let viewController = CreateFolderViewController(
       reactor: reactor
