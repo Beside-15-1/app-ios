@@ -34,7 +34,6 @@ final class HomeViewController: UIViewController, StoryboardView {
   ) {
     defer { self.reactor = reactor }
     self.createLinkBuilder = createLinkBuilder
-
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -51,6 +50,12 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
     navigationController?.isNavigationBarHidden = true
   }
 
@@ -59,6 +64,7 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   func bind(reactor: HomeViewReactor) {
     bindButtons(with: reactor)
+    bindContent(with: reactor)
   }
 
   private func bindButtons(with reactor: HomeViewReactor) {
@@ -67,6 +73,16 @@ final class HomeViewController: UIViewController, StoryboardView {
         let vc = self.createLinkBuilder.build(payload: .init())
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindContent(with reactor: HomeViewReactor) {
+    reactor.state.compactMap(\.viewModel)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.homeFolderView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
   }

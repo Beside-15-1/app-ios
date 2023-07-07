@@ -54,12 +54,17 @@ final class CreateFolderViewReactor: Reactor {
 
   let initialState: State
 
+  private let createFolderUseCase: CreateFolderUseCase
+
   // MARK: initializing
 
   init(
+    createFolderUseCase: CreateFolderUseCase,
     folder: Folder?
   ) {
     defer { _ = self.state }
+
+    self.createFolderUseCase = createFolderUseCase
 
     var viewModel: CreateFolderPreviewView.ViewModel {
       guard let folder else {
@@ -133,7 +138,7 @@ final class CreateFolderViewReactor: Reactor {
     case .makeButtonTapped:
       guard let folder = currentState.folder else {
         // TODO: 새로운 링크북 생성
-        return .empty()
+        return createFolder()
       }
       // TODO: 기존 링크북 업데이트
       return .empty()
@@ -155,5 +160,22 @@ final class CreateFolderViewReactor: Reactor {
     }
 
     return newState
+  }
+}
+
+
+extension CreateFolderViewReactor {
+
+  private func createFolder() -> Observable<Mutation> {
+    createFolderUseCase.execute(
+      backgroundColor: currentState.viewModel.backgroundColor,
+      title: currentState.viewModel.title,
+      titleColor: currentState.viewModel.titleColor,
+      illustration: currentState.viewModel.illuste
+    )
+    .asObservable()
+    .flatMap { _ -> Observable<Mutation> in
+      return .just(Mutation.setSucceed)
+    }
   }
 }

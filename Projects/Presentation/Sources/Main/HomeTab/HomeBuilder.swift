@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct HomeDependency {
   let createLinkBuilder: CreateLinkBuildable
+  let folderRepository: FolderRepository
 }
 
 final class HomeBuilder: HomeBuildable {
@@ -24,7 +25,11 @@ final class HomeBuilder: HomeBuildable {
   }
 
   func build(payload: HomePayload) -> UIViewController {
-    let reactor = HomeViewReactor()
+    let reactor = HomeViewReactor(
+      fetchFolderListUseCase: FetchFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      )
+    )
 
     let viewController = HomeViewController(
       reactor: reactor,

@@ -67,6 +67,11 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .bind(to: contentView.linkBookTabView.makeButton.rx.isEnabled)
       .disposed(by: disposeBag)
+
+    contentView.linkBookTabView.makeButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.makeButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: CreateFolderViewReactor) {

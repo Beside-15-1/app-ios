@@ -6,7 +6,9 @@ import PresentationInterface
 
 // MARK: - CreateFolderDependency
 
-struct CreateFolderDependency {}
+struct CreateFolderDependency {
+  let folderRepository: FolderRepository
+}
 
 // MARK: - CreateFolderBuilder
 
@@ -19,6 +21,9 @@ final class CreateFolderBuilder: CreateFolderBuildable {
 
   func build(payload: CreateFolderPayload) -> UIViewController {
     let reactor = CreateFolderViewReactor(
+      createFolderUseCase: CreateFolderUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      ),
       folder: payload.folder
     )
 

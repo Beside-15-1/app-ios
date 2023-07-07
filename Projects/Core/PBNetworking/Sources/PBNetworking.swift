@@ -4,6 +4,7 @@ import Moya
 import RxMoya
 import RxSwift
 import SwiftyJSON
+import KeychainAccess
 
 import PBLog
 
@@ -12,11 +13,15 @@ import PBLog
 public final class PBNetworking<T: TargetType> {
   private let provider: MoyaProvider<T>
 
-  public init(isStub: Bool = false) {
+  public init(keychain: Keychain, isStub: Bool = false) {
+    let tokenPlugin = AccessTokenPlugin { _ in
+      keychain["accessToken"] ?? ""
+    }
+
     if isStub {
       provider = MoyaProvider<T>(stubClosure: { MoyaProvider.immediatelyStub($0) })
     } else {
-      provider = MoyaProvider<T>()
+      provider = MoyaProvider<T>(plugins: [tokenPlugin])
     }
   }
 
@@ -45,7 +50,7 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
       // TODO: Server에서 에러타입 정리되면 맞춰서 대응 필요
       let jsonDecoder = JSONDecoder()
       if let error = try? jsonDecoder.decode(PBServerErrorDTO.self, from: response.data) {
-        return Single.error(PBNetworkError.serverError(code: error.code, message: error.message))
+        return Single.error(PBNetworkError.serverError(message: error.message))
       }
 
       return Single.error(PBNetworkError.unknown)

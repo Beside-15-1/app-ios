@@ -24,8 +24,9 @@ let project = Project(
         .external(dependency: .RxMoya),
         .external(dependency: .Swinject),
         .external(dependency: .SwiftyJSON),
+        .external(dependency: .KeychainAccess),
         // Core
-        .core(impl: .PBLog)
+        .core(impl: .PBLog),
       ]
     ),
     Target(

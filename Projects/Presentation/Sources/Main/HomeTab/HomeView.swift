@@ -46,9 +46,9 @@ final class HomeView: UIView {
     $0.rightIconImage = DesignSystemAsset.iconRight.image
   }
 
-  private let homeLinkView = HomeLinkView()
+  let homeLinkView = HomeLinkView()
 
-  private let homeFolderView = HomeFolderView()
+  let homeFolderView = HomeFolderView()
 
   private let safeArea = UIView().then {
     $0.backgroundColor = .paperGray
@@ -77,30 +77,17 @@ final class HomeView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    addSubview(safeArea)
-    addSubview(scrollView)
+    addSubview(colorBackground)
+    [logoImage, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { addSubview($0) }
     addSubview(fab)
-    scrollView.addSubview(colorBackground)
-    [logoImage, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { scrollView.addSubview($0) }
-
-    safeArea.snp.makeConstraints {
-      $0.top.left.right.equalToSuperview()
-      $0.bottom.equalTo(safeAreaLayoutGuide.snp.top)
-    }
-
-    scrollView.snp.makeConstraints {
-      $0.left.right.equalToSuperview()
-      $0.width.equalToSuperview()
-      $0.top.bottom.equalTo(safeAreaLayoutGuide)
-    }
 
     colorBackground.snp.makeConstraints {
-      $0.top.width.equalToSuperview()
+      $0.top.left.right.equalToSuperview()
       $0.height.equalTo(349.0)
     }
 
     logoImage.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(10.0)
+      $0.top.equalTo(safeAreaLayoutGuide).inset(10.0)
       $0.left.equalToSuperview().inset(20.0)
       $0.width.equalTo(88.0)
       $0.height.equalTo(24.0)
@@ -126,7 +113,6 @@ final class HomeView: UIView {
       $0.top.equalTo(homeLinkView.snp.bottom).offset(40.0)
       $0.width.equalToSuperview()
       $0.centerX.equalToSuperview()
-      $0.bottom.equalToSuperview()
     }
 
     fab.snp.makeConstraints {

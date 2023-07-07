@@ -56,7 +56,8 @@ public final class PresentationAssembly: Assembly {
   private func registerHomeBuilder(container: Container) {
     container.register(HomeBuildable.self) { r in
       HomeBuilder(dependency: .init(
-        createLinkBuilder: r.resolve()
+        createLinkBuilder: r.resolve(),
+        folderRepository: r.resolve()
       ))
     }
   }
@@ -117,8 +118,10 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerCreateFolderBuilder(container: Container) {
-    container.register(CreateFolderBuildable.self) { _ in
-      CreateFolderBuilder(dependency: .init())
+    container.register(CreateFolderBuildable.self) { r in
+      CreateFolderBuilder(dependency: .init(
+        folderRepository: r.resolve()
+      ))
     }
   }
 }

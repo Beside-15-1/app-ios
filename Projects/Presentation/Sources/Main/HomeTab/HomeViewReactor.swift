@@ -10,13 +10,24 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import Domain
+import PBLog
+
 final class HomeViewReactor: Reactor {
 
-  enum Action {}
+  enum Action {
+    case viewDidLoad
+  }
 
-  enum Mutation {}
+  enum Mutation {
+    case setViewModel(HomeFolderSectionViewModel)
+  }
 
-  struct State {}
+  struct State {
+
+    let folderList: [Folder] = []
+    var viewModel: HomeFolderSectionViewModel?
+  }
 
 
   // MARK: Properties
@@ -25,12 +36,19 @@ final class HomeViewReactor: Reactor {
 
   let initialState: State
 
+  private let fetchFolderListUseCase: FetchFolderListUseCase
+
 
   // MARK: initializing
 
-  init() {
+  init(
+    fetchFolderListUseCase: FetchFolderListUseCase
+  ) {
     defer { _ = self.state }
-    initialState = State()
+
+    self.fetchFolderListUseCase = fetchFolderListUseCase
+
+    self.initialState = State()
   }
 
   deinit {
@@ -40,7 +58,55 @@ final class HomeViewReactor: Reactor {
 
   // MARK: Mutate & Reduce
 
-  func mutate(action: Action) -> Observable<Mutation> {}
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .viewDidLoad:
+      return fetchFolderList()
+    }
+  }
 
-  func reduce(state: State, mutation: Mutation) -> State {}
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+
+    switch mutation {
+    case .setViewModel(let viewModel):
+      newState.viewModel = viewModel
+    }
+
+    return newState
+  }
+}
+
+
+extension HomeViewReactor {
+
+  private func fetchFolderList() -> Observable<Mutation> {
+    fetchFolderListUseCase.execute(sort: .createAt)
+      .asObservable()
+      .flatMap { folderList -> Observable<Mutation> in
+        var viewModel = HomeFolderSectionViewModel(
+          section: .normal,
+          items: folderList.map {
+            .init(
+              coverColor: $0.backgroundColor,
+              titleColor: $0.titleColor,
+              title: $0.title,
+              linkCount: $0.linkCount,
+              illust: $0.illustration,
+              isLast: false
+            )
+          }
+        )
+        viewModel.items.append(.init(
+          coverColor: "",
+          titleColor: "",
+          title: "",
+          linkCount: 0,
+          illust: nil,
+          isLast: true
+        ))
+
+        return .just(Mutation.setViewModel(viewModel))
+      }
+  }
 }

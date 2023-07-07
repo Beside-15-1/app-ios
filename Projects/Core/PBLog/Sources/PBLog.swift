@@ -5,9 +5,9 @@ import SwiftyJSON
 // MARK: - PBLogLevel
 
 public enum PBLogLevel: String {
-  case error
-  case warning
-  case info
+  case error = "❗️ERROR "
+  case warning = "⚠️WARNING "
+  case info = "💙INFO"
   case debug
 }
 
@@ -44,7 +44,7 @@ public enum PBLog {
     print("\(Date().toString()) [\(level.rawValue.uppercased())]: \(message)")
   }
 
-  static var dateFormat = "yyyy-MM-dd hh:mm:ssSSS"
+  static var dateFormat = "yyyy-MM-dd hh:mm:ss"
   static var dateFormatter: DateFormatter {
     let formatter = DateFormatter()
     formatter.dateFormat = dateFormat
