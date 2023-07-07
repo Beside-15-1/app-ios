@@ -8,6 +8,7 @@ import Domain
 final class CreateLinkViewReactor: Reactor {
 
   enum Action {
+    case viewDidLoad
     case fetchThumbnail(String)
     case updateTitle(String)
     case updateFolder(Folder)
@@ -19,12 +20,14 @@ final class CreateLinkViewReactor: Reactor {
     case setLinkError(String)
     case setFolder(Folder)
     case setTag([String])
+    case setFolderList([Folder])
   }
 
   struct State {
     var thumbnail: Thumbnail?
     var folder: Folder?
     var tags: [String] = []
+    var folderList: [Folder] = []
 
     var isSaveButtonEnabled: Bool {
       guard let thumbnail,
@@ -42,6 +45,7 @@ final class CreateLinkViewReactor: Reactor {
   // MARK: Properties
 
   private let fetchThumbnailUseCase: FetchThumbnailUseCase
+  private let fetchFolderListUseCase: FetchFolderListUseCase
 
   private let disposeBag = DisposeBag()
 
@@ -50,11 +54,13 @@ final class CreateLinkViewReactor: Reactor {
   // MARK: initializing
 
   init(
-    fetchThumbnailUseCase: FetchThumbnailUseCase
+    fetchThumbnailUseCase: FetchThumbnailUseCase,
+    fetchFolderListUseCase: FetchFolderListUseCase
   ) {
     defer { _ = self.state }
     self.fetchThumbnailUseCase = fetchThumbnailUseCase
-    initialState = State()
+    self.fetchFolderListUseCase = fetchFolderListUseCase
+    self.initialState = State()
   }
 
   deinit {
@@ -63,6 +69,9 @@ final class CreateLinkViewReactor: Reactor {
 
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .viewDidLoad:
+      return fetchFolderList()
+
     case .fetchThumbnail(let url):
       guard let url = URL(string: url) else { return .empty() }
 
@@ -84,7 +93,7 @@ final class CreateLinkViewReactor: Reactor {
 
   func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
-    
+
     switch mutation {
     case .setThumbnail(let thumbnail):
       newState.thumbnail = thumbnail
@@ -97,6 +106,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .setTag(let tags):
       newState.tags = tags
+
+    case .setFolderList(let list):
+      newState.folderList = list
     }
 
     return newState
@@ -113,6 +125,22 @@ extension CreateLinkViewReactor {
       .map { Mutation.setThumbnail($0) }
       .catch { _ in
         .just(Mutation.setLinkError("올바른 링크를 입력하세요"))
+      }
+  }
+
+  private func fetchFolderList() -> Observable<Mutation> {
+    fetchFolderListUseCase.execute(sort: .createAt)
+      .asObservable()
+      .flatMap { [weak self] folderList -> Observable<Mutation> in
+        guard let self else { return .empty() }
+        guard let _ = self.currentState.folder else {
+          return .concat([
+            .just(Mutation.setFolderList(folderList.reversed())),
+            .just(Mutation.setFolder(folderList.reversed().first!))
+          ])
+        }
+
+        return .just(Mutation.setFolderList(folderList.reversed()))
       }
   }
 }

@@ -56,6 +56,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
   }
 
   // MARK: Binding
@@ -84,8 +85,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.selectFolderBuilder.build(
           payload: .init(
-            folders: [],
-            selectedFolder: self.reactor?.currentState.folder,
+            folders: reactor.currentState.folderList,
+            selectedFolder: reactor.currentState.folder,
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
