@@ -61,6 +61,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     reactor?.action.onNext(.viewDidLoad)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    reactor?.action.onNext(.viewDidAppear)
+  }
+
   // MARK: Binding
 
   func bind(reactor: CreateLinkViewReactor) {
@@ -135,6 +140,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     reactor.state.compactMap(\.thumbnail)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, thumbnail in
+        self.contentView.linkInputField.text = thumbnail.url ?? ""
         self.contentView.titleInputField.text = thumbnail.title
         self.contentView.linkInputField.hideError()
       }

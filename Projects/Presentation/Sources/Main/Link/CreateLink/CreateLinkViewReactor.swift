@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 import ReactorKit
 import RxSwift
@@ -9,6 +10,7 @@ final class CreateLinkViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewDidAppear
     case fetchThumbnail(String)
     case updateTitle(String)
     case updateFolder(Folder)
@@ -52,21 +54,27 @@ final class CreateLinkViewReactor: Reactor {
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let createLinkUseCase: CreateLinkUseCase
 
+  private let pasteboard: UIPasteboard
+
   private let disposeBag = DisposeBag()
 
   let initialState: State
+
+  private var shouldValidateClipboard = true
 
   // MARK: initializing
 
   init(
     fetchThumbnailUseCase: FetchThumbnailUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase,
-    createLinkUseCase: CreateLinkUseCase
+    createLinkUseCase: CreateLinkUseCase,
+    pasteboard: UIPasteboard
   ) {
     defer { _ = self.state }
     self.fetchThumbnailUseCase = fetchThumbnailUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.createLinkUseCase = createLinkUseCase
+    self.pasteboard = pasteboard
     self.initialState = State()
   }
 
@@ -78,6 +86,14 @@ final class CreateLinkViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return fetchFolderList()
+
+    case .viewDidAppear:
+      if shouldValidateClipboard {
+        shouldValidateClipboard = false
+        return validateClipboard()
+      }
+
+      return .empty()
 
     case .fetchThumbnail(let url):
       guard let url = URL(string: url) else { return .empty() }
@@ -175,5 +191,17 @@ extension CreateLinkViewReactor {
     )
     .asObservable()
     .map { _ in Mutation.setSucceed }
+  }
+
+  private func validateClipboard() -> Observable<Mutation> {
+    let url = pasteboard.string ?? ""
+
+    if url.hasPrefix("https") || url.hasPrefix("http") {
+      if let url = URL(string: url) {
+        return fetchThumbnail(url: url)
+      }
+    }
+
+    return .empty()
   }
 }
