@@ -1,16 +1,25 @@
-import Foundation
+//
+//  HomeBuilder.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/07/05.
+//
+
 import UIKit
+import Foundation
 
 import Domain
 import PresentationInterface
 
-// MARK: - HomeDependency
-
-struct HomeDependency {}
-
-// MARK: - HomeBuilder
+struct HomeDependency {
+  let folderRepository: FolderRepository
+  let linkRepository: LinkRepository
+  let createLinkBuilder: CreateLinkBuildable
+  let createFolderBuilder: CreateFolderBuildable
+}
 
 final class HomeBuilder: HomeBuildable {
+
   private let dependency: HomeDependency
 
   init(dependency: HomeDependency) {
@@ -18,10 +27,19 @@ final class HomeBuilder: HomeBuildable {
   }
 
   func build(payload: HomePayload) -> UIViewController {
-    let viewModel = HomeViewModel()
+    let reactor = HomeViewReactor(
+      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
+      fetchFolderListUseCase: FetchFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      )
+    )
 
     let viewController = HomeViewController(
-      viewModel: viewModel
+      reactor: reactor,
+      createLinkBuilder: dependency.createLinkBuilder,
+      createFolderBuilder: dependency.createFolderBuilder
     )
 
     return viewController

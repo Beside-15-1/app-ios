@@ -64,14 +64,14 @@ final class LoginRepositoryImpl: LoginRepository {
   }
 
   func requestSignUp(
-    accessToken: String,
+    idToken: String,
     age: Int?,
     gender: String?,
     nickname: String?,
     social: String
   ) -> Single<Bool> {
     let target = LoginAPI.signUp(.init(
-      accessToken: accessToken,
+      idToken: idToken,
       age: age,
       gender: gender,
       nickname: nickname,

@@ -27,11 +27,33 @@ extension String {
     color: UIColor
   )
     -> NSAttributedString {
+
+      let style = NSMutableParagraphStyle()
+      style.lineBreakMode = .byTruncatingTail
+
+      switch font {
+      case .accentTitle:
+        style.minimumLineHeight = 28
+      case .titleBold, .titleRegular, .titleSemiBold, .titleExtraBold:
+        style.minimumLineHeight = 20
+      case .subTitleBold, .subTitleRegular, .subTitleSemiBold:
+        style.minimumLineHeight = 18
+      case .defaultBold, .defaultRegular, .defaultSemiBold, .defaultExtraBold:
+        style.minimumLineHeight = 16
+      case .bodyBold, .bodyRegular, .bodySemiBold:
+        style.minimumLineHeight = 14
+      case .captionRegular, .captionSemiBold:
+        style.minimumLineHeight = 12
+      default:
+        break
+      }
+
     let attributedString = NSMutableAttributedString(string: self)
 
     let attributes: [NSAttributedString.Key: Any] = [
       .font: font,
       .foregroundColor: color,
+      .paragraphStyle: style
     ]
 
     attributedString.addAttributes(

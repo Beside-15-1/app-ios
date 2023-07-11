@@ -20,7 +20,7 @@ final class SelectFolderViewReactor: Reactor {
 
   struct State {
     let folders: [Folder]
-    let selectedFolder: Folder
+    let selectedFolder: Folder?
   }
 
 
@@ -35,7 +35,7 @@ final class SelectFolderViewReactor: Reactor {
 
   init(
     folders: [Folder],
-    selectedFolder: Folder
+    selectedFolder: Folder?
   ) {
     defer { _ = self.state }
     initialState = State(

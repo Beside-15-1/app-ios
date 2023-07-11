@@ -150,7 +150,7 @@ extension TagListView: UITableViewDelegate, UITableViewDataSource {
       withIdentifier: TagListCell.identifier, for: indexPath
     ) as? TagListCell else { return UITableViewCell() }
 
-    var isSelected = selectedTags.contains(where: { $0 == tags[indexPath.row] })
+    let isSelected = selectedTags.contains(where: { $0 == tags[indexPath.row] })
 
     return cell.then {
       $0.selectionStyle = .none

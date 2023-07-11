@@ -10,6 +10,8 @@ import UIKit
 import RxSwift
 import ReactorKit
 
+import PresentationInterface
+
 final class CreateFolderViewController: UIViewController, StoryboardView {
 
   // MARK: UI
@@ -19,6 +21,8 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  weak var delegate: CreateFolderDelegate?
 
   // MARK: Initializing
 
@@ -67,6 +71,11 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .bind(to: contentView.linkBookTabView.makeButton.rx.isEnabled)
       .disposed(by: disposeBag)
+
+    contentView.linkBookTabView.makeButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.makeButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: CreateFolderViewReactor) {
@@ -77,7 +86,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, colors in
         self.contentView.linkBookTabView.colorView.configureBackground(
           colors: colors,
-          selectedColor: reactor.currentState.folder.backgroundColor
+          selectedColor: reactor.currentState.viewModel.backgroundColor
         )
       }
       .disposed(by: disposeBag)
@@ -88,12 +97,12 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, colors in
         self.contentView.linkBookTabView.colorView.configureTitleColor(
           colors: colors,
-          selectedColor: reactor.currentState.folder.titleColor
+          selectedColor: reactor.currentState.viewModel.titleColor
         )
       }
       .disposed(by: disposeBag)
 
-    reactor.state.map(\.folder)
+    reactor.state.map(\.viewModel)
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in
@@ -114,7 +123,9 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+          self.delegate?.createFolderSucceed()
+        }
       }
       .disposed(by: disposeBag)
   }

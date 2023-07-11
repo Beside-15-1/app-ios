@@ -1,12 +1,12 @@
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
 import Toaster
-import PanModal
 
-import PresentationInterface
 import Domain
+import PresentationInterface
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -22,6 +22,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   private let selectFolderBuilder: SelectFolderBuildable
   private let tagAddBuilder: TagAddBuildable
   private let createFolderBuilder: CreateFolderBuildable
+
+  weak var delegate: CreateLinkDelegate?
 
 
   // MARK: Initializing
@@ -56,6 +58,12 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    reactor?.action.onNext(.viewDidAppear)
   }
 
   // MARK: Binding
@@ -64,6 +72,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     bindButtons(with: reactor)
     bindContent(with: reactor)
     bindTextField(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateLinkViewReactor) {
@@ -77,23 +86,14 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .bind(to: contentView.saveButton.rx.isEnabled)
-      .disposed(by: disposeBag
-      )
+      .disposed( by: disposeBag)
 
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.selectFolderBuilder.build(
           payload: .init(
-            folders: [
-              .init(),
-              .init(title: "기획", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "개발", backgroundColor: "as", titleColor: "asd", illustration: "fd"),
-              .init(title: "디자인", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "주섬", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "집에", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-              .init(title: "가고싶다", backgroundColor: "as", titleColor: "asd", illustration: "df"),
-            ],
-            selectedFolder: self.reactor?.currentState.folder ?? .init(),
+            folders: reactor.currentState.folderList,
+            selectedFolder: reactor.currentState.folder,
             delegate: self
           )
         ) as? PanModalPresentable.LayoutType else { return }
@@ -106,9 +106,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     contentView.tagView.addTagButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
-        let vc = self.tagAddBuilder.build(payload: .init(
-          tagAddDelegate: self,
-          addedTagList: reactor.currentState.tags)
+        let vc = self.tagAddBuilder.build(
+          payload: .init(
+            tagAddDelegate: self,
+            addedTagList: reactor.currentState.tags
+          )
         )
 
         vc.modalPresentationStyle = .popover
@@ -118,11 +120,19 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = self.createFolderBuilder.build(payload: .init())
+        let vc = self.createFolderBuilder.build(payload: .init(
+          folder: nil,
+          delegate: self
+        ))
 
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
       }
+      .disposed(by: disposeBag)
+
+    contentView.saveButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.saveButtonTapped }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
 
@@ -130,6 +140,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     reactor.state.compactMap(\.thumbnail)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, thumbnail in
+        self.contentView.linkInputField.text = thumbnail.url ?? ""
         self.contentView.titleInputField.text = thumbnail.title
         self.contentView.linkInputField.hideError()
       }
@@ -143,7 +154,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
-    reactor.state.map(\.folder)
+    reactor.state.compactMap(\.folder)
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, folder in
@@ -166,6 +177,19 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
+
+  private func bindRoute(with reactor: CreateLinkViewReactor) {
+    reactor.state.map(\.isSucceed)
+      .distinctUntilChanged()
+      .filter { $0 }
+      .asObservable()
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true) {
+          self.delegate?.createLinkSucceed()
+        }
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 
@@ -186,16 +210,16 @@ extension CreateLinkViewController: UITextFieldDelegate {
           )
           .show()
         }
-        self.view.endEditing(true)
+        view.endEditing(true)
         return true
       }
 
-      self.reactor?.action.onNext(.fetchThumbnail(text))
-      self.view.endEditing(true)
+      reactor?.action.onNext(.fetchThumbnail(text))
+      view.endEditing(true)
       return true
 
     case 2:
-      self.view.endEditing(true)
+      view.endEditing(true)
       return true
 
     default:
@@ -236,5 +260,14 @@ extension CreateLinkViewController: TagViewDelegate {
     var tags = reactor.currentState.tags
     tags.remove(at: at)
     reactor.action.onNext(.updateTag(tags))
+  }
+}
+
+
+// MARK: CreateFolderDelegate
+
+extension CreateLinkViewController: CreateFolderDelegate {
+  func createFolderSucceed() {
+    reactor?.action.onNext(.updateFolderList)
   }
 }

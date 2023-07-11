@@ -1,14 +1,14 @@
 import Foundation
 
 struct SignUpRequest: Codable {
-  let accessToken: String
+  let idToken: String
   let age: Int?
   let gender: String?
   let nickname: String?
   let social: String
 
   enum CodingKeys: String, CodingKey {
-    case accessToken
+    case idToken
     case age
     case gender
     case nickname

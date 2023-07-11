@@ -6,6 +6,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   let dependency: AppDependency
 
   override private init() {
+
     dependency = AppAssembly.resolve()
     super.init()
   }

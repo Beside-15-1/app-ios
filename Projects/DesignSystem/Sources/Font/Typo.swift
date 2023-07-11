@@ -14,6 +14,7 @@ extension UIFont {
 
   // MARK: Title
 
+  public static let accentTitle: UIFont = DesignSystemFontFamily.KimJungChulMyungjo.regular.font(size: 20)
   public static let titleExtraBold: UIFont = .pretendard(.extraBold, size: 20.0)
   public static let titleBold: UIFont = .pretendard(.bold, size: 20.0)
   public static let titleSemiBold: UIFont = .pretendard(.semiBold, size: 20.0)

@@ -52,7 +52,7 @@ final class CreateLinkView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .paperWihte
+    backgroundColor = .paperWhite
 
     defineLayout()
   }

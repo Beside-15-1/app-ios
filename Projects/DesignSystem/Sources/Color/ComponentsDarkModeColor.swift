@@ -11,7 +11,7 @@ import UIKit
 extension UIColor {
   // MARK: Paper - Background
 
-  public static let paperWihte = UIColor { (trait: UITraitCollection) -> UIColor in
+  public static let paperWhite = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
       return .black
     } else {

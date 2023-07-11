@@ -8,7 +8,7 @@ public protocol LoginRepository {
   func requestAppleLogin(identity: String) -> Single<Bool>
   func logout() -> Single<Bool>
   func requestSignUp(
-    accessToken: String,
+    idToken: String,
     age: Int?,
     gender: String?,
     nickname: String?,

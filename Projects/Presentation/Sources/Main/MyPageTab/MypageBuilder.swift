@@ -29,9 +29,7 @@ final class MyPageBuilder: MyPageBuildable {
 
     let viewController = MyPageViewController(
       viewModel: viewModel,
-      loginBuilder: loginBuilder!,
-      tagAddBuilder: dependency.tagAddBuilder,
-      createLinkBuilder: dependency.createLinkBuilder
+      loginBuilder: loginBuilder!
     )
 
     return viewController
