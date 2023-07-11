@@ -57,6 +57,7 @@ public final class PresentationAssembly: Assembly {
     container.register(HomeBuildable.self) { r in
       HomeBuilder(dependency: .init(
         createLinkBuilder: r.resolve(),
+        createFolderBuilder: r.resolve(),
         folderRepository: r.resolve()
       ))
     }

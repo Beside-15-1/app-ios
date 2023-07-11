@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import PresentationInterface
+import PBLog
 
 final class HomeViewController: UIViewController, StoryboardView {
 
@@ -24,16 +25,19 @@ final class HomeViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let createLinkBuilder: CreateLinkBuildable
+  private let createFolderBuilder: CreateFolderBuildable
 
 
   // MARK: Initializing
 
   init(
     reactor: HomeViewReactor,
-    createLinkBuilder: CreateLinkBuildable
+    createLinkBuilder: CreateLinkBuildable,
+    createFolderBuilder: CreateFolderBuildable
   ) {
     defer { self.reactor = reactor }
     self.createLinkBuilder = createLinkBuilder
+    self.createFolderBuilder = createFolderBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -46,6 +50,8 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.homeFolderView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -85,5 +91,37 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.contentView.homeFolderView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
+  }
+}
+
+
+// MARK: HomeFolderViewDelegate
+
+extension HomeViewController: HomeFolderViewDelegate {
+  func createFolderDidTapped() {
+    let vc = createFolderBuilder.build(payload: .init(
+      folder: nil,
+      delegate: self)
+    ).then {
+      $0.modalPresentationStyle = .popover
+    }
+
+    present(vc, animated: true)
+
+  }
+
+  func homeFolderView(didSelectItemAt row: Int) {
+    // 라우팅
+    guard let folder = reactor?.currentState.folderList[row] else { return }
+    PBLog.info(folder)
+  }
+}
+
+
+// MARK: CreateFolderDelegate
+
+extension HomeViewController: CreateFolderDelegate {
+  func createFolderSucceed() {
+    reactor?.action.onNext(.createFolderSucceed)
   }
 }

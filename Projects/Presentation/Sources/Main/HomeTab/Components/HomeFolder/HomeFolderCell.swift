@@ -20,6 +20,7 @@ class HomeFolderCell: UICollectionViewCell {
   static let identifier = "HomeFolderCell"
 
   struct ViewModel: Hashable {
+    let id: String
     let coverColor: String
     let titleColor: String
     let title: String

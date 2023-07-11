@@ -20,7 +20,7 @@ struct FolderDTO: Codable {
   let isDefault: String
 
   enum CodingKeys: String, CodingKey {
-    case id
+    case id = "linkBookId"
     case userID = "userId"
     case title
     case backgroundColor

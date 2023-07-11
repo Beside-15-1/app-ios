@@ -17,15 +17,17 @@ final class HomeViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case createFolderSucceed
   }
 
   enum Mutation {
+    case setFolderList([Folder])
     case setViewModel(HomeFolderSectionViewModel)
   }
 
   struct State {
 
-    let folderList: [Folder] = []
+    var folderList: [Folder] = []
     var viewModel: HomeFolderSectionViewModel?
   }
 
@@ -62,6 +64,9 @@ final class HomeViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return fetchFolderList()
+
+    case .createFolderSucceed:
+      return fetchFolderList()
     }
   }
 
@@ -69,6 +74,9 @@ final class HomeViewReactor: Reactor {
     var newState = state
 
     switch mutation {
+    case .setFolderList(let folderList):
+      newState.folderList = folderList
+
     case .setViewModel(let viewModel):
       newState.viewModel = viewModel
     }
@@ -88,6 +96,7 @@ extension HomeViewReactor {
           section: .normal,
           items: folderList.map {
             .init(
+              id: $0.id,
               coverColor: $0.backgroundColor,
               titleColor: $0.titleColor,
               title: $0.title,
@@ -98,6 +107,7 @@ extension HomeViewReactor {
           }
         )
         viewModel.items.append(.init(
+          id: "default",
           coverColor: "",
           titleColor: "",
           title: "",
@@ -106,7 +116,10 @@ extension HomeViewReactor {
           isLast: true
         ))
 
-        return .just(Mutation.setViewModel(viewModel))
+        return .concat([
+          .just(Mutation.setFolderList(folderList)),
+          .just(Mutation.setViewModel(viewModel)),
+        ])
       }
   }
 }

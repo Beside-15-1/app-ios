@@ -13,6 +13,11 @@ import Then
 
 import DesignSystem
 
+protocol HomeFolderViewDelegate: AnyObject {
+  func homeFolderView(didSelectItemAt row: Int)
+  func createFolderDidTapped()
+}
+
 class HomeFolderView: UIView {
 
   typealias Section = HomeFolderSection
@@ -38,12 +43,17 @@ class HomeFolderView: UIView {
     $0.showsHorizontalScrollIndicator = false
     $0.register(HomeFolderCell.self, forCellWithReuseIdentifier: HomeFolderCell.identifier)
     $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    $0.delegate = self
   }
 
 
   // MARK: Properties
 
   private lazy var diffableDataSource = collectionViewDiffableDataSource()
+
+  private var viewModel: HomeFolderSectionViewModel?
+
+  weak var delegate: HomeFolderViewDelegate?
 
 
   // MARK: Initialize
@@ -62,6 +72,8 @@ class HomeFolderView: UIView {
   // MARK: CollectionView
 
   func applyCollectionViewDataSource(by sectionViewModel: HomeFolderSectionViewModel) {
+    self.viewModel = sectionViewModel
+
     var snapshot = DiffableSnapshot()
     snapshot.appendSections([sectionViewModel.section])
     snapshot.appendItems(sectionViewModel.items, toSection: sectionViewModel.section)
@@ -148,3 +160,15 @@ class HomeFolderView: UIView {
   }
 }
 
+extension HomeFolderView: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    guard let viewModel else { return }
+
+    guard viewModel.items.count != indexPath.row + 1 else {
+      delegate?.createFolderDidTapped()
+      return
+    }
+
+    delegate?.homeFolderView(didSelectItemAt: indexPath.row)
+  }
+}

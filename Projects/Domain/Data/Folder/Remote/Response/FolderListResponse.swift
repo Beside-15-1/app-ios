@@ -10,11 +10,9 @@ import Foundation
 import Domain
 
 struct FolderListResponse: Codable {
-  let totalLinkCount: Int
   let linkBooks: [FolderDTO]
 
   enum CodingKeys: String, CodingKey {
-    case totalLinkCount
     case linkBooks
   }
 

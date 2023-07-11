@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct HomeDependency {
   let createLinkBuilder: CreateLinkBuildable
+  let createFolderBuilder: CreateFolderBuildable
   let folderRepository: FolderRepository
 }
 
@@ -33,7 +34,8 @@ final class HomeBuilder: HomeBuildable {
 
     let viewController = HomeViewController(
       reactor: reactor,
-      createLinkBuilder: dependency.createLinkBuilder
+      createLinkBuilder: dependency.createLinkBuilder,
+      createFolderBuilder: dependency.createFolderBuilder
     )
 
     return viewController
