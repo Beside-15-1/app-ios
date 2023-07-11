@@ -85,6 +85,7 @@ class HomeFolderCell: UICollectionViewCell {
     super.prepareForReuse()
     addFolderView.isHidden = true
     folderCover.backgroundColor = .clear
+    countContainer.isHidden = false
   }
 
 

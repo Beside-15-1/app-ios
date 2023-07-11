@@ -8,6 +8,7 @@ import PresentationInterface
 
 struct CreateLinkDependency {
   let folderRepository: FolderRepository
+  let linkRepository: LinkRepository
   let selectFolderBuilder: SelectFolderBuildable
   let tagAddBuilder: TagAddBuildable
   let createFolderBuilder: CreateFolderBuildable
@@ -27,6 +28,9 @@ final class CreateLinkBuilder: CreateLinkBuildable {
       fetchThumbnailUseCase: FetchThumbnailUseCaseImpl(metadataProvider: .init()),
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(
         folderRepository: dependency.folderRepository
+      ),
+      createLinkUseCase: CreateLinkUseCaseImpl(
+        linkRepository: dependency.linkRepository
       )
     )
 
@@ -35,7 +39,9 @@ final class CreateLinkBuilder: CreateLinkBuildable {
       selectFolderBuilder: dependency.selectFolderBuilder,
       tagAddBuilder: dependency.tagAddBuilder,
       createFolderBuilder: dependency.createFolderBuilder
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

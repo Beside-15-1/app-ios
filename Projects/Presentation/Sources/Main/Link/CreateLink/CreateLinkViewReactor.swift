@@ -14,6 +14,7 @@ final class CreateLinkViewReactor: Reactor {
     case updateFolder(Folder)
     case updateTag([String])
     case updateFolderList
+    case saveButtonTapped
   }
 
   enum Mutation {
@@ -22,6 +23,7 @@ final class CreateLinkViewReactor: Reactor {
     case setFolder(Folder)
     case setTag([String])
     case setFolderList([Folder])
+    case setSucceed
   }
 
   struct State {
@@ -41,12 +43,14 @@ final class CreateLinkViewReactor: Reactor {
     }
 
     @Pulse var linkError: String?
+    var isSucceed = false
   }
 
   // MARK: Properties
 
   private let fetchThumbnailUseCase: FetchThumbnailUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
+  private let createLinkUseCase: CreateLinkUseCase
 
   private let disposeBag = DisposeBag()
 
@@ -56,11 +60,13 @@ final class CreateLinkViewReactor: Reactor {
 
   init(
     fetchThumbnailUseCase: FetchThumbnailUseCase,
-    fetchFolderListUseCase: FetchFolderListUseCase
+    fetchFolderListUseCase: FetchFolderListUseCase,
+    createLinkUseCase: CreateLinkUseCase
   ) {
     defer { _ = self.state }
     self.fetchThumbnailUseCase = fetchThumbnailUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
+    self.createLinkUseCase = createLinkUseCase
     self.initialState = State()
   }
 
@@ -92,6 +98,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .updateFolderList:
       return fetchFolderList()
+
+    case .saveButtonTapped:
+      return saveLink()
     }
   }
 
@@ -113,6 +122,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .setFolderList(let list):
       newState.folderList = list
+
+    case .setSucceed:
+      newState.isSucceed = true
     }
 
     return newState
@@ -140,11 +152,28 @@ extension CreateLinkViewReactor {
         guard let _ = self.currentState.folder else {
           return .concat([
             .just(Mutation.setFolderList(folderList.reversed())),
-            .just(Mutation.setFolder(folderList.reversed().first!))
+            .just(Mutation.setFolder(folderList.reversed().first!)),
           ])
         }
 
         return .just(Mutation.setFolderList(folderList.reversed()))
       }
+  }
+
+  private func saveLink() -> Observable<Mutation> {
+    guard let folder = currentState.folder,
+          let thumbnail = currentState.thumbnail else {
+      return .empty()
+    }
+
+    return createLinkUseCase.execute(
+      linkBookId: folder.id,
+      title: thumbnail.title ?? "",
+      url: thumbnail.url?.lowercased() ?? "",
+      thumbnailURL: thumbnail.imageURL,
+      tags: currentState.tags
+    )
+    .asObservable()
+    .map { _ in Mutation.setSucceed }
   }
 }

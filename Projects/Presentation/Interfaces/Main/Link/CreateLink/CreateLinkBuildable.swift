@@ -12,5 +12,12 @@ public protocol CreateLinkBuildable {
 // MARK: - CreateLinkPayload
 
 public struct CreateLinkPayload {
-  public init() {}
+
+  public let delegate: CreateLinkDelegate?
+
+  public init(
+    delegate: CreateLinkDelegate?
+  ) {
+    self.delegate = delegate
+  }
 }

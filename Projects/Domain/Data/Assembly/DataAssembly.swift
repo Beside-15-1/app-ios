@@ -1,7 +1,7 @@
 import Foundation
 
-import Swinject
 import KeychainAccess
+import Swinject
 
 import Domain
 import PBAuthInterface
@@ -15,7 +15,8 @@ public final class DataAssembly: Assembly {
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
       registerLoginRepository,
-      registerFolderRepository
+      registerFolderRepository,
+      registerLinkRepository,
     ]
 
     registerFunctions.forEach { $0(container) }
@@ -35,6 +36,16 @@ public final class DataAssembly: Assembly {
   private func registerFolderRepository(container: Container) {
     container.register(FolderRepository.self) { resolver in
       FolderRepositoryImpl(
+        networking: .init(
+          keychain: Keychain(service: "com.pinkboss.joosum")
+        )
+      )
+    }
+  }
+
+  private func registerLinkRepository(container: Container) {
+    container.register(LinkRepository.self) { resolver in
+      LinkRepositoryImpl(
         networking: .init(
           keychain: Keychain(service: "com.pinkboss.joosum")
         )

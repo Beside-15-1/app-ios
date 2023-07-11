@@ -18,17 +18,22 @@ final class HomeViewReactor: Reactor {
   enum Action {
     case viewDidLoad
     case createFolderSucceed
+    case createLinkSucceed
   }
 
   enum Mutation {
+    case setLinkList([Link])
+    case setLinkViewModel(HomeLinkSectionViewModel)
     case setFolderList([Folder])
-    case setViewModel(HomeFolderSectionViewModel)
+    case setFolderViewModel(HomeFolderSectionViewModel)
   }
 
   struct State {
+    var linkList: [Link] = []
+    var linkViewModel: HomeLinkSectionViewModel?
 
     var folderList: [Folder] = []
-    var viewModel: HomeFolderSectionViewModel?
+    var folderViewModel: HomeFolderSectionViewModel?
   }
 
 
@@ -38,16 +43,19 @@ final class HomeViewReactor: Reactor {
 
   let initialState: State
 
+  private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
 
 
   // MARK: initializing
 
   init(
+    fetchLinkListUseCase: FetchAllLinksUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase
   ) {
     defer { _ = self.state }
 
+    self.fetchLinkListUseCase = fetchLinkListUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
 
     self.initialState = State()
@@ -63,10 +71,16 @@ final class HomeViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return fetchFolderList()
+      return .concat([
+        fetchLinkList(),
+        fetchFolderList(),
+      ])
 
     case .createFolderSucceed:
       return fetchFolderList()
+
+    case .createLinkSucceed:
+      return fetchLinkList()
     }
   }
 
@@ -74,11 +88,17 @@ final class HomeViewReactor: Reactor {
     var newState = state
 
     switch mutation {
+    case .setLinkList(let linkList):
+      newState.linkList = linkList
+
+    case .setLinkViewModel(let viewModel):
+      newState.linkViewModel = viewModel
+
     case .setFolderList(let folderList):
       newState.folderList = folderList
 
-    case .setViewModel(let viewModel):
-      newState.viewModel = viewModel
+    case .setFolderViewModel(let viewModel):
+      newState.folderViewModel = viewModel
     }
 
     return newState
@@ -118,7 +138,39 @@ extension HomeViewReactor {
 
         return .concat([
           .just(Mutation.setFolderList(folderList)),
-          .just(Mutation.setViewModel(viewModel)),
+          .just(Mutation.setFolderViewModel(viewModel)),
+        ])
+      }
+  }
+
+  private func fetchLinkList() -> Observable<Mutation> {
+    fetchLinkListUseCase.execute()
+      .asObservable()
+      .flatMap { linkList -> Observable<Mutation> in
+        let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)
+        let linkList = linkList.reversed()[linkList.startIndex..<lastIndex]
+
+        var viewModel = HomeLinkSectionViewModel(
+          section: .normal,
+          items: linkList.map {
+            .init(
+              id: $0.id,
+              imageURL: $0.thumbnailURL,
+              title: $0.title,
+              tag: $0.tags.map { tag in
+                ["#", tag, " "].joined()
+              }.reduce("") { first, second in first + second },
+              date: $0.createdAt,
+              isMore: false
+            )
+          }
+        )
+
+        viewModel.items.append(.init(id: "", imageURL: nil, title: "", tag: "", date: "", isMore: true))
+
+        return .concat([
+          .just(Mutation.setLinkList(linkList.reversed())),
+          .just(Mutation.setLinkViewModel(viewModel)),
         ])
       }
   }

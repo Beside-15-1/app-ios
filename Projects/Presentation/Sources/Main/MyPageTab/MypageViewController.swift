@@ -20,23 +20,15 @@ final class MyPageViewController: UIViewController {
   private var transition: UIViewControllerAnimatedTransitioning?
 
   private let loginBuilder: LoginBuildable
-  private let tagAddBuilder: TagAddBuildable
-  private let createLinkBuilder: CreateLinkBuildable
-
-  private var backgroundColorTestFlag = true
 
   // MARK: Initializing
 
   init(
     viewModel: MyPageViewModel,
-    loginBuilder: LoginBuildable,
-    tagAddBuilder: TagAddBuildable,
-    createLinkBuilder: CreateLinkBuildable
+    loginBuilder: LoginBuildable
   ) {
     self.viewModel = viewModel
     self.loginBuilder = loginBuilder
-    self.tagAddBuilder = tagAddBuilder
-    self.createLinkBuilder = createLinkBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -72,35 +64,6 @@ final class MyPageViewController: UIViewController {
         self.viewModel.logoutButtonTapped()
       }
       .disposed(by: disposeBag)
-
-    contentView.fab.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        self.contentView.fab.expand()
-        self.contentView.fab.contract()
-      }
-      .disposed(by: disposeBag)
-
-    contentView.enableButton.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        guard let vc = self.tagAddBuilder.build(payload: .init(
-          tagAddDelegate: nil,
-          addedTagList: []
-        )) as? PanModalPresentable.LayoutType else { return }
-
-        vc.modalPresentationStyle = .popover
-
-        self.present(vc, animated: true)
-      }
-      .disposed(by: disposeBag)
-
-    // TabView의 이벤트를 처리하는방법
-    // 1. Realy로 처리
-    contentView.tab.selectedTab
-      .map { "Relay: \($0)" }
-      .bind(to: contentView.tabRelayLabel.rx.text)
-      .disposed(by: disposeBag)
-    // 2. Delegate로 처리
-    contentView.tab.delegate = self
   }
 
   func bindRoute(with viewModel: MyPageViewModel) {
@@ -111,15 +74,6 @@ final class MyPageViewController: UIViewController {
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
         self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
         self.transition = nil
-      }
-      .disposed(by: disposeBag)
-
-    contentView.fab.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        let vc = self.createLinkBuilder.build(payload: .init())
-        vc.modalPresentationStyle = .fullScreen
-
-        self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -135,13 +89,5 @@ extension MyPageViewController: UINavigationControllerDelegate {
     to toVC: UIViewController
   ) -> UIViewControllerAnimatedTransitioning? {
     transition
-  }
-}
-
-// MARK: TabViewDelegate
-
-extension MyPageViewController: TabViewDelegate {
-  func tabView(_ tabView: TabView, didSelectedTab: String) {
-    contentView.tabDelegateLabel.text = "Delegate: \(didSelectedTab)"
   }
 }

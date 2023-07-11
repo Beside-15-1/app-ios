@@ -20,6 +20,7 @@ class HomeLinkCell: UICollectionViewCell {
   static let identifier = "HomeLinkCell"
 
   struct ViewModel: Hashable {
+    let id: String
     let imageURL: String?
     let title: String?
     let tag: String?
@@ -99,7 +100,15 @@ class HomeLinkCell: UICollectionViewCell {
       tagLabel.attributedText = tag.styled(font: .bodyRegular, color: .gray800)
     }
 
-    dateLabel.attributedText = viewModel.date.styled(font: .captionRegular, color: .gray500)
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+
+    let date = dateFormatter.date(from: viewModel.date)
+    dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+
+    let stringFromDate = dateFormatter.string(from: date ?? Date())
+
+    dateLabel.attributedText = "\(stringFromDate) 주섬주섬".styled(font: .captionRegular, color: .gray500)
   }
 
 

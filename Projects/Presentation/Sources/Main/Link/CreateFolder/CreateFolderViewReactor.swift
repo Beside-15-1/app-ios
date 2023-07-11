@@ -136,7 +136,7 @@ final class CreateFolderViewReactor: Reactor {
       ])
 
     case .makeButtonTapped:
-      guard let folder = currentState.folder else {
+      guard let _ = currentState.folder else {
         // TODO: 새로운 링크북 생성
         return createFolder()
       }

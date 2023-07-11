@@ -1,12 +1,12 @@
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
 import Toaster
-import PanModal
 
-import PresentationInterface
 import Domain
+import PresentationInterface
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -22,6 +22,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   private let selectFolderBuilder: SelectFolderBuildable
   private let tagAddBuilder: TagAddBuildable
   private let createFolderBuilder: CreateFolderBuildable
+
+  weak var delegate: CreateLinkDelegate?
 
 
   // MARK: Initializing
@@ -65,6 +67,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     bindButtons(with: reactor)
     bindContent(with: reactor)
     bindTextField(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateLinkViewReactor) {
@@ -78,8 +81,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .bind(to: contentView.saveButton.rx.isEnabled)
-      .disposed(by: disposeBag
-      )
+      .disposed( by: disposeBag)
 
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
@@ -99,9 +101,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     contentView.tagView.addTagButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
-        let vc = self.tagAddBuilder.build(payload: .init(
-          tagAddDelegate: self,
-          addedTagList: reactor.currentState.tags)
+        let vc = self.tagAddBuilder.build(
+          payload: .init(
+            tagAddDelegate: self,
+            addedTagList: reactor.currentState.tags
+          )
         )
 
         vc.modalPresentationStyle = .popover
@@ -119,6 +123,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
       }
+      .disposed(by: disposeBag)
+
+    contentView.saveButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.saveButtonTapped }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
 
@@ -162,6 +171,19 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
+
+  private func bindRoute(with reactor: CreateLinkViewReactor) {
+    reactor.state.map(\.isSucceed)
+      .distinctUntilChanged()
+      .filter { $0 }
+      .asObservable()
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true) {
+          self.delegate?.createLinkSucceed()
+        }
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 
@@ -182,16 +204,16 @@ extension CreateLinkViewController: UITextFieldDelegate {
           )
           .show()
         }
-        self.view.endEditing(true)
+        view.endEditing(true)
         return true
       }
 
-      self.reactor?.action.onNext(.fetchThumbnail(text))
-      self.view.endEditing(true)
+      reactor?.action.onNext(.fetchThumbnail(text))
+      view.endEditing(true)
       return true
 
     case 2:
-      self.view.endEditing(true)
+      view.endEditing(true)
       return true
 
     default:

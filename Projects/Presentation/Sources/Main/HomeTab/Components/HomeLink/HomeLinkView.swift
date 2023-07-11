@@ -38,7 +38,7 @@ class HomeLinkView: UIView {
     $0.image = DesignSystemAsset.homeNewLinkEmptyImage.image
   }
 
-  private let newLinkButton = SmallButton(priority: .primary).then {
+  let newLinkButton = SmallButton(priority: .primary).then {
     $0.text = "새 링크 저장하기"
     $0.icon = DesignSystemAsset.iconPlus.image
   }

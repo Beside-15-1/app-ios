@@ -76,7 +76,19 @@ final class HomeViewController: UIViewController, StoryboardView {
   private func bindButtons(with reactor: HomeViewReactor) {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = self.createLinkBuilder.build(payload: .init())
+        let vc = self.createLinkBuilder.build(payload: .init(
+          delegate: self
+        ))
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.homeLinkView.newLinkButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createLinkBuilder.build(payload: .init(
+          delegate: self
+        ))
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
       }
@@ -84,11 +96,19 @@ final class HomeViewController: UIViewController, StoryboardView {
   }
 
   private func bindContent(with reactor: HomeViewReactor) {
-    reactor.state.compactMap(\.viewModel)
+    reactor.state.compactMap(\.folderViewModel)
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.homeFolderView.applyCollectionViewDataSource(by: viewModel)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.compactMap(\.linkViewModel)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.homeLinkView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
   }
@@ -123,5 +143,12 @@ extension HomeViewController: HomeFolderViewDelegate {
 extension HomeViewController: CreateFolderDelegate {
   func createFolderSucceed() {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+extension HomeViewController: CreateLinkDelegate {
+  func createLinkSucceed() {
+    reactor?.action.onNext(.createLinkSucceed)
   }
 }

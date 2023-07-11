@@ -6,3 +6,35 @@
 //
 
 import Foundation
+
+import RxSwift
+
+public protocol CreateLinkUseCase {
+  func execute(
+    linkBookId: String,
+    title: String,
+    url: String,
+    thumbnailURL: String?,
+    tags: [String]
+  ) -> Single<Void>
+}
+
+public class CreateLinkUseCaseImpl: CreateLinkUseCase {
+
+  private let linkRepository: LinkRepository
+
+  public init(linkRepository: LinkRepository) {
+    self.linkRepository = linkRepository
+  }
+
+  public func execute(linkBookId: String, title: String, url: String, thumbnailURL: String?, tags: [String])
+    -> Single<Void> {
+    linkRepository.createLink(
+      linkBookId: linkBookId,
+      title: title,
+      url: url,
+      thumbnailURL: thumbnailURL,
+      tags: tags
+    )
+  }
+}
