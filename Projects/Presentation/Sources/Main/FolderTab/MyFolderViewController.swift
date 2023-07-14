@@ -43,10 +43,23 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
   }
 
 
   // MARK: Binding
 
-  func bind(reactor: MyFolderViewReactor) {}
+  func bind(reactor: MyFolderViewReactor) {
+    bindContent(with: reactor)
+  }
+
+  private func bindContent(with reactor: MyFolderViewReactor) {
+    reactor.state.compactMap(\.folderViewModel)
+      .asObservable()
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.myFolderCollectionView.applyCollectionViewDataSource(by: viewModel)
+      }
+      .disposed(by: disposeBag)
+  }
 }

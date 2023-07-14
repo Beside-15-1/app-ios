@@ -36,7 +36,11 @@ class MyFolderCollectionView: UIView {
   lazy var collectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: self.collectionViewLayout()
-  )
+  ).then {
+    $0.register(MyFolderCell.self, forCellWithReuseIdentifier: MyFolderCell.identifier)
+    $0.backgroundColor = .clear
+    $0.showsVerticalScrollIndicator = false
+  }
 
 
   // MARK: Properties
@@ -77,20 +81,22 @@ class MyFolderCollectionView: UIView {
     let item = NSCollectionLayoutItem(
       layoutSize: .init(
         widthDimension: .fractionalWidth(1/3),
-        heightDimension: .fractionalWidth(1.33/3)
+        heightDimension: .fractionalWidth(1.6/3)
       )
     )
 
     let groupSize = NSCollectionLayoutSize(
       widthDimension: .fractionalWidth(1),
-      heightDimension: .fractionalWidth(1.33/3)
+      heightDimension: .fractionalWidth(1.6/3)
     )
 
-    let group = NSCollectionLayoutGroup.vertical(
+    let group = NSCollectionLayoutGroup.horizontal(
       layoutSize: groupSize,
       subitem: item,
-      count: 1
-    )
+      count: 3
+    ).then {
+      $0.interItemSpacing = .fixed(8.5)
+    }
 
     let section = NSCollectionLayoutSection(group: group).then {
       $0.interGroupSpacing = 12.0

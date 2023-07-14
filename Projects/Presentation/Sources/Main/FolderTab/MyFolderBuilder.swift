@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct MyFolderDependency {}
+struct MyFolderDependency {
+  let folderRepository: FolderRepository
+}
 
 final class MyFolderBuilder: MyFolderBuildable {
 
@@ -22,7 +24,11 @@ final class MyFolderBuilder: MyFolderBuildable {
   }
 
   func build(payload: MyFolderPayload) -> UIViewController {
-    let reactor = MyFolderViewReactor()
+    let reactor = MyFolderViewReactor(
+      fetchFolderListUseCase: FetchFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      )
+    )
 
     let viewController = MyFolderViewController(
       reactor: reactor

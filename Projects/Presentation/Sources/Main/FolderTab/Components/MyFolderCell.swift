@@ -146,7 +146,7 @@ class MyFolderCell: UICollectionViewCell {
 
     verticalBar.snp.makeConstraints {
       $0.left.equalToSuperview().inset(8.0)
-      $0.top.bottom.equalToSuperview()
+      $0.top.bottom.equalTo(folderCover)
       $0.width.equalTo(2.0)
     }
 
