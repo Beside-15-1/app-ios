@@ -14,6 +14,10 @@ import Then
 import DesignSystem
 import PBLog
 
+protocol MyFolderCollectionViewDelegate: AnyObject {
+  func collectionViewEditButtonTapped(id: String)
+}
+
 class MyFolderCollectionView: UIView {
 
   typealias Section = MyFolderSection
@@ -54,6 +58,7 @@ class MyFolderCollectionView: UIView {
 
   private lazy var diffableDataSource = self.collectionViewDiffableDataSource()
 
+  weak var delegate: MyFolderCollectionViewDelegate?
 
   // MARK: Initializing
 
@@ -149,6 +154,7 @@ class MyFolderCollectionView: UIView {
           .subscribe(onNext: { [weak self] in
             PBLog.info(item)
             // TODO: 폴더 수정 삭제
+            self?.delegate?.collectionViewEditButtonTapped(id: item.id)
           })
           .disposed(by: cell.disposeBag)
       }

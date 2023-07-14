@@ -14,6 +14,7 @@ import PresentationInterface
 struct MyFolderDependency {
   let folderRepository: FolderRepository
   let createFolderBuilder: CreateFolderBuildable
+  let editFolderBuilder: EditFolderBuildable
 }
 
 final class MyFolderBuilder: MyFolderBuildable {
@@ -33,7 +34,8 @@ final class MyFolderBuilder: MyFolderBuildable {
 
     let viewController = MyFolderViewController(
       reactor: reactor,
-      createFolderBuilder: dependency.createFolderBuilder
+      createFolderBuilder: dependency.createFolderBuilder,
+      editFolderBuilder: dependency.editFolderBuilder
     )
 
     return viewController

@@ -9,6 +9,7 @@ import UIKit
 
 import ReactorKit
 import RxSwift
+import PanModal
 
 import PresentationInterface
 
@@ -24,17 +25,20 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let createFolderBuilder: CreateFolderBuildable
+  private let editFolderBuilder: EditFolderBuildable
 
 
   // MARK: Initializing
 
   init(
     reactor: MyFolderViewReactor,
-    createFolderBuilder: CreateFolderBuildable
+    createFolderBuilder: CreateFolderBuildable,
+    editFolderBuilder: EditFolderBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createFolderBuilder = createFolderBuilder
+    self.editFolderBuilder = editFolderBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -48,6 +52,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.myFolderCollectionView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -105,5 +111,21 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 extension MyFolderViewController: CreateFolderDelegate {
   func createFolderSucceed() {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+// MARK: MyFolderCollectionViewDelegate
+
+extension MyFolderViewController: MyFolderCollectionViewDelegate {
+  func collectionViewEditButtonTapped(id: String) {
+    guard let reactor,
+          let folder = reactor.currentState.folderList.first(where: { $0.id == id })
+    else { return }
+
+    guard let vc = editFolderBuilder.build(payload: .init(folder: folder))
+            as? PanModalPresentable.LayoutType else { return }
+
+    presentPanModal(vc)
   }
 }
