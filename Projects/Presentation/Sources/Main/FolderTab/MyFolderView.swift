@@ -76,4 +76,10 @@ final class MyFolderView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
   }
+
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
+
+    endEditing(true)
+  }
 }

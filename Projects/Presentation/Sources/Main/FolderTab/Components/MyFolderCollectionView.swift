@@ -38,8 +38,13 @@ class MyFolderCollectionView: UIView {
     collectionViewLayout: self.collectionViewLayout()
   ).then {
     $0.register(MyFolderCell.self, forCellWithReuseIdentifier: MyFolderCell.identifier)
-    $0.backgroundColor = .clear
+    $0.backgroundColor = .staticWhite
     $0.showsVerticalScrollIndicator = false
+  }
+
+  let emptyLabel = UILabel().then {
+    $0.numberOfLines = 0
+    $0.textAlignment = .center
   }
 
 
@@ -65,10 +70,28 @@ class MyFolderCollectionView: UIView {
   }
 
 
+  // MARK: Configuring
+
+  func configureEmptyLabel(text: String) {
+    emptyLabel.attributedText = "검색한 ‘\(text)' 폴더가 없어요\n폴더를 추가해보세요."
+      .styled(
+        font: .defaultRegular,
+        color: .gray700
+      )
+      .changeTarget(font: .defaultBold, target: text)
+  }
+
+
   // MARK: CollectionView
 
   func applyCollectionViewDataSource(by sectionViewModel: MyFolderSectionViewModel) {
+    guard !sectionViewModel.items.isEmpty else {
+      collectionView.isHidden = true
+      return
+    }
+
     self.viewModel = sectionViewModel
+    collectionView.isHidden = false
 
     var snapshot = DiffableSnapshot()
     snapshot.appendSections([sectionViewModel.section])
@@ -125,6 +148,7 @@ class MyFolderCollectionView: UIView {
         cell.moreButton.rx.tap
           .subscribe(onNext: { [weak self] in
             PBLog.info(item)
+            // TODO: 폴더 수정 삭제
           })
           .disposed(by: cell.disposeBag)
       }
@@ -135,7 +159,7 @@ class MyFolderCollectionView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [sortButton, createFolderButton, collectionView].forEach { addSubview($0) }
+    [sortButton, createFolderButton, emptyLabel, collectionView].forEach { addSubview($0) }
 
     sortButton.snp.makeConstraints {
       $0.left.equalToSuperview()
@@ -145,6 +169,11 @@ class MyFolderCollectionView: UIView {
     createFolderButton.snp.makeConstraints {
       $0.right.equalToSuperview()
       $0.top.equalToSuperview().inset(24.0)
+    }
+
+    emptyLabel.snp.makeConstraints {
+      $0.top.equalTo(sortButton.snp.bottom).offset(120.0)
+      $0.centerX.equalToSuperview()
     }
 
     collectionView.snp.makeConstraints {

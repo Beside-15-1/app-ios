@@ -51,6 +51,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   func bind(reactor: MyFolderViewReactor) {
     bindContent(with: reactor)
+    bindTextField(with: reactor)
   }
 
   private func bindContent(with reactor: MyFolderViewReactor) {
@@ -59,6 +60,15 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.myFolderCollectionView.applyCollectionViewDataSource(by: viewModel)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindTextField(with reactor: MyFolderViewReactor) {
+    contentView.folderSearchField.rx.text
+      .subscribe(with: self) { `self`, text in
+        reactor.action.onNext(.searchText(text))
+        self.contentView.myFolderCollectionView.configureEmptyLabel(text: text)
       }
       .disposed(by: disposeBag)
   }

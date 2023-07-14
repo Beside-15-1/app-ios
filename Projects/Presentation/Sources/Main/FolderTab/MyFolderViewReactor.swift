@@ -18,6 +18,7 @@ final class MyFolderViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case searchText(String)
   }
 
   enum Mutation {
@@ -47,8 +48,8 @@ final class MyFolderViewReactor: Reactor {
     defer { _ = self.state }
 
     self.fetchFolderListUseCase = fetchFolderListUseCase
-    
-    initialState = State()
+
+    self.initialState = State()
   }
 
   deinit {
@@ -62,6 +63,22 @@ final class MyFolderViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return fetchFolderList()
+
+    case .searchText(let text):
+
+      guard !text.isEmpty else {
+        let viewModel = makeViewModel(withFolderList: currentState.folderList)
+
+        return .just(Mutation.setFolderViewModel(viewModel))
+      }
+
+      let filteredList = currentState.folderList.filter {
+        $0.title.range(of: text, options: .caseInsensitive) != nil
+      }
+
+      let viewModel = makeViewModel(withFolderList: filteredList)
+
+      return .just(Mutation.setFolderViewModel(viewModel))
     }
   }
 
@@ -88,25 +105,31 @@ extension MyFolderViewReactor {
   private func fetchFolderList() -> Observable<Mutation> {
     fetchFolderListUseCase.execute(sort: .createAt)
       .asObservable()
-      .flatMap { folderList -> Observable<Mutation> in
-        var viewModel = MyFolderSectionViewModel(
-          section: .normal,
-          items: folderList.map {
-            .init(
-              id: $0.id,
-              coverColor: $0.backgroundColor,
-              titleColor: $0.titleColor,
-              title: $0.title,
-              illust: $0.illustration,
-              linkCount: $0.linkCount
-            )
-          }
-        )
+      .flatMap { [weak self] folderList -> Observable<Mutation> in
+        guard let self else { return .empty() }
+
+        let viewModel = self.makeViewModel(withFolderList: folderList)
 
         return .concat([
           .just(Mutation.setFolderList(folderList)),
           .just(Mutation.setFolderViewModel(viewModel)),
         ])
       }
+  }
+
+  private func makeViewModel(withFolderList folderList: [Folder]) -> MyFolderSectionViewModel {
+    MyFolderSectionViewModel(
+      section: .normal,
+      items: folderList.map {
+        .init(
+          id: $0.id,
+          coverColor: $0.backgroundColor,
+          titleColor: $0.titleColor,
+          title: $0.title,
+          illust: $0.illustration,
+          linkCount: $0.linkCount
+        )
+      }
+    )
   }
 }
