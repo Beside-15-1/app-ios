@@ -31,7 +31,7 @@ class HomeFolderView: UIView {
     $0.attributedText = "링크 폴더".styled(font: .subTitleSemiBold, color: .staticBlack)
   }
 
-  private let moveToFolderButton = UIButton().then {
+  let moveToFolderButton = UIButton().then {
     $0.setImage(DesignSystemAsset.iconRight.image.withTintColor(.staticBlack), for: .normal)
   }
 
