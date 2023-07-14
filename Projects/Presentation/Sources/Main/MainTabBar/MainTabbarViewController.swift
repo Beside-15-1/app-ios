@@ -13,14 +13,14 @@ final class MainTabBarViewController: UITabBarController {
   // MARK: Properties
 
   private let homeBuilder: HomeBuildable
-  private let folderBuilder: FolderBuildable
+  private let folderBuilder: MyFolderBuildable
   private let myPageBuilder: MyPageBuildable
 
   // MARK: Initializing
 
   init(
     homeBuilder: HomeBuildable,
-    folderBuilder: FolderBuildable,
+    folderBuilder: MyFolderBuildable,
     myPageBuilder: MyPageBuildable
   ) {
     self.homeBuilder = homeBuilder

@@ -1,25 +1,29 @@
+//
+//  MyFolderView.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/07/11.
+//
+
 import UIKit
 
-import FlexLayout
-import PinLayout
 import SnapKit
 import Then
 
-import DesignSystem
+final class MyFolderView: UIView {
 
-final class FolderView: UIView {
   // MARK: Initializing
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .gray200
+    backgroundColor = .paperWhite
   }
 
-  @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
 
   // MARK: Layout
 

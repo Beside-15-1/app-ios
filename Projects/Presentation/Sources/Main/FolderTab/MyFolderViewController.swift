@@ -1,27 +1,39 @@
+//
+//  MyFolderViewController.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/07/11.
+//
+
 import UIKit
 
+import ReactorKit
 import RxSwift
 
-final class FolderViewController: UIViewController {
+
+final class MyFolderViewController: UIViewController, StoryboardView {
+
   // MARK: UI
 
-  private lazy var contentView = FolderView()
+  private lazy var contentView = MyFolderView()
+
 
   // MARK: Properties
 
-  private let viewModel: FolderViewModel
+  var disposeBag = DisposeBag()
+
 
   // MARK: Initializing
 
-  init(viewModel: FolderViewModel) {
-    self.viewModel = viewModel
+  init(reactor: MyFolderViewReactor) {
+    defer { self.reactor = reactor }
     super.init(nibName: nil, bundle: nil)
   }
 
-  @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
 
   // MARK: View Life Cycle
 
@@ -31,11 +43,10 @@ final class FolderViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    bind(with: viewModel)
   }
+
 
   // MARK: Binding
 
-  func bind(with viewModel: FolderViewModel) {}
+  func bind(reactor: MyFolderViewReactor) {}
 }

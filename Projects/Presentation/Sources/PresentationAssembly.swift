@@ -47,7 +47,7 @@ public final class PresentationAssembly: Assembly {
     contianer.register(MainTabBarBuildable.self) { r in
       MainTabBarBuilder(dependency: .init(
         homeBuilder: r.resolve(),
-        folderBuilder: r.resolve(),
+        myFolderBuilder: r.resolve(),
         myPageBuilder: r.resolve()
       ))
     }
@@ -65,8 +65,8 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerFolderBuilder(container: Container) {
-    container.register(FolderBuildable.self) { _ in
-      FolderBuilder(dependency: .init())
+    container.register(MyFolderBuildable.self) { _ in
+      MyFolderBuilder(dependency: .init())
     }
   }
 
