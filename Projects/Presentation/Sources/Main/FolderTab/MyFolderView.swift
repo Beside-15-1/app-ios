@@ -10,7 +10,26 @@ import UIKit
 import SnapKit
 import Then
 
+import DesignSystem
+
 final class MyFolderView: UIView {
+
+  // MARK: UI
+
+  private let colorBackground = UIView().then {
+    $0.backgroundColor = .paperGray
+  }
+
+  private let titleLabel = UILabel().then {
+    $0.attributedText = "내 폴더".styled(font: .titleBold, color: .staticBlack)
+  }
+
+  let folderSearchField = InputField(type: .normal).then {
+    $0.placeHolder = "폴더명으로 검색해보세요"
+  }
+
+  let myFolderCollectionView = MyFolderCollectionView()
+
 
   // MARK: Initializing
 
@@ -18,6 +37,8 @@ final class MyFolderView: UIView {
     super.init(frame: frame)
 
     backgroundColor = .paperWhite
+
+    defineLayout()
   }
 
   required init?(coder: NSCoder) {
@@ -26,6 +47,31 @@ final class MyFolderView: UIView {
 
 
   // MARK: Layout
+
+  private func defineLayout() {
+    [colorBackground, titleLabel, folderSearchField, myFolderCollectionView].forEach { addSubview($0) }
+
+    colorBackground.snp.makeConstraints {
+      $0.top.left.right.equalToSuperview()
+      $0.height.equalTo(200)
+    }
+
+    titleLabel.snp.makeConstraints {
+      $0.left.equalToSuperview().inset(20.0)
+      $0.top.equalTo(safeAreaLayoutGuide).inset(24.0)
+    }
+
+    folderSearchField.snp.makeConstraints {
+      $0.top.equalTo(titleLabel.snp.bottom).offset(12.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    myFolderCollectionView.snp.makeConstraints {
+      $0.left.right.equalToSuperview().inset(20.0)
+      $0.top.equalTo(colorBackground.snp.bottom)
+      $0.bottom.equalTo(safeAreaLayoutGuide)
+    }
+  }
 
   override func layoutSubviews() {
     super.layoutSubviews()
