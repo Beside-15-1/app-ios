@@ -18,9 +18,9 @@ final class EditFolderView: UIView {
 
   let titleView = TitleView()
 
-  private let modifyButton = EditFolderModifyButton()
+  let modifyButton = EditFolderModifyButton()
 
-  private let deleteButton = EditFolderDeleteButton()
+  let deleteButton = EditFolderDeleteButton()
 
 
   // MARK: Initializing

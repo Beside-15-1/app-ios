@@ -102,6 +102,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
+    reactor.state.compactMap(\.folder)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with :self) { `self`, folder in
+        self.contentView.linkBookTabView.folderView.inputField.text = folder.title
+        self.contentView.titleView.title = "폴더 수정"
+        self.contentView.linkBookTabView.makeButton.text = "변경하기"
+      }
+      .disposed(by: disposeBag)
+
     reactor.state.map(\.viewModel)
       .distinctUntilChanged()
       .asObservable()
@@ -113,6 +123,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   private func bindTextField(with reactor: CreateFolderViewReactor) {
     contentView.linkBookTabView.folderView.inputField.rx.text
+      .skip(1)
       .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

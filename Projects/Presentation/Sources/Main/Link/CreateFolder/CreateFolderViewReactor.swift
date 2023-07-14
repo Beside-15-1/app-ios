@@ -55,16 +55,19 @@ final class CreateFolderViewReactor: Reactor {
   let initialState: State
 
   private let createFolderUseCase: CreateFolderUseCase
+  private let updateFolderUseCase: UpdateFolderUseCase
 
   // MARK: initializing
 
   init(
     createFolderUseCase: CreateFolderUseCase,
+    updateFolderUseCase: UpdateFolderUseCase,
     folder: Folder?
   ) {
     defer { _ = self.state }
 
     self.createFolderUseCase = createFolderUseCase
+    self.updateFolderUseCase = updateFolderUseCase
 
     var viewModel: CreateFolderPreviewView.ViewModel {
       guard let folder else {
@@ -108,7 +111,7 @@ final class CreateFolderViewReactor: Reactor {
 
       return .concat([
         .just(Mutation.updateFolder(folder)),
-        .just(Mutation.updateViewModel(viewModel))
+        .just(Mutation.updateViewModel(viewModel)),
       ])
 
     case .updateBackgroundColor(let index):
@@ -120,28 +123,26 @@ final class CreateFolderViewReactor: Reactor {
 
       return .concat([
         .just(Mutation.updateFolder(folder)),
-        .just(Mutation.updateViewModel(viewModel))
+        .just(Mutation.updateViewModel(viewModel)),
       ])
 
     case .updateTitleColor(let index):
       var folder = currentState.folder
       folder?.titleColor = currentState.titleColors[index]
-      
+
       var viewModel = currentState.viewModel
       viewModel.titleColor = currentState.titleColors[index]
 
       return .concat([
         .just(Mutation.updateFolder(folder)),
-        .just(Mutation.updateViewModel(viewModel))
+        .just(Mutation.updateViewModel(viewModel)),
       ])
 
     case .makeButtonTapped:
       guard let _ = currentState.folder else {
-        // TODO: 새로운 링크북 생성
         return createFolder()
       }
-      // TODO: 기존 링크북 업데이트
-      return .empty()
+      return updateFolder()
     }
   }
 
@@ -175,7 +176,21 @@ extension CreateFolderViewReactor {
     )
     .asObservable()
     .flatMap { _ -> Observable<Mutation> in
-      return .just(Mutation.setSucceed)
+      .just(Mutation.setSucceed)
+    }
+  }
+
+  private func updateFolder() -> Observable<Mutation> {
+    updateFolderUseCase.execute(
+      id: currentState.folder?.id ?? "",
+      backgroundColor: currentState.viewModel.backgroundColor,
+      title: currentState.viewModel.title,
+      titleColor: currentState.viewModel.titleColor,
+      illustration: currentState.viewModel.illuste
+    )
+    .asObservable()
+    .flatMap { _ -> Observable<Mutation> in
+      .just(Mutation.setSucceed)
     }
   }
 }

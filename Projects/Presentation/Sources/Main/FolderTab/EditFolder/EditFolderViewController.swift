@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 import PanModal
 
+import PresentationInterface
 
 final class EditFolderViewController: UIViewController, StoryboardView {
 
@@ -23,11 +24,21 @@ final class EditFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let createFolderBuilder: CreateFolderBuildable
+
+  weak var delegate: EditFolderDelegate?
+
 
   // MARK: Initializing
 
-  init(reactor: EditFolderViewReactor) {
+  init(
+    reactor: EditFolderViewReactor,
+    createFolderBuilder: CreateFolderBuildable
+  ) {
     defer { self.reactor = reactor }
+
+    self.createFolderBuilder = createFolderBuilder
+    
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -51,6 +62,24 @@ final class EditFolderViewController: UIViewController, StoryboardView {
 
   func bind(reactor: EditFolderViewReactor) {
     bindContent(with: reactor)
+    bindButton(with: reactor)
+  }
+
+  private func bindButton(with reactor: EditFolderViewReactor) {
+    contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.modifyButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let reactor = self.reactor else { return }
+        self.dismiss(animated: true) {
+          self.delegate?.editFolderModifyButtonTapped(withFolder: reactor.currentState.folder)
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: EditFolderViewReactor) {
@@ -59,12 +88,6 @@ final class EditFolderViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, folder in
         self.contentView.configureTitle(title: folder.title)
-      }
-      .disposed(by: disposeBag)
-
-    contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
   }

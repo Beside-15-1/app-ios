@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct EditFolderDependency {}
+struct EditFolderDependency {
+  let createFolderBuilder: CreateFolderBuildable
+}
 
 final class EditFolderBuilder: EditFolderBuildable {
 
@@ -27,8 +29,11 @@ final class EditFolderBuilder: EditFolderBuildable {
     )
 
     let viewController = EditFolderViewController(
-      reactor: reactor
-    )
+      reactor: reactor,
+      createFolderBuilder: dependency.createFolderBuilder
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

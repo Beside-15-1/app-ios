@@ -136,7 +136,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerEditFolderBuilder(container: Container) {
     container.register(EditFolderBuildable.self) { r in
-      EditFolderBuilder(dependency: .init())
+      EditFolderBuilder(dependency: .init(
+        createFolderBuilder: r.resolve()
+      ))
     }
   }
 }

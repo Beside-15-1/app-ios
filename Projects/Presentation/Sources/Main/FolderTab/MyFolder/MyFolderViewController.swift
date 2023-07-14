@@ -7,11 +7,12 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
-import PanModal
 
 import PresentationInterface
+import Domain
 
 final class MyFolderViewController: UIViewController, StoryboardView {
 
@@ -92,9 +93,11 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private func bindButton(with reactor: MyFolderViewReactor) {
     contentView.myFolderCollectionView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = self.createFolderBuilder.build(payload: .init(
-          folder: nil,
-          delegate: self)
+        let vc = self.createFolderBuilder.build(
+          payload: .init(
+            folder: nil,
+            delegate: self
+          )
         ).then {
           $0.modalPresentationStyle = .popover
         }
@@ -123,9 +126,28 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
           let folder = reactor.currentState.folderList.first(where: { $0.id == id })
     else { return }
 
-    guard let vc = editFolderBuilder.build(payload: .init(folder: folder))
-            as? PanModalPresentable.LayoutType else { return }
+    guard let vc = editFolderBuilder.build(payload: .init(
+      delegate: self,
+      folder: folder
+    ))
+      as? PanModalPresentable.LayoutType else { return }
 
     presentPanModal(vc)
+  }
+}
+
+
+extension MyFolderViewController: EditFolderDelegate {
+  func editFolderModifyButtonTapped(withFolder: Folder) {
+    let vc = self.createFolderBuilder.build(
+      payload: .init(
+        folder: withFolder,
+        delegate: self
+      )
+    ).then {
+      $0.modalPresentationStyle = .popover
+    }
+
+    self.present(vc, animated: true)
   }
 }

@@ -45,4 +45,32 @@ class FolderRepositoryImpl: FolderRepository {
       .map(FolderListResponse.self)
       .map { $0.toDomain() }
   }
+
+  func updateFolder(
+    id: String,
+    backgroundColor: String,
+    title: String,
+    titleColor: String,
+    illustration: String?
+  ) -> Single<Void> {
+    let target = FolderAPI.updateFolder(
+      id: id,
+      request: .init(
+        backgroundColor: backgroundColor,
+        illustration: illustration,
+        title: title,
+        titleColor: titleColor
+      )
+    )
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
+
+  func deleteFolder(id: String) -> Single<Void> {
+    let target = FolderAPI.deleteFolder(id: id)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
 }

@@ -1,10 +1,10 @@
 import Foundation
 
+import KeychainAccess
 import Moya
 import RxMoya
 import RxSwift
 import SwiftyJSON
-import KeychainAccess
 
 import PBLog
 
@@ -19,9 +19,9 @@ public final class PBNetworking<T: TargetType> {
     }
 
     if isStub {
-      provider = MoyaProvider<T>(stubClosure: { MoyaProvider.immediatelyStub($0) })
+      self.provider = MoyaProvider<T>(stubClosure: { MoyaProvider.immediatelyStub($0) })
     } else {
-      provider = MoyaProvider<T>(plugins: [tokenPlugin])
+      self.provider = MoyaProvider<T>(plugins: [tokenPlugin])
     }
   }
 
@@ -39,9 +39,12 @@ public final class PBNetworking<T: TargetType> {
 /// 서버에서 보내주는 오류 문구 파싱용
 extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
   func handleResponse() -> Single<Element> {
-    return flatMap { response in
+    flatMap { response in
 
-      PBLog.api(response.request?.url, JSON(response.data))
+      PBLog.api(
+        method: response.request?.method?.rawValue ?? "",
+        response.request?.url,
+        JSON(response.data))
 
       if (200...299) ~= response.statusCode {
         return Single.just(response)
