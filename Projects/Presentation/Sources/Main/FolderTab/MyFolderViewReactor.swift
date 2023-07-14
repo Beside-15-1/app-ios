@@ -19,6 +19,7 @@ final class MyFolderViewReactor: Reactor {
   enum Action {
     case viewDidLoad
     case searchText(String)
+    case createFolderSucceed
   }
 
   enum Mutation {
@@ -79,6 +80,9 @@ final class MyFolderViewReactor: Reactor {
       let viewModel = makeViewModel(withFolderList: filteredList)
 
       return .just(Mutation.setFolderViewModel(viewModel))
+
+    case .createFolderSucceed:
+      return fetchFolderList()
     }
   }
 

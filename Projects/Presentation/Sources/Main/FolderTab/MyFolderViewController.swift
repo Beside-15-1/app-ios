@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import PresentationInterface
 
 final class MyFolderViewController: UIViewController, StoryboardView {
 
@@ -22,11 +23,19 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let createFolderBuilder: CreateFolderBuildable
+
 
   // MARK: Initializing
 
-  init(reactor: MyFolderViewReactor) {
+  init(
+    reactor: MyFolderViewReactor,
+    createFolderBuilder: CreateFolderBuildable
+  ) {
     defer { self.reactor = reactor }
+
+    self.createFolderBuilder = createFolderBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -52,6 +61,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   func bind(reactor: MyFolderViewReactor) {
     bindContent(with: reactor)
     bindTextField(with: reactor)
+    bindButton(with: reactor)
   }
 
   private func bindContent(with reactor: MyFolderViewReactor) {
@@ -71,5 +81,29 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         self.contentView.myFolderCollectionView.configureEmptyLabel(text: text)
       }
       .disposed(by: disposeBag)
+  }
+
+  private func bindButton(with reactor: MyFolderViewReactor) {
+    contentView.myFolderCollectionView.createFolderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createFolderBuilder.build(payload: .init(
+          folder: nil,
+          delegate: self)
+        ).then {
+          $0.modalPresentationStyle = .popover
+        }
+
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+  }
+}
+
+
+// MARK: CreateFolderDelegate
+
+extension MyFolderViewController: CreateFolderDelegate {
+  func createFolderSucceed() {
+    reactor?.action.onNext(.createFolderSucceed)
   }
 }
