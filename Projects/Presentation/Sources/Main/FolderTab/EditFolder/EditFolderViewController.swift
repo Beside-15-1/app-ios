@@ -7,10 +7,11 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
-import PanModal
 
+import DesignSystem
 import PresentationInterface
 
 final class EditFolderViewController: UIViewController, StoryboardView {
@@ -38,7 +39,7 @@ final class EditFolderViewController: UIViewController, StoryboardView {
     defer { self.reactor = reactor }
 
     self.createFolderBuilder = createFolderBuilder
-    
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -77,6 +78,15 @@ final class EditFolderViewController: UIViewController, StoryboardView {
         guard let reactor = self.reactor else { return }
         self.dismiss(animated: true) {
           self.delegate?.editFolderModifyButtonTapped(withFolder: reactor.currentState.folder)
+        }
+      }
+      .disposed(by: disposeBag)
+
+    contentView.deleteButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let reactor = self.reactor else { return }
+        self.dismiss(animated: true) {
+          self.delegate?.editFolderDeleteButtonTapped(withFolder: reactor.currentState.folder)
         }
       }
       .disposed(by: disposeBag)

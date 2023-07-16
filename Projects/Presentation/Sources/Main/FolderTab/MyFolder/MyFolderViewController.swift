@@ -13,6 +13,7 @@ import RxSwift
 
 import PresentationInterface
 import Domain
+import DesignSystem
 
 final class MyFolderViewController: UIViewController, StoryboardView {
 
@@ -138,10 +139,10 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
 
 
 extension MyFolderViewController: EditFolderDelegate {
-  func editFolderModifyButtonTapped(withFolder: Folder) {
+  func editFolderModifyButtonTapped(withFolder folder: Folder) {
     let vc = self.createFolderBuilder.build(
       payload: .init(
-        folder: withFolder,
+        folder: folder,
         delegate: self
       )
     ).then {
@@ -149,5 +150,18 @@ extension MyFolderViewController: EditFolderDelegate {
     }
 
     self.present(vc, animated: true)
+  }
+
+  func editFolderDeleteButtonTapped(withFolder folder: Folder) {
+    PBDialog(
+      title: "정말로 삭제하시겠습니까??",
+      content: "\(folder.title)폴더가 삭제되며\n삭제된 데이터는 복구되지 않습니다.",
+      from: self
+    )
+    .addAction(content: "예", priority: .secondary, action: { [weak self] in
+      self?.reactor?.action.onNext(.deleteFolder(folder))
+    })
+    .addAction(content: "아니오", priority: .primary, action: nil)
+    .show()
   }
 }

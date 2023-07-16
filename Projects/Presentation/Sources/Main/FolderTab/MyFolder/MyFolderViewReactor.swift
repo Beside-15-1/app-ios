@@ -20,6 +20,7 @@ final class MyFolderViewReactor: Reactor {
     case viewDidLoad
     case searchText(String)
     case createFolderSucceed
+    case deleteFolder(Folder)
   }
 
   enum Mutation {
@@ -39,16 +40,19 @@ final class MyFolderViewReactor: Reactor {
   let initialState: State
 
   private let fetchFolderListUseCase: FetchFolderListUseCase
+  private let deleteFolderUseCase: DeleteFolderUseCase
 
 
   // MARK: initializing
 
   init(
-    fetchFolderListUseCase: FetchFolderListUseCase
+    fetchFolderListUseCase: FetchFolderListUseCase,
+    deleteFolderUseCase: DeleteFolderUseCase
   ) {
     defer { _ = self.state }
 
     self.fetchFolderListUseCase = fetchFolderListUseCase
+    self.deleteFolderUseCase = deleteFolderUseCase
 
     self.initialState = State()
   }
@@ -83,6 +87,9 @@ final class MyFolderViewReactor: Reactor {
 
     case .createFolderSucceed:
       return fetchFolderList()
+
+    case .deleteFolder(let folder):
+      return deleteFolder(folder: folder)
     }
   }
 
@@ -135,5 +142,14 @@ extension MyFolderViewReactor {
         )
       }
     )
+  }
+
+  private func deleteFolder(folder: Folder) -> Observable<Mutation> {
+    deleteFolderUseCase.execute(id: folder.id)
+      .asObservable()
+      .flatMap { [weak self] _ -> Observable<Mutation> in
+        guard let self else { return .empty() }
+        return self.fetchFolderList()
+      }
   }
 }

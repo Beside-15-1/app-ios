@@ -10,5 +10,6 @@ import Foundation
 import Domain
 
 public protocol EditFolderDelegate: AnyObject {
-  func editFolderModifyButtonTapped(withFolder: Folder)
+  func editFolderModifyButtonTapped(withFolder folder: Folder)
+  func editFolderDeleteButtonTapped(withFolder folder: Folder)
 }

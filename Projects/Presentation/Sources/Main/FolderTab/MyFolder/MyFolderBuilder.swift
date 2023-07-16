@@ -5,8 +5,8 @@
 //  Created by 박천송 on 2023/07/11.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
@@ -28,6 +28,9 @@ final class MyFolderBuilder: MyFolderBuildable {
   func build(payload: MyFolderPayload) -> UIViewController {
     let reactor = MyFolderViewReactor(
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      ),
+      deleteFolderUseCase: DeleteFolderUseCaseImpl(
         folderRepository: dependency.folderRepository
       )
     )

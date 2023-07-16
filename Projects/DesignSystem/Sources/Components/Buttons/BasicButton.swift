@@ -15,11 +15,15 @@ import SnapKit
 
 public enum ButtonPriority {
   case primary
+  case secondary
 
   var color: UIColor {
     switch self {
     case .primary:
       return .primary500
+
+    case .secondary:
+      return .gray500
     }
   }
 
@@ -27,6 +31,9 @@ public enum ButtonPriority {
     switch self {
     case .primary:
       return .basicButtonPressedColor
+
+    case .secondary:
+      return .gray600
     }
   }
 }
