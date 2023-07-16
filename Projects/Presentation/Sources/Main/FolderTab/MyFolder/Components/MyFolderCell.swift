@@ -27,6 +27,7 @@ class MyFolderCell: UICollectionViewCell {
     let title: String
     let illust: String?
     let linkCount: Int
+    let isDefault: Bool
   }
 
   // MARK: UI
@@ -77,6 +78,7 @@ class MyFolderCell: UICollectionViewCell {
     super.prepareForReuse()
     folderCover.backgroundColor = .clear
     disposeBag = DisposeBag()
+    buttonContainer.isHidden = false
   }
 
 
@@ -106,6 +108,8 @@ class MyFolderCell: UICollectionViewCell {
         color: .gray700
       )
     }
+
+    buttonContainer.isHidden = viewModel.isDefault
   }
 
 

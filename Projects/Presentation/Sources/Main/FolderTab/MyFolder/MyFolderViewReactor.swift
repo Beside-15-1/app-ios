@@ -138,7 +138,8 @@ extension MyFolderViewReactor {
           titleColor: $0.titleColor,
           title: $0.title,
           illust: $0.illustration,
-          linkCount: $0.linkCount
+          linkCount: $0.linkCount,
+          isDefault: $0.isDefault
         )
       }
     )

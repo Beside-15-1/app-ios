@@ -19,6 +19,7 @@ public struct Folder: Hashable {
 
   public let createdAt: String
   public let lastSavedAt: String
+  public let isDefault: Bool
 
   public init(
     id: String,
@@ -29,7 +30,8 @@ public struct Folder: Hashable {
     illustration: String? = nil,
     linkCount: Int,
     createdAt: String,
-    lastSavedAt: String
+    lastSavedAt: String,
+    isDefault: Bool
   ) {
     self.id = id
     self.userID = userID
@@ -40,5 +42,6 @@ public struct Folder: Hashable {
     self.linkCount = linkCount
     self.createdAt = createdAt
     self.lastSavedAt = lastSavedAt
+    self.isDefault = isDefault
   }
 }
