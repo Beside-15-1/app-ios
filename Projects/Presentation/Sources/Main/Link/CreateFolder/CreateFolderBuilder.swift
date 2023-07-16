@@ -24,6 +24,9 @@ final class CreateFolderBuilder: CreateFolderBuildable {
       createFolderUseCase: CreateFolderUseCaseImpl(
         folderRepository: dependency.folderRepository
       ),
+      updateFolderUseCase: UpdateFolderUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      ),
       folder: payload.folder
     )
 

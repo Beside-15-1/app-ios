@@ -13,6 +13,8 @@ import PBNetworking
 enum FolderAPI {
   case fetchFolderList(sort: String)
   case createFolder(CreateFolderRequest)
+  case updateFolder(id: String, request: CreateFolderRequest)
+  case deleteFolder(id: String)
 }
 
 extension FolderAPI: BaseTargetType {
@@ -24,6 +26,12 @@ extension FolderAPI: BaseTargetType {
 
     case .createFolder:
       return "link-books"
+
+    case .updateFolder(let id, _):
+      return "link-books/\(id)"
+
+    case .deleteFolder(let id):
+      return "link-books/\(id)"
     }
   }
 
@@ -34,6 +42,12 @@ extension FolderAPI: BaseTargetType {
 
     case .createFolder:
       return .post
+
+    case .updateFolder:
+      return .put
+
+    case .deleteFolder:
+      return .delete
     }
   }
 
@@ -44,6 +58,12 @@ extension FolderAPI: BaseTargetType {
 
     case .createFolder(let request):
       return .requestJSONEncodable(request)
+
+    case .updateFolder(_, let request):
+      return .requestJSONEncodable(request)
+
+    case .deleteFolder:
+      return .requestPlain
     }
   }
 }

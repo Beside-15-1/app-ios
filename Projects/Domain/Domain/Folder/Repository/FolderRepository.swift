@@ -18,4 +18,14 @@ public protocol FolderRepository {
     titleColor: String,
     illustration: String?
   ) -> Single<Void>
+
+  func updateFolder(
+    id: String,
+    backgroundColor: String,
+    title: String,
+    titleColor: String,
+    illustration: String?
+  ) -> Single<Void>
+
+  func deleteFolder(id: String) -> Single<Void>
 }

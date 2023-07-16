@@ -64,3 +64,20 @@ extension String {
     return attributedString
   }
 }
+
+
+extension NSAttributedString {
+
+  public func changeTarget(font: UIFont, target: String) -> NSAttributedString {
+
+    let attributedString = NSMutableAttributedString(attributedString: self)
+
+    let range = (self.string as NSString).range(of: target)
+
+    attributedString.addAttributes([
+      .font: font
+    ], range: range)
+
+    return attributedString
+  }
+}

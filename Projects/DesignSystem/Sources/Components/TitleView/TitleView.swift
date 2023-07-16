@@ -15,7 +15,7 @@ public final class TitleView: UIView {
 
   public var title: String? {
     didSet {
-      titleLabel.text = title
+      titleLabel.attributedText = title?.styled(font: .defaultSemiBold, color: .gray900)
     }
   }
 
@@ -23,10 +23,7 @@ public final class TitleView: UIView {
 
   private let container = UIView()
 
-  private let titleLabel = UILabel().then {
-    $0.textColor = .gray900
-    $0.font = .defaultSemiBold
-  }
+  private let titleLabel = UILabel()
 
   public let closeButton = UIButton().then {
     $0.setImage(

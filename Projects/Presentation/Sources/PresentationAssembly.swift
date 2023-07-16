@@ -23,7 +23,9 @@ public final class PresentationAssembly: Assembly {
       registerTagAddBuilder,
       registerCreateLinkBuilder,
       registerSelectFolderBuilder,
-      registerSignUpBuilder
+      registerSignUpBuilder,
+      registerEditFolderBuilder,
+      registerFolderSortBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -47,7 +49,7 @@ public final class PresentationAssembly: Assembly {
     contianer.register(MainTabBarBuildable.self) { r in
       MainTabBarBuilder(dependency: .init(
         homeBuilder: r.resolve(),
-        folderBuilder: r.resolve(),
+        myFolderBuilder: r.resolve(),
         myPageBuilder: r.resolve()
       ))
     }
@@ -65,8 +67,13 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerFolderBuilder(container: Container) {
-    container.register(FolderBuildable.self) { _ in
-      FolderBuilder(dependency: .init())
+    container.register(MyFolderBuildable.self) { r in
+      MyFolderBuilder(dependency: .init(
+        folderRepository: r.resolve(),
+        createFolderBuilder: r.resolve(),
+        editFolderBuilder: r.resolve(),
+        folderSortBuilder: r.resolve()
+      ))
     }
   }
 
@@ -126,6 +133,20 @@ public final class PresentationAssembly: Assembly {
       CreateFolderBuilder(dependency: .init(
         folderRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerEditFolderBuilder(container: Container) {
+    container.register(EditFolderBuildable.self) { r in
+      EditFolderBuilder(dependency: .init(
+        createFolderBuilder: r.resolve()
+      ))
+    }
+  }
+
+  private func registerFolderSortBuilder(container: Container) {
+    container.register(FolderSortBuildable.self) { r in
+      FolderSortBuilder(dependency: .init())
     }
   }
 }

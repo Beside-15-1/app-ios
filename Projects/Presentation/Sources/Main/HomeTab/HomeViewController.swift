@@ -93,6 +93,12 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.homeFolderView.moveToFolderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.tabBarController?.selectedIndex = 1
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: HomeViewReactor) {
