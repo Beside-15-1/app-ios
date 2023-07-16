@@ -11,9 +11,9 @@ import PanModal
 import ReactorKit
 import RxSwift
 
-import PresentationInterface
-import Domain
 import DesignSystem
+import Domain
+import PresentationInterface
 
 final class MyFolderViewController: UIViewController, StoryboardView {
 
@@ -28,6 +28,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   private let createFolderBuilder: CreateFolderBuildable
   private let editFolderBuilder: EditFolderBuildable
+  private let folderSortBuilder: FolderSortBuildable
 
 
   // MARK: Initializing
@@ -35,12 +36,14 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   init(
     reactor: MyFolderViewReactor,
     createFolderBuilder: CreateFolderBuildable,
-    editFolderBuilder: EditFolderBuildable
+    editFolderBuilder: EditFolderBuildable,
+    folderSortBuilder: FolderSortBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createFolderBuilder = createFolderBuilder
     self.editFolderBuilder = editFolderBuilder
+    self.folderSortBuilder = folderSortBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -80,6 +83,14 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         self.contentView.myFolderCollectionView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.folderSortType)
+      .asObservable()
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, type in
+        self.contentView.myFolderCollectionView.sortButton.text = type.rawValue
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: MyFolderViewReactor) {
@@ -104,6 +115,19 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         }
 
         self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.myFolderCollectionView.sortButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let vc = self.folderSortBuilder.build(
+          payload: .init(
+            delegate: self,
+            sortType: reactor.currentState.folderSortType
+          )
+        ) as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(vc)
       }
       .disposed(by: disposeBag)
   }
@@ -140,7 +164,7 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
 
 extension MyFolderViewController: EditFolderDelegate {
   func editFolderModifyButtonTapped(withFolder folder: Folder) {
-    let vc = self.createFolderBuilder.build(
+    let vc = createFolderBuilder.build(
       payload: .init(
         folder: folder,
         delegate: self
@@ -149,7 +173,7 @@ extension MyFolderViewController: EditFolderDelegate {
       $0.modalPresentationStyle = .popover
     }
 
-    self.present(vc, animated: true)
+    present(vc, animated: true)
   }
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {
@@ -163,5 +187,14 @@ extension MyFolderViewController: EditFolderDelegate {
     })
     .addAction(content: "아니오", priority: .primary, action: nil)
     .show()
+  }
+}
+
+
+// MARK: - FolderSortDelegate
+
+extension MyFolderViewController: FolderSortDelegate {
+  func folderSortListItemTapped(type: FolderSortModel) {
+    reactor?.action.onNext(.updateSort(type))
   }
 }

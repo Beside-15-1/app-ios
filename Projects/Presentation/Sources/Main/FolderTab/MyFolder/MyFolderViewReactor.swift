@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PresentationInterface
 
 final class MyFolderViewReactor: Reactor {
 
@@ -21,16 +22,20 @@ final class MyFolderViewReactor: Reactor {
     case searchText(String)
     case createFolderSucceed
     case deleteFolder(Folder)
+    case updateSort(FolderSortModel)
   }
 
   enum Mutation {
     case setFolderList([Folder])
     case setFolderViewModel(MyFolderSectionViewModel)
+    case setSortType(FolderSortModel)
   }
 
   struct State {
     var folderList: [Folder] = []
     var folderViewModel: MyFolderSectionViewModel?
+
+    var folderSortType: FolderSortModel = .create
   }
 
   // MARK: Properties
@@ -67,7 +72,7 @@ final class MyFolderViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return fetchFolderList()
+      return fetchFolderList(sort: .createAt)
 
     case .searchText(let text):
 
@@ -86,10 +91,24 @@ final class MyFolderViewReactor: Reactor {
       return .just(Mutation.setFolderViewModel(viewModel))
 
     case .createFolderSucceed:
-      return fetchFolderList()
+      let sortType: FolderSortingType
+
+      switch currentState.folderSortType {
+      case .create:
+        sortType = .createAt
+      case .naming:
+        sortType = .title
+      case .update:
+        sortType = .lastSavedAt
+      }
+
+      return fetchFolderList(sort: sortType)
 
     case .deleteFolder(let folder):
       return deleteFolder(folder: folder)
+
+    case .updateSort(let type):
+      return updateSort(type: type)
     }
   }
 
@@ -102,6 +121,9 @@ final class MyFolderViewReactor: Reactor {
 
     case .setFolderViewModel(let viewModel):
       newState.folderViewModel = viewModel
+
+    case .setSortType(let type):
+      newState.folderSortType = type
     }
 
     return newState
@@ -113,8 +135,8 @@ final class MyFolderViewReactor: Reactor {
 
 extension MyFolderViewReactor {
 
-  private func fetchFolderList() -> Observable<Mutation> {
-    fetchFolderListUseCase.execute(sort: .createAt)
+  private func fetchFolderList(sort: FolderSortingType) -> Observable<Mutation> {
+    fetchFolderListUseCase.execute(sort: sort)
       .asObservable()
       .flatMap { [weak self] folderList -> Observable<Mutation> in
         guard let self else { return .empty() }
@@ -150,7 +172,38 @@ extension MyFolderViewReactor {
       .asObservable()
       .flatMap { [weak self] _ -> Observable<Mutation> in
         guard let self else { return .empty() }
-        return self.fetchFolderList()
+        let sortType: FolderSortingType
+
+        switch self.currentState.folderSortType {
+        case .create:
+          sortType = .createAt
+        case .naming:
+          sortType = .title
+        case .update:
+          sortType = .lastSavedAt
+        }
+
+        return self.fetchFolderList(sort: sortType)
       }
+  }
+
+  private func updateSort(type: FolderSortModel) -> Observable<Mutation> {
+    let sortType: FolderSortingType
+
+    switch type {
+    case .create:
+      sortType = .createAt
+    case .naming:
+      sortType = .title
+    case .update:
+      sortType = .lastSavedAt
+    }
+
+    let fetch: Observable<Mutation> = fetchFolderList(sort: sortType)
+
+    return .concat([
+      .just(Mutation.setSortType(type)),
+      fetch
+    ])
   }
 }
