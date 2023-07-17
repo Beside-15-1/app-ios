@@ -144,7 +144,7 @@ extension HomeViewReactor {
   }
 
   private func fetchLinkList() -> Observable<Mutation> {
-    fetchLinkListUseCase.execute()
+    fetchLinkListUseCase.execute(sort: .createAt, order: .asc)
       .asObservable()
       .flatMap { linkList -> Observable<Mutation> in
         let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)

@@ -19,12 +19,14 @@ final class FolderDetailViewReactor: Reactor {
   enum Action {
     case viewDidLoad
     case selectTab(String)
+    case updateSort(LinkSortingType)
   }
 
   enum Mutation {
     case setLinkList([Link])
     case setViewModel(FolderDetailSectionViewModel)
     case setSelectedFolder(Folder)
+    case setSortingType(LinkSortingType)
   }
 
   struct State {
@@ -34,6 +36,8 @@ final class FolderDetailViewReactor: Reactor {
     var linkList: [Link] = []
 
     var viewModel: FolderDetailSectionViewModel?
+
+    var sortingType: LinkSortingType = .createAt
   }
 
   // MARK: Properties
@@ -82,25 +86,30 @@ final class FolderDetailViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       if currentState.selectedFolder.id == Folder.all().id {
-        return fetchAllLinks()
+        return fetchAllLinks(sort: currentState.sortingType, order: .asc)
       } else {
-        return fetchLinksInFolder(id: currentState.selectedFolder.id)
+        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: .asc)
       }
 
     case .selectTab(let tab):
       let selectedFolder = currentState.folderList.first(where: { $0.title == tab }) ?? .all()
 
+      let order: SortingOrderType = currentState.sortingType == .lastedAt ? .desc : .asc
+
       if selectedFolder.title == Folder.all().title {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
-          fetchAllLinks()
+          fetchAllLinks(sort: currentState.sortingType, order: order),
         ])
       } else {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
-          fetchLinksInFolder(id: selectedFolder.id)
+          fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: order),
         ])
       }
+
+    case .updateSort(let type):
+      return updateSort(type: type)
     }
   }
 
@@ -116,6 +125,9 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setSelectedFolder(let folder):
       newState.selectedFolder = folder
+
+    case .setSortingType(let type):
+      newState.sortingType = type
     }
 
     return newState
@@ -127,8 +139,8 @@ final class FolderDetailViewReactor: Reactor {
 
 extension FolderDetailViewReactor {
 
-  private func fetchAllLinks() -> Observable<Mutation> {
-    fetchAllLinkUseCase.execute()
+  private func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Observable<Mutation> {
+    fetchAllLinkUseCase.execute(sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
         let viewModel = FolderDetailSectionViewModel(
@@ -149,13 +161,13 @@ extension FolderDetailViewReactor {
 
         return .concat([
           .just(Mutation.setLinkList(links)),
-          .just(Mutation.setViewModel(viewModel))
+          .just(Mutation.setViewModel(viewModel)),
         ])
       }
   }
 
-  private func fetchLinksInFolder(id: String) -> Observable<Mutation> {
-    fetchLinkInFolderUseCase.execute(linkBookId: id)
+  private func fetchLinksInFolder(id: String, sort: LinkSortingType, order: SortingOrderType) -> Observable<Mutation> {
+    fetchLinkInFolderUseCase.execute(linkBookId: id, sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
         let viewModel = FolderDetailSectionViewModel(
@@ -176,8 +188,24 @@ extension FolderDetailViewReactor {
 
         return .concat([
           .just(Mutation.setLinkList(links)),
-          .just(Mutation.setViewModel(viewModel))
+          .just(Mutation.setViewModel(viewModel)),
         ])
       }
+  }
+
+  private func updateSort(type: LinkSortingType) -> Observable<Mutation> {
+    let order: SortingOrderType = type == .lastedAt ? .desc : .asc
+
+    if currentState.selectedFolder.title == Folder.all().title {
+      return .concat([
+        .just(Mutation.setSortingType(type)),
+        fetchAllLinks(sort: type, order: order),
+      ])
+    } else {
+      return .concat([
+        .just(Mutation.setSortingType(type)),
+        fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order)
+      ])
+    }
   }
 }

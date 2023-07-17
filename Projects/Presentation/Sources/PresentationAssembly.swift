@@ -26,7 +26,8 @@ public final class PresentationAssembly: Assembly {
       registerSignUpBuilder,
       registerEditFolderBuilder,
       registerFolderSortBuilder,
-      registerFolderDetailBuilder
+      registerFolderDetailBuilder,
+      registerLinkSortBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -156,16 +157,23 @@ public final class PresentationAssembly: Assembly {
   private func registerFolderDetailBuilder(container: Container) {
     container.register(FolderDetailBuildable.self) { r in
       FolderDetailBuilder(dependency: .init(
-        linkRepository: r.resolve()
+        linkRepository: r.resolve(),
+        linkSortBuilder: r.resolve()
       ))
+    }
+  }
+
+  private func registerLinkSortBuilder(container: Container) {
+    container.register(LinkSortBuildable.self) { r in
+      LinkSortBuilder(dependency: .init())
     }
   }
 }
 
 // MARK: - Resolver
 
-private extension Resolver {
-  func resolve<Service>() -> Service! {
+extension Resolver {
+  fileprivate func resolve<Service>() -> Service! {
     resolve(Service.self)
   }
 }

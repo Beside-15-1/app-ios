@@ -7,13 +7,14 @@
 
 import Foundation
 
+import Domain
 import Moya
 import PBNetworking
 
 enum LinkAPI {
   case createLink(CreateLinkRequest)
-  case fetchAll
-  case fetchLinksInLinkBook(String)
+  case fetchAll(LinkSortingType, SortingOrderType)
+  case fetchLinksInLinkBook(String, LinkSortingType, SortingOrderType)
 }
 
 extension LinkAPI: BaseTargetType {
@@ -26,7 +27,7 @@ extension LinkAPI: BaseTargetType {
     case .fetchAll:
       return "links"
 
-    case .fetchLinksInLinkBook(let id):
+    case .fetchLinksInLinkBook(let id, _, _):
       return "link-books/\(id)/links"
     }
   }
@@ -49,11 +50,23 @@ extension LinkAPI: BaseTargetType {
     case .createLink(let request):
       return .requestJSONEncodable(request)
 
-    case .fetchAll:
-      return .requestPlain
+    case .fetchAll(let sort, let order):
+      return .requestParameters(
+        parameters: [
+          "sort": sort.api,
+          "order": order.rawValue
+        ],
+        encoding: URLEncoding.queryString
+      )
 
-    case .fetchLinksInLinkBook:
-      return .requestPlain
+    case .fetchLinksInLinkBook(_, let sort, let order):
+      return .requestParameters(
+        parameters: [
+          "sort": sort.api,
+          "order": order.rawValue
+        ],
+        encoding: URLEncoding.queryString
+      )
     }
   }
 }

@@ -7,10 +7,13 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
 
 import DesignSystem
+import Domain
+import PresentationInterface
 
 final class FolderDetailViewController: UIViewController, StoryboardView {
 
@@ -23,11 +26,19 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let linkSortBuilder: LinkSortBuildable
+
 
   // MARK: Initializing
 
-  init(reactor: FolderDetailViewReactor) {
+  init(
+    reactor: FolderDetailViewReactor,
+    linkSortBuilder: LinkSortBuildable
+  ) {
     defer { self.reactor = reactor }
+
+    self.linkSortBuilder = linkSortBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -62,6 +73,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   func bind(reactor: FolderDetailViewReactor) {
     bindContent(with: reactor)
     bindTab(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindContent(with reactor: FolderDetailViewReactor) {
@@ -89,6 +101,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.sortingType)
+      .asObservable()
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, type in
+        self.contentView.listView.sortButton.text = type.title
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {
@@ -96,6 +116,21 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .asObservable()
       .map { Reactor.Action.selectTab($0) }
       .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
+
+  private func bindRoute(with reactor: FolderDetailViewReactor) {
+    contentView.listView.sortButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let vc = self.linkSortBuilder.build(
+          payload: .init(
+            delegate: self,
+            sortType: reactor.currentState.sortingType
+          )
+        ) as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(vc)
+      }
       .disposed(by: disposeBag)
   }
 }
@@ -119,7 +154,7 @@ extension FolderDetailViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.white,
-      NSAttributedString.Key.font: UIFont.defaultRegular
+      NSAttributedString.Key.font: UIFont.defaultRegular,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }
@@ -127,5 +162,14 @@ extension FolderDetailViewController {
   @objc
   private func pop() {
     navigationController?.popViewController(animated: true)
+  }
+}
+
+
+// MARK: LinkSortDelegate
+
+extension FolderDetailViewController: LinkSortDelegate {
+  func linkSortListItemTapped(type: LinkSortingType) {
+    reactor?.action.onNext(.updateSort(type))
   }
 }

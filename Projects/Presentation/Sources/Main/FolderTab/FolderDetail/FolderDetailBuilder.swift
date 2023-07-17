@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct FolderDetailDependency {
   let linkRepository: LinkRepository
+  let linkSortBuilder: LinkSortBuildable
 }
 
 final class FolderDetailBuilder: FolderDetailBuildable {
@@ -32,7 +33,8 @@ final class FolderDetailBuilder: FolderDetailBuildable {
     )
 
     let viewController = FolderDetailViewController(
-      reactor: reactor
+      reactor: reactor,
+      linkSortBuilder: dependency.linkSortBuilder
     )
 
     return viewController
