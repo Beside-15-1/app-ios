@@ -28,18 +28,20 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   private let createLinkBuilder: CreateLinkBuildable
   private let createFolderBuilder: CreateFolderBuildable
-
+  private let folderDetailBuilder: FolderDetailBuildable
 
   // MARK: Initializing
 
   init(
     reactor: HomeViewReactor,
     createLinkBuilder: CreateLinkBuildable,
-    createFolderBuilder: CreateFolderBuildable
+    createFolderBuilder: CreateFolderBuildable,
+    folderDetailBuilder: FolderDetailBuildable
   ) {
     defer { self.reactor = reactor }
     self.createLinkBuilder = createLinkBuilder
     self.createFolderBuilder = createFolderBuilder
+    self.folderDetailBuilder = folderDetailBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -101,6 +103,24 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.tabBarController?.selectedIndex = 1
       }
       .disposed(by: disposeBag)
+
+    contentView.viewAllButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.tabBarController?.selectedIndex = 1
+
+        let folderDetail = self.folderDetailBuilder.build(
+          payload: .init(
+            folderList: reactor.currentState.folderList,
+            selectedFolder: .all()
+          )
+        )
+
+        self.tabBarController?.selectedViewController?
+          .navigationController?.pushViewController(
+            folderDetail, animated: true
+          )
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: HomeViewReactor) {
@@ -159,7 +179,7 @@ extension HomeViewController: CreateFolderDelegate {
 extension HomeViewController: CreateLinkDelegate {
   func createLinkSucceed() {
     reactor?.action.onNext(.createLinkSucceed)
-    
+
     PBToast(content: "링크가 저장되었습니다")
       .show()
   }

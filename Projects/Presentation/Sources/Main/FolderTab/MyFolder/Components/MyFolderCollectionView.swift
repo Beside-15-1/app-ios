@@ -15,6 +15,7 @@ import DesignSystem
 import PBLog
 
 protocol MyFolderCollectionViewDelegate: AnyObject {
+  func collectionViewItemDidTapped(at row: Int)
   func collectionViewEditButtonTapped(id: String)
 }
 
@@ -44,6 +45,7 @@ class MyFolderCollectionView: UIView {
     $0.register(MyFolderCell.self, forCellWithReuseIdentifier: MyFolderCell.identifier)
     $0.backgroundColor = .staticWhite
     $0.showsVerticalScrollIndicator = false
+    $0.delegate = self
   }
 
   let emptyLabel = UILabel().then {
@@ -152,8 +154,6 @@ class MyFolderCollectionView: UIView {
         cell.configure(viewModel: item)
         cell.moreButton.rx.tap
           .subscribe(onNext: { [weak self] in
-            PBLog.info(item)
-            // TODO: 폴더 수정 삭제
             self?.delegate?.collectionViewEditButtonTapped(id: item.id)
           })
           .disposed(by: cell.disposeBag)
@@ -186,5 +186,12 @@ class MyFolderCollectionView: UIView {
       $0.left.right.bottom.equalToSuperview()
       $0.top.equalTo(sortButton.snp.bottom).offset(18.0)
     }
+  }
+}
+
+
+extension MyFolderCollectionView: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    delegate?.collectionViewItemDidTapped(at: indexPath.row)
   }
 }

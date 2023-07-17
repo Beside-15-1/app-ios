@@ -62,7 +62,8 @@ public final class PresentationAssembly: Assembly {
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
-        createFolderBuilder: r.resolve()
+        createFolderBuilder: r.resolve(),
+        folderDetailBuilder: r.resolve()
       ))
     }
   }
@@ -73,7 +74,8 @@ public final class PresentationAssembly: Assembly {
         folderRepository: r.resolve(),
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
-        folderSortBuilder: r.resolve()
+        folderSortBuilder: r.resolve(),
+        folderDetailBuilder: r.resolve()
       ))
     }
   }

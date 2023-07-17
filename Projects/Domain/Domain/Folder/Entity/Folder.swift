@@ -44,4 +44,18 @@ public struct Folder: Hashable {
     self.lastSavedAt = lastSavedAt
     self.isDefault = isDefault
   }
+
+  public static func all() -> Folder {
+    .init(
+      id: "all",
+      userID: "all",
+      title: "전체",
+      backgroundColor: "",
+      titleColor: "",
+      linkCount: 0,
+      createdAt: "",
+      lastSavedAt: "",
+      isDefault: false
+    )
+  }
 }

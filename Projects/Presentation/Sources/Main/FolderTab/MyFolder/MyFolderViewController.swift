@@ -29,6 +29,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private let createFolderBuilder: CreateFolderBuildable
   private let editFolderBuilder: EditFolderBuildable
   private let folderSortBuilder: FolderSortBuildable
+  private let folderDetailBuilder: FolderDetailBuildable
 
 
   // MARK: Initializing
@@ -37,13 +38,15 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     reactor: MyFolderViewReactor,
     createFolderBuilder: CreateFolderBuildable,
     editFolderBuilder: EditFolderBuildable,
-    folderSortBuilder: FolderSortBuildable
+    folderSortBuilder: FolderSortBuildable,
+    folderDetailBuilder: FolderDetailBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createFolderBuilder = createFolderBuilder
     self.editFolderBuilder = editFolderBuilder
     self.folderSortBuilder = folderSortBuilder
+    self.folderDetailBuilder = folderDetailBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -64,6 +67,12 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    navigationController?.isNavigationBarHidden = true
   }
 
 
@@ -158,6 +167,19 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
       as? PanModalPresentable.LayoutType else { return }
 
     presentPanModal(vc)
+  }
+
+  func collectionViewItemDidTapped(at row: Int) {
+    guard let reactor else { return }
+
+    let folderDetail = folderDetailBuilder.build(
+      payload: .init(
+        folderList: reactor.currentState.folderList,
+        selectedFolder: reactor.currentState.folderList[row]
+      )
+    )
+
+    navigationController?.pushViewController(folderDetail, animated: true)
   }
 }
 

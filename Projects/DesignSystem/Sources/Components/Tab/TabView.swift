@@ -43,6 +43,7 @@ public final class TabView: UIView {
     $0.showsHorizontalScrollIndicator = false
     $0.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
     $0.delegate = self
+    $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
   }
 
 
@@ -93,6 +94,16 @@ public final class TabView: UIView {
       )
       delegate?.tabView(self, didSelectedTab: tabs.first!)
       selectedTab.accept(tabs.first!)
+    }
+  }
+
+  public func selectItem(at row: Int) {
+    DispatchQueue.main.async {
+      self.collectionView.selectItem(
+        at: IndexPath(item: row, section: 0),
+        animated: false,
+        scrollPosition: .centeredHorizontally
+      )
     }
   }
 
@@ -162,6 +173,12 @@ extension TabView: UICollectionViewDelegate {
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
+    collectionView.scrollToItem(
+      at: IndexPath(item: indexPath.row, section: 0),
+      at: .centeredHorizontally,
+      animated: true
+    )
+
     delegate?.tabView(self, didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])
   }
