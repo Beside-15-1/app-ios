@@ -155,7 +155,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerFolderDetailBuilder(container: Container) {
     container.register(FolderDetailBuildable.self) { r in
-      FolderDetailBuilder(dependency: .init())
+      FolderDetailBuilder(dependency: .init(
+        linkRepository: r.resolve()
+      ))
     }
   }
 }

@@ -1,5 +1,5 @@
 //
-//  FetchLinksInLinkBookUseCase.swift
+//  FetchLinksInFolderUseCase.swift
 //  Domain
 //
 //  Created by 박천송 on 2023/07/11.
@@ -9,11 +9,11 @@ import Foundation
 
 import RxSwift
 
-public protocol FetchLinksInLinkBookUseCase {
+public protocol FetchLinksInFolderUseCase {
   func execute(linkBookId: String) -> Single<[Link]>
 }
 
-public class FetchLinksInLinkBookUseCaseImpl: FetchLinksInLinkBookUseCase {
+public class FetchLinksInFolderUseCaseImpl: FetchLinksInFolderUseCase {
 
   private let linkRepository: LinkRepository
 

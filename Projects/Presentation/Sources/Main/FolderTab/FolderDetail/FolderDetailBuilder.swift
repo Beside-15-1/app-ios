@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct FolderDetailDependency {}
+struct FolderDetailDependency {
+  let linkRepository: LinkRepository
+}
 
 final class FolderDetailBuilder: FolderDetailBuildable {
 
@@ -23,6 +25,8 @@ final class FolderDetailBuilder: FolderDetailBuildable {
 
   func build(payload: FolderDetailPayload) -> UIViewController {
     let reactor = FolderDetailViewReactor(
+      fetchAllLinkUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
+      fetchLinkInFolderUseCase: FetchLinksInFolderUseCaseImpl(linkRepository: dependency.linkRepository),
       folderList: payload.folderList,
       selectedFolder: payload.selectedFolder
     )

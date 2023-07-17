@@ -45,6 +45,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    reactor?.action.onNext(.viewDidLoad)
+
     configureNavigationBar()
   }
 
@@ -76,6 +78,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, folder in
         let row = reactor.currentState.folderList.firstIndex(where: { $0.title == folder.title })
         self.contentView.tabViewSelectItem(at: row ?? 0)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.compactMap(\.viewModel)
+      .asObservable()
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.listView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
   }

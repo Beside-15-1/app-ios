@@ -36,6 +36,7 @@ class FolderDetailCell: UICollectionViewCell {
   private let thumbnail = UIImageView().then {
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
+    $0.image = DesignSystemAsset.homeLinkEmptyImage.image
   }
 
   private let tagLabel = UILabel()
@@ -112,7 +113,12 @@ class FolderDetailCell: UICollectionViewCell {
       $0.attributedText = caption.styled(font: .captionRegular, color: .gray700)
     }
 
-    thumbnail.sd_setImage(with: URL(string: viewModel.thumbnailURL ?? ""))
+    if let thumbnailURL = viewModel.thumbnailURL, !thumbnailURL.isEmpty {
+      thumbnail.sd_setImage(with: URL(string: thumbnailURL), placeholderImage: UIImage().withTintColor(.gray300))
+    } else {
+      thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
+    }
+
   }
 
 
@@ -142,13 +148,14 @@ class FolderDetailCell: UICollectionViewCell {
     }
 
     captionLabel.snp.makeConstraints {
-      $0.top.bottom.equalToSuperview().inset(20.0)
+      $0.bottom.equalToSuperview().inset(20.0)
       $0.left.equalTo(thumbnail.snp.right).offset(12.0)
     }
 
     moreButton.snp.makeConstraints {
       $0.size.equalTo(24.0)
       $0.right.equalToSuperview()
+      $0.bottom.equalToSuperview().inset(20.0)
       $0.left.equalTo(moreButton.snp.right)
     }
   }
