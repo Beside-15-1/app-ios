@@ -18,16 +18,18 @@ final class FolderDetailViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case selectTab(String)
   }
 
   enum Mutation {
     case setLinkList([Link])
     case setViewModel(FolderDetailSectionViewModel)
+    case setSelectedFolder(Folder)
   }
 
   struct State {
     let folderList: [Folder]
-    let selectedFolder: Folder
+    var selectedFolder: Folder
 
     var linkList: [Link] = []
 
@@ -84,6 +86,21 @@ final class FolderDetailViewReactor: Reactor {
       } else {
         return fetchLinksInFolder(id: currentState.selectedFolder.id)
       }
+
+    case .selectTab(let tab):
+      let selectedFolder = currentState.folderList.first(where: { $0.title == tab }) ?? .all()
+
+      if selectedFolder.title == Folder.all().title {
+        return .concat([
+          .just(Mutation.setSelectedFolder(selectedFolder)),
+          fetchAllLinks()
+        ])
+      } else {
+        return .concat([
+          .just(Mutation.setSelectedFolder(selectedFolder)),
+          fetchLinksInFolder(id: selectedFolder.id)
+        ])
+      }
     }
   }
 
@@ -96,6 +113,9 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setViewModel(let viewModel):
       newState.viewModel = viewModel
+
+    case .setSelectedFolder(let folder):
+      newState.selectedFolder = folder
     }
 
     return newState
@@ -149,7 +169,7 @@ extension FolderDetailViewReactor {
               url: $0.url,
               createAt: $0.createdAt,
               folderName: $0.folderName,
-              isAll: true
+              isAll: false
             )
           }
         )

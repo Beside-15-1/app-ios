@@ -47,6 +47,9 @@ class FolderDetailCell: UICollectionViewCell {
     $0.setImage(DesignSystemAsset.iconMoreVertical.image.withTintColor(.gray500), for: .normal)
   }
 
+  let underLine = UIView().then {
+    $0.backgroundColor = .gray300
+  }
 
   // MARK: Properties
 
@@ -125,7 +128,7 @@ class FolderDetailCell: UICollectionViewCell {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleLabel, thumbnail, tagLabel, captionLabel, moreButton].forEach {
+    [titleLabel, thumbnail, tagLabel, captionLabel, moreButton, underLine].forEach {
       contentView.addSubview($0)
     }
 
@@ -157,6 +160,11 @@ class FolderDetailCell: UICollectionViewCell {
       $0.right.equalToSuperview()
       $0.bottom.equalToSuperview().inset(20.0)
       $0.left.equalTo(moreButton.snp.right)
+    }
+
+    underLine.snp.makeConstraints {
+      $0.left.right.bottom.equalToSuperview()
+      $0.height.equalTo(1.0)
     }
   }
 }

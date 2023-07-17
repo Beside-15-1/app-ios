@@ -92,7 +92,7 @@ public final class TabView: UIView {
     DispatchQueue.main.async {
       self.collectionView.selectItem(
         at: IndexPath(item: row, section: 0),
-        animated: false,
+        animated: true,
         scrollPosition: .centeredHorizontally
       )
     }

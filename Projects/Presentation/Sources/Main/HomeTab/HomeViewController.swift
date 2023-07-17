@@ -106,8 +106,6 @@ final class HomeViewController: UIViewController, StoryboardView {
 
     contentView.viewAllButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        self.tabBarController?.selectedIndex = 1
-
         let folderDetail = self.folderDetailBuilder.build(
           payload: .init(
             folderList: reactor.currentState.folderList,
@@ -164,7 +162,20 @@ extension HomeViewController: HomeFolderViewDelegate {
   func homeFolderView(didSelectItemAt row: Int) {
     // 라우팅
     guard let folder = reactor?.currentState.folderList[row] else { return }
-    PBLog.info(folder)
+
+    let folderDetail = self.folderDetailBuilder.build(
+      payload: .init(
+        folderList: reactor?.currentState.folderList ?? [],
+        selectedFolder: folder
+      )
+    )
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+      self.tabBarController?.selectedViewController?
+        .navigationController?.pushViewController(
+          folderDetail, animated: true
+        )
+    })
   }
 }
 

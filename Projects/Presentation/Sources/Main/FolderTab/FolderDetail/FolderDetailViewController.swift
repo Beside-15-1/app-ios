@@ -61,6 +61,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   func bind(reactor: FolderDetailViewReactor) {
     bindContent(with: reactor)
+    bindTab(with: reactor)
   }
 
   private func bindContent(with reactor: FolderDetailViewReactor) {
@@ -87,6 +88,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.listView.applyCollectionViewDataSource(by: viewModel)
       }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindTab(with reactor: FolderDetailViewReactor) {
+    contentView.tabView.selectedTab
+      .asObservable()
+      .map { Reactor.Action.selectTab($0) }
+      .bind(to: reactor.action)
       .disposed(by: disposeBag)
   }
 }
