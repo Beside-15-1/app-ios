@@ -19,6 +19,7 @@ struct LinkDTO: Codable {
   let url: String
   let thumbnailURL: String?
   let tags: [String]?
+  let linkBookName: String
 
   let createdAt: String
   let lastReadAt: String
@@ -33,6 +34,7 @@ struct LinkDTO: Codable {
     case url
     case thumbnailURL
     case tags
+    case linkBookName
     case createdAt
     case lastReadAt
     case updatedAt
@@ -48,6 +50,7 @@ struct LinkDTO: Codable {
       url: url,
       thumbnailURL: thumbnailURL,
       tags: tags ?? [],
+      folderName: linkBookName,
       createdAt: createdAt,
       lastReadAt: lastReadAt,
       updatedAt: updatedAt

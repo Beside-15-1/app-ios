@@ -16,6 +16,10 @@ final class MyFolderView: UIView {
 
   // MARK: UI
 
+  private let safeAreaView = UIView().then {
+    $0.backgroundColor = .paperAboveBg
+  }
+
   private let colorBackground = UIView().then {
     $0.backgroundColor = .paperAboveBg
   }
@@ -28,7 +32,7 @@ final class MyFolderView: UIView {
     $0.placeHolder = "폴더명으로 검색해보세요"
   }
 
-  let myFolderCollectionView = MyFolderCollectionView()
+  let myFolderListView = MyFolderListView()
 
 
   // MARK: Initializing
@@ -49,11 +53,16 @@ final class MyFolderView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [colorBackground, titleLabel, folderSearchField, myFolderCollectionView].forEach { addSubview($0) }
+    [safeAreaView, colorBackground, titleLabel, folderSearchField, myFolderListView].forEach { addSubview($0) }
+
+    safeAreaView.snp.makeConstraints {
+      $0.top.left.right.equalToSuperview()
+      $0.bottom.equalTo(safeAreaLayoutGuide.snp.top)
+    }
 
     colorBackground.snp.makeConstraints {
-      $0.top.left.right.equalToSuperview()
-      $0.height.equalTo(200)
+      $0.top.left.right.equalTo(safeAreaLayoutGuide)
+      $0.height.equalTo(146)
     }
 
     titleLabel.snp.makeConstraints {
@@ -66,7 +75,7 @@ final class MyFolderView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    myFolderCollectionView.snp.makeConstraints {
+    myFolderListView.snp.makeConstraints {
       $0.left.right.equalToSuperview().inset(20.0)
       $0.top.equalTo(colorBackground.snp.bottom)
       $0.bottom.equalTo(safeAreaLayoutGuide)

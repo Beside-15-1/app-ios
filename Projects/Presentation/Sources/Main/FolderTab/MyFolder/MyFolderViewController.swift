@@ -61,7 +61,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   override func loadView() {
     view = contentView
 
-    contentView.myFolderCollectionView.delegate = self
+    contentView.myFolderListView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -89,7 +89,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.myFolderCollectionView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.myFolderListView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
 
@@ -97,7 +97,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, type in
-        self.contentView.myFolderCollectionView.sortButton.text = type.rawValue
+        self.contentView.myFolderListView.sortButton.text = type.rawValue
       }
       .disposed(by: disposeBag)
   }
@@ -106,13 +106,13 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     contentView.folderSearchField.rx.text
       .subscribe(with: self) { `self`, text in
         reactor.action.onNext(.searchText(text))
-        self.contentView.myFolderCollectionView.configureEmptyLabel(text: text)
+        self.contentView.myFolderListView.configureEmptyLabel(text: text)
       }
       .disposed(by: disposeBag)
   }
 
   private func bindButton(with reactor: MyFolderViewReactor) {
-    contentView.myFolderCollectionView.createFolderButton.rx.controlEvent(.touchUpInside)
+    contentView.myFolderListView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createFolderBuilder.build(
           payload: .init(
@@ -127,7 +127,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
-    contentView.myFolderCollectionView.sortButton.rx.controlEvent(.touchUpInside)
+    contentView.myFolderListView.sortButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.folderSortBuilder.build(
           payload: .init(

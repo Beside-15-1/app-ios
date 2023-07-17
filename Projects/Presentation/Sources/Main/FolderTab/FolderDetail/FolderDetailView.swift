@@ -17,11 +17,21 @@ final class FolderDetailView: UIView {
 
   // MARK: UI
 
+  private let safeAreaView = UIView().then {
+    $0.backgroundColor = .paperAboveBg
+  }
+
   private let colorBackground = UIView().then {
     $0.backgroundColor = .paperAboveBg
   }
 
   let tabView = TabView(colorType: .white)
+
+  let searchField = InputField(type: .search).then {
+    $0.placeHolder = "링크 제목으로 검색해보세요"
+  }
+
+  let listView = FolderDetailListView()
 
 
   // MARK: Initializing
@@ -53,15 +63,31 @@ final class FolderDetailView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [colorBackground, tabView].forEach { addSubview($0) }
+    [safeAreaView, colorBackground, tabView, searchField, listView].forEach { addSubview($0) }
+
+    safeAreaView.snp.makeConstraints {
+      $0.top.left.right.equalToSuperview()
+      $0.bottom.equalTo(safeAreaLayoutGuide.snp.top)
+    }
 
     colorBackground.snp.makeConstraints {
-      $0.left.right.top.equalToSuperview()
-      $0.height.equalTo(230.0)
+      $0.left.right.top.equalTo(safeAreaLayoutGuide)
+      $0.height.equalTo(200 - 44)
     }
 
     tabView.snp.makeConstraints {
       $0.top.left.right.equalTo(safeAreaLayoutGuide)
+    }
+
+    searchField.snp.makeConstraints {
+      $0.top.equalTo(tabView.snp.bottom).offset(12.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    listView.snp.makeConstraints {
+      $0.top.equalTo(colorBackground.snp.bottom)
+      $0.left.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide)
     }
   }
 

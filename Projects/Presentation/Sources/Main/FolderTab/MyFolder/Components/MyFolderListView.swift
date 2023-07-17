@@ -1,5 +1,5 @@
 //
-//  MyFolderCollectionView.swift
+//  MyFolderListView.swift
 //  Presentation
 //
 //  Created by 박천송 on 2023/07/14.
@@ -19,7 +19,7 @@ protocol MyFolderCollectionViewDelegate: AnyObject {
   func collectionViewEditButtonTapped(id: String)
 }
 
-class MyFolderCollectionView: UIView {
+class MyFolderListView: UIView {
 
   typealias Section = MyFolderSection
   typealias SectionItem = MyFolderCell.ViewModel
@@ -190,7 +190,7 @@ class MyFolderCollectionView: UIView {
 }
 
 
-extension MyFolderCollectionView: UICollectionViewDelegate {
+extension MyFolderListView: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     delegate?.collectionViewItemDidTapped(at: indexPath.row)
   }
