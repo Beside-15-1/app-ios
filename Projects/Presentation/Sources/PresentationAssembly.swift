@@ -25,7 +25,8 @@ public final class PresentationAssembly: Assembly {
       registerSelectFolderBuilder,
       registerSignUpBuilder,
       registerEditFolderBuilder,
-      registerFolderSortBuilder
+      registerFolderSortBuilder,
+      registerFolderDetailBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -147,6 +148,12 @@ public final class PresentationAssembly: Assembly {
   private func registerFolderSortBuilder(container: Container) {
     container.register(FolderSortBuildable.self) { r in
       FolderSortBuilder(dependency: .init())
+    }
+  }
+
+  private func registerFolderDetailBuilder(container: Container) {
+    container.register(FolderDetailBuildable.self) { r in
+      FolderDetailBuilder(dependency: .init())
     }
   }
 }

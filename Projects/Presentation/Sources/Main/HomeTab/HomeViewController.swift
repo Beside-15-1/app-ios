@@ -9,9 +9,11 @@ import UIKit
 
 import ReactorKit
 import RxSwift
+import Toaster
 
-import PresentationInterface
+import DesignSystem
 import PBLog
+import PresentationInterface
 
 final class HomeViewController: UIViewController, StoryboardView {
 
@@ -125,15 +127,16 @@ final class HomeViewController: UIViewController, StoryboardView {
 
 extension HomeViewController: HomeFolderViewDelegate {
   func createFolderDidTapped() {
-    let vc = createFolderBuilder.build(payload: .init(
-      folder: nil,
-      delegate: self)
+    let vc = createFolderBuilder.build(
+      payload: .init(
+        folder: nil,
+        delegate: self
+      )
     ).then {
       $0.modalPresentationStyle = .popover
     }
 
     present(vc, animated: true)
-
   }
 
   func homeFolderView(didSelectItemAt row: Int) {
@@ -156,5 +159,8 @@ extension HomeViewController: CreateFolderDelegate {
 extension HomeViewController: CreateLinkDelegate {
   func createLinkSucceed() {
     reactor?.action.onNext(.createLinkSucceed)
+    
+    PBToast(content: "링크가 저장되었습니다")
+      .show()
   }
 }

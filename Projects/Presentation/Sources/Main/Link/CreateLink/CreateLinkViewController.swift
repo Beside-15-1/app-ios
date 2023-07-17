@@ -3,10 +3,10 @@ import UIKit
 import PanModal
 import ReactorKit
 import RxSwift
-import Toaster
 
 import Domain
 import PresentationInterface
+import DesignSystem
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -201,14 +201,8 @@ extension CreateLinkViewController: UITextFieldDelegate {
 
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-          Toast(
-            attributedText: "올바른 링크를 입력해주세요".styled(
-              font: .defaultRegular,
-              color: .white
-            ),
-            duration: .init(3)
-          )
-          .show()
+          PBToast(content: "올바른 링크를 입력해주세요")
+            .show()
         }
         view.endEditing(true)
         return true

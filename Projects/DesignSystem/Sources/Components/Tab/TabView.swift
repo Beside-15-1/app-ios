@@ -17,6 +17,16 @@ enum TabSection: Hashable {
   case normal
 }
 
+public struct Tab: Hashable {
+  public let title: String
+  public let id: UUID
+
+  public init(title: String, id: UUID) {
+    self.title = title
+    self.id = id
+  }
+}
+
 public protocol TabViewDelegate: AnyObject {
   func tabView(_ tabView: TabView, didSelectedTab: String)
 }
@@ -68,10 +78,10 @@ public final class TabView: UIView {
 
   public func applyTabs(by tabs: [String]) {
     self.tabs = tabs
-    var snapshot = NSDiffableDataSourceSnapshot<TabSection, String>()
+    var snapshot = NSDiffableDataSourceSnapshot<TabSection, Tab>()
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tabs, toSection: .normal)
+    snapshot.appendItems(tabs.map { Tab(title: $0, id: UUID()) }, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
 
@@ -117,15 +127,15 @@ public final class TabView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, String> {
-    let dataSource = UICollectionViewDiffableDataSource<TabSection, String>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, Tab> {
+    let dataSource = UICollectionViewDiffableDataSource<TabSection, Tab>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
         withReuseIdentifier: TabCell.identifier, for: indexPath
       ).then {
         guard let cell = $0 as? TabCell else { return }
-        cell.configureTitle(title: item)
+        cell.configureTitle(title: item.title)
       }
     }
 
