@@ -56,12 +56,13 @@ public final class TabView: UIView {
   public weak var delegate: TabViewDelegate?
   public var selectedTab: PublishRelay<String> = .init()
 
+  var colorType: TabColorType = .primary
 
   // MARK: Initialize
 
-  public convenience init(tabs: [String]) {
+  public convenience init(colorType: TabColorType) {
     self.init(frame: .zero)
-    applyTabs(by: tabs)
+    self.colorType = colorType
   }
 
   public override init(frame: CGRect) {
@@ -85,16 +86,6 @@ public final class TabView: UIView {
     snapshot.appendItems(tabs.map { Tab(title: $0, id: UUID()) }, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
-
-    if !tabs.isEmpty {
-      collectionView.selectItem(
-        at: IndexPath(item: 0, section: 0),
-        animated: true,
-        scrollPosition: .centeredHorizontally
-      )
-      delegate?.tabView(self, didSelectedTab: tabs.first!)
-      selectedTab.accept(tabs.first!)
-    }
   }
 
   public func selectItem(at row: Int) {
@@ -144,9 +135,11 @@ public final class TabView: UIView {
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
         withReuseIdentifier: TabCell.identifier, for: indexPath
-      ).then {
-        guard let cell = $0 as? TabCell else { return }
-        cell.configureTitle(title: item.title)
+      ).then { [weak self] cell in
+        guard let self else { return }
+
+        guard let cell = cell as? TabCell else { return }
+        cell.configure(title: item.title, colorType: self.colorType)
       }
     }
 

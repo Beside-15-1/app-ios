@@ -35,6 +35,14 @@ extension UIColor {
     }
   }
 
+  public static let paperAboveBg = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#2B1E7A")
+    } else {
+      return UIColor(hexString: "#5242BF")
+    }
+  }
+
   // MARK: FAB
 
   public static let fabTextColor = UIColor { (trait: UITraitCollection) -> UIColor in
@@ -54,7 +62,7 @@ extension UIColor {
       return UIColor(hexString: "#2E2277")
     }
   }
-  
+
   // MARK: TextButton
 
   public static let textButtonColor = UIColor { (trait: UITraitCollection) -> UIColor in

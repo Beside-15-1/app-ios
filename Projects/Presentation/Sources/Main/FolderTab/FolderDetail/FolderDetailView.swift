@@ -18,10 +18,10 @@ final class FolderDetailView: UIView {
   // MARK: UI
 
   private let colorBackground = UIView().then {
-    $0.backgroundColor = .paperGray
+    $0.backgroundColor = .paperAboveBg
   }
 
-  let tabView = TabView()
+  let tabView = TabView(colorType: .white)
 
 
   // MARK: Initializing

@@ -115,10 +115,12 @@ final class HomeViewController: UIViewController, StoryboardView {
           )
         )
 
-        self.tabBarController?.selectedViewController?
-          .navigationController?.pushViewController(
-            folderDetail, animated: true
-          )
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+          self.tabBarController?.selectedViewController?
+            .navigationController?.pushViewController(
+              folderDetail, animated: true
+            )
+        })
       }
       .disposed(by: disposeBag)
   }

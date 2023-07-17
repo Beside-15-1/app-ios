@@ -17,11 +17,11 @@ final class MyFolderView: UIView {
   // MARK: UI
 
   private let colorBackground = UIView().then {
-    $0.backgroundColor = .paperGray
+    $0.backgroundColor = .paperAboveBg
   }
 
   private let titleLabel = UILabel().then {
-    $0.attributedText = "내 폴더".styled(font: .titleBold, color: .staticBlack)
+    $0.attributedText = "내 폴더".styled(font: .titleBold, color: .white)
   }
 
   let folderSearchField = InputField(type: .normal).then {

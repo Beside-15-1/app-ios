@@ -28,20 +28,20 @@ final class HomeView: UIView {
   private let container = UIView()
 
   private let colorBackground = UIView().then {
-    $0.backgroundColor = .paperGray
+    $0.backgroundColor = .paperAboveBg
   }
 
   private let logoImage = UIImageView().then {
-    $0.image = DesignSystemAsset.homeLogo.image.withTintColor(.staticBlack)
+    $0.image = DesignSystemAsset.homeLogo.image.withTintColor(.white)
   }
 
   private let titleLabel = UILabel().then {
     $0.attributedText = "최근 주섬주섬 했던\n링크를 확인해보세요"
-      .styled(font: .accentTitle, color: .staticBlack)
+      .styled(font: .titleBold, color: .white)
     $0.numberOfLines = 0
   }
 
-  let viewAllButton = TextButton(type: .regular, color: .primary500).then {
+  let viewAllButton = TextButton(type: .regular, color: .white).then {
     $0.text = "전체보기"
     $0.rightIconImage = DesignSystemAsset.iconRight.image
   }
@@ -51,7 +51,7 @@ final class HomeView: UIView {
   let homeFolderView = HomeFolderView()
 
   private let safeArea = UIView().then {
-    $0.backgroundColor = .paperGray
+    $0.backgroundColor = .paperAboveBg
   }
 
   let fab = FAB().then {
