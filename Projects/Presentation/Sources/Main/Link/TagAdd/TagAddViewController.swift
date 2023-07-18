@@ -4,7 +4,7 @@ import PanModal
 import RxSwift
 
 import PresentationInterface
-import Toaster
+import DesignSystem
 
 // MARK: - TagAddViewController
 
@@ -88,14 +88,8 @@ final class TagAddViewController: UIViewController {
     viewModel.shouldShowTagLimitToast
       .subscribe(with: self) { _, _ in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-          Toast(
-            attributedText: "태그는 10개까지 선택할 수 있어요".styled(
-              font: .defaultRegular,
-              color: .white
-            ),
-            duration: .init(3)
-          )
-          .show()
+          PBToast(content: "태그는 10개까지 선택할 수 있어요")
+            .show()
         }
       }
       .disposed(by: disposeBag)

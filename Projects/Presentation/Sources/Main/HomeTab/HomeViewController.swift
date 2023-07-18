@@ -9,9 +9,11 @@ import UIKit
 
 import ReactorKit
 import RxSwift
+import Toaster
 
-import PresentationInterface
+import DesignSystem
 import PBLog
+import PresentationInterface
 
 final class HomeViewController: UIViewController, StoryboardView {
 
@@ -26,18 +28,20 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   private let createLinkBuilder: CreateLinkBuildable
   private let createFolderBuilder: CreateFolderBuildable
-
+  private let folderDetailBuilder: FolderDetailBuildable
 
   // MARK: Initializing
 
   init(
     reactor: HomeViewReactor,
     createLinkBuilder: CreateLinkBuildable,
-    createFolderBuilder: CreateFolderBuildable
+    createFolderBuilder: CreateFolderBuildable,
+    folderDetailBuilder: FolderDetailBuildable
   ) {
     defer { self.reactor = reactor }
     self.createLinkBuilder = createLinkBuilder
     self.createFolderBuilder = createFolderBuilder
+    self.folderDetailBuilder = folderDetailBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -99,6 +103,24 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.tabBarController?.selectedIndex = 1
       }
       .disposed(by: disposeBag)
+
+    contentView.viewAllButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let folderDetail = self.folderDetailBuilder.build(
+          payload: .init(
+            folderList: reactor.currentState.folderList,
+            selectedFolder: .all()
+          )
+        )
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+          self.tabBarController?.selectedViewController?
+            .navigationController?.pushViewController(
+              folderDetail, animated: true
+            )
+        })
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: HomeViewReactor) {
@@ -125,21 +147,35 @@ final class HomeViewController: UIViewController, StoryboardView {
 
 extension HomeViewController: HomeFolderViewDelegate {
   func createFolderDidTapped() {
-    let vc = createFolderBuilder.build(payload: .init(
-      folder: nil,
-      delegate: self)
+    let vc = createFolderBuilder.build(
+      payload: .init(
+        folder: nil,
+        delegate: self
+      )
     ).then {
       $0.modalPresentationStyle = .popover
     }
 
     present(vc, animated: true)
-
   }
 
   func homeFolderView(didSelectItemAt row: Int) {
     // 라우팅
     guard let folder = reactor?.currentState.folderList[row] else { return }
-    PBLog.info(folder)
+
+    let folderDetail = self.folderDetailBuilder.build(
+      payload: .init(
+        folderList: reactor?.currentState.folderList ?? [],
+        selectedFolder: folder
+      )
+    )
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+      self.tabBarController?.selectedViewController?
+        .navigationController?.pushViewController(
+          folderDetail, animated: true
+        )
+    })
   }
 }
 
@@ -156,5 +192,8 @@ extension HomeViewController: CreateFolderDelegate {
 extension HomeViewController: CreateLinkDelegate {
   func createLinkSucceed() {
     reactor?.action.onNext(.createLinkSucceed)
+
+    PBToast(content: "링크가 저장되었습니다")
+      .show()
   }
 }

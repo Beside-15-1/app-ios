@@ -47,7 +47,7 @@ final class MyPageViewModel: MyPageViewModelOutput {
 
 extension MyPageViewModel: MyPageViewModelInput {
   func logoutButtonTapped() {
-    logoutUseCase.excute()
+    logoutUseCase.execute()
       .asObservable()
       .bind(to: isLogoutSuccess)
       .disposed(by: disposeBag)

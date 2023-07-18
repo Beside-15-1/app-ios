@@ -8,6 +8,20 @@
 import Foundation
 import UIKit
 
+public enum TabColorType {
+  case white
+  case primary
+
+  var selectColor: UIColor {
+    switch self {
+    case .white:
+      return .white
+    case .primary:
+      return .primary500
+    }
+  }
+}
+
 class TabCell: UICollectionViewCell {
 
   static let identifier = "TabCell"
@@ -37,6 +51,7 @@ class TabCell: UICollectionViewCell {
     }
   }
 
+  var colorType: TabColorType = .primary
 
   // MARK: Initialize
 
@@ -53,14 +68,17 @@ class TabCell: UICollectionViewCell {
 
   // MARK: Configuring
 
-  func configureTitle(title: String) {
+  func configure(title: String, colorType: TabColorType) {
     titleLabel.text = title
+    self.colorType = colorType
   }
 
   func configure(isSelected: Bool) {
+    underBar.backgroundColor = colorType.selectColor
+
     if isSelected {
       underBar.isHidden = false
-      titleLabel.textColor = .primary500
+      titleLabel.textColor = colorType.selectColor
       titleLabel.font = .subTitleBold
     } else {
       underBar.isHidden = true

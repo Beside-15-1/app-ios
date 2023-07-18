@@ -34,16 +34,16 @@ final class LinkRepositoryImpl: LinkRepository {
       .map { _ in }
   }
 
-  func fetchAllLinks() -> Single<[Link]> {
-    let target = LinkAPI.fetchAll
+  func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]> {
+    let target = LinkAPI.fetchAll(sort, order)
 
     return networking.request(target: target)
       .map([LinkDTO].self)
       .map { $0.map { dtos in dtos.toDomain() } }
   }
 
-  func fetchLinksInLinkBook(linkBookID: String) -> Single<[Link]> {
-    let target = LinkAPI.fetchLinksInLinkBook(linkBookID)
+  func fetchLinksInLinkBook(linkBookID: String, sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]> {
+    let target = LinkAPI.fetchLinksInLinkBook(linkBookID, sort, order)
 
     return networking.request(target: target)
       .map([LinkDTO].self)

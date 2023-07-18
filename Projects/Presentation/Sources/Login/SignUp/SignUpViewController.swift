@@ -112,12 +112,8 @@ final class SignUpViewController: UIViewController, StoryboardView {
     reactor.pulse(\.$error)
       .compactMap { $0 }
       .subscribe(with: self) { `self`, error in
-        Toast(
-          attributedText: error.localizedDescription.styled(
-            font: .defaultRegular,
-            color: .white
-          )
-        ).show()
+        PBToast(content: error.localizedDescription)
+          .show()
       }
       .disposed(by: disposeBag)
   }

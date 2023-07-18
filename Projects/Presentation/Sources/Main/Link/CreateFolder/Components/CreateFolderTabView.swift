@@ -12,7 +12,7 @@ class CreateFolderTabView: UIView {
 
   // MARK: UI
 
-  lazy var tabView = TabView().then {
+  lazy var tabView = TabView(colorType: .primary).then {
     $0.applyTabs(by: ["폴더명", "컬러", "일러스트"])
   }
 
@@ -33,6 +33,8 @@ class CreateFolderTabView: UIView {
 
     setViews()
     bind()
+
+    tabView.selectItem(at: 0)
   }
 
   @available(*, unavailable)
@@ -48,8 +50,7 @@ class CreateFolderTabView: UIView {
     addSubview(makeButton)
     tabView.snp.makeConstraints { make in
       make.top.equalToSuperview().offset(8)
-      make.left.equalToSuperview().offset(20)
-      make.right.equalToSuperview().offset(-20)
+      make.left.right.equalToSuperview()
     }
 
     folderView.snp.makeConstraints { make in

@@ -17,6 +17,16 @@ enum TabSection: Hashable {
   case normal
 }
 
+public struct Tab: Hashable {
+  public let title: String
+  public let id: UUID
+
+  public init(title: String, id: UUID) {
+    self.title = title
+    self.id = id
+  }
+}
+
 public protocol TabViewDelegate: AnyObject {
   func tabView(_ tabView: TabView, didSelectedTab: String)
 }
@@ -33,6 +43,7 @@ public final class TabView: UIView {
     $0.showsHorizontalScrollIndicator = false
     $0.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
     $0.delegate = self
+    $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
   }
 
 
@@ -45,12 +56,13 @@ public final class TabView: UIView {
   public weak var delegate: TabViewDelegate?
   public var selectedTab: PublishRelay<String> = .init()
 
+  var colorType: TabColorType = .primary
 
   // MARK: Initialize
 
-  public convenience init(tabs: [String]) {
+  public convenience init(colorType: TabColorType) {
     self.init(frame: .zero)
-    applyTabs(by: tabs)
+    self.colorType = colorType
   }
 
   public override init(frame: CGRect) {
@@ -68,21 +80,21 @@ public final class TabView: UIView {
 
   public func applyTabs(by tabs: [String]) {
     self.tabs = tabs
-    var snapshot = NSDiffableDataSourceSnapshot<TabSection, String>()
+    var snapshot = NSDiffableDataSourceSnapshot<TabSection, Tab>()
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tabs, toSection: .normal)
+    snapshot.appendItems(tabs.map { Tab(title: $0, id: UUID()) }, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
+  }
 
-    if !tabs.isEmpty {
-      collectionView.selectItem(
-        at: IndexPath(item: 0, section: 0),
+  public func selectItem(at row: Int) {
+    DispatchQueue.main.async {
+      self.collectionView.selectItem(
+        at: IndexPath(item: row, section: 0),
         animated: true,
         scrollPosition: .centeredHorizontally
       )
-      delegate?.tabView(self, didSelectedTab: tabs.first!)
-      selectedTab.accept(tabs.first!)
     }
   }
 
@@ -117,15 +129,17 @@ public final class TabView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, String> {
-    let dataSource = UICollectionViewDiffableDataSource<TabSection, String>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, Tab> {
+    let dataSource = UICollectionViewDiffableDataSource<TabSection, Tab>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
         withReuseIdentifier: TabCell.identifier, for: indexPath
-      ).then {
-        guard let cell = $0 as? TabCell else { return }
-        cell.configureTitle(title: item)
+      ).then { [weak self] cell in
+        guard let self else { return }
+
+        guard let cell = cell as? TabCell else { return }
+        cell.configure(title: item.title, colorType: self.colorType)
       }
     }
 
@@ -152,6 +166,12 @@ extension TabView: UICollectionViewDelegate {
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
+    collectionView.scrollToItem(
+      at: IndexPath(item: indexPath.row, section: 0),
+      at: .centeredHorizontally,
+      animated: true
+    )
+
     delegate?.tabView(self, didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])
   }

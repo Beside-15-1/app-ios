@@ -6,7 +6,7 @@ import RxSwift
 
 /// @mockable
 public protocol LogoutUseCase {
-  func excute() -> Single<Bool>
+  func execute() -> Single<Bool>
 }
 
 // MARK: - LogoutUseCaseImpl
@@ -18,7 +18,7 @@ public final class LogoutUseCaseImpl: LogoutUseCase {
     self.loginRepository = loginRepository
   }
 
-  public func excute() -> Single<Bool> {
+  public func execute() -> Single<Bool> {
     loginRepository.logout()
   }
 }

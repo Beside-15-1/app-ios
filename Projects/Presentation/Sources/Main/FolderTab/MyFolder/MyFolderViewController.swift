@@ -29,6 +29,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private let createFolderBuilder: CreateFolderBuildable
   private let editFolderBuilder: EditFolderBuildable
   private let folderSortBuilder: FolderSortBuildable
+  private let folderDetailBuilder: FolderDetailBuildable
 
 
   // MARK: Initializing
@@ -37,13 +38,15 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     reactor: MyFolderViewReactor,
     createFolderBuilder: CreateFolderBuildable,
     editFolderBuilder: EditFolderBuildable,
-    folderSortBuilder: FolderSortBuildable
+    folderSortBuilder: FolderSortBuildable,
+    folderDetailBuilder: FolderDetailBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createFolderBuilder = createFolderBuilder
     self.editFolderBuilder = editFolderBuilder
     self.folderSortBuilder = folderSortBuilder
+    self.folderDetailBuilder = folderDetailBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -58,12 +61,18 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   override func loadView() {
     view = contentView
 
-    contentView.myFolderCollectionView.delegate = self
+    contentView.myFolderListView.delegate = self
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    navigationController?.isNavigationBarHidden = true
   }
 
 
@@ -80,7 +89,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.myFolderCollectionView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.myFolderListView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
 
@@ -88,7 +97,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, type in
-        self.contentView.myFolderCollectionView.sortButton.text = type.rawValue
+        self.contentView.myFolderListView.sortButton.text = type.rawValue
       }
       .disposed(by: disposeBag)
   }
@@ -97,13 +106,13 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     contentView.folderSearchField.rx.text
       .subscribe(with: self) { `self`, text in
         reactor.action.onNext(.searchText(text))
-        self.contentView.myFolderCollectionView.configureEmptyLabel(text: text)
+        self.contentView.myFolderListView.configureEmptyLabel(text: text)
       }
       .disposed(by: disposeBag)
   }
 
   private func bindButton(with reactor: MyFolderViewReactor) {
-    contentView.myFolderCollectionView.createFolderButton.rx.controlEvent(.touchUpInside)
+    contentView.myFolderListView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createFolderBuilder.build(
           payload: .init(
@@ -118,7 +127,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
-    contentView.myFolderCollectionView.sortButton.rx.controlEvent(.touchUpInside)
+    contentView.myFolderListView.sortButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let vc = self.folderSortBuilder.build(
           payload: .init(
@@ -158,6 +167,19 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
       as? PanModalPresentable.LayoutType else { return }
 
     presentPanModal(vc)
+  }
+
+  func collectionViewItemDidTapped(at row: Int) {
+    guard let reactor else { return }
+
+    let folderDetail = folderDetailBuilder.build(
+      payload: .init(
+        folderList: reactor.currentState.folderList,
+        selectedFolder: reactor.currentState.folderList[row]
+      )
+    )
+
+    navigationController?.pushViewController(folderDetail, animated: true)
   }
 }
 

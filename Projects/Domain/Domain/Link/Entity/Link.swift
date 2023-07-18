@@ -17,6 +17,7 @@ public struct Link: Hashable {
   public let url: String
   public let thumbnailURL: String?
   public let tags: [String]
+  public let folderName: String
 
   public let createdAt: String
   public let lastReadAt: String
@@ -31,6 +32,7 @@ public struct Link: Hashable {
     url: String,
     thumbnailURL: String?,
     tags: [String],
+    folderName: String,
     createdAt: String,
     lastReadAt: String,
     updatedAt: String
@@ -43,6 +45,7 @@ public struct Link: Hashable {
     self.url = url
     self.thumbnailURL = thumbnailURL
     self.tags = tags
+    self.folderName = folderName
     self.createdAt = createdAt
     self.lastReadAt = lastReadAt
     self.updatedAt = updatedAt

@@ -18,6 +18,6 @@ public protocol LinkRepository {
     tags: [String]
   ) -> Single<Void>
 
-  func fetchAllLinks() -> Single<[Link]>
-  func fetchLinksInLinkBook(linkBookID: String) -> Single<[Link]>
+  func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
+  func fetchLinksInLinkBook(linkBookID: String, sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
 }

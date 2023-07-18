@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 public protocol FetchAllLinksUseCase {
-  func execute() -> Single<[Link]>
+  func execute(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
 }
 
 public class FetchAllLinksUseCaseImpl: FetchAllLinksUseCase {
@@ -21,7 +21,7 @@ public class FetchAllLinksUseCaseImpl: FetchAllLinksUseCase {
     self.linkRepository = linkRepository
   }
 
-  public func execute() -> Single<[Link]> {
-    linkRepository.fetchAllLinks()
+  public func execute(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]> {
+    linkRepository.fetchAllLinks(sort: sort, order: order)
   }
 }

@@ -17,8 +17,8 @@ final class SignUpView: UIView {
 
   private let titleLabel = UILabel().then {
     $0.text = "만나서 반가워요!\n성별과 연령을 입력해주세요."
-    $0.font = .titleRegular
-    $0.textColor = .staticBlack
+    $0.font = .titleBold
+    $0.textColor = .white
     $0.numberOfLines = 0
   }
 

@@ -25,7 +25,9 @@ public final class PresentationAssembly: Assembly {
       registerSelectFolderBuilder,
       registerSignUpBuilder,
       registerEditFolderBuilder,
-      registerFolderSortBuilder
+      registerFolderSortBuilder,
+      registerFolderDetailBuilder,
+      registerLinkSortBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -61,7 +63,8 @@ public final class PresentationAssembly: Assembly {
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
-        createFolderBuilder: r.resolve()
+        createFolderBuilder: r.resolve(),
+        folderDetailBuilder: r.resolve()
       ))
     }
   }
@@ -72,7 +75,8 @@ public final class PresentationAssembly: Assembly {
         folderRepository: r.resolve(),
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
-        folderSortBuilder: r.resolve()
+        folderSortBuilder: r.resolve(),
+        folderDetailBuilder: r.resolve()
       ))
     }
   }
@@ -149,12 +153,27 @@ public final class PresentationAssembly: Assembly {
       FolderSortBuilder(dependency: .init())
     }
   }
+
+  private func registerFolderDetailBuilder(container: Container) {
+    container.register(FolderDetailBuildable.self) { r in
+      FolderDetailBuilder(dependency: .init(
+        linkRepository: r.resolve(),
+        linkSortBuilder: r.resolve()
+      ))
+    }
+  }
+
+  private func registerLinkSortBuilder(container: Container) {
+    container.register(LinkSortBuildable.self) { r in
+      LinkSortBuilder(dependency: .init())
+    }
+  }
 }
 
 // MARK: - Resolver
 
-private extension Resolver {
-  func resolve<Service>() -> Service! {
+extension Resolver {
+  fileprivate func resolve<Service>() -> Service! {
     resolve(Service.self)
   }
 }

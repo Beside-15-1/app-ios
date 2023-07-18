@@ -15,16 +15,16 @@ public final class AppleLoginUseCaseMock: AppleLoginUseCase {
     public init() { }
 
 
-    public private(set) var excuteCallCount = 0
-    public var excuteArgValues = [String]()
-    public var excuteHandler: ((String) -> (Single<Bool>))?
-    public func excute(identity: String) -> Single<Bool> {
-        excuteCallCount += 1
-        excuteArgValues.append(identity)
-        if let excuteHandler = excuteHandler {
-            return excuteHandler(identity)
+    public private(set) var executeCallCount = 0
+    public var executeArgValues = [String]()
+    public var executeHandler: ((String) -> (Single<Bool>))?
+    public func execute(identity: String) -> Single<Bool> {
+        executeCallCount += 1
+        executeArgValues.append(identity)
+        if let executeHandler = executeHandler {
+            return executeHandler(identity)
         }
-        fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+        fatalError("executeHandler returns can't have a default value thus its handler must be set")
     }
 }
 
@@ -32,16 +32,16 @@ public final class GoogleLoginUseCaseMock: GoogleLoginUseCase {
     public init() { }
 
 
-    public private(set) var excuteCallCount = 0
-    public var excuteArgValues = [String]()
-    public var excuteHandler: ((String) -> (Single<Bool>))?
-    public func excute(access: String) -> Single<Bool> {
-        excuteCallCount += 1
-        excuteArgValues.append(access)
-        if let excuteHandler = excuteHandler {
-            return excuteHandler(access)
+    public private(set) var executeCallCount = 0
+    public var executeArgValues = [String]()
+    public var executeHandler: ((String) -> (Single<Bool>))?
+    public func execute(access: String) -> Single<Bool> {
+        executeCallCount += 1
+        executeArgValues.append(access)
+        if let executeHandler = executeHandler {
+            return executeHandler(access)
         }
-        fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+        fatalError("executeHandler returns can't have a default value thus its handler must be set")
     }
 }
 
@@ -100,14 +100,14 @@ public final class LogoutUseCaseMock: LogoutUseCase {
     public init() { }
 
 
-    public private(set) var excuteCallCount = 0
-    public var excuteHandler: (() -> (Single<Bool>))?
-    public func excute() -> Single<Bool> {
-        excuteCallCount += 1
-        if let excuteHandler = excuteHandler {
-            return excuteHandler()
+    public private(set) var executeCallCount = 0
+    public var executeHandler: (() -> (Single<Bool>))?
+    public func execute() -> Single<Bool> {
+        executeCallCount += 1
+        if let executeHandler = executeHandler {
+            return executeHandler()
         }
-        fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+        fatalError("executeHandler returns can't have a default value thus its handler must be set")
     }
 }
 
@@ -115,16 +115,16 @@ public final class SignUpUseCaseMock: SignUpUseCase {
     public init() { }
 
 
-    public private(set) var excuteCallCount = 0
-    public var excuteArgValues = [(String, Int?, String?, String?, String)]()
-    public var excuteHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
-    public func excute(idToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
-        excuteCallCount += 1
-        excuteArgValues.append((idToken, age, gender, nickname, social))
-        if let excuteHandler = excuteHandler {
-            return excuteHandler(idToken, age, gender, nickname, social)
+    public private(set) var executeCallCount = 0
+    public var executeArgValues = [(String, Int?, String?, String?, String)]()
+    public var executeHandler: ((String, Int?, String?, String?, String) -> (Single<Bool>))?
+    public func execute(idToken: String, age: Int?, gender: String?, nickname: String?, social: String) -> Single<Bool> {
+        executeCallCount += 1
+        executeArgValues.append((idToken, age, gender, nickname, social))
+        if let executeHandler = executeHandler {
+            return executeHandler(idToken, age, gender, nickname, social)
         }
-        fatalError("excuteHandler returns can't have a default value thus its handler must be set")
+        fatalError("executeHandler returns can't have a default value thus its handler must be set")
     }
 }
 
