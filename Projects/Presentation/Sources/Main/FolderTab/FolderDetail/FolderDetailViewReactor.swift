@@ -20,6 +20,7 @@ final class FolderDetailViewReactor: Reactor {
     case viewDidLoad
     case selectTab(String)
     case updateSort(LinkSortingType)
+    case searchLink(String)
   }
 
   enum Mutation {
@@ -110,6 +111,28 @@ final class FolderDetailViewReactor: Reactor {
 
     case .updateSort(let type):
       return updateSort(type: type)
+
+    case .searchLink(let text):
+
+      guard !text.isEmpty else {
+        let viewModel = makeViewModel(
+          withLinkList: currentState.linkList,
+          isAll: currentState.selectedFolder.title == Folder.all().title
+        )
+
+        return .just(Mutation.setViewModel(viewModel))
+      }
+
+      let filteredList = currentState.linkList.filter {
+        $0.title.range(of: text, options: .caseInsensitive) != nil
+      }
+
+      let viewModel = makeViewModel(
+        withLinkList: filteredList,
+        isAll: currentState.selectedFolder.title == Folder.all().title
+      )
+
+      return .just(Mutation.setViewModel(viewModel))
     }
   }
 
@@ -143,22 +166,7 @@ extension FolderDetailViewReactor {
     fetchAllLinkUseCase.execute(sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
-        let viewModel = FolderDetailSectionViewModel(
-          section: .normal,
-          items: links.map {
-            .init(
-              id: $0.id,
-              title: $0.title,
-              tags: $0.tags,
-              thumbnailURL: $0.thumbnailURL,
-              url: $0.url,
-              createAt: $0.createdAt,
-              folderName: $0.folderName,
-              isAll: true
-            )
-          }
-        )
-
+        let viewModel = self.makeViewModel(withLinkList: links, isAll: true)
         return .concat([
           .just(Mutation.setLinkList(links)),
           .just(Mutation.setViewModel(viewModel)),
@@ -170,21 +178,7 @@ extension FolderDetailViewReactor {
     fetchLinkInFolderUseCase.execute(linkBookId: id, sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
-        let viewModel = FolderDetailSectionViewModel(
-          section: .normal,
-          items: links.map {
-            .init(
-              id: $0.id,
-              title: $0.title,
-              tags: $0.tags,
-              thumbnailURL: $0.thumbnailURL,
-              url: $0.url,
-              createAt: $0.createdAt,
-              folderName: $0.folderName,
-              isAll: false
-            )
-          }
-        )
+        let viewModel = self.makeViewModel(withLinkList: links, isAll: false)
 
         return .concat([
           .just(Mutation.setLinkList(links)),
@@ -208,4 +202,24 @@ extension FolderDetailViewReactor {
       ])
     }
   }
+
+  private func makeViewModel(withLinkList linkList: [Link], isAll: Bool) -> FolderDetailSectionViewModel {
+    FolderDetailSectionViewModel(
+      section: .normal,
+      items: linkList.map {
+        .init(
+          id: $0.id,
+          title: $0.title,
+          tags: $0.tags,
+          thumbnailURL: $0.thumbnailURL,
+          url: $0.url,
+          createAt: $0.createdAt,
+          folderName: $0.folderName,
+          isAll: isAll
+        )
+      }
+    )
+  }
+
+
 }

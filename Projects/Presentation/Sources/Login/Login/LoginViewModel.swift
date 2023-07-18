@@ -90,7 +90,7 @@ extension LoginViewModel: LoginManagerDelegate {
       self.idToken = idToken
       latestSocialLogin = "google"
 
-      googleLoginUseCase.excute(access: idToken)
+      googleLoginUseCase.execute(access: idToken)
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
           if canLogin {
@@ -110,7 +110,7 @@ extension LoginViewModel: LoginManagerDelegate {
       self.idToken = idToken
       latestSocialLogin = "apple"
 
-      appleLoginUseCase.excute(identity: idToken)
+      appleLoginUseCase.execute(identity: idToken)
         .subscribe(onSuccess: { [weak self] canLogin in
           guard let self else { return }
 

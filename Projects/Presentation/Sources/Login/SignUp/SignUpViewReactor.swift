@@ -126,7 +126,7 @@ final class SignUpViewReactor: Reactor {
 extension SignUpViewReactor {
 
   private func signUp() -> Observable<Mutation> {
-    signUpUseCase.excute(
+    signUpUseCase.execute(
       idToken: currentState.accessToken,
       age: currentState.year,
       gender: currentState.gender,
@@ -148,7 +148,7 @@ extension SignUpViewReactor {
   }
 
   private func pass() -> Observable<Mutation> {
-    signUpUseCase.excute(
+    signUpUseCase.execute(
       idToken: currentState.accessToken,
       age: nil,
       gender: nil,

@@ -54,7 +54,7 @@ extension LoginViewModelTest {
     loginManager.loginHandler = { socialLogin in
       viewModel.loginManager(socialLogin, didSucceedWithResult: ["identityToken": "sonny"])
     }
-    googleLoginUseCase.excuteHandler = { _ in
+    googleLoginUseCase.executeHandler = { _ in
       .just(true)
     }
 
@@ -71,7 +71,7 @@ extension LoginViewModelTest {
     loginManager.loginHandler = { socialLogin in
       viewModel.loginManager(socialLogin, didSucceedWithResult: ["identityToken": "sonny"])
     }
-    googleLoginUseCase.excuteHandler = { _ in
+    googleLoginUseCase.executeHandler = { _ in
       .error(NSError(domain: "", code: 200))
     }
 
@@ -143,7 +143,7 @@ extension LoginViewModelTest {
         "authorizationCode": "code"
       ])
     }
-    appleLoginUseCase.excuteHandler = { _ in
+    appleLoginUseCase.executeHandler = { _ in
       .just(true)
     }
 
@@ -163,7 +163,7 @@ extension LoginViewModelTest {
         "authorizationCode": "code"
       ])
     }
-    appleLoginUseCase.excuteHandler = { _ in
+    appleLoginUseCase.executeHandler = { _ in
       .error(NSError(domain: "", code: 200))
     }
 

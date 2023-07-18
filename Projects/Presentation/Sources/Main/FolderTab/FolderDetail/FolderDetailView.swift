@@ -27,7 +27,7 @@ final class FolderDetailView: UIView {
 
   let tabView = TabView(colorType: .white)
 
-  let searchField = InputField(type: .search).then {
+  let searchField = InputField(type: .normal).then {
     $0.placeHolder = "링크 제목으로 검색해보세요"
   }
 

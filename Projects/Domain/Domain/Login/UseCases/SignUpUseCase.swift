@@ -6,7 +6,7 @@ import RxSwift
 
 /// @mockable
 public protocol SignUpUseCase {
-  func excute(
+  func execute(
     idToken: String,
     age: Int?,
     gender: String?,
@@ -24,7 +24,7 @@ public final class SignUpUseCaseImpl: SignUpUseCase {
     self.loginRepository = loginRepository
   }
 
-  public func excute(
+  public func execute(
     idToken: String,
     age: Int?,
     gender: String?,

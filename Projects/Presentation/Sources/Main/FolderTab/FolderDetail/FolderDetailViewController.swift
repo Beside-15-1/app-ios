@@ -74,6 +74,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     bindContent(with: reactor)
     bindTab(with: reactor)
     bindRoute(with: reactor)
+    bindTextField(with: reactor)
   }
 
   private func bindContent(with reactor: FolderDetailViewReactor) {
@@ -130,6 +131,15 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         ) as? PanModalPresentable.LayoutType else { return }
 
         self.presentPanModal(vc)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindTextField(with reactor: FolderDetailViewReactor) {
+    contentView.searchField.rx.text
+      .subscribe(with: self) { `self`, text in
+        reactor.action.onNext(.searchLink(text))
+        self.contentView.listView.configureEmptyLabel(text: text)
       }
       .disposed(by: disposeBag)
   }
