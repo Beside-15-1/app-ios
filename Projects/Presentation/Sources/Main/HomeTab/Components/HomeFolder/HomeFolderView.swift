@@ -151,7 +151,7 @@ class HomeFolderView: UIView {
       $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
       $0.left.right.equalToSuperview()
       $0.bottom.equalToSuperview().inset(8.0)
-      $0.height.equalTo(144)
+      $0.height.equalTo(147)
     }
   }
 

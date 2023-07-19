@@ -53,14 +53,14 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    configureNavigationBar()
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
     navigationController?.isNavigationBarHidden = false
+
+    configureNavigationBar()
   }
 
 
@@ -171,6 +171,6 @@ extension LinkDetailViewController {
 
 extension LinkDetailViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
-
+    contentView.configure(withLink: link)
   }
 }

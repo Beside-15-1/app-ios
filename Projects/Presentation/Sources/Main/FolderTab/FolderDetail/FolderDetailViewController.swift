@@ -62,14 +62,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     super.viewDidLoad()
 
     reactor?.action.onNext(.viewDidLoad)
-
-    configureNavigationBar()
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
     navigationController?.isNavigationBarHidden = false
+
+    configureNavigationBar()
   }
 
 
