@@ -43,7 +43,7 @@ final class LinkDetailView: UIView {
 
   private let tagView = LinkDetailTagView()
 
-  private let bottomView = LinkDetailBottomView()
+  let bottomView = LinkDetailBottomView()
 
   // MARK: Initializing
 

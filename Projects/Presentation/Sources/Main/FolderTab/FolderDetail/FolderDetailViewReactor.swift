@@ -21,6 +21,7 @@ final class FolderDetailViewReactor: Reactor {
     case selectTab(String)
     case updateSort(LinkSortingType)
     case searchLink(String)
+    case refresh
   }
 
   enum Mutation {
@@ -28,6 +29,7 @@ final class FolderDetailViewReactor: Reactor {
     case setViewModel(FolderDetailSectionViewModel)
     case setSelectedFolder(Folder)
     case setSortingType(LinkSortingType)
+    case setRefreshEnd
   }
 
   struct State {
@@ -39,6 +41,8 @@ final class FolderDetailViewReactor: Reactor {
     var viewModel: FolderDetailSectionViewModel?
 
     var sortingType: LinkSortingType = .createAt
+
+    @Pulse var refreshEnd = false
   }
 
   // MARK: Properties
@@ -133,6 +137,15 @@ final class FolderDetailViewReactor: Reactor {
       )
 
       return .just(Mutation.setViewModel(viewModel))
+
+    case .refresh:
+      let order: SortingOrderType = currentState.sortingType == .lastedAt ? .asc : .desc
+
+      if currentState.selectedFolder.title == Folder.all().title {
+        return fetchAllLinks(sort: currentState.sortingType, order: order)
+      } else {
+        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: order)
+      }
     }
   }
 
@@ -151,6 +164,9 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setSortingType(let type):
       newState.sortingType = type
+
+    case .setRefreshEnd:
+      newState.refreshEnd = true
     }
 
     return newState
@@ -168,9 +184,13 @@ extension FolderDetailViewReactor {
       .flatMap { links -> Observable<Mutation> in
         let viewModel = self.makeViewModel(withLinkList: links, isAll: true)
         return .concat([
+          .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
           .just(Mutation.setViewModel(viewModel)),
         ])
+      }
+      .catch { _ in
+        .just(Mutation.setRefreshEnd)
       }
   }
 
@@ -181,9 +201,12 @@ extension FolderDetailViewReactor {
         let viewModel = self.makeViewModel(withLinkList: links, isAll: false)
 
         return .concat([
+          .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
           .just(Mutation.setViewModel(viewModel)),
         ])
+      }.catch { _ in
+        .just(Mutation.setRefreshEnd)
       }
   }
 

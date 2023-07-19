@@ -16,12 +16,18 @@ final class LinkDetailViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
 
-  enum Action {}
+  enum Action {
+    case deleteButtonTapped
+  }
 
-  enum Mutation {}
+  enum Mutation {
+    case setDeleted
+  }
 
   struct State {
     var link: Link
+
+    var isDeleted = false
   }
 
   // MARK: Properties
@@ -30,13 +36,18 @@ final class LinkDetailViewReactor: Reactor {
 
   let initialState: State
 
+  private let deleteLinkUseCase: DeleteLinkUseCase
+
 
   // MARK: initializing
 
   init(
+    deleteLinkUseCase: DeleteLinkUseCase,
     link: Link
   ) {
     defer { _ = self.state }
+
+    self.deleteLinkUseCase = deleteLinkUseCase
 
     self.initialState = State(
       link: link
@@ -50,7 +61,35 @@ final class LinkDetailViewReactor: Reactor {
 
   // MARK: Mutate & Reduce
 
-  func mutate(action: Action) -> Observable<Mutation> {}
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .deleteButtonTapped:
+      return deleteLink()
+    }
+  }
 
-  func reduce(state: State, mutation: Mutation) -> State {}
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+
+    switch mutation {
+    case .setDeleted:
+      newState.isDeleted = true
+    }
+
+    return newState
+  }
+}
+
+
+// MARK: - Private
+
+extension LinkDetailViewReactor {
+
+  private func deleteLink() -> Observable<Mutation> {
+    deleteLinkUseCase.execute(id: currentState.link.id)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        .just(Mutation.setDeleted)
+      }
+  }
 }

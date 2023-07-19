@@ -132,7 +132,7 @@ public class PBDialog: UIViewController {
     buttonStackView.snp.makeConstraints {
       $0.top.equalTo(contentLabel.snp.bottom).offset(20.0)
       $0.left.bottom.right.equalToSuperview().inset(20.0)
-      $0.height.equalTo(56.0)
+      $0.height.equalTo(46.0)
     }
   }
 }

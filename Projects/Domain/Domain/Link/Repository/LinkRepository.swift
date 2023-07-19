@@ -20,4 +20,5 @@ public protocol LinkRepository {
 
   func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
   func fetchLinksInLinkBook(linkBookID: String, sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
+  func deleteLink(id: String) -> Single<Void>
 }

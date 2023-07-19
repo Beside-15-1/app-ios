@@ -115,6 +115,18 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.sortButton.text = type.title
       }
       .disposed(by: disposeBag)
+
+    contentView.listView.refreshControl.rx.controlEvent(.valueChanged)
+      .map { Reactor.Action.refresh }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$refreshEnd)
+      .asObservable()
+      .subscribe(with: self) { `self`, _ in
+        self.contentView.listView.refreshControl.endRefreshing()
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {

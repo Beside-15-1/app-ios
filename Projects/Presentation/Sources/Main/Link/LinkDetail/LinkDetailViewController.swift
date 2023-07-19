@@ -60,6 +60,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   func bind(reactor: LinkDetailViewReactor) {
     bindContent(with: reactor)
+    bindButton(with: reactor)
+    bindRoute(with: reactor)
   }
 
   private func bindContent(with reactor: LinkDetailViewReactor) {
@@ -68,6 +70,33 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, link in
         self.contentView.configure(withLink: link)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindButton(with reactor: LinkDetailViewReactor) {
+    contentView.bottomView.deleteButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        PBDialog(
+          title: "링크를 삭제하시겠어요?",
+          content: "삭제한 링크는 다시 되돌릴 수 없어요",
+          from: self)
+        .addAction(content: "취소", priority: .secondary, action: nil)
+        .addAction(content: "삭제", priority: .primary, action: {
+          reactor.action.onNext(.deleteButtonTapped)
+        })
+        .show()
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindRoute(with reactor: LinkDetailViewReactor) {
+    reactor.state.map(\.isDeleted)
+      .asObservable()
+      .filter { $0 }
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, _ in
+        self.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -112,7 +141,5 @@ extension LinkDetailViewController {
   }
 
   @objc
-  private func share() {
-
-  }
+  private func share() {}
 }

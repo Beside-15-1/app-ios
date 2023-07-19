@@ -49,4 +49,11 @@ final class LinkRepositoryImpl: LinkRepository {
       .map([LinkDTO].self)
       .map { $0.map { dtos in dtos.toDomain() } }
   }
+
+  func deleteLink(id: String) -> Single<Void> {
+    let target = LinkAPI.deleteLink(id: id)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
 }

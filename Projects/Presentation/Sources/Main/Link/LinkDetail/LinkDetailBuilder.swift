@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct LinkDetailDependency {}
+struct LinkDetailDependency {
+  let linkRepository: LinkRepository
+}
 
 final class LinkDetailBuilder: LinkDetailBuildable {
 
@@ -23,6 +25,9 @@ final class LinkDetailBuilder: LinkDetailBuildable {
 
   func build(payload: LinkDetailPayload) -> UIViewController {
     let reactor = LinkDetailViewReactor(
+      deleteLinkUseCase: DeleteLinkUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
       link: payload.link
     )
 
