@@ -20,7 +20,7 @@ final class LinkRepositoryImpl: LinkRepository {
     self.networking = networking
   }
 
-  func createLink(linkBookId: String, title: String, url: String, thumbnailURL: String?, tags: [String]) -> Single<Void> {
+  func createLink(linkBookId: String, title: String, url: String, thumbnailURL: String?, tags: [String]) -> Single<Link> {
     let target = LinkAPI
       .createLink(.init(
         linkBookId: linkBookId,
@@ -31,7 +31,8 @@ final class LinkRepositoryImpl: LinkRepository {
       ))
 
     return networking.request(target: target)
-      .map { _ in }
+      .map(LinkDTO.self)
+      .map { $0.toDomain() }
   }
 
   func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]> {
@@ -48,5 +49,27 @@ final class LinkRepositoryImpl: LinkRepository {
     return networking.request(target: target)
       .map([LinkDTO].self)
       .map { $0.map { dtos in dtos.toDomain() } }
+  }
+
+  func deleteLink(id: String) -> Single<Void> {
+    let target = LinkAPI.deleteLink(id: id)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
+
+  func updateLink(id: String, title: String, url: String, thumbnailURL: String?, tags: [String]) -> Single<Link> {
+    let target = LinkAPI.updateLink(id: id, .init(title: title, url: url, thumbnailURL: thumbnailURL, tags: tags))
+
+    return networking.request(target: target)
+      .map(LinkDTO.self)
+      .map { $0.toDomain() }
+  }
+
+  func updateLink(id: String, folderID: String) -> Single<Void> {
+    let target = LinkAPI.updateLinkWithFolderID(id: id, folderID: folderID)
+
+    return networking.request(target: target)
+      .map { _ in }
   }
 }

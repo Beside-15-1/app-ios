@@ -136,7 +136,7 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconLeft.image.withTintColor(.staticBlack),
+      image: DesignSystemAsset.iconPop.image.withTintColor(.staticBlack),
       style: .plain,
       target: self,
       action: #selector(pop)

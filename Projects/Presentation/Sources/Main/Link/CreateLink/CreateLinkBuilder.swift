@@ -32,7 +32,12 @@ final class CreateLinkBuilder: CreateLinkBuildable {
       createLinkUseCase: CreateLinkUseCaseImpl(
         linkRepository: dependency.linkRepository
       ),
-      pasteboard: UIPasteboard.general
+
+      updateLinkUseCase: UpdateLinkUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
+      pasteboard: UIPasteboard.general,
+      link: payload.link
     )
 
     let viewController = CreateLinkViewController(

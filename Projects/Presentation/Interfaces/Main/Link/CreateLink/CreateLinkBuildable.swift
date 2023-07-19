@@ -14,10 +14,13 @@ public protocol CreateLinkBuildable {
 public struct CreateLinkPayload {
 
   public let delegate: CreateLinkDelegate?
+  public let link: Link?
 
   public init(
-    delegate: CreateLinkDelegate?
+    delegate: CreateLinkDelegate?,
+    link: Link?
   ) {
     self.delegate = delegate
+    self.link = link
   }
 }

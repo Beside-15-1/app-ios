@@ -16,7 +16,7 @@ public protocol CreateLinkUseCase {
     url: String,
     thumbnailURL: String?,
     tags: [String]
-  ) -> Single<Void>
+  ) -> Single<Link>
 }
 
 public class CreateLinkUseCaseImpl: CreateLinkUseCase {
@@ -28,7 +28,7 @@ public class CreateLinkUseCaseImpl: CreateLinkUseCase {
   }
 
   public func execute(linkBookId: String, title: String, url: String, thumbnailURL: String?, tags: [String])
-    -> Single<Void> {
+    -> Single<Link> {
     linkRepository.createLink(
       linkBookId: linkBookId,
       title: title,

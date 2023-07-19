@@ -28,6 +28,8 @@ public final class PresentationAssembly: Assembly {
       registerFolderSortBuilder,
       registerFolderDetailBuilder,
       registerLinkSortBuilder,
+      registerLinkDetailBuilder,
+      registerMoveFolderBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -158,7 +160,8 @@ public final class PresentationAssembly: Assembly {
     container.register(FolderDetailBuildable.self) { r in
       FolderDetailBuilder(dependency: .init(
         linkRepository: r.resolve(),
-        linkSortBuilder: r.resolve()
+        linkSortBuilder: r.resolve(),
+        linkDetailBuilder: r.resolve()
       ))
     }
   }
@@ -166,6 +169,24 @@ public final class PresentationAssembly: Assembly {
   private func registerLinkSortBuilder(container: Container) {
     container.register(LinkSortBuildable.self) { r in
       LinkSortBuilder(dependency: .init())
+    }
+  }
+
+  private func registerLinkDetailBuilder(container: Container) {
+    container.register(LinkDetailBuildable.self) { r in
+      LinkDetailBuilder(dependency: .init(
+        linkRepository: r.resolve(),
+        createLinkBuilder: r.resolve(),
+        moveFolderBuilder: r.resolve()
+      ))
+    }
+  }
+
+  private func registerMoveFolderBuilder(container: Container) {
+    container.register(MoveFolderBuildable.self) { r in
+      MoveFolderBuilder(dependency: .init(
+        folderRepository: r.resolve()
+      ))
     }
   }
 }

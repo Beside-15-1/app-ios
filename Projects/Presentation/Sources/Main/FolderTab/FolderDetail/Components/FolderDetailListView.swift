@@ -49,6 +49,8 @@ class FolderDetailListView: UIView {
     $0.textAlignment = .center
   }
 
+  let refreshControl = UIRefreshControl()
+
 
   // MARK: Properties
 
@@ -155,6 +157,7 @@ class FolderDetailListView: UIView {
 
   private func defineLayout() {
     [sortButton, emptyLabel, collectionView].forEach { addSubview($0) }
+    collectionView.addSubview(refreshControl)
 
     sortButton.snp.makeConstraints {
       $0.right.equalToSuperview()

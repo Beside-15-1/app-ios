@@ -12,4 +12,10 @@ public struct Thumbnail: Hashable {
   public var title: String?
   public let url: String?
   public let imageURL: String?
+
+  public init(title: String? = nil, url: String?, imageURL: String?) {
+    self.title = title
+    self.url = url
+    self.imageURL = imageURL
+  }
 }

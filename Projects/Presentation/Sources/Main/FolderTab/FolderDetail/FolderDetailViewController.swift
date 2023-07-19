@@ -27,17 +27,20 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let linkSortBuilder: LinkSortBuildable
+  private let linkDetailBuilder: LinkDetailBuildable
 
 
   // MARK: Initializing
 
   init(
     reactor: FolderDetailViewReactor,
-    linkSortBuilder: LinkSortBuildable
+    linkSortBuilder: LinkSortBuildable,
+    linkDetailBuilder: LinkDetailBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.linkSortBuilder = linkSortBuilder
+    self.linkDetailBuilder = linkDetailBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -51,20 +54,22 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.listView.delegate = self
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
     reactor?.action.onNext(.viewDidLoad)
-
-    configureNavigationBar()
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
     navigationController?.isNavigationBarHidden = false
+
+    configureNavigationBar()
   }
 
 
@@ -110,6 +115,18 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.sortButton.text = type.title
       }
       .disposed(by: disposeBag)
+
+    contentView.listView.refreshControl.rx.controlEvent(.valueChanged)
+      .map { Reactor.Action.refresh }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$refreshEnd)
+      .asObservable()
+      .subscribe(with: self) { `self`, _ in
+        self.contentView.listView.refreshControl.endRefreshing()
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {
@@ -152,7 +169,7 @@ extension FolderDetailViewController {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconLeft.image.withTintColor(.white),
+      image: DesignSystemAsset.iconPop.image.withTintColor(.white),
       style: .plain,
       target: self,
       action: #selector(pop)
@@ -181,5 +198,20 @@ extension FolderDetailViewController {
 extension FolderDetailViewController: LinkSortDelegate {
   func linkSortListItemTapped(type: LinkSortingType) {
     reactor?.action.onNext(.updateSort(type))
+  }
+}
+
+
+extension FolderDetailViewController: FolderDetailListViewDelegate {
+  func listViewItemDidTapped(at row: Int) {
+    guard let reactor else { return }
+
+    let linkDetail = linkDetailBuilder.build(payload: .init(link: reactor.currentState.linkList[row]))
+
+    self.navigationController?.pushViewController(linkDetail, animated: true)
+  }
+
+  func listViewMoreButtonTapped(id: String) {
+
   }
 }

@@ -32,6 +32,10 @@ class MyFolderCell: UICollectionViewCell {
 
   // MARK: UI
 
+  private let shadowView = UIView().then {
+    $0.clipsToBounds = false
+  }
+
   private let folderCover = UIView().then {
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
@@ -116,27 +120,36 @@ class MyFolderCell: UICollectionViewCell {
   // MARK: Layout
 
   private func setFolderCorverView() {
-    // 코너 반경 설정
-    folderCover.layer.cornerRadius = 8
-
     // 그림자 설정
-    folderCover.layer.shadowColor = UIColor.black.cgColor
-    folderCover.layer.shadowOpacity = 0.1
-    folderCover.layer.shadowOffset = CGSize(width: 0, height: 4)
-    folderCover.layer.shadowRadius = 2
+    shadowView.layer.cornerRadius = 8
+    shadowView.layer.shadowColor = UIColor.black.cgColor
+    shadowView.layer.shadowOpacity = 0.1
+    shadowView.layer.shadowOffset = CGSize(width: 0, height: 4)
+    shadowView.layer.shadowRadius = 2
 
     // 그림자 경로 설정 (코너 반경을 고려)
-    folderCover.layer.shadowPath = UIBezierPath(
-      roundedRect: contentView.bounds,
-      cornerRadius: contentView.layer.cornerRadius
+    let bounds = CGRect(
+      x: contentView.bounds.minX,
+      y: contentView.bounds.minY,
+      width: contentView.bounds.width,
+      height: contentView.bounds.height - 26
+    )
+
+    shadowView.layer.shadowPath = UIBezierPath(
+      roundedRect: bounds,
+      cornerRadius: shadowView.layer.cornerRadius
     ).cgPath
   }
 
   private func defineLayout() {
-    [folderCover, illust, folderTitle, verticalBar, buttonContainer, countLabel].forEach {
+    [shadowView, folderCover, illust, folderTitle, verticalBar, buttonContainer, countLabel].forEach {
       contentView.addSubview($0)
     }
     buttonContainer.addSubview(moreButton)
+
+    shadowView.snp.makeConstraints {
+      $0.edges.equalTo(folderCover)
+    }
 
     folderCover.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()

@@ -12,6 +12,7 @@ import RxSwift
 import Toaster
 
 import DesignSystem
+import Domain
 import PBLog
 import PresentationInterface
 
@@ -81,7 +82,8 @@ final class HomeViewController: UIViewController, StoryboardView {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: self
+          delegate: self,
+          link: nil
         ))
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
@@ -91,7 +93,8 @@ final class HomeViewController: UIViewController, StoryboardView {
     contentView.homeLinkView.newLinkButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: self
+          delegate: self,
+          link: nil
         ))
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
@@ -113,12 +116,12 @@ final class HomeViewController: UIViewController, StoryboardView {
           )
         )
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
           self.tabBarController?.selectedViewController?
             .navigationController?.pushViewController(
               folderDetail, animated: true
             )
-        })
+        }
       }
       .disposed(by: disposeBag)
   }
@@ -163,19 +166,19 @@ extension HomeViewController: HomeFolderViewDelegate {
     // 라우팅
     guard let folder = reactor?.currentState.folderList[row] else { return }
 
-    let folderDetail = self.folderDetailBuilder.build(
+    let folderDetail = folderDetailBuilder.build(
       payload: .init(
         folderList: reactor?.currentState.folderList ?? [],
         selectedFolder: folder
       )
     )
 
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 , execute: {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
       self.tabBarController?.selectedViewController?
         .navigationController?.pushViewController(
           folderDetail, animated: true
         )
-    })
+    }
   }
 }
 
@@ -190,7 +193,7 @@ extension HomeViewController: CreateFolderDelegate {
 
 
 extension HomeViewController: CreateLinkDelegate {
-  func createLinkSucceed() {
+  func createLinkSucceed(link: Link) {
     reactor?.action.onNext(.createLinkSucceed)
 
     PBToast(content: "링크가 저장되었습니다")
