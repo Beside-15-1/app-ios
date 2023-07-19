@@ -87,15 +87,15 @@ final class FolderDetailViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       if currentState.selectedFolder.id == Folder.all().id {
-        return fetchAllLinks(sort: currentState.sortingType, order: .asc)
+        return fetchAllLinks(sort: currentState.sortingType, order: .desc)
       } else {
-        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: .asc)
+        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: .desc)
       }
 
     case .selectTab(let tab):
       let selectedFolder = currentState.folderList.first(where: { $0.title == tab }) ?? .all()
 
-      let order: SortingOrderType = currentState.sortingType == .lastedAt ? .desc : .asc
+      let order: SortingOrderType = currentState.sortingType == .lastedAt ? .asc : .desc
 
       if selectedFolder.title == Folder.all().title {
         return .concat([
@@ -188,7 +188,7 @@ extension FolderDetailViewReactor {
   }
 
   private func updateSort(type: LinkSortingType) -> Observable<Mutation> {
-    let order: SortingOrderType = type == .lastedAt ? .desc : .asc
+    let order: SortingOrderType = type == .lastedAt ? .asc : .desc
 
     if currentState.selectedFolder.title == Folder.all().title {
       return .concat([
