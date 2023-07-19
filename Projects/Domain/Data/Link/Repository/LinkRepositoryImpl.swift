@@ -65,4 +65,11 @@ final class LinkRepositoryImpl: LinkRepository {
       .map(LinkDTO.self)
       .map { $0.toDomain() }
   }
+
+  func updateLink(id: String, folderID: String) -> Single<Void> {
+    let target = LinkAPI.updateLinkWithFolderID(id: id, folderID: folderID)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
 }

@@ -9,6 +9,7 @@ import UIKit
 
 import ReactorKit
 import RxSwift
+import PanModal
 
 import DesignSystem
 import PresentationInterface
@@ -26,16 +27,19 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let createLinkBuilder: CreateLinkBuildable
+  private let moveFolderBuilder: MoveFolderBuildable
 
   // MARK: Initializing
 
   init(
     reactor: LinkDetailViewReactor,
-    createLinkBuilder: CreateLinkBuildable
+    createLinkBuilder: CreateLinkBuildable,
+    moveFolderBuilder: MoveFolderBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createLinkBuilder = createLinkBuilder
+    self.moveFolderBuilder = moveFolderBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -110,6 +114,17 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         self.present(createLink, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.bottomView.moveButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let moveFolder = self.moveFolderBuilder.build(payload: .init(
+          delegate: self,
+          folderID: reactor.currentState.link.linkBookId)
+        ) as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(moveFolder)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindRoute(with reactor: LinkDetailViewReactor) {
@@ -172,5 +187,15 @@ extension LinkDetailViewController {
 extension LinkDetailViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     contentView.configure(withLink: link)
+  }
+}
+
+
+// MARK: MoveFolderDelegate
+
+extension LinkDetailViewController: MoveFolderDelegate {
+  func moveFolderSuccess(folder: Folder) {
+    reactor?.action.onNext(.moveFolder(folder))
+    contentView.configureFolder(withFolder: folder)
   }
 }

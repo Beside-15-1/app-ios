@@ -5,8 +5,8 @@
 //  Created by 박천송 on 2023/07/18.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
@@ -14,6 +14,7 @@ import PresentationInterface
 struct LinkDetailDependency {
   let linkRepository: LinkRepository
   let createLinkBuilder: CreateLinkBuildable
+  let moveFolderBuilder: MoveFolderBuildable
 }
 
 final class LinkDetailBuilder: LinkDetailBuildable {
@@ -29,12 +30,16 @@ final class LinkDetailBuilder: LinkDetailBuildable {
       deleteLinkUseCase: DeleteLinkUseCaseImpl(
         linkRepository: dependency.linkRepository
       ),
+      updateLinkWithFolderUseCase: UpdateLinkWithFolderUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
       link: payload.link
     )
 
     let viewController = LinkDetailViewController(
       reactor: reactor,
-      createLinkBuilder: dependency.createLinkBuilder
+      createLinkBuilder: dependency.createLinkBuilder,
+      moveFolderBuilder: dependency.moveFolderBuilder
     )
 
     return viewController

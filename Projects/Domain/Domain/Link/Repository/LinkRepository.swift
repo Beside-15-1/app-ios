@@ -28,4 +28,9 @@ public protocol LinkRepository {
     thumbnailURL: String?,
     tags: [String]
   ) -> Single<Link>
+
+  func updateLink(
+    id: String,
+    folderID: String
+  ) -> Single<Void>
 }

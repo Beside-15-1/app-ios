@@ -17,6 +17,7 @@ enum LinkAPI {
   case fetchLinksInLinkBook(String, LinkSortingType, SortingOrderType)
   case deleteLink(id: String)
   case updateLink(id: String, UpdateLinkRequest)
+  case updateLinkWithFolderID(id: String, folderID: String)
 }
 
 extension LinkAPI: BaseTargetType {
@@ -37,6 +38,9 @@ extension LinkAPI: BaseTargetType {
 
     case .updateLink(let id, _):
       return "links/\(id)"
+
+    case .updateLinkWithFolderID(let id, let folderID):
+      return "links/\(id)/link-book-id/\(folderID)"
     }
   }
 
@@ -55,6 +59,9 @@ extension LinkAPI: BaseTargetType {
       return .delete
 
     case .updateLink:
+      return .put
+
+    case .updateLinkWithFolderID:
       return .put
     }
   }
@@ -87,6 +94,9 @@ extension LinkAPI: BaseTargetType {
 
     case .updateLink(_, let request):
       return .requestJSONEncodable(request)
+
+    case .updateLinkWithFolderID:
+      return .requestPlain
     }
   }
 }

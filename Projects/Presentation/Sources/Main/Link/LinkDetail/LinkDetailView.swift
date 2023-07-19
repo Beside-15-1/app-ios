@@ -89,6 +89,9 @@ final class LinkDetailView: UIView {
     tagView.applyTag(by: link.tags)
   }
 
+  func configureFolder(withFolder folder: Folder) {
+    folderTitleLabel.attributedText = folder.title.styled(font: .captionRegular, color: .gray600)
+  }
 
 
   // MARK: Layout
