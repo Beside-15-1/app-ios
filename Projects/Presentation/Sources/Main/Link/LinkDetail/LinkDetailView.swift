@@ -17,7 +17,11 @@ final class LinkDetailView: UIView {
 
   // MARK: UI
 
+  private let folderTitleContainer = UIView()
   private let folderTitleLabel = UILabel()
+  private let folderTitleIcon = UIImageView().then {
+    $0.image = DesignSystemAsset.iconFolderOpen.image.withTintColor(.gray600)
+  }
 
   private let thumbnail = UIImageView().then {
     $0.clipsToBounds = true
@@ -25,7 +29,11 @@ final class LinkDetailView: UIView {
     $0.contentMode = .scaleAspectFit
   }
 
+  private let urlContainer = UIControl()
   private let urlLabel = UILabel()
+  private let urlIcon = UIImageView().then {
+    $0.image = DesignSystemAsset.logoJoosumSmall.image.withTintColor(.gray600)
+  }
 
   private let linkTitleLabel = UILabel().then {
     $0.numberOfLines = 0
@@ -86,11 +94,23 @@ final class LinkDetailView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [folderTitleLabel, thumbnail, urlLabel, linkTitleLabel, dateLabel, tagView, bottomView].forEach { addSubview($0) }
+    [folderTitleContainer, thumbnail, urlContainer, linkTitleLabel, dateLabel, tagView, bottomView].forEach { addSubview($0) }
+    [folderTitleIcon, folderTitleLabel].forEach { folderTitleContainer.addSubview($0) }
+    [urlIcon, urlLabel].forEach { urlContainer.addSubview($0) }
 
-    folderTitleLabel.snp.makeConstraints {
+    folderTitleContainer.snp.makeConstraints {
       $0.top.equalTo(safeAreaLayoutGuide)
       $0.centerX.equalToSuperview()
+    }
+
+    folderTitleIcon.snp.makeConstraints {
+      $0.left.top.bottom.equalToSuperview()
+      $0.size.equalTo(16.0)
+    }
+
+    folderTitleLabel.snp.makeConstraints {
+      $0.right.centerY.equalToSuperview()
+      $0.left.equalTo(folderTitleIcon.snp.right).offset(4.0)
     }
 
     thumbnail.snp.makeConstraints {
@@ -99,9 +119,18 @@ final class LinkDetailView: UIView {
       $0.height.equalTo((UIScreen.main.bounds.width - 40) * 9.0 / 16.0)
     }
 
-    urlLabel.snp.makeConstraints {
+    urlContainer.snp.makeConstraints {
       $0.top.equalTo(thumbnail.snp.bottom).offset(8.0)
       $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    urlIcon.snp.makeConstraints {
+      $0.left.bottom.equalToSuperview()
+    }
+
+    urlLabel.snp.makeConstraints {
+      $0.top.bottom.right.equalToSuperview()
+      $0.left.equalTo(urlIcon.snp.right).offset(4.0)
     }
 
     linkTitleLabel.snp.makeConstraints {
