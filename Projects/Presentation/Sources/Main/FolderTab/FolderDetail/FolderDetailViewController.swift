@@ -27,17 +27,20 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let linkSortBuilder: LinkSortBuildable
+  private let linkDetailBuilder: LinkDetailBuildable
 
 
   // MARK: Initializing
 
   init(
     reactor: FolderDetailViewReactor,
-    linkSortBuilder: LinkSortBuildable
+    linkSortBuilder: LinkSortBuildable,
+    linkDetailBuilder: LinkDetailBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.linkSortBuilder = linkSortBuilder
+    self.linkDetailBuilder = linkDetailBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -51,6 +54,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.listView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -181,5 +186,20 @@ extension FolderDetailViewController {
 extension FolderDetailViewController: LinkSortDelegate {
   func linkSortListItemTapped(type: LinkSortingType) {
     reactor?.action.onNext(.updateSort(type))
+  }
+}
+
+
+extension FolderDetailViewController: FolderDetailListViewDelegate {
+  func listViewItemDidTapped(at row: Int) {
+    guard let reactor else { return }
+
+    let linkDetail = linkDetailBuilder.build(payload: .init(link: reactor.currentState.linkList[row]))
+
+    self.navigationController?.pushViewController(linkDetail, animated: true)
+  }
+
+  func listViewMoreButtonTapped(id: String) {
+
   }
 }

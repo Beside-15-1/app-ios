@@ -58,7 +58,19 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: LinkDetailViewReactor) {}
+  func bind(reactor: LinkDetailViewReactor) {
+    bindContent(with: reactor)
+  }
+
+  private func bindContent(with reactor: LinkDetailViewReactor) {
+    reactor.state.map(\.link)
+      .asObservable()
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, link in
+        self.contentView.configure(withLink: link)
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 
@@ -75,7 +87,7 @@ extension LinkDetailViewController {
     )
 
     let shareButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconShareOutline.image.withTintColor(.staticBlack),
+      image: DesignSystemAsset.iconUpload.image.withTintColor(.staticBlack),
       style: .plain,
       target: self,
       action: #selector(share)
@@ -88,7 +100,7 @@ extension LinkDetailViewController {
     navigationItem.title = "링크 상세정보"
 
     let attributes = [
-      NSAttributedString.Key.foregroundColor: UIColor.white,
+      NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
       NSAttributedString.Key.font: UIFont.defaultRegular,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes

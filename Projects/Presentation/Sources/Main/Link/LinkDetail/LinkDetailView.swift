@@ -22,6 +22,7 @@ final class LinkDetailView: UIView {
   private let thumbnail = UIImageView().then {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 8
+    $0.contentMode = .scaleAspectFit
   }
 
   private let urlLabel = UILabel()
@@ -56,7 +57,7 @@ final class LinkDetailView: UIView {
   func configure(withLink link: Link) {
     folderTitleLabel.attributedText = link.folderName.styled(font: .captionRegular, color: .gray600)
 
-    if let thumbnailURL = link.thumbnailURL {
+    if let thumbnailURL = link.thumbnailURL, !thumbnailURL.isEmpty {
       thumbnail.sd_setImage(with: URL(string: thumbnailURL))
     } else {
       thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
@@ -95,7 +96,7 @@ final class LinkDetailView: UIView {
     thumbnail.snp.makeConstraints {
       $0.top.equalTo(folderTitleLabel.snp.bottom).offset(24.0)
       $0.left.right.equalToSuperview().inset(20.0)
-      $0.height.equalTo(thumbnail.snp.width).multipliedBy(9/16)
+      $0.height.equalTo((UIScreen.main.bounds.width - 40) * 9.0 / 16.0)
     }
 
     urlLabel.snp.makeConstraints {

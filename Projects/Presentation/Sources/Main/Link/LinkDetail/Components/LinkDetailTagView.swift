@@ -54,7 +54,7 @@ class LinkDetailTagView: UIView {
   func applyTag(by tags: [String]) {
     var snapshot = NSDiffableDataSourceSnapshot<AddedTagSection, AddedTagItem>()
 
-    let items = tags.map { AddedTagItem(tag: $0, row: tags.firstIndex(of: $0) ?? 0) }
+    let items = tags.map { AddedTagItem(tag: "#\($0)", row: tags.firstIndex(of: $0) ?? 0) }
 
     snapshot.appendSections([.normal])
     snapshot.appendItems(items, toSection: .normal)
@@ -116,7 +116,7 @@ class LinkDetailTagView: UIView {
 
     collectionView.snp.makeConstraints {
       $0.left.right.bottom.equalToSuperview()
-      $0.top.equalTo(titleLabel.snp.bottom)
+      $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
     }
   }
 }

@@ -31,7 +31,6 @@ class LinkDetailBottomButton: UIControl {
 
   private let container = UIView().then {
     $0.isUserInteractionEnabled = false
-    $0.backgroundColor = .clear
   }
 
   private let icon = UIImageView()
@@ -80,6 +79,10 @@ class LinkDetailBottomButton: UIControl {
   private func defineLayout() {
     addSubview(container)
     [icon, text].forEach { container.addSubview($0) }
+
+    container.snp.makeConstraints {
+      $0.center.equalToSuperview()
+    }
 
     icon.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()

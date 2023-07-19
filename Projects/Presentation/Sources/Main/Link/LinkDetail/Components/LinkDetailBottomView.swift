@@ -20,6 +20,8 @@ class LinkDetailBottomView: UIView {
   private let stackView = UIStackView().then {
     $0.axis = .horizontal
     $0.distribution = .fillEqually
+    $0.layer.cornerRadius = 8
+    $0.clipsToBounds = true
   }
 
   let deleteButton = LinkDetailBottomButton().then {
@@ -40,6 +42,8 @@ class LinkDetailBottomView: UIView {
     super.init(frame: frame)
 
     self.backgroundColor = .gray100
+    self.layer.cornerRadius = 8
+    self.clipsToBounds = true
 
     defineLayout()
   }

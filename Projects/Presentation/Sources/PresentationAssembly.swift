@@ -159,7 +159,8 @@ public final class PresentationAssembly: Assembly {
     container.register(FolderDetailBuildable.self) { r in
       FolderDetailBuilder(dependency: .init(
         linkRepository: r.resolve(),
-        linkSortBuilder: r.resolve()
+        linkSortBuilder: r.resolve(),
+        linkDetailBuilder: r.resolve()
       ))
     }
   }

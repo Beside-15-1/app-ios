@@ -10,6 +10,8 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import Domain
+
 final class LinkDetailViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
@@ -18,7 +20,9 @@ final class LinkDetailViewReactor: Reactor {
 
   enum Mutation {}
 
-  struct State {}
+  struct State {
+    var link: Link
+  }
 
   // MARK: Properties
 
@@ -29,9 +33,14 @@ final class LinkDetailViewReactor: Reactor {
 
   // MARK: initializing
 
-  init() {
+  init(
+    link: Link
+  ) {
     defer { _ = self.state }
-    initialState = State()
+
+    self.initialState = State(
+      link: link
+    )
   }
 
   deinit {

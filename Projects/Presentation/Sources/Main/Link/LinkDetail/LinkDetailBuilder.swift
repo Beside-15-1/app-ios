@@ -22,7 +22,9 @@ final class LinkDetailBuilder: LinkDetailBuildable {
   }
 
   func build(payload: LinkDetailPayload) -> UIViewController {
-    let reactor = LinkDetailViewReactor()
+    let reactor = LinkDetailViewReactor(
+      link: payload.link
+    )
 
     let viewController = LinkDetailViewController(
       reactor: reactor
