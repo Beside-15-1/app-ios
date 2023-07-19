@@ -12,10 +12,8 @@ final class CreateLinkView: UIView {
     $0.backgroundColor = .paperGray
   }
 
-  private let titleLabel = UILabel().then {
-    $0.text = "링크 저장"
-    $0.textColor = .staticBlack
-    $0.font = .defaultRegular
+  let titleLabel = UILabel().then {
+    $0.attributedText = "링크 저장".styled(font: .defaultRegular, color: .staticBlack)
   }
 
   let closeButton = UIButton().then {

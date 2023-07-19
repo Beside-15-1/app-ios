@@ -7,6 +7,8 @@
 
 import Foundation
 
+import Domain
+
 public protocol CreateLinkDelegate: AnyObject {
-  func createLinkSucceed()
+  func createLinkSucceed(link: Link)
 }

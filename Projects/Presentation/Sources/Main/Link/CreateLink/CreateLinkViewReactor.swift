@@ -25,10 +25,11 @@ final class CreateLinkViewReactor: Reactor {
     case setFolder(Folder)
     case setTag([String])
     case setFolderList([Folder])
-    case setSucceed
+    case setSucceed(Link)
   }
 
   struct State {
+    var link: Link?
     var thumbnail: Thumbnail?
     var folder: Folder?
     var tags: [String] = []
@@ -45,7 +46,7 @@ final class CreateLinkViewReactor: Reactor {
     }
 
     @Pulse var linkError: String?
-    var isSucceed = false
+    var isSucceed: Link?
   }
 
   // MARK: Properties
@@ -53,6 +54,7 @@ final class CreateLinkViewReactor: Reactor {
   private let fetchThumbnailUseCase: FetchThumbnailUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let createLinkUseCase: CreateLinkUseCase
+  private let updateLinkUseCase: UpdateLinkUseCase
 
   private let pasteboard: UIPasteboard
 
@@ -68,14 +70,22 @@ final class CreateLinkViewReactor: Reactor {
     fetchThumbnailUseCase: FetchThumbnailUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase,
     createLinkUseCase: CreateLinkUseCase,
-    pasteboard: UIPasteboard
+    updateLinkUseCase: UpdateLinkUseCase,
+    pasteboard: UIPasteboard,
+    link: Link?
   ) {
     defer { _ = self.state }
     self.fetchThumbnailUseCase = fetchThumbnailUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.createLinkUseCase = createLinkUseCase
+    self.updateLinkUseCase = updateLinkUseCase
     self.pasteboard = pasteboard
-    self.initialState = State()
+
+    self.initialState = State(
+      link: link,
+      thumbnail: link == nil ? nil : Thumbnail(title: link?.title, url: link?.url, imageURL: link?.thumbnailURL),
+      tags: link == nil ? [] : link?.tags ?? []
+    )
   }
 
   deinit {
@@ -139,8 +149,8 @@ final class CreateLinkViewReactor: Reactor {
     case .setFolderList(let list):
       newState.folderList = list
 
-    case .setSucceed:
-      newState.isSucceed = true
+    case .setSucceed(let link):
+      newState.isSucceed = link
     }
 
     return newState
@@ -182,15 +192,30 @@ extension CreateLinkViewReactor {
       return .empty()
     }
 
-    return createLinkUseCase.execute(
-      linkBookId: folder.id,
-      title: thumbnail.title ?? "",
-      url: thumbnail.url?.lowercased() ?? "",
-      thumbnailURL: thumbnail.imageURL,
-      tags: currentState.tags
-    )
-    .asObservable()
-    .map { _ in Mutation.setSucceed }
+    if var link = currentState.link {
+      // 편집
+      return updateLinkUseCase.execute(
+        id: link.id,
+        title: thumbnail.title ?? "",
+        url: thumbnail.url?.lowercased() ?? "",
+        thumbnailURL: thumbnail.imageURL,
+        tags: currentState.tags
+      )
+      .asObservable()
+      .map { Mutation.setSucceed($0) }
+
+    } else {
+      // 생성
+      return createLinkUseCase.execute(
+        linkBookId: folder.id,
+        title: thumbnail.title ?? "",
+        url: thumbnail.url?.lowercased() ?? "",
+        thumbnailURL: thumbnail.imageURL,
+        tags: currentState.tags
+      )
+      .asObservable()
+      .map { Mutation.setSucceed($0) }
+    }
   }
 
   private func validateClipboard() -> Observable<Mutation> {

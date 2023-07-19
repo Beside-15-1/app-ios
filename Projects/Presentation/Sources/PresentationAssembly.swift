@@ -174,7 +174,8 @@ public final class PresentationAssembly: Assembly {
   private func registerLinkDetailBuilder(container: Container) {
     container.register(LinkDetailBuildable.self) { r in
       LinkDetailBuilder(dependency: .init(
-        linkRepository: r.resolve()
+        linkRepository: r.resolve(),
+        createLinkBuilder: r.resolve()
       ))
     }
   }

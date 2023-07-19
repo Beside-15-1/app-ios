@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct LinkDetailDependency {
   let linkRepository: LinkRepository
+  let createLinkBuilder: CreateLinkBuildable
 }
 
 final class LinkDetailBuilder: LinkDetailBuildable {
@@ -32,7 +33,8 @@ final class LinkDetailBuilder: LinkDetailBuildable {
     )
 
     let viewController = LinkDetailViewController(
-      reactor: reactor
+      reactor: reactor,
+      createLinkBuilder: dependency.createLinkBuilder
     )
 
     return viewController

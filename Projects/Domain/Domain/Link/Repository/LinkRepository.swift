@@ -16,9 +16,16 @@ public protocol LinkRepository {
     url: String,
     thumbnailURL: String?,
     tags: [String]
-  ) -> Single<Void>
+  ) -> Single<Link>
 
   func fetchAllLinks(sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
   func fetchLinksInLinkBook(linkBookID: String, sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]>
   func deleteLink(id: String) -> Single<Void>
+  func updateLink(
+    id: String,
+    title: String,
+    url: String,
+    thumbnailURL: String?,
+    tags: [String]
+  ) -> Single<Link>
 }

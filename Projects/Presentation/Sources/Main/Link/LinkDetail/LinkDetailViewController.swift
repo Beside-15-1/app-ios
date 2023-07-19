@@ -11,7 +11,8 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
-
+import PresentationInterface
+import Domain
 
 final class LinkDetailViewController: UIViewController, StoryboardView {
 
@@ -24,11 +25,18 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let createLinkBuilder: CreateLinkBuildable
 
   // MARK: Initializing
 
-  init(reactor: LinkDetailViewReactor) {
+  init(
+    reactor: LinkDetailViewReactor,
+    createLinkBuilder: CreateLinkBuildable
+  ) {
     defer { self.reactor = reactor }
+
+    self.createLinkBuilder = createLinkBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -80,12 +88,26 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         PBDialog(
           title: "링크를 삭제하시겠어요?",
           content: "삭제한 링크는 다시 되돌릴 수 없어요",
-          from: self)
+          from: self
+        )
         .addAction(content: "취소", priority: .secondary, action: nil)
         .addAction(content: "삭제", priority: .primary, action: {
           reactor.action.onNext(.deleteButtonTapped)
         })
         .show()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.bottomView.editButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let createLink = self.createLinkBuilder.build(payload: .init(
+          delegate: self,
+          link: reactor.currentState.link)
+        ).then {
+          $0.modalPresentationStyle = .overFullScreen
+        }
+
+        self.present(createLink, animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -142,4 +164,13 @@ extension LinkDetailViewController {
 
   @objc
   private func share() {}
+}
+
+
+// MARK: CreateLinkDelegate
+
+extension LinkDetailViewController: CreateLinkDelegate {
+  func createLinkSucceed(link: Link) {
+
+  }
 }

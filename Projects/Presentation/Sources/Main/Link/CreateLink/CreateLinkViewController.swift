@@ -137,6 +137,14 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   }
 
   private func bindContent(with reactor: CreateLinkViewReactor) {
+    reactor.state.compactMap(\.link)
+      .distinctUntilChanged()
+      .asObservable()
+      .subscribe(with :self) { `self`, link in
+        self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .staticBlack)
+      }
+      .disposed(by: disposeBag)
+
     reactor.state.compactMap(\.thumbnail)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, thumbnail in
@@ -179,13 +187,12 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   }
 
   private func bindRoute(with reactor: CreateLinkViewReactor) {
-    reactor.state.map(\.isSucceed)
+    reactor.state.compactMap(\.isSucceed)
       .distinctUntilChanged()
-      .filter { $0 }
       .asObservable()
-      .subscribe(with: self) { `self`, _ in
+      .subscribe(with: self) { `self`, link in
         self.dismiss(animated: true) {
-          self.delegate?.createLinkSucceed()
+          self.delegate?.createLinkSucceed(link: link)
         }
       }
       .disposed(by: disposeBag)

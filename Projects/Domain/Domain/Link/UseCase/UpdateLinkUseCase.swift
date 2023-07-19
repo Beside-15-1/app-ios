@@ -1,17 +1,17 @@
 //
-//  CreateLinkUseCase.swift
+//  UpdateLinkUseCase.swift
 //  Domain
 //
-//  Created by 박천송 on 2023/07/07.
+//  Created by 박천송 on 2023/07/19.
 //
 
 import Foundation
 
 import RxSwift
 
-public protocol CreateLinkUseCase {
+public protocol UpdateLinkUseCase {
   func execute(
-    linkBookId: String,
+    id: String,
     title: String,
     url: String,
     thumbnailURL: String?,
@@ -19,7 +19,7 @@ public protocol CreateLinkUseCase {
   ) -> Single<Link>
 }
 
-public class CreateLinkUseCaseImpl: CreateLinkUseCase {
+public class UpdateLinkUseCaseImpl: UpdateLinkUseCase {
 
   private let linkRepository: LinkRepository
 
@@ -27,10 +27,10 @@ public class CreateLinkUseCaseImpl: CreateLinkUseCase {
     self.linkRepository = linkRepository
   }
 
-  public func execute(linkBookId: String, title: String, url: String, thumbnailURL: String?, tags: [String])
+  public func execute(id: String, title: String, url: String, thumbnailURL: String?, tags: [String])
     -> Single<Link> {
-    linkRepository.createLink(
-      linkBookId: linkBookId,
+    linkRepository.updateLink(
+      id: id,
       title: title,
       url: url,
       thumbnailURL: thumbnailURL,
