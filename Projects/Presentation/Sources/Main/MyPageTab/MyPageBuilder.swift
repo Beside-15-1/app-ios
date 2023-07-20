@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct MyPageDependency {}
+struct MyPageDependency {
+  let loginRepository: LoginRepository
+}
 
 final class MyPageBuilder: MyPageBuildable {
 
@@ -23,7 +25,11 @@ final class MyPageBuilder: MyPageBuildable {
   }
 
   func build(payload: MyPagePayload) -> UIViewController {
-    let reactor = MyPageViewReactor()
+    let reactor = MyPageViewReactor(
+      logoutUseCase: LogoutUseCaseImpl(
+        loginRepository: dependency.loginRepository
+      )
+    )
 
     let viewController = MyPageViewController(
       reactor: reactor,

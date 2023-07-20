@@ -29,8 +29,7 @@ final class MyPageView: UIView {
   private let settingStackView = UIStackView().then {
     $0.axis = .vertical
     $0.distribution = .equalSpacing
-    $0.backgroundColor = .gray400
-    $0.spacing = 1
+    $0.backgroundColor = .staticWhite
   }
 
   private let settingHeaderView = MyPageHeaderView().then {
@@ -48,8 +47,7 @@ final class MyPageView: UIView {
   private let accountStackView = UIStackView().then {
     $0.axis = .vertical
     $0.distribution = .equalSpacing
-    $0.backgroundColor = .gray400
-    $0.spacing = 1
+    $0.backgroundColor = .staticWhite
   }
 
   private let accountHeaderView = MyPageHeaderView().then {
@@ -63,8 +61,7 @@ final class MyPageView: UIView {
   let appInfoStackView = UIStackView().then {
     $0.axis = .vertical
     $0.distribution = .equalSpacing
-    $0.backgroundColor = .gray400
-    $0.spacing = 1
+    $0.backgroundColor = .staticWhite
   }
 
   private let appInfoHeaderView = MyPageHeaderView().then {

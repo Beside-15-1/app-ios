@@ -85,7 +85,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerMyPageBuilder(container: Container) {
     container.register(MyPageBuildable.self) { r in
-      MyPageBuilder(dependency: .init())
+      MyPageBuilder(dependency: .init(
+        loginRepository: r.resolve()
+      ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
     }

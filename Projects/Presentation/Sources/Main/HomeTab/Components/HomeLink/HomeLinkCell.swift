@@ -56,6 +56,12 @@ class HomeLinkCell: UICollectionViewCell {
     $0.leftIconImage = DesignSystemAsset.iconPlus.image
   }
 
+  override var isHighlighted: Bool {
+    didSet {
+      runHighlightAnimation()
+    }
+  }
+
 
   // MARK: Initializing
 
@@ -170,5 +176,17 @@ class HomeLinkCell: UICollectionViewCell {
 
   override func layoutSubviews() {
     setContentView()
+  }
+
+  // MARK: Animation
+
+  private func runHighlightAnimation() {
+    UIViewPropertyAnimator.runningPropertyAnimator(
+      withDuration: 0.1,
+      delay: 0,
+      animations: {
+        self.contentView.transform = self.isHighlighted ? .init(scaleX: 0.95, y: 0.95) : .identity
+      }
+    )
   }
 }

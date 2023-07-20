@@ -29,7 +29,9 @@ final class MyPageItemButton: UIControl {
 
   // MARK: UI
 
-  let container = UIView()
+  let container = UIView().then {
+    $0.isUserInteractionEnabled = false
+  }
 
   let leftIcon = UIImageView().then {
     $0.isHidden = true
@@ -108,7 +110,8 @@ final class MyPageItemButton: UIControl {
 
       addSubview(subTitleLabel)
       container.snp.remakeConstraints {
-        $0.edges.equalToSuperview()
+        $0.left.right.equalToSuperview().inset(20.0)
+        $0.top.bottom.equalToSuperview()
         $0.height.equalTo(90.0)
       }
       leftIcon.snp.remakeConstraints {
@@ -149,7 +152,7 @@ final class MyPageItemButton: UIControl {
     case .version:
       leftIcon.image = DesignSystemAsset.iconAlertCircleOutline.image.withTintColor(.gray900)
       titleLabel.attributedText = "버전 정보".styled(font: .defaultBold, color: .gray900)
-      versionLabel.attributedText = getVersionText()
+      getVersionText()
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       versionLabel.isHidden = false
@@ -166,6 +169,16 @@ final class MyPageItemButton: UIControl {
     setNeedsLayout()
   }
 
+
+//  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//    super.touchesBegan(touches, with: event)
+//    isHighlighted = true
+//  }
+//
+//  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//    super.touchesEnded(touches, with: event)
+//    isHighlighted = false
+//  }
 
   // MARK: Animation
 
@@ -191,7 +204,8 @@ final class MyPageItemButton: UIControl {
     }
 
     container.snp.makeConstraints {
-      $0.edges.equalToSuperview()
+      $0.left.right.equalToSuperview().inset(20.0)
+      $0.top.bottom.equalToSuperview()
       $0.height.equalTo(64.0)
     }
 
@@ -218,24 +232,45 @@ final class MyPageItemButton: UIControl {
     super.layoutSubviews()
   }
 
-  private func getVersionText() -> NSAttributedString {
-    guard let url = URL(string: "http://itunes.apple.com/lookup?bundleId=com.pinkboss.joosum"),
-          let data = try? Data(contentsOf: url),
-          let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-          let results = json["results"] as? [[String: Any]],
-          results.count > 0,
-          let appStoreVersion = results[0]["version"] as? String,
-          let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-    else {
+  private func getVersionText() {
+    // URL 생성
+    guard let url = URL(string: "http://itunes.apple.com/lookup?bundleId=com.pinkboss.joosum") else {
       let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-
-      return "현재\(currentVersion ?? "버전을 불러오는데 실패했어요")".styled(font: .bodyRegular, color: .gray700)
+      versionLabel.attributedText = "현재\(currentVersion ?? "버전을 불러오는데 실패했어요")"
+        .styled(font: .bodyRegular, color: .gray700)
         .underLine(target: currentVersion ?? "버전을 불러오는데 실패했어요")
+      return
     }
 
-    return "현재\(currentVersion) / 최신\(appStoreVersion)"
-      .styled(font: .bodyRegular, color: .gray600)
-      .underLine(target: currentVersion)
-      .color(color: .gray700, target: "현재\(currentVersion)")
+    // URLSession을 사용하여 비동기적으로 데이터를 가져오는 데이터 태스크 생성
+    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+      guard let data,
+            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+            let results = json["results"] as? [[String: Any]],
+            results.count > 0,
+            let appStoreVersion = results[0]["version"] as? String,
+            let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+
+        DispatchQueue.main.async {
+          self.versionLabel.attributedText = "현재\(currentVersion ?? "버전을 불러오는데 실패했어요")"
+            .styled(font: .bodyRegular, color: .gray700)
+            .underLine(target: currentVersion ?? "버전을 불러오는데 실패했어요")
+        }
+
+        return
+      }
+
+      // 가져온 데이터를 처리하고 버전을 비교합니다
+      DispatchQueue.main.async {
+        self.versionLabel.attributedText = "현재\(currentVersion) / 최신\(appStoreVersion)"
+          .styled(font: .bodyRegular, color: .gray600)
+          .underLine(target: currentVersion)
+          .color(color: .gray700, target: "현재\(currentVersion)")
+      }
+    }
+
+    // 데이터 태스크 실행
+    task.resume()
   }
 }

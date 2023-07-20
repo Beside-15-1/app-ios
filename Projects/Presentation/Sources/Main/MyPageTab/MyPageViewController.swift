@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 final class MyPageViewController: UIViewController, StoryboardView {
@@ -22,6 +23,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  private var transition: UIViewControllerAnimatedTransitioning?
 
   private let loginBuilder: LoginBuildable
 
@@ -52,10 +55,70 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    tabBarController?.navigationController?.delegate = self
   }
 
 
   // MARK: Binding
 
-  func bind(reactor: MyPageViewReactor) {}
+  func bind(reactor: MyPageViewReactor) {
+    bindButton(with: reactor)
+    bindRoute(with: reactor)
+  }
+
+  private func bindButton(with reactor: MyPageViewReactor) {
+    contentView.logoutButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        PBDialog(
+          title: "로그아웃",
+          content: "정말 로그아웃 하시겠어요?",
+          from: self
+        )
+        .addAction(content: "아니오", priority: .secondary, action: nil)
+        .addAction(content: "로그아웃", priority: .primary, action: {
+          self.reactor?.action.onNext(.logoutButtonTapped)
+        })
+        .show()
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindRoute(with reactor: MyPageViewReactor) {
+    reactor.state.map(\.isLogoutSuccess)
+      .asObservable()
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.loginBuilder.build(payload: .init())
+        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+        self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+        self.transition = nil
+      }
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$isLogoutFailure)
+      .filter { $0 }
+      .asObservable()
+      .subscribe(with: self) { `self`, _ in
+        PBToast(content: "로그아웃에 실패했어요 다시 시도해주세요")
+          .show()
+      }
+      .disposed(by: disposeBag)
+  }
 }
+
+
+// MARK: UINavigationControllerDelegate
+
+extension MyPageViewController: UINavigationControllerDelegate {
+  func navigationController(
+    _ navigationController: UINavigationController,
+    animationControllerFor operation: UINavigationController.Operation,
+    from fromVC: UIViewController,
+    to toVC: UIViewController
+  ) -> UIViewControllerAnimatedTransitioning? {
+    transition
+  }
+}
+
