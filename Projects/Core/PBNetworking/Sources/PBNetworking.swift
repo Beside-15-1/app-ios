@@ -41,7 +41,7 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
   func handleResponse() -> Single<Element> {
     flatMap { response in
 
-      PBLog.api(
+      Log.api(
         method: response.request?.method?.rawValue ?? "",
         response.request?.url,
         JSON(response.data))

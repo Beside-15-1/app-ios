@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBLog
 import PresentationInterface
 
 final class MyPageViewController: UIViewController, StoryboardView {
@@ -80,6 +81,15 @@ final class MyPageViewController: UIViewController, StoryboardView {
           self.reactor?.action.onNext(.logoutButtonTapped)
         })
         .show()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.themeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+          return
+        }
+        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
       }
       .disposed(by: disposeBag)
   }

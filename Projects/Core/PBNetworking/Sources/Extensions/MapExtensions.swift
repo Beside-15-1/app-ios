@@ -12,7 +12,7 @@ private extension Moya.Response {
     do {
       return try decoder.decode(D.self, from: data)
     } catch {
-      PBLog.error("\(D.self) 디코딩에 실패했어요")
+      Log.error("\(D.self) 디코딩에 실패했어요")
       throw PBNetworkError.decodingError
     }
   }

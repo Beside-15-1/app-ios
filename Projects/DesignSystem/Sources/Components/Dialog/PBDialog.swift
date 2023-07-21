@@ -64,7 +64,7 @@ public class PBDialog: UIViewController {
   }
 
   deinit {
-    PBLog.info("PBDialog Deinit")
+    Log.info("PBDialog Deinit")
   }
 
 

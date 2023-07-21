@@ -13,7 +13,7 @@ public enum PBLogLevel: String {
 
 // MARK: - PBLog
 
-public enum PBLog {
+public enum Log {
   public static func error(_ message: Any) {
     log(level: .error, message: message)
   }
@@ -56,6 +56,6 @@ public enum PBLog {
 
 extension Date {
   func toString() -> String {
-    PBLog.dateFormatter.string(from: self as Date)
+    Log.dateFormatter.string(from: self as Date)
   }
 }
