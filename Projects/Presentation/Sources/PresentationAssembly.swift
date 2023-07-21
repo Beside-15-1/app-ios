@@ -64,6 +64,7 @@ public final class PresentationAssembly: Assembly {
       HomeBuilder(dependency: .init(
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
+        loginRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
         createFolderBuilder: r.resolve(),
         folderDetailBuilder: r.resolve()

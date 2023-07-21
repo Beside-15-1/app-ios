@@ -6,6 +6,7 @@ import Swinject
 import Domain
 import PBAuthInterface
 import PBNetworking
+import PBUserDefaults
 
 // MARK: - DataAssembly
 

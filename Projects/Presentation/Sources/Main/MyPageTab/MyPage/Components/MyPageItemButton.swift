@@ -11,6 +11,7 @@ import SnapKit
 import Then
 
 import DesignSystem
+import PBUserDefaults
 
 enum MyPageItemType {
   case tag
@@ -100,9 +101,11 @@ final class MyPageItemButton: UIControl {
 
     case .sign:
       leftIcon.image = DesignSystemAsset.iconPersonOutline.image.withTintColor(.gray900)
-      titleLabel.attributedText = "테마 관리".styled(font: .defaultBold, color: .gray900)
+      titleLabel.attributedText = UserDefaultsManager.shared.social
+        .styled(font: .defaultBold, color: .gray900)
       rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
-      subTitleLabel.attributedText = "이메일".styled(font: .bodyRegular, color: .gray700)
+      subTitleLabel.attributedText = UserDefaultsManager.shared.email
+        .styled(font: .bodyRegular, color: .gray700)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false

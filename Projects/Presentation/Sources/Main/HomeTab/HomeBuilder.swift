@@ -5,8 +5,8 @@
 //  Created by 박천송 on 2023/07/05.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
@@ -14,6 +14,7 @@ import PresentationInterface
 struct HomeDependency {
   let folderRepository: FolderRepository
   let linkRepository: LinkRepository
+  let loginRepository: LoginRepository
   let createLinkBuilder: CreateLinkBuildable
   let createFolderBuilder: CreateFolderBuildable
   let folderDetailBuilder: FolderDetailBuildable
@@ -34,6 +35,9 @@ final class HomeBuilder: HomeBuildable {
       ),
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(
         folderRepository: dependency.folderRepository
+      ),
+      getMeUseCase: GetMeUsecaseImpl(
+        loginRepository: dependency.loginRepository
       )
     )
 

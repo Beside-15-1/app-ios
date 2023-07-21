@@ -30,4 +30,24 @@ final class PBAuthLocalDataSourceImpl: PBAuthLocalDataSource {
       keychain["refreshToken"] = newValue
     }
   }
+
+  var email: String? {
+    get {
+      keychain["email"]
+    }
+
+    set {
+      keychain["email"] = newValue
+    }
+  }
+
+  var social: String? {
+    get {
+      keychain["social"]
+    }
+
+    set {
+      keychain["social"] = newValue
+    }
+  }
 }

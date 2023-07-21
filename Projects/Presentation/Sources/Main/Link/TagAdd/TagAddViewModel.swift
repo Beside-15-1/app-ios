@@ -41,7 +41,7 @@ final class TagAddViewModel: TagAddViewModelOutput {
   var tagInputMode: TagInputMode = .input
   var editedTag: String? = nil
 
-  private let userDefaults: UserDefaultsRepository
+  private let userDefaults: UserDefaultsManager
 
   // MARK: Output
 
@@ -54,7 +54,7 @@ final class TagAddViewModel: TagAddViewModelOutput {
   // MARK: initializing
 
   init(
-    userDefaults: UserDefaultsRepository,
+    userDefaults: UserDefaultsManager,
     addedTagList: [String]
   ) {
     self.userDefaults = userDefaults

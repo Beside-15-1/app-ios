@@ -10,9 +10,11 @@ import Foundation
 
 public final class PBAuthLocalDataSourceMock: PBAuthLocalDataSource {
     public init() { }
-    public init(accessToken: String? = nil, refreshToken: String? = nil) {
+    public init(accessToken: String? = nil, refreshToken: String? = nil, social: String? = nil, email: String? = nil) {
         self.accessToken = accessToken
         self.refreshToken = refreshToken
+        self.social = social
+        self.email = email
     }
 
 
@@ -21,5 +23,11 @@ public final class PBAuthLocalDataSourceMock: PBAuthLocalDataSource {
 
     public private(set) var refreshTokenSetCallCount = 0
     public var refreshToken: String? = nil { didSet { refreshTokenSetCallCount += 1 } }
+
+    public private(set) var socialSetCallCount = 0
+    public var social: String? = nil { didSet { socialSetCallCount += 1 } }
+
+    public private(set) var emailSetCallCount = 0
+    public var email: String? = nil { didSet { emailSetCallCount += 1 } }
 }
 
