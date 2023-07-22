@@ -11,6 +11,7 @@ final class CreateFolderViewReactor: Reactor {
     case updateTitle(String)
     case updateBackgroundColor(Int)
     case updateTitleColor(Int)
+    case updateIllust(Int)
     case makeButtonTapped
   }
 
@@ -132,6 +133,18 @@ final class CreateFolderViewReactor: Reactor {
 
       var viewModel = currentState.viewModel
       viewModel.titleColor = currentState.titleColors[index]
+
+      return .concat([
+        .just(Mutation.updateFolder(folder)),
+        .just(Mutation.updateViewModel(viewModel)),
+      ])
+
+    case .updateIllust(let row):
+      var folder = currentState.folder
+      folder?.illustration = "illust\(row)"
+
+      var viewModel = currentState.viewModel
+      viewModel.illuste = "illust\(row)"
 
       return .concat([
         .just(Mutation.updateFolder(folder)),

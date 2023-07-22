@@ -30,6 +30,7 @@ final class HomeViewController: UIViewController, StoryboardView {
   private let createLinkBuilder: CreateLinkBuildable
   private let createFolderBuilder: CreateFolderBuildable
   private let folderDetailBuilder: FolderDetailBuildable
+  private let webBuilder: PBWebBuildable
 
   // MARK: Initializing
 
@@ -37,12 +38,14 @@ final class HomeViewController: UIViewController, StoryboardView {
     reactor: HomeViewReactor,
     createLinkBuilder: CreateLinkBuildable,
     createFolderBuilder: CreateFolderBuildable,
-    folderDetailBuilder: FolderDetailBuildable
+    folderDetailBuilder: FolderDetailBuildable,
+    webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
     self.createLinkBuilder = createLinkBuilder
     self.createFolderBuilder = createFolderBuilder
     self.folderDetailBuilder = folderDetailBuilder
+    self.webBuilder = webBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -57,6 +60,7 @@ final class HomeViewController: UIViewController, StoryboardView {
     view = contentView
 
     contentView.homeFolderView.delegate = self
+    contentView.homeLinkView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -198,5 +202,35 @@ extension HomeViewController: CreateLinkDelegate {
 
     PBToast(content: "링크가 저장되었습니다")
       .show()
+  }
+}
+
+
+extension HomeViewController: HomeLinkViewDelegate {
+  func homeLinkView(_ homeLinkView: HomeLinkView, didSelectItemAt row: Int) {
+    guard let reactor else { return }
+    guard row < reactor.currentState.folderList.count else {
+      let folderDetail = folderDetailBuilder.build(
+        payload: .init(
+          folderList: reactor.currentState.folderList,
+          selectedFolder: .all()
+        )
+      )
+
+      tabBarController?.selectedViewController?
+        .navigationController?.pushViewController(
+          folderDetail, animated: true
+        )
+      return
+    }
+
+    guard let url = URL(string: reactor.currentState.linkList[row].url) else {
+      return
+    }
+
+    let web = webBuilder.build(payload: .init(url: url))
+    web.modalPresentationStyle = .popover
+
+    present(web, animated: true)
   }
 }

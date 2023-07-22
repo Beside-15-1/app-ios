@@ -6,7 +6,9 @@ import PresentationInterface
 
 // MARK: - TermsOfUseDependency
 
-struct TermsOfUseDependency {}
+struct TermsOfUseDependency {
+  let webBuilder: PBWebBuildable
+}
 
 // MARK: - TermsOfUseBuilder
 
@@ -21,7 +23,8 @@ final class TermsOfUseBuilder: TermsOfUseBuildable {
     let viewModel = TermsOfUseViewModel()
 
     let viewController = TermsOfUseViewController(
-      viewModel: viewModel
+      viewModel: viewModel,
+      webBuilder: dependency.webBuilder
     ).then {
       $0.delegate = payload.delegate
     }

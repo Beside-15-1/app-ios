@@ -5,8 +5,8 @@
 //  Created by 박천송 on 2023/07/05.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
@@ -14,9 +14,11 @@ import PresentationInterface
 struct HomeDependency {
   let folderRepository: FolderRepository
   let linkRepository: LinkRepository
+  let loginRepository: LoginRepository
   let createLinkBuilder: CreateLinkBuildable
   let createFolderBuilder: CreateFolderBuildable
   let folderDetailBuilder: FolderDetailBuildable
+  let webBuilder: PBWebBuildable
 }
 
 final class HomeBuilder: HomeBuildable {
@@ -34,6 +36,9 @@ final class HomeBuilder: HomeBuildable {
       ),
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(
         folderRepository: dependency.folderRepository
+      ),
+      getMeUseCase: GetMeUsecaseImpl(
+        loginRepository: dependency.loginRepository
       )
     )
 
@@ -41,7 +46,8 @@ final class HomeBuilder: HomeBuildable {
       reactor: reactor,
       createLinkBuilder: dependency.createLinkBuilder,
       createFolderBuilder: dependency.createFolderBuilder,
-      folderDetailBuilder: dependency.folderDetailBuilder
+      folderDetailBuilder: dependency.folderDetailBuilder,
+      webBuilder: dependency.webBuilder
     )
 
     return viewController

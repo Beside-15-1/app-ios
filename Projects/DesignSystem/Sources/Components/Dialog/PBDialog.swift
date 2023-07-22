@@ -55,6 +55,8 @@ public class PBDialog: UIViewController {
   ) {
     titleLabel.attributedText = title.styled(font: .defaultSemiBold, color: .staticBlack)
     contentLabel.attributedText = content.styled(font: .defaultRegular, color: .staticBlack)
+    titleLabel.textAlignment = .center
+    contentLabel.textAlignment = .center
     self.viewController = viewController
     super.init(nibName: nil, bundle: nil)
   }
@@ -64,7 +66,7 @@ public class PBDialog: UIViewController {
   }
 
   deinit {
-    PBLog.info("PBDialog Deinit")
+    Log.info("PBDialog Deinit")
   }
 
 

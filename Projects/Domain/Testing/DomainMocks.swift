@@ -94,6 +94,16 @@ public final class LoginRepositoryMock: LoginRepository {
         }
         fatalError("requestSignUpHandler returns can't have a default value thus its handler must be set")
     }
+
+    public private(set) var getMeCallCount = 0
+    public var getMeHandler: (() -> (Single<Void>))?
+    public func getMe() -> Single<Void> {
+        getMeCallCount += 1
+        if let getMeHandler = getMeHandler {
+            return getMeHandler()
+        }
+        fatalError("getMeHandler returns can't have a default value thus its handler must be set")
+    }
 }
 
 public final class LogoutUseCaseMock: LogoutUseCase {

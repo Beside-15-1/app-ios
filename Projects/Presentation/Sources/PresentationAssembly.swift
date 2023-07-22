@@ -30,6 +30,9 @@ public final class PresentationAssembly: Assembly {
       registerLinkSortBuilder,
       registerLinkDetailBuilder,
       registerMoveFolderBuilder,
+      registerManageTagBuilder,
+      registerWebBuilder,
+      registerDeleteAccountBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -64,9 +67,11 @@ public final class PresentationAssembly: Assembly {
       HomeBuilder(dependency: .init(
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
+        loginRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
         createFolderBuilder: r.resolve(),
-        folderDetailBuilder: r.resolve()
+        folderDetailBuilder: r.resolve(),
+        webBuilder: r.resolve()
       ))
     }
   }
@@ -78,7 +83,8 @@ public final class PresentationAssembly: Assembly {
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
         folderSortBuilder: r.resolve(),
-        folderDetailBuilder: r.resolve()
+        folderDetailBuilder: r.resolve(),
+        createLinkBuilder: r.resolve()
       ))
     }
   }
@@ -87,8 +93,9 @@ public final class PresentationAssembly: Assembly {
     container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
         loginRepository: r.resolve(),
-        tagAddBuilder: r.resolve(),
-        createLinkBuilder: r.resolve()
+        manageTagBuilder: r.resolve(),
+        webBuilder: r.resolve(),
+        deleteAccountBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -105,8 +112,10 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerTermsOfUseBuilder(contaier: Container) {
-    contaier.register(TermsOfUseBuildable.self) { _ in
-      TermsOfUseBuilder(dependency: .init())
+    contaier.register(TermsOfUseBuildable.self) { r in
+      TermsOfUseBuilder(dependency: .init(
+        webBuilder: r.resolve()
+      ))
     }
   }
 
@@ -187,6 +196,25 @@ public final class PresentationAssembly: Assembly {
       MoveFolderBuilder(dependency: .init(
         folderRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerManageTagBuilder(container: Container) {
+    container.register(ManageTagBuildable.self) { r in
+      ManageTagBuilder(dependency: .init())
+    }
+  }
+
+  private func registerWebBuilder(container: Container) {
+    container.register(PBWebBuildable.self) { r in
+      PBWebBuilder(dependency: .init())
+    }
+    .inObjectScope(.graph)
+  }
+
+  private func registerDeleteAccountBuilder(container: Container) {
+    container.register(DeleteAccountBuildable.self) { r in
+      DeleteAccountBuilder(dependency: .init())
     }
   }
 }

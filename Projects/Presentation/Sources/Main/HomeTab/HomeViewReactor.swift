@@ -45,18 +45,21 @@ final class HomeViewReactor: Reactor {
 
   private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
+  private let getMeUseCase: GetMeUseCase
 
 
   // MARK: initializing
 
   init(
     fetchLinkListUseCase: FetchAllLinksUseCase,
-    fetchFolderListUseCase: FetchFolderListUseCase
+    fetchFolderListUseCase: FetchFolderListUseCase,
+    getMeUseCase: GetMeUseCase
   ) {
     defer { _ = self.state }
 
     self.fetchLinkListUseCase = fetchLinkListUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
+    self.getMeUseCase = getMeUseCase
 
     self.initialState = State()
   }
@@ -74,6 +77,7 @@ final class HomeViewReactor: Reactor {
       return .concat([
         fetchLinkList(),
         fetchFolderList(),
+        getMe(),
       ])
 
     case .createFolderSucceed:
@@ -169,9 +173,15 @@ extension HomeViewReactor {
         viewModel.items.append(.init(id: "", imageURL: nil, title: "", tag: "", date: "", isMore: true))
 
         return .concat([
-          .just(Mutation.setLinkList(linkList.reversed())),
+          .just(Mutation.setLinkList([Link](linkList))),
           .just(Mutation.setLinkViewModel(viewModel)),
         ])
       }
+  }
+
+  private func getMe() -> Observable<Mutation> {
+    getMeUseCase.execute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in .empty() }
   }
 }

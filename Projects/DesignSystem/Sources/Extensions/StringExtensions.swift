@@ -68,7 +68,7 @@ extension String {
 
 extension NSAttributedString {
 
-  public func changeTarget(font: UIFont, target: String) -> NSAttributedString {
+  public func font(font: UIFont, target: String) -> NSAttributedString {
 
     let attributedString = NSMutableAttributedString(attributedString: self)
 
@@ -76,6 +76,28 @@ extension NSAttributedString {
 
     attributedString.addAttributes([
       .font: font
+    ], range: range)
+
+    return attributedString
+  }
+
+  public func underLine(target: String) -> NSAttributedString {
+    let attributedString = NSMutableAttributedString(attributedString: self)
+
+    let range = (self.string as NSString).range(of: target)
+
+    attributedString.addAttribute(.underlineStyle, value: 1, range: range)
+
+    return attributedString
+  }
+
+  public func color(color: UIColor, target: String) -> NSAttributedString {
+    let attributedString = NSMutableAttributedString(attributedString: self)
+
+    let range = (self.string as NSString).range(of: target)
+
+    attributedString.addAttributes([
+      .foregroundColor: color
     ], range: range)
 
     return attributedString

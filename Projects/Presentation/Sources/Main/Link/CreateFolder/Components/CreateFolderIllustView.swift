@@ -2,10 +2,12 @@ import UIKit
 
 // MARK: - CreateFolderIllustView
 
+protocol CreateFolderIllustViewDelegate: AnyObject {
+  func illustView(_ illustView: CreateFolderIllustView , didSelectItemAt indexPath: IndexPath)
+}
+
 class CreateFolderIllustView: UIView, UICollectionViewDelegateFlowLayout {
   // MARK: UI
-
-  private lazy var scrollView = UIScrollView()
 
   private lazy var titleLabel = {
     let label = UILabel()
@@ -14,7 +16,9 @@ class CreateFolderIllustView: UIView, UICollectionViewDelegateFlowLayout {
     return label
   }()
 
-  private var illustGrid: UICollectionView!
+  var illustGrid: UICollectionView!
+
+  weak var delegate: CreateFolderIllustViewDelegate?
 
   // MARK: Life Cycle
 
@@ -38,30 +42,26 @@ class CreateFolderIllustView: UIView, UICollectionViewDelegateFlowLayout {
 
     illustGrid = UICollectionView(frame: bounds, collectionViewLayout: layout)
     illustGrid.backgroundColor = .clear
-    illustGrid.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+    illustGrid.register(
+      CreateFolderIllustCell.self,
+      forCellWithReuseIdentifier: CreateFolderIllustCell.identifier
+    )
     illustGrid.dataSource = self
     illustGrid.delegate = self
   }
 
   private func setView() {
-    addSubview(scrollView)
-    scrollView.snp.makeConstraints { make in
-      make.top.bottom.equalToSuperview()
-      make.leading.trailing.equalToSuperview()
-    }
-
-    scrollView.addSubview(titleLabel)
+    addSubview(titleLabel)
     titleLabel.snp.makeConstraints { make in
       make.leading.equalToSuperview().offset(20)
       make.top.equalToSuperview().offset(16)
     }
 
-    scrollView.addSubview(illustGrid)
+    addSubview(illustGrid)
     illustGrid.snp.makeConstraints { make in
       make.width.equalToSuperview().offset(-40)
       make.centerX.equalToSuperview()
       make.top.equalTo(titleLabel.snp.bottom).offset(12)
-      make.height.equalTo(500)
       make.bottom.equalToSuperview().offset(-12)
     }
   }
@@ -71,13 +71,22 @@ class CreateFolderIllustView: UIView, UICollectionViewDelegateFlowLayout {
 
 extension CreateFolderIllustView: UICollectionViewDelegate, UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 12
+    12
   }
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
-    cell.backgroundColor = .systemGreen
-    cell.layer.cornerRadius = 10
-    return cell
+    guard let cell = collectionView.dequeueReusableCell(
+      withReuseIdentifier: CreateFolderIllustCell.identifier,
+      for: indexPath
+    ) as? CreateFolderIllustCell else { return UICollectionViewCell() }
+
+
+    return cell.then {
+      $0.configure(number: indexPath.row)
+    }
+  }
+
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    delegate?.illustView(self, didSelectItemAt: indexPath)
   }
 }

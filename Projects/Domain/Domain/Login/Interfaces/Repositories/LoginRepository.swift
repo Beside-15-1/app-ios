@@ -14,4 +14,5 @@ public protocol LoginRepository {
     nickname: String?,
     social: String
   ) -> Single<Bool>
+  func getMe() -> Single<Void>
 }

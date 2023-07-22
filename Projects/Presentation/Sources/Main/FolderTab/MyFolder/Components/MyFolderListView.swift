@@ -85,7 +85,7 @@ class MyFolderListView: UIView {
         font: .defaultRegular,
         color: .gray700
       )
-      .changeTarget(font: .defaultBold, target: text)
+      .font(font: .defaultBold, target: text)
   }
 
 

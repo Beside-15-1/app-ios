@@ -13,6 +13,10 @@ import Then
 
 import DesignSystem
 
+protocol HomeLinkViewDelegate: AnyObject {
+  func homeLinkView(_ homeLinkView: HomeLinkView, didSelectItemAt row: Int)
+}
+
 class HomeLinkView: UIView {
 
   typealias Section = HomeLinkSection
@@ -30,6 +34,7 @@ class HomeLinkView: UIView {
     $0.showsHorizontalScrollIndicator = false
     $0.register(HomeLinkCell.self, forCellWithReuseIdentifier: HomeLinkCell.identifier)
     $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    $0.delegate = self
   }
 
   private let emptyView = UIView()
@@ -48,6 +53,7 @@ class HomeLinkView: UIView {
 
   private lazy var diffableDataSource = collectionViewDiffableDataSource()
 
+  weak var delegate: HomeLinkViewDelegate?
 
   // MARK: Initialize
 
@@ -176,5 +182,12 @@ class HomeLinkView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
     setEmptyView()
+  }
+}
+
+
+extension HomeLinkView: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    delegate?.homeLinkView(self, didSelectItemAt: indexPath.row)
   }
 }

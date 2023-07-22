@@ -20,7 +20,7 @@ final class TagAddBuilder: TagAddBuildable {
 
   func build(payload: TagAddPayload) -> UIViewController {
     let viewModel = TagAddViewModel(
-      userDefaults: UserDefaultsRepository(),
+      userDefaults: UserDefaultsManager.shared,
       addedTagList: payload.addedTagList
     )
 

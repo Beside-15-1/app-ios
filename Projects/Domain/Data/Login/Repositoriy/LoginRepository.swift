@@ -6,10 +6,12 @@ import Domain
 import PBAuthInterface
 import PBLog
 import PBNetworking
+import PBUserDefaults
 
 final class LoginRepositoryImpl: LoginRepository {
   private let provider: PBNetworking<LoginAPI>
   private var keychainDataSource: PBAuthLocalDataSource
+  private let userDefaultRepository: UserDefaultsManager
 
   private let disposeBag = DisposeBag()
 
@@ -19,6 +21,7 @@ final class LoginRepositoryImpl: LoginRepository {
   ) {
     self.provider = provider
     self.keychainDataSource = keychainDataSource
+    self.userDefaultRepository = UserDefaultsManager.shared
   }
 
   func requestGoogleLogin(accessToken: String) -> Single<Bool> {
@@ -86,6 +89,17 @@ final class LoginRepositoryImpl: LoginRepository {
         }
 
         return token.isValid
+      }
+  }
+
+  func getMe() -> Single<Void> {
+    let target = LoginAPI.getMe
+
+    return provider.request(target: target)
+      .map(MeResponse.self)
+      .map { [weak self] me in
+        self?.userDefaultRepository.email = me.email
+        self?.userDefaultRepository.social = me.social
       }
   }
 }

@@ -1,6 +1,7 @@
 import Foundation
 
 import Moya
+import PBNetworking
 
 // MARK: - LoginAPI
 
@@ -8,14 +9,12 @@ enum LoginAPI {
   case google(String)
   case apple(String)
   case signUp(SignUpRequest)
+  case getMe
 }
 
 // MARK: TargetType
 
-extension LoginAPI: TargetType {
-  var baseURL: URL {
-    URL(string: "http://49.50.165.241/api")!
-  }
+extension LoginAPI: BaseTargetType {
 
   var path: String {
     switch self {
@@ -27,6 +26,9 @@ extension LoginAPI: TargetType {
 
     case .signUp:
       return "auth/signup"
+
+    case .getMe:
+      return "auth/me"
     }
   }
 
@@ -40,6 +42,9 @@ extension LoginAPI: TargetType {
 
     case .signUp:
       return .post
+
+    case .getMe:
+      return .get
     }
   }
 
@@ -53,10 +58,19 @@ extension LoginAPI: TargetType {
 
     case let .signUp(request):
       return .requestJSONEncodable(request)
+
+    case .getMe:
+      return .requestPlain
     }
   }
 
-  var headers: [String: String]? {
-    nil
+  public var authorizationType: AuthorizationType? {
+    switch self {
+    case .google, .apple, .signUp:
+      return nil
+
+    case .getMe:
+      return .bearer
+    }
   }
 }
