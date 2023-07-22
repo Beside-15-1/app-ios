@@ -29,9 +29,9 @@ public class InputField: UIView {
     }
   }
 
-  public var title: String? {
+  public var title: NSAttributedString? {
     didSet {
-      titleLabel.text = title
+      titleLabel.attributedText = title
       titleLabel.isHidden = false
     }
   }
@@ -282,7 +282,7 @@ public class InputField: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
 
-    container.layer.borderColor = UIColor.primary500.cgColor
+    container.layer.borderColor = UIColor.inputActiveStroke.cgColor
   }
 }
 

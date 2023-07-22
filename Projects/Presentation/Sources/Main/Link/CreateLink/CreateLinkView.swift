@@ -9,11 +9,11 @@ final class CreateLinkView: UIView {
   // MARK: UI
 
   private let colorBackground = UIView().then {
-    $0.backgroundColor = .paperGray
+    $0.backgroundColor = .paperAboveBg
   }
 
   let titleLabel = UILabel().then {
-    $0.attributedText = "링크 저장".styled(font: .defaultRegular, color: .staticBlack)
+    $0.attributedText = "링크 저장".styled(font: .defaultRegular, color: .white)
   }
 
   let closeButton = UIButton().then {
@@ -24,14 +24,14 @@ final class CreateLinkView: UIView {
   }
 
   let linkInputField = InputField(type: .normal).then {
-    $0.title = "링크"
+    $0.title = "링크".styled(font: .subTitleSemiBold, color: .white)
     $0.placeHolder = "링크를 입력하세요"
     $0.returnKeyType = .done
     $0.tag = 1
   }
 
   let titleInputField = InputField(type: .normal).then {
-    $0.title = "제목"
+    $0.title = "제목".styled(font: .subTitleSemiBold, color: .staticBlack)
     $0.placeHolder = "제목을 입력하세요"
     $0.tag = 2
     $0.returnKeyType = .done

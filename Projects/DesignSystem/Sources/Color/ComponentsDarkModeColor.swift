@@ -77,11 +77,18 @@ extension UIColor {
 
   public static let inputContainerEditing = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#2E2277")
+      return UIColor(hexString: "#392A95")
     } else {
       return UIColor(hexString: "#EFECFF")
     }
   }
 
+  public static let inputActiveStroke = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#6B5FDE")
+    } else {
+      return UIColor(hexString: "#392A95")
+    }
+  }
   public static let modalBackgorund: UIColor = .black.withAlphaComponent(0.6)
 }

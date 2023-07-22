@@ -39,7 +39,7 @@ final class SignUpView: UIView {
   let genderView = SignUpGenderView()
 
   lazy var ageInputField = InputField(type: .dropdown).then {
-    $0.title = "출생연도를 선택해주세요"
+    $0.title = "출생연도를 선택해주세요".styled(font: .subTitleSemiBold, color: .staticBlack)
     $0.placeHolder = "선택"
     $0.textFieldInputView = pickerView
     $0.textFieldInputAccessoryView = toolbar

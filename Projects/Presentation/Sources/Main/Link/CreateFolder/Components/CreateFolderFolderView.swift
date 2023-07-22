@@ -6,7 +6,7 @@ class CreateFolderFolderView: UIView {
 
   let inputField = InputField(type: .normal).then {
     $0.placeHolder = "제목을 입력하세요"
-    $0.title = "링크북명"
+    $0.title = "링크북명".styled(font: .subTitleSemiBold, color: .staticBlack)
   }
 
   // MARK: Life Cycle
