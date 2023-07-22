@@ -30,6 +30,7 @@ public final class PresentationAssembly: Assembly {
       registerLinkSortBuilder,
       registerLinkDetailBuilder,
       registerMoveFolderBuilder,
+      registerManageTagBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -87,7 +88,8 @@ public final class PresentationAssembly: Assembly {
   private func registerMyPageBuilder(container: Container) {
     container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
-        loginRepository: r.resolve()
+        loginRepository: r.resolve(),
+        manageTagBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -186,6 +188,12 @@ public final class PresentationAssembly: Assembly {
       MoveFolderBuilder(dependency: .init(
         folderRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerManageTagBuilder(container: Container) {
+    container.register(ManageTagBuildable.self) { r in
+      ManageTagBuilder(dependency: .init())
     }
   }
 }

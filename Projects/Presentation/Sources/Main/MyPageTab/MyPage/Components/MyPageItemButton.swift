@@ -101,7 +101,13 @@ final class MyPageItemButton: UIControl {
 
     case .sign:
       leftIcon.image = DesignSystemAsset.iconPersonOutline.image.withTintColor(.gray900)
-      titleLabel.attributedText = UserDefaultsManager.shared.social
+
+      var social = UserDefaultsManager.shared.social
+      if let firstChar = social.first {
+          let uppercasedFirstChar = String(firstChar).uppercased()
+        social.replaceSubrange(...social.startIndex, with: uppercasedFirstChar)
+      }
+      titleLabel.attributedText = social
         .styled(font: .defaultBold, color: .gray900)
       rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
       subTitleLabel.attributedText = UserDefaultsManager.shared.email

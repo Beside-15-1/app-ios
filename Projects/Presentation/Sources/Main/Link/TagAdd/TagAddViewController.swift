@@ -37,8 +37,8 @@ final class TagAddViewController: UIViewController {
   override func loadView() {
     view = contentView
 
-    contentView.inputField.setDelegate(self)
     contentView.addedTagView.delegate = self
+    contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] text in
       self?.contentView.inputField.becomeFirstResponder()

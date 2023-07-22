@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct MyPageDependency {
   let loginRepository: LoginRepository
+  let manageTagBuilder: ManageTagBuildable
 }
 
 final class MyPageBuilder: MyPageBuildable {
@@ -33,7 +34,8 @@ final class MyPageBuilder: MyPageBuildable {
 
     let viewController = MyPageViewController(
       reactor: reactor,
-      loginBuilder: loginBuilder!
+      loginBuilder: loginBuilder!,
+      manageTagBuilder: dependency.manageTagBuilder
     )
 
     return viewController

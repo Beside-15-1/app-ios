@@ -76,7 +76,8 @@ final class HomeViewReactor: Reactor {
     case .viewDidLoad:
       return .concat([
         fetchLinkList(),
-        fetchFolderList()
+        fetchFolderList(),
+        getMe(),
       ])
 
     case .createFolderSucceed:

@@ -28,17 +28,19 @@ final class MyPageViewController: UIViewController, StoryboardView {
   private var transition: UIViewControllerAnimatedTransitioning?
 
   private let loginBuilder: LoginBuildable
-
+  private let manageTagBuilder: ManageTagBuildable
 
   // MARK: Initializing
 
   init(
     reactor: MyPageViewReactor,
-    loginBuilder: LoginBuildable
+    loginBuilder: LoginBuildable,
+    manageTagBuilder: ManageTagBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.loginBuilder = loginBuilder
+    self.manageTagBuilder = manageTagBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -58,6 +60,12 @@ final class MyPageViewController: UIViewController, StoryboardView {
     super.viewDidLoad()
 
     tabBarController?.navigationController?.delegate = self
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    navigationController?.isNavigationBarHidden = true
   }
 
 
@@ -113,6 +121,14 @@ final class MyPageViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         PBToast(content: "로그아웃에 실패했어요 다시 시도해주세요")
           .show()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.tagButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let manageTag = self.manageTagBuilder.build(payload: .init())
+
+        self.navigationController?.pushViewController(manageTag, animated: true)
       }
       .disposed(by: disposeBag)
   }
