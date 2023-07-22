@@ -7,8 +7,8 @@
 
 import UIKit
 
-import RxSwift
 import ReactorKit
+import RxSwift
 
 import PresentationInterface
 
@@ -41,9 +41,10 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   override func loadView() {
     super.loadView()
 
-    self.view = contentView
+    view = contentView
 
     contentView.linkBookTabView.colorView.delegate = self
+    contentView.linkBookTabView.illustView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -79,7 +80,6 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   }
 
   private func bindContent(with reactor: CreateFolderViewReactor) {
-
     reactor.state.map(\.backgroundColors)
       .distinctUntilChanged()
       .asObservable()
@@ -116,6 +116,21 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in
+        if let illust = viewModel.illuste,
+           let index = self.extractNumber(from: illust) {
+          self.contentView.linkBookTabView.illustView.illustGrid.selectItem(
+            at: IndexPath(item: index, section: 0),
+            animated: true,
+            scrollPosition: .centeredVertically
+          )
+        } else {
+          self.contentView.linkBookTabView.illustView.illustGrid.selectItem(
+            at: IndexPath(item: 0, section: 0),
+            animated: true,
+            scrollPosition: .centeredVertically
+          )
+        }
+
         self.contentView.previewView.configure(with: viewModel)
       }
       .disposed(by: disposeBag)
@@ -140,6 +155,26 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
   }
+
+  func extractNumber(from string: String) -> Int? {
+    let pattern = "illust(\\d+)"
+
+    do {
+      let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+      let range = NSRange(string.startIndex..<string.endIndex, in: string)
+
+      if let match = regex.firstMatch(in: string, options: [], range: range) {
+        if let range = Range(match.range(at: 1), in: string) {
+          let numberString = string[range]
+          return Int(numberString)
+        }
+      }
+    } catch {
+      print("Error creating regex: \(error)")
+    }
+
+    return nil
+  }
 }
 
 
@@ -154,3 +189,14 @@ extension CreateFolderViewController: CreateFolderColorViewDelegate {
     reactor?.action.onNext(.updateTitleColor(row))
   }
 }
+
+
+// MARK: - CreateFolderIllustViewDelegate
+
+extension CreateFolderViewController: CreateFolderIllustViewDelegate {
+  func illustView(_ illustView: CreateFolderIllustView, didSelectItemAt indexPath: IndexPath) {
+    reactor?.action.onNext(.updateIllust(indexPath.row))
+  }
+}
+
+

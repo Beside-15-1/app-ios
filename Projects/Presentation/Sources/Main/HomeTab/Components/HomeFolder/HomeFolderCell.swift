@@ -152,9 +152,8 @@ class HomeFolderCell: UICollectionViewCell {
     }
 
     illust.snp.makeConstraints {
-      $0.size.equalTo(95.0)
-      $0.right.equalToSuperview().inset(2.0)
-      $0.bottom.equalToSuperview()
+      $0.size.equalTo(72.0)
+      $0.right.bottom.equalToSuperview().inset(15.0)
     }
 
     verticalBar.snp.makeConstraints {

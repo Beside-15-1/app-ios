@@ -7,6 +7,10 @@
 
 import UIKit
 
+import SnapKit
+import Then
+
+import DesignSystem
 import Domain
 
 class CreateFolderPreviewView: UIView {
@@ -46,6 +50,8 @@ class CreateFolderPreviewView: UIView {
     return label
   }()
 
+  let illust = UIImageView()
+
   // MARK: Life Cycle
 
   override init(frame: CGRect) {
@@ -66,6 +72,11 @@ class CreateFolderPreviewView: UIView {
     bookCover.backgroundColor = UIColor(hexString: folder.backgroundColor)
     bookText.text = folder.title
     bookText.textColor = UIColor(hexString: folder.titleColor)
+    illust.image = UIImage(
+      named: folder.illuste ?? "",
+      in: DesignSystemResources.bundle,
+      compatibleWith: nil
+    )
   }
 
 
@@ -92,6 +103,12 @@ class CreateFolderPreviewView: UIView {
       make.left.equalTo(verticalBar.snp.right).offset(8)
       make.right.equalToSuperview().offset(-8)
       make.top.equalToSuperview().offset(20)
+    }
+
+    bookCover.addSubview(illust)
+    illust.snp.makeConstraints {
+      $0.right.bottom.equalToSuperview().inset(20.0)
+      $0.size.equalTo(72.0)
     }
   }
 }
