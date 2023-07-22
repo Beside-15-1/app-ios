@@ -28,18 +28,21 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   private let createLinkBuilder: CreateLinkBuildable
   private let moveFolderBuilder: MoveFolderBuildable
+  private let webBuilder: PBWebBuildable
 
   // MARK: Initializing
 
   init(
     reactor: LinkDetailViewReactor,
     createLinkBuilder: CreateLinkBuildable,
-    moveFolderBuilder: MoveFolderBuildable
+    moveFolderBuilder: MoveFolderBuildable,
+    webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createLinkBuilder = createLinkBuilder
     self.moveFolderBuilder = moveFolderBuilder
+    self.webBuilder = webBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -125,6 +128,19 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         self.presentPanModal(moveFolder)
       }
       .disposed(by: disposeBag)
+
+    contentView.thumbnail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(thumbnailTapped)))
+  }
+
+  @objc
+  private func thumbnailTapped() {
+    guard let reactor,
+          let url = URL(string: reactor.currentState.link.url) else { return }
+    let vc = webBuilder.build(payload: .init(url: url)).then {
+      $0.modalPresentationStyle = .popover
+    }
+
+    self.present(vc, animated: true)
   }
 
   private func bindRoute(with reactor: LinkDetailViewReactor) {

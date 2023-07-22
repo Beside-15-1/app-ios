@@ -23,10 +23,11 @@ final class LinkDetailView: UIView {
     $0.image = DesignSystemAsset.iconFolderOpen.image.withTintColor(.gray600)
   }
 
-  private let thumbnail = UIImageView().then {
+  let thumbnail = UIImageView().then {
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 8
     $0.contentMode = .scaleAspectFit
+    $0.isUserInteractionEnabled = true
   }
 
   private let urlContainer = UIControl()

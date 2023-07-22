@@ -186,7 +186,8 @@ public final class PresentationAssembly: Assembly {
       LinkDetailBuilder(dependency: .init(
         linkRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
-        moveFolderBuilder: r.resolve()
+        moveFolderBuilder: r.resolve(),
+        webBuilder: r.resolve()
       ))
     }
   }
