@@ -207,10 +207,9 @@ extension CreateLinkViewController: UITextFieldDelegate {
       guard let text = textField.text else { return true }
 
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-          PBToast(content: "올바른 링크를 입력해주세요")
-            .show()
-        }
+
+        let newText = "https://\(text)"
+        reactor?.action.onNext(.fetchThumbnail(newText))
         view.endEditing(true)
         return true
       }
