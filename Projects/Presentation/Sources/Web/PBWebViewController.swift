@@ -9,11 +9,26 @@ import Foundation
 import UIKit
 import WebKit
 
+import SnapKit
+import Then
+
 class PBWebViewController: UIViewController {
 
-  var webView: WKWebView!
+  // MARK: UI
+
+  lazy var webView = WKWebView().then {
+    $0.navigationDelegate = self
+  }
+
+  let spinner = UIActivityIndicatorView(style: .large)
+
+
+  // MARK: Properties
 
   let url: URL
+
+
+  // MARK: Initialize
 
   init(url: URL) {
     self.url = url
@@ -28,11 +43,40 @@ class PBWebViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    webView = WKWebView(frame: view.bounds)
-    view.addSubview(webView)
+    defineLayout()
 
     let request = URLRequest(url: url)
     webView.load(request)
   }
 
+
+  // MARK: Layout
+
+  private func defineLayout() {
+    view.addSubview(webView)
+    view.addSubview(spinner)
+
+    webView.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
+
+    spinner.snp.makeConstraints {
+      $0.center.equalToSuperview()
+    }
+  }
+}
+
+
+extension PBWebViewController: WKNavigationDelegate {
+  func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    // 웹뷰가 로딩을 시작할 때의 작업 처리
+    spinner.startAnimating()
+    spinner.isHidden = false
+  }
+
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    // 웹뷰 로딩이 완료된 후의 작업 처리
+    spinner.stopAnimating()
+    spinner.isHidden = true
+  }
 }

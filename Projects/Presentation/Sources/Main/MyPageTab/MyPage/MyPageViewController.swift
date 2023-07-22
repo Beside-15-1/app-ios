@@ -29,18 +29,21 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
   private let loginBuilder: LoginBuildable
   private let manageTagBuilder: ManageTagBuildable
+  private let webBuilder: PBWebBuildable
 
   // MARK: Initializing
 
   init(
     reactor: MyPageViewReactor,
     loginBuilder: LoginBuildable,
-    manageTagBuilder: ManageTagBuildable
+    manageTagBuilder: ManageTagBuildable,
+    webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.loginBuilder = loginBuilder
     self.manageTagBuilder = manageTagBuilder
+    self.webBuilder = webBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -129,6 +132,34 @@ final class MyPageViewController: UIViewController, StoryboardView {
         let manageTag = self.manageTagBuilder.build(payload: .init())
 
         self.navigationController?.pushViewController(manageTag, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.serviceButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://joosum.notion.site/6df241a6e3174b8fbfc7933a506a0b1e?pvs=4") else {
+          return
+        }
+
+        let web = self.webBuilder.build(payload: .init(url: url)).then {
+          $0.modalPresentationStyle = .popover
+        }
+
+        self.present(web, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.securityButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://joosum.notion.site/33975a64eb55468ea523f707353743cf?pvs=4") else {
+          return
+        }
+
+        let web = self.webBuilder.build(payload: .init(url: url)).then {
+          $0.modalPresentationStyle = .popover
+        }
+
+        self.present(web, animated: true)
       }
       .disposed(by: disposeBag)
   }

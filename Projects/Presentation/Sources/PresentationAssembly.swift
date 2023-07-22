@@ -91,7 +91,8 @@ public final class PresentationAssembly: Assembly {
     container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
         loginRepository: r.resolve(),
-        manageTagBuilder: r.resolve()
+        manageTagBuilder: r.resolve(),
+        webBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -108,8 +109,10 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerTermsOfUseBuilder(contaier: Container) {
-    contaier.register(TermsOfUseBuildable.self) { _ in
-      TermsOfUseBuilder(dependency: .init())
+    contaier.register(TermsOfUseBuildable.self) { r in
+      TermsOfUseBuilder(dependency: .init(
+        webBuilder: r.resolve()
+      ))
     }
   }
 

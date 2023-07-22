@@ -20,10 +20,18 @@ final class TermsOfUseViewController: UIViewController {
 
   weak var delegate: TermsOfUseDelegate?
 
+  private let webBuilder: PBWebBuildable
+
   // MARK: Initializing
 
-  init(viewModel: TermsOfUseViewModel) {
+  init(
+    viewModel: TermsOfUseViewModel,
+    webBuilder: PBWebBuildable
+  ) {
     self.viewModel = viewModel
+
+    self.webBuilder = webBuilder
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -90,6 +98,34 @@ final class TermsOfUseViewController: UIViewController {
         self.dismiss(animated: true) {
           self.delegate?.termsOfUseNextButtonTapped()
         }
+      }
+      .disposed(by: disposeBag)
+
+    contentView.checkServiceButton.showPageButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://joosum.notion.site/6df241a6e3174b8fbfc7933a506a0b1e?pvs=4") else {
+          return
+        }
+
+        let web = self.webBuilder.build(payload: .init(url: url)).then {
+          $0.modalPresentationStyle = .popover
+        }
+
+        self.present(web, animated: true)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.checkPersonalButton.showPageButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://joosum.notion.site/33975a64eb55468ea523f707353743cf?pvs=4") else {
+          return
+        }
+
+        let web = self.webBuilder.build(payload: .init(url: url)).then {
+          $0.modalPresentationStyle = .popover
+        }
+
+        self.present(web, animated: true)
       }
       .disposed(by: disposeBag)
   }
