@@ -173,7 +173,7 @@ extension HomeViewReactor {
         viewModel.items.append(.init(id: "", imageURL: nil, title: "", tag: "", date: "", isMore: true))
 
         return .concat([
-          .just(Mutation.setLinkList(linkList.reversed())),
+          .just(Mutation.setLinkList([Link](linkList))),
           .just(Mutation.setLinkViewModel(viewModel)),
         ])
       }

@@ -58,7 +58,7 @@ public class FetchThumbnailUseCaseImpl: FetchThumbnailUseCase {
           single(.failure(error))
         }
       }
-    
+
       return Disposables.create {
         task.cancel()
       }
