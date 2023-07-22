@@ -146,7 +146,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: nil,
+          delegate: self,
           link: nil
         ))
         vc.modalPresentationStyle = .fullScreen
@@ -232,5 +232,12 @@ extension MyFolderViewController: EditFolderDelegate {
 extension MyFolderViewController: FolderSortDelegate {
   func folderSortListItemTapped(type: FolderSortModel) {
     reactor?.action.onNext(.updateSort(type))
+  }
+}
+
+
+extension MyFolderViewController: CreateLinkDelegate {
+  func createLinkSucceed(link: Link) {
+    reactor?.action.onNext(.createFolderSucceed)
   }
 }
