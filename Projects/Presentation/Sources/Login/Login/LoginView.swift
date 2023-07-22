@@ -131,7 +131,7 @@ class LoginView: UIView {
               }
 
             flex.addItem(googleButton)
-              .marginBottom(60.0)
+              .marginBottom(152.0)
               .height(40.0)
               .justifyContent(.center)
               .alignItems(.center)
@@ -143,10 +143,6 @@ class LoginView: UIView {
                 flex.addItem(googleLabel)
                   .marginStart(8.0)
               }
-
-            flex.addItem(termsLabel)
-              .alignSelf(.center)
-              .marginBottom(60.0)
           }
       }
   }

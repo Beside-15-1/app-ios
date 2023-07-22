@@ -34,6 +34,10 @@ final class MyFolderView: UIView {
 
   let myFolderListView = MyFolderListView()
 
+  let fab = FAB().then {
+    $0.expand()
+  }
+
 
   // MARK: Initializing
 
@@ -79,6 +83,13 @@ final class MyFolderView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
       $0.top.equalTo(colorBackground.snp.bottom)
       $0.bottom.equalTo(safeAreaLayoutGuide)
+    }
+
+    addSubview(fab)
+
+    fab.snp.makeConstraints {
+      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide).inset(12.0)
     }
   }
 

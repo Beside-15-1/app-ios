@@ -17,6 +17,7 @@ struct MyFolderDependency {
   let editFolderBuilder: EditFolderBuildable
   let folderSortBuilder: FolderSortBuildable
   let folderDetailBuilder: FolderDetailBuildable
+  let createLinkBuilder: CreateLinkBuildable
 }
 
 final class MyFolderBuilder: MyFolderBuildable {
@@ -42,7 +43,8 @@ final class MyFolderBuilder: MyFolderBuildable {
       createFolderBuilder: dependency.createFolderBuilder,
       editFolderBuilder: dependency.editFolderBuilder,
       folderSortBuilder: dependency.folderSortBuilder,
-      folderDetailBuilder: dependency.folderDetailBuilder
+      folderDetailBuilder: dependency.folderDetailBuilder,
+      createLinkBuilder: dependency.createLinkBuilder
     )
 
     return viewController

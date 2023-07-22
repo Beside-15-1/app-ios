@@ -32,6 +32,7 @@ public final class PresentationAssembly: Assembly {
       registerMoveFolderBuilder,
       registerManageTagBuilder,
       registerWebBuilder,
+      registerDeleteAccountBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -82,7 +83,8 @@ public final class PresentationAssembly: Assembly {
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
         folderSortBuilder: r.resolve(),
-        folderDetailBuilder: r.resolve()
+        folderDetailBuilder: r.resolve(),
+        createLinkBuilder: r.resolve()
       ))
     }
   }
@@ -92,7 +94,8 @@ public final class PresentationAssembly: Assembly {
       MyPageBuilder(dependency: .init(
         loginRepository: r.resolve(),
         manageTagBuilder: r.resolve(),
-        webBuilder: r.resolve()
+        webBuilder: r.resolve(),
+        deleteAccountBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -207,6 +210,12 @@ public final class PresentationAssembly: Assembly {
       PBWebBuilder(dependency: .init())
     }
     .inObjectScope(.graph)
+  }
+
+  private func registerDeleteAccountBuilder(container: Container) {
+    container.register(DeleteAccountBuildable.self) { r in
+      DeleteAccountBuilder(dependency: .init())
+    }
   }
 }
 

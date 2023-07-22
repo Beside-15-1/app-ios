@@ -18,7 +18,7 @@ final class CreateLinkView: UIView {
 
   let closeButton = UIButton().then {
     $0.setImage(
-      DesignSystemAsset.iconCloseOutline.image.withTintColor(.staticBlack),
+      DesignSystemAsset.iconCloseOutline.image.withTintColor(.white),
       for: .normal
     )
   }

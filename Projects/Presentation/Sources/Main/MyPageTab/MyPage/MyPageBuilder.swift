@@ -15,6 +15,7 @@ struct MyPageDependency {
   let loginRepository: LoginRepository
   let manageTagBuilder: ManageTagBuildable
   let webBuilder: PBWebBuildable
+  let deleteAccountBuilder: DeleteAccountBuildable
 }
 
 final class MyPageBuilder: MyPageBuildable {
@@ -37,7 +38,8 @@ final class MyPageBuilder: MyPageBuildable {
       reactor: reactor,
       loginBuilder: loginBuilder!,
       manageTagBuilder: dependency.manageTagBuilder,
-      webBuilder: dependency.webBuilder
+      webBuilder: dependency.webBuilder,
+      deleteAccountBuilder: dependency.deleteAccountBuilder
     )
 
     return viewController

@@ -109,12 +109,10 @@ final class MyPageItemButton: UIControl {
       }
       titleLabel.attributedText = social
         .styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
       subTitleLabel.attributedText = UserDefaultsManager.shared.email
         .styled(font: .bodyRegular, color: .gray700)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
-      rightIcon.isHidden = false
       subTitleLabel.isHidden = false
 
       addSubview(subTitleLabel)

@@ -30,6 +30,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private let editFolderBuilder: EditFolderBuildable
   private let folderSortBuilder: FolderSortBuildable
   private let folderDetailBuilder: FolderDetailBuildable
+  private let createLinkBuilder: CreateLinkBuildable
 
 
   // MARK: Initializing
@@ -39,7 +40,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     createFolderBuilder: CreateFolderBuildable,
     editFolderBuilder: EditFolderBuildable,
     folderSortBuilder: FolderSortBuildable,
-    folderDetailBuilder: FolderDetailBuildable
+    folderDetailBuilder: FolderDetailBuildable,
+    createLinkBuilder: CreateLinkBuildable
   ) {
     defer { self.reactor = reactor }
 
@@ -47,6 +49,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     self.editFolderBuilder = editFolderBuilder
     self.folderSortBuilder = folderSortBuilder
     self.folderDetailBuilder = folderDetailBuilder
+    self.createLinkBuilder = createLinkBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -137,6 +140,17 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         ) as? PanModalPresentable.LayoutType else { return }
 
         self.presentPanModal(vc)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.fab.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createLinkBuilder.build(payload: .init(
+          delegate: nil,
+          link: nil
+        ))
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
   }

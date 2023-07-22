@@ -30,6 +30,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
   private let loginBuilder: LoginBuildable
   private let manageTagBuilder: ManageTagBuildable
   private let webBuilder: PBWebBuildable
+  private let deleteAccountBuilder: DeleteAccountBuildable
 
   // MARK: Initializing
 
@@ -37,13 +38,15 @@ final class MyPageViewController: UIViewController, StoryboardView {
     reactor: MyPageViewReactor,
     loginBuilder: LoginBuildable,
     manageTagBuilder: ManageTagBuildable,
-    webBuilder: PBWebBuildable
+    webBuilder: PBWebBuildable,
+    deleteAccountBuilder: DeleteAccountBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.loginBuilder = loginBuilder
     self.manageTagBuilder = manageTagBuilder
     self.webBuilder = webBuilder
+    self.deleteAccountBuilder = deleteAccountBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -162,6 +165,16 @@ final class MyPageViewController: UIViewController, StoryboardView {
         self.present(web, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.deleteAccountButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let deleteAccount = self.deleteAccountBuilder.build(payload: .init(
+          delegate: self)
+        )
+
+        self.navigationController?.pushViewController(deleteAccount, animated: true)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -179,3 +192,9 @@ extension MyPageViewController: UINavigationControllerDelegate {
   }
 }
 
+
+extension MyPageViewController: DeleteAccountDelegate {
+  func deleteAccountSuccess() {
+    self.reactor?.action.onNext(.logoutButtonTapped)
+  }
+}

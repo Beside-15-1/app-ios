@@ -84,7 +84,8 @@ final class MyPageView: UIView {
     $0.configure(type: .logout)
   }
 
-  let exitButton = UILabel().then {
+  let deleteAccountButton = UIControl()
+  let deleteAccountLabel = UILabel().then {
     $0.attributedText = "회원탈퇴"
       .styled(font: .bodyRegular, color: .gray700)
       .underLine(target: "회원탈퇴")
@@ -113,13 +114,14 @@ final class MyPageView: UIView {
       addSubview($0)
     }
 
-    [settingHeaderView, settingStackView, accountHeaderView, accountStackView, appInfoHeaderView, appInfoStackView, exitButton]
+    [settingHeaderView, settingStackView, accountHeaderView, accountStackView, appInfoHeaderView, appInfoStackView, deleteAccountButton]
       .forEach { scrollView.addSubview($0) }
 
     [tagButton, themeButton].forEach { settingStackView.addArrangedSubview($0) }
     [accountButton].forEach { accountStackView.addArrangedSubview($0) }
     [serviceButton, securityButton, versionButton, logoutButton]
       .forEach { appInfoStackView.addArrangedSubview($0) }
+    deleteAccountButton.addSubview(deleteAccountLabel)
 
     titleLabel.snp.makeConstraints {
       $0.top.equalTo(safeAreaLayoutGuide).inset(40.0)
@@ -170,10 +172,14 @@ final class MyPageView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    exitButton.snp.makeConstraints {
+    deleteAccountButton.snp.makeConstraints {
       $0.top.equalTo(appInfoStackView.snp.bottom).offset(20.0)
       $0.left.equalToSuperview().inset(20.0)
       $0.bottom.equalToSuperview().inset(40.0)
+    }
+
+    deleteAccountLabel.snp.makeConstraints {
+      $0.edges.equalToSuperview()
     }
   }
 
