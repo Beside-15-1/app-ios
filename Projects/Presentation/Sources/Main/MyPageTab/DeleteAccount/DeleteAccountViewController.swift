@@ -84,6 +84,11 @@ final class DeleteAccountViewController: UIViewController, StoryboardView {
       .bind(to: contentView.useButton.rx.isEnabled)
       .disposed(by: disposeBag)
 
+    contentView.deleteButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.deleteAccountButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
     contentView.useButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.navigationController?.popViewController(animated: true)

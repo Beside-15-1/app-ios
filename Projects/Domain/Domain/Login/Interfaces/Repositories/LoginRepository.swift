@@ -15,4 +15,5 @@ public protocol LoginRepository {
     social: String
   ) -> Single<Bool>
   func getMe() -> Single<Void>
+  func deleteAccount() -> Single<Void>
 }
