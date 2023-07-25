@@ -52,7 +52,7 @@ class CreateFolderPreviewView: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    backgroundColor = .paperGray
+    backgroundColor = .customBg
     setView()
   }
 

@@ -20,7 +20,7 @@ final class CreateFolderIllustCell: UICollectionViewCell {
   // MARK: UI
 
   private let noImageLabel = UILabel().then {
-    $0.attributedText = "선택 안함".styled(font: .bodyRegular, color: .gray600)
+    $0.attributedText = "선택 안함".styled(font: .bodyRegular, color: .gray700)
   }
 
   private let illust = UIImageView()

@@ -43,6 +43,15 @@ extension UIColor {
     }
   }
 
+  public static let customBg = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#909090")
+    } else {
+      return UIColor(hexString: "#EBECED")
+    }
+  }
+
+
   // MARK: FAB
 
   public static let fabTextColor = UIColor { (trait: UITraitCollection) -> UIColor in
@@ -77,7 +86,7 @@ extension UIColor {
 
   public static let inputContainerEditing = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#392A95")
+      return UIColor(hexString: "#221959")
     } else {
       return UIColor(hexString: "#EFECFF")
     }

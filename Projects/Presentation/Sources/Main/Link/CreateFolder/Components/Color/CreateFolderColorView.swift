@@ -188,6 +188,9 @@ extension CreateFolderColorView: UICollectionViewDelegate, UICollectionViewDataS
         cell.layer.borderColor = UIColor.gray300.cgColor
         cell.layer.borderWidth = 1
         cell.checkImage.image = cell.checkImage.image?.withTintColor(.black)
+      } else {
+        cell.layer.borderColor = UIColor.white.cgColor
+        cell.layer.borderWidth = 1
       }
       cell.layer.cornerRadius = 5
       cell.backgroundColor = UIColor(hexString: titleColors[indexPath.row])

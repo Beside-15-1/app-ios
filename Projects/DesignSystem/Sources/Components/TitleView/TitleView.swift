@@ -33,7 +33,7 @@ public final class TitleView: UIView {
   }
 
   private let divider = UIView().then {
-    $0.backgroundColor = UIColor(hexString: "#E0E0E0")
+    $0.backgroundColor = .gray800
   }
 
   // MARK: Initialize
