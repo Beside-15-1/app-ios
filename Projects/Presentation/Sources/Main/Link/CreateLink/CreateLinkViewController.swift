@@ -141,7 +141,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with :self) { `self`, link in
-        self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .staticBlack)
+        self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .white)
       }
       .disposed(by: disposeBag)
 

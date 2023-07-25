@@ -29,7 +29,7 @@ class LoginView: UIView {
   }
 
   private let subTitleLabel = UILabel().then {
-    $0.attributedText = "링크를 주섬주섬 담아 어쩌구 저쩌구".styled(
+    $0.attributedText = "링크를 주섬주섬 담아\n나만의 책장을 만들어요".styled(
       font: .defaultRegular,
       color: .secondary4)
   }

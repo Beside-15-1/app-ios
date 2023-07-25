@@ -41,14 +41,10 @@ class CreateFolderPreviewView: UIView {
     return view
   }()
 
-  private lazy var bookText = {
-    let label = UILabel()
-    label.text = "제목을 입력하세요"
-    label.numberOfLines = 3
-    label.textColor = .white
-    label.font = .bodyBold
-    return label
-  }()
+  private let bookText = UILabel().then {
+    $0.attributedText = "제목을 입력하세요".styled(font: .bodyBold, color: .white)
+    $0.numberOfLines = 3
+  }
 
   let illust = UIImageView()
 
@@ -72,6 +68,7 @@ class CreateFolderPreviewView: UIView {
     bookCover.backgroundColor = UIColor(hexString: folder.backgroundColor)
     bookText.text = folder.title
     bookText.textColor = UIColor(hexString: folder.titleColor)
+    bookText.attributedText = folder.title.styled(font: .defaultBold, color: UIColor(hexString: folder.titleColor))
     illust.image = UIImage(
       named: folder.illuste ?? "",
       in: DesignSystemResources.bundle,
@@ -108,7 +105,7 @@ class CreateFolderPreviewView: UIView {
     bookCover.addSubview(illust)
     illust.snp.makeConstraints {
       $0.right.bottom.equalToSuperview().inset(20.0)
-      $0.size.equalTo(72.0)
+      $0.size.equalTo(80.0)
     }
   }
 }
