@@ -48,6 +48,13 @@ final class SignUpViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationController?.delegate = self
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(true)
+
+    navigationController?.isNavigationBarHidden = false
+
     configureNavigationBar()
   }
 
