@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct FolderDetailDependency {
   let linkRepository: LinkRepository
+  let folderRepository: FolderRepository
   let linkSortBuilder: LinkSortBuildable
   let linkDetailBuilder: LinkDetailBuildable
 }
@@ -29,6 +30,7 @@ final class FolderDetailBuilder: FolderDetailBuildable {
     let reactor = FolderDetailViewReactor(
       fetchAllLinkUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
       fetchLinkInFolderUseCase: FetchLinksInFolderUseCaseImpl(linkRepository: dependency.linkRepository),
+      getFolderListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository),
       folderList: payload.folderList,
       selectedFolder: payload.selectedFolder
     )

@@ -127,6 +127,13 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.refreshControl.endRefreshing()
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.linkCount)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, count in
+        self.contentView.listView.configureTotalCount(count: count)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {

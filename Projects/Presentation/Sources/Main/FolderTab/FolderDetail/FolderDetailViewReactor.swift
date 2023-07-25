@@ -30,11 +30,13 @@ final class FolderDetailViewReactor: Reactor {
     case setSelectedFolder(Folder)
     case setSortingType(LinkSortingType)
     case setRefreshEnd
+    case setLinkCount(Int)
   }
 
   struct State {
     let folderList: [Folder]
     var selectedFolder: Folder
+    var linkCount: Int = 0
 
     var linkList: [Link] = []
 
@@ -53,6 +55,7 @@ final class FolderDetailViewReactor: Reactor {
 
   private let fetchAllLinkUseCase: FetchAllLinksUseCase
   private let fetchLinkInFolderUseCase: FetchLinksInFolderUseCase
+  private let getFolderListUseCase: GetFolderListUseCase
 
 
   // MARK: initializing
@@ -60,6 +63,7 @@ final class FolderDetailViewReactor: Reactor {
   init(
     fetchAllLinkUseCase: FetchAllLinksUseCase,
     fetchLinkInFolderUseCase: FetchLinksInFolderUseCase,
+    getFolderListUseCase: GetFolderListUseCase,
     folderList: [Folder],
     selectedFolder: Folder
   ) {
@@ -67,9 +71,15 @@ final class FolderDetailViewReactor: Reactor {
 
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
+    self.getFolderListUseCase = getFolderListUseCase
+
+    var folders = getFolderListUseCase.execute().folders
+    folders.insert(.all(count: getFolderListUseCase.execute().totalLinkCount), at: 0)
+
     self.initialState = State(
-      folderList: folderList,
-      selectedFolder: selectedFolder
+      folderList: folders,
+      selectedFolder: selectedFolder,
+      linkCount: selectedFolder.linkCount
     )
   }
 
@@ -98,11 +108,13 @@ final class FolderDetailViewReactor: Reactor {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
           fetchAllLinks(sort: currentState.sortingType, order: order),
+          .just(Mutation.setLinkCount(selectedFolder.linkCount))
         ])
       } else {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
           fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: order),
+          .just(Mutation.setLinkCount(selectedFolder.linkCount))
         ])
       }
 
@@ -160,6 +172,9 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setRefreshEnd:
       newState.refreshEnd = true
+
+    case .setLinkCount(let count):
+      newState.linkCount = count
     }
 
     return newState
@@ -214,7 +229,7 @@ extension FolderDetailViewReactor {
     } else {
       return .concat([
         .just(Mutation.setSortingType(type)),
-        fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order)
+        fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order),
       ])
     }
   }

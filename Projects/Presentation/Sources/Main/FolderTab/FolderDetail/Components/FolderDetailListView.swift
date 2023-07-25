@@ -29,6 +29,8 @@ class FolderDetailListView: UIView {
 
   // MARK: UI
 
+  let totalCountLabel = UILabel()
+
   let sortButton = TextButton(type: .regular, color: .gray600).then {
     $0.text = "생성순"
     $0.rightIconImage = DesignSystemAsset.iconDown.image
@@ -74,6 +76,11 @@ class FolderDetailListView: UIView {
   }
 
   // MARK: Configuring
+
+  func configureTotalCount(count: Int) {
+    totalCountLabel.attributedText = "\(count)개 주섬주섬"
+      .styled(font: .subTitleSemiBold, color: .gray800)
+  }
 
   func configureEmptyLabel(text: String) {
     emptyLabel.attributedText = "검색한 ‘\(text)' 링크가 없어요\n폴더를 추가해보세요."
@@ -158,8 +165,13 @@ class FolderDetailListView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [sortButton, emptyLabel, collectionView].forEach { addSubview($0) }
+    [totalCountLabel ,sortButton, emptyLabel, collectionView].forEach { addSubview($0) }
     collectionView.addSubview(refreshControl)
+
+    totalCountLabel.snp.makeConstraints {
+      $0.left.equalToSuperview()
+      $0.top.equalToSuperview().inset(24.0)
+    }
 
     sortButton.snp.makeConstraints {
       $0.right.equalToSuperview()
