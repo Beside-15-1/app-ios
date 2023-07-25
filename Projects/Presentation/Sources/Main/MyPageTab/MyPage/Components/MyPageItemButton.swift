@@ -58,7 +58,7 @@ final class MyPageItemButton: UIControl {
 
   override var isHighlighted: Bool {
     didSet {
-      runHighlightAnimation()
+      //runHighlightAnimation()
     }
   }
 
@@ -211,7 +211,7 @@ final class MyPageItemButton: UIControl {
     }
 
     container.snp.makeConstraints {
-      $0.left.right.equalToSuperview().inset(20.0)
+      $0.left.right.equalToSuperview()
       $0.top.bottom.equalToSuperview()
       $0.height.equalTo(64.0)
     }
