@@ -17,18 +17,23 @@ final class CreateLinkViewReactor: Reactor {
     case updateTag([String])
     case updateFolderList
     case saveButtonTapped
+    case inputURL(String)
   }
 
   enum Mutation {
     case setThumbnail(Thumbnail?)
     case setLinkError(String)
+    case setTitleError(String?)
     case setFolder(Folder)
     case setTag([String])
     case setFolderList([Folder])
     case setSucceed(Link)
+    case setInputURL(String)
   }
 
   struct State {
+    var inputURL = ""
+
     var link: Link?
     var thumbnail: Thumbnail?
     var folder: Folder?
@@ -36,9 +41,16 @@ final class CreateLinkViewReactor: Reactor {
     var folderList: [Folder] = []
 
     var isSaveButtonEnabled: Bool {
+      guard !inputURL.isEmpty else { return false }
+
       guard let thumbnail,
             let title = thumbnail.title,
+            let url = thumbnail.url,
             !title.isEmpty else {
+        return false
+      }
+
+      if inputURL != url {
         return false
       }
 
@@ -46,6 +58,7 @@ final class CreateLinkViewReactor: Reactor {
     }
 
     @Pulse var linkError: String?
+    @Pulse var titleError: String?
     var isSucceed: Link?
   }
 
@@ -111,10 +124,23 @@ final class CreateLinkViewReactor: Reactor {
       return fetchThumbnail(url: url)
 
     case .updateTitle(let title):
+      guard !title.isEmpty else {
+        var thumbnail = currentState.thumbnail
+        thumbnail?.title = nil
+
+        return .concat([
+          .just(Mutation.setThumbnail(thumbnail)),
+          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요."))
+        ])
+      }
+
       var thumbnail = currentState.thumbnail
       thumbnail?.title = title
 
-      return .just(Mutation.setThumbnail(thumbnail))
+      return .concat([
+        .just(Mutation.setThumbnail(thumbnail)),
+        .just(Mutation.setTitleError(nil))
+      ])
 
     case .updateFolder(let folder):
       return .just(Mutation.setFolder(folder))
@@ -127,6 +153,15 @@ final class CreateLinkViewReactor: Reactor {
 
     case .saveButtonTapped:
       return saveLink()
+
+    case .inputURL(let url):
+      guard !url.isEmpty else {
+        return .concat([
+          .just(Mutation.setThumbnail(nil)),
+          .just(Mutation.setInputURL(url)),
+        ])
+      }
+      return .just(Mutation.setInputURL(url))
     }
   }
 
@@ -151,6 +186,12 @@ final class CreateLinkViewReactor: Reactor {
 
     case .setSucceed(let link):
       newState.isSucceed = link
+
+    case .setInputURL(let url):
+      newState.inputURL = url
+
+    case .setTitleError(let error):
+      newState.titleError = error
     }
 
     return newState
@@ -164,9 +205,14 @@ extension CreateLinkViewReactor {
   private func fetchThumbnail(url: URL) -> Observable<Mutation> {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
-      .map { Mutation.setThumbnail($0) }
+      .flatMap { thumbnail -> Observable<Mutation> in
+        return .concat([
+          .just(Mutation.setThumbnail(thumbnail)),
+          .just(Mutation.setInputURL(thumbnail?.url ?? ""))
+        ])
+      }
       .catch { _ in
-        .just(Mutation.setLinkError("올바른 링크를 입력하세요"))
+        .just(Mutation.setLinkError("유효한 링크를 입력해주세요."))
       }
   }
 

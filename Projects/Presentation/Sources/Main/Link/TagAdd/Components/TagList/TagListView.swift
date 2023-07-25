@@ -49,7 +49,7 @@ final class TagListView: UIView {
   }
 
   private let emptyLabel = UILabel().then {
-    $0.text = "아직 선택된 태그가 없어요"
+    $0.text = "아직 선택된 태그가 없어요."
     $0.textColor = .gray500
     $0.font = .bodyRegular
   }

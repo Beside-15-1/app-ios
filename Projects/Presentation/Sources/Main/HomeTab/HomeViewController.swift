@@ -146,7 +146,7 @@ final class HomeViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.homeLinkView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
   }

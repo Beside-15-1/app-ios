@@ -33,6 +33,7 @@ public final class PresentationAssembly: Assembly {
       registerManageTagBuilder,
       registerWebBuilder,
       registerDeleteAccountBuilder,
+      registerSignUpSuccessBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -106,7 +107,8 @@ public final class PresentationAssembly: Assembly {
     container.register(SignUpBuildable.self) { r in
       SignUpBuilder(dependency: .init(
         loginRepository: r.resolve(),
-        mainTabBuilder: r.resolve()
+        mainTabBuilder: r.resolve(),
+        signUpSuccessBuilder: r.resolve()
       ))
     }
   }
@@ -219,6 +221,12 @@ public final class PresentationAssembly: Assembly {
       DeleteAccountBuilder(dependency: .init(
         loginRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerSignUpSuccessBuilder(container: Container) {
+    container.register(SingUpSuccessBuildable.self) { r in
+      SingUpSuccessBuilder(dependency: .init())
     }
   }
 }

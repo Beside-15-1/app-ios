@@ -128,7 +128,7 @@ public class InputField: UIView {
     $0.textColor = .gray900
   }
 
-  private let container = UIView().then {
+  private let container = UIControl().then {
     $0.backgroundColor = .gray200
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true

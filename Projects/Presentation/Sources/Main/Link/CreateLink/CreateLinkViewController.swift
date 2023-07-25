@@ -151,6 +151,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         self.contentView.linkInputField.text = thumbnail.url ?? ""
         self.contentView.titleInputField.text = thumbnail.title
         self.contentView.linkInputField.hideError()
+        self.contentView.titleInputField.hideError()
       }
       .disposed(by: disposeBag)
 
@@ -159,6 +160,18 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, errorDescription in
         self.contentView.linkInputField.errorDescription = errorDescription
         self.contentView.linkInputField.showError()
+      }
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$titleError)
+      .subscribe(with: self) { `self`, errorDescription in
+        guard let errorDescription else {
+          self.contentView.titleInputField.hideError()
+          return
+        }
+
+        self.contentView.titleInputField.errorDescription = errorDescription
+        self.contentView.titleInputField.showError()
       }
       .disposed(by: disposeBag)
 
@@ -180,6 +193,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   }
 
   private func bindTextField(with reactor: CreateLinkViewReactor) {
+    contentView.linkInputField.rx.text
+      .map { Reactor.Action.inputURL($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
     contentView.titleInputField.rx.text
       .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)

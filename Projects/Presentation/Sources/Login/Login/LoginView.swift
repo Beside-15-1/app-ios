@@ -32,6 +32,8 @@ class LoginView: UIView {
     $0.attributedText = "링크를 주섬주섬 담아\n나만의 책장을 만들어요".styled(
       font: .defaultRegular,
       color: .secondary4)
+    $0.numberOfLines = 0
+    $0.textAlignment = .center
   }
 
   let googleButton = UIControl().then {

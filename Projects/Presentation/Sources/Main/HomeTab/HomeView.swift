@@ -74,6 +74,17 @@ final class HomeView: UIView {
   }
 
 
+  // MARK: Configuring
+
+  func applyCollectionViewDataSource(by sectionViewModel: HomeLinkSectionViewModel) {
+    titleLabel.do {
+      let text = sectionViewModel.items.isEmpty ? "저장된 링크가 없어요\n새로운 링크를 저장해보세요" : "최근 주섬주섬 했던\n링크를 확인해보세요"
+      $0.attributedText = text.styled(font: .titleBold, color: .white)
+    }
+    homeLinkView.applyCollectionViewDataSource(by: sectionViewModel)
+  }
+
+
   // MARK: Layout
 
   private func defineLayout() {

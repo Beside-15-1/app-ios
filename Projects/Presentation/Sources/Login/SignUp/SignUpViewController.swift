@@ -3,6 +3,7 @@ import UIKit
 import RxSwift
 import ReactorKit
 import Toaster
+import PanModal
 
 import PresentationInterface
 import DesignSystem
@@ -20,6 +21,7 @@ final class SignUpViewController: UIViewController, StoryboardView {
   private var transition: UIViewControllerAnimatedTransitioning?
 
   private let mainTabBuilder: MainTabBarBuildable
+  private let signUpSuccessBuilder: SingUpSuccessBuildable
 
   var disposeBag = DisposeBag()
 
@@ -27,10 +29,12 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   init(
     reactor: SignUpViewReactor,
-    mainTabBuilder: MainTabBarBuildable
+    mainTabBuilder: MainTabBarBuildable,
+    signUpSuccessBuilder: SingUpSuccessBuildable
   ) {
     defer { self.reactor = reactor }
     self.mainTabBuilder = mainTabBuilder
+    self.signUpSuccessBuilder = signUpSuccessBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -43,6 +47,8 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -130,10 +136,10 @@ final class SignUpViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
-        let mainTab = self.mainTabBuilder.build(payload: .init())
-        self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.navigationController?.setViewControllers([mainTab], animated: true)
-        self.transition = nil
+        guard let vc = self.signUpSuccessBuilder.build(payload: .init(delegate: self))
+                as? PanModalPresentable.LayoutType else { return }
+
+        self.presentPanModal(vc)
       }
       .disposed(by: disposeBag)
   }
@@ -205,5 +211,17 @@ extension SignUpViewController: UINavigationControllerDelegate {
 extension SignUpViewController: SignUpViewDelegate {
   func inputFieldDidSelectYear(year: Int) {
     reactor?.action.onNext(.selectYear(year))
+  }
+}
+
+
+// MARK: SignUpSuccessDelegate
+
+extension SignUpViewController: SignUpSuccessDelegate {
+  func startJoosumButtonTapped() {
+    let mainTab = self.mainTabBuilder.build(payload: .init())
+    self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+    self.navigationController?.setViewControllers([mainTab], animated: true)
+    self.transition = nil
   }
 }

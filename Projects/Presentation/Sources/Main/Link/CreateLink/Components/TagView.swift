@@ -51,7 +51,7 @@ final class TagView: UIView {
   }
 
   private let emptyLabel = UILabel().then {
-    $0.attributedText = "아직 선택한 태그가 없네요\n태그를 추가해서\n저장한 링크를 나중에도 쉽게 찾아보세요"
+    $0.attributedText = "아직 선택한 태그가 없네요.\n태그를 추가해서\n저장한 링크를 나중에도 쉽게 찾아보세요."
       .styled(font: .bodyRegular, color: .gray600)
     $0.textAlignment = .center
     $0.numberOfLines = 0

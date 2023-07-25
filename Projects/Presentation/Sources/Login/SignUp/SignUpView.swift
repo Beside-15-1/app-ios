@@ -82,6 +82,10 @@ final class SignUpView: UIView {
     backgroundColor = .paperWhite
 
     defineLayout()
+
+    ageInputField.iconActionHandler = { [weak self] in
+      self?.ageInputField.becomeFirstResponder()
+    }
   }
 
   @available(*, unavailable)
