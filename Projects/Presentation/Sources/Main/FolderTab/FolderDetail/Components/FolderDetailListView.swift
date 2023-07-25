@@ -76,12 +76,14 @@ class FolderDetailListView: UIView {
   // MARK: Configuring
 
   func configureEmptyLabel(text: String) {
-    emptyLabel.attributedText = "검색한 ‘\(text)' 폴더가 없어요\n폴더를 추가해보세요."
+    emptyLabel.attributedText = "검색한 ‘\(text)' 링크가 없어요\n폴더를 추가해보세요."
       .styled(
         font: .defaultRegular,
         color: .gray700
       )
       .font(font: .defaultBold, target: text)
+
+    emptyLabel.textAlignment = .center
   }
 
 

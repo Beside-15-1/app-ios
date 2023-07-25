@@ -141,10 +141,13 @@ extension MyFolderViewReactor {
       .flatMap { [weak self] folderList -> Observable<Mutation> in
         guard let self else { return .empty() }
 
-        let viewModel = self.makeViewModel(withFolderList: folderList)
+        var newFolderList = folderList
+        newFolderList.insert(.all(), at: 0)
+
+        let viewModel = self.makeViewModel(withFolderList: newFolderList)
 
         return .concat([
-          .just(Mutation.setFolderList(folderList)),
+          .just(Mutation.setFolderList(newFolderList)),
           .just(Mutation.setFolderViewModel(viewModel)),
         ])
       }

@@ -113,9 +113,12 @@ final class HomeViewController: UIViewController, StoryboardView {
 
     contentView.viewAllButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        var folderList = reactor.currentState.folderList
+        folderList.insert(.all(), at: 0)
+
         let folderDetail = self.folderDetailBuilder.build(
           payload: .init(
-            folderList: reactor.currentState.folderList,
+            folderList: folderList,
             selectedFolder: .all()
           )
         )
@@ -168,12 +171,16 @@ extension HomeViewController: HomeFolderViewDelegate {
 
   func homeFolderView(didSelectItemAt row: Int) {
     // 라우팅
-    guard let folder = reactor?.currentState.folderList[row] else { return }
+    guard let folderList = reactor?.currentState.folderList
+    else { return }
+
+    var newFolderList = folderList
+    newFolderList.insert(.all(), at: 0)
 
     let folderDetail = folderDetailBuilder.build(
       payload: .init(
-        folderList: reactor?.currentState.folderList ?? [],
-        selectedFolder: folder
+        folderList: newFolderList,
+        selectedFolder: folderList[row]
       )
     )
 

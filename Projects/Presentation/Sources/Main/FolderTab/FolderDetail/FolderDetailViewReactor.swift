@@ -67,15 +67,9 @@ final class FolderDetailViewReactor: Reactor {
 
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
-
-    var folders = folderList
-    folders.insert(
-      Folder.all(),
-      at: 0
-    )
-
+    
     self.initialState = State(
-      folderList: folders,
+      folderList: folderList,
       selectedFolder: selectedFolder
     )
   }

@@ -50,12 +50,12 @@ public struct Folder: Hashable {
       id: "all",
       userID: "all",
       title: "전체",
-      backgroundColor: "",
-      titleColor: "",
+      backgroundColor: "#6D6D6F",
+      titleColor: "#FFFFFF",
       linkCount: 0,
       createdAt: "",
       lastSavedAt: "",
-      isDefault: false
+      isDefault: true
     )
   }
 }
