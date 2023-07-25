@@ -67,7 +67,6 @@ final class FolderDetailViewReactor: Reactor {
 
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
-    
     self.initialState = State(
       folderList: folderList,
       selectedFolder: selectedFolder

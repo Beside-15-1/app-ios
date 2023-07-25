@@ -17,6 +17,7 @@ final class HomeViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewWillAppear
     case createFolderSucceed
     case createLinkSucceed
   }
@@ -46,6 +47,8 @@ final class HomeViewReactor: Reactor {
   private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let getMeUseCase: GetMeUseCase
+  private let getLinkListUseCase: GetAllLinksUseCase
+  private let getFolderListUseCase: GetFolderListUseCase
 
 
   // MARK: initializing
@@ -53,13 +56,17 @@ final class HomeViewReactor: Reactor {
   init(
     fetchLinkListUseCase: FetchAllLinksUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase,
-    getMeUseCase: GetMeUseCase
+    getMeUseCase: GetMeUseCase,
+    getLinkListUseCase: GetAllLinksUseCase,
+    getFolderListUseCase: GetFolderListUseCase
   ) {
     defer { _ = self.state }
 
     self.fetchLinkListUseCase = fetchLinkListUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.getMeUseCase = getMeUseCase
+    self.getLinkListUseCase = getLinkListUseCase
+    self.getFolderListUseCase = getFolderListUseCase
 
     self.initialState = State()
   }
@@ -80,13 +87,19 @@ final class HomeViewReactor: Reactor {
         getMe(),
       ])
 
+    case .viewWillAppear:
+      return .concat([
+        getLinkList(),
+        getFolderList(),
+      ])
+
     case .createFolderSucceed:
       return fetchFolderList()
 
     case .createLinkSucceed:
       return .concat([
         fetchLinkList(),
-        fetchFolderList()
+        fetchFolderList(),
       ])
     }
   }
@@ -115,13 +128,47 @@ final class HomeViewReactor: Reactor {
 
 extension HomeViewReactor {
 
+  private func getFolderList() -> Observable<Mutation> {
+    let folderList = getFolderListUseCase.execute()
+
+    var viewModel = HomeFolderSectionViewModel(
+      section: .normal,
+      items: folderList.folders.map {
+        .init(
+          id: $0.id,
+          coverColor: $0.backgroundColor,
+          titleColor: $0.titleColor,
+          title: $0.title,
+          linkCount: $0.linkCount,
+          illust: $0.illustration,
+          isLast: false
+        )
+      }
+    )
+    viewModel.items.append(.init(
+      id: "default",
+      coverColor: "",
+      titleColor: "",
+      title: "",
+      linkCount: 0,
+      illust: nil,
+      isLast: true
+    ))
+
+    return .concat([
+      .just(Mutation.setFolderList(folderList.folders)),
+      .just(Mutation.setFolderViewModel(viewModel)),
+    ])
+  }
+
   private func fetchFolderList() -> Observable<Mutation> {
     fetchFolderListUseCase.execute(sort: .createAt)
       .asObservable()
       .flatMap { folderList -> Observable<Mutation> in
+
         var viewModel = HomeFolderSectionViewModel(
           section: .normal,
-          items: folderList.map {
+          items: folderList.folders.map {
             .init(
               id: $0.id,
               coverColor: $0.backgroundColor,
@@ -144,10 +191,48 @@ extension HomeViewReactor {
         ))
 
         return .concat([
-          .just(Mutation.setFolderList(folderList)),
+          .just(Mutation.setFolderList(folderList.folders)),
           .just(Mutation.setFolderViewModel(viewModel)),
         ])
       }
+  }
+
+  private func getLinkList() -> Observable<Mutation> {
+    let linkList = getLinkListUseCase.execute()
+
+    guard !linkList.isEmpty else {
+      return .concat([
+        .just(Mutation.setLinkList([])),
+        .just(Mutation.setLinkViewModel(.init(section: .normal, items: []))),
+      ])
+    }
+
+    let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)
+    let slicedLinkList = linkList.reversed()[linkList.startIndex..<lastIndex]
+
+    var viewModel = HomeLinkSectionViewModel(
+      section: .normal,
+      items: slicedLinkList.map {
+        .init(
+          id: $0.id,
+          imageURL: $0.thumbnailURL,
+          title: $0.title,
+          tag: $0.tags.map { tag in
+            ["#", tag, " "].joined()
+          }.reduce("") { first, second in first + second },
+          date: $0.createdAt,
+          isMore: false
+        )
+      }
+    )
+
+
+    viewModel.items.append(.init(id: "", imageURL: nil, title: "", tag: "", date: "", isMore: true))
+
+    return .concat([
+      .just(Mutation.setLinkList([Link](slicedLinkList))),
+      .just(Mutation.setLinkViewModel(viewModel)),
+    ])
   }
 
   private func fetchLinkList() -> Observable<Mutation> {

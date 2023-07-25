@@ -16,8 +16,14 @@ class FolderRepositoryImpl: FolderRepository {
 
   private let networking: PBNetworking<FolderAPI>
 
+  private var folderList: FolderList = FolderList(folders: [], totalLinkCount: 0)
+
   init(networking: PBNetworking<FolderAPI>) {
     self.networking = networking
+  }
+
+  func getFolderList() -> FolderList {
+    return folderList
   }
 
   func createFolder(
@@ -38,12 +44,15 @@ class FolderRepositoryImpl: FolderRepository {
       .map { _ in }
   }
 
-  func fetchFolderList(sort: String) -> Single<[Folder]> {
+  func fetchFolderList(sort: String) -> Single<FolderList> {
     let target = FolderAPI.fetchFolderList(sort: sort)
 
     return networking.request(target: target)
       .map(FolderListResponse.self)
-      .map { $0.toDomain() }
+      .map { [weak self] folderList in
+        self?.folderList = folderList.toDomain()
+        return folderList.toDomain()
+      }
   }
 
   func updateFolder(

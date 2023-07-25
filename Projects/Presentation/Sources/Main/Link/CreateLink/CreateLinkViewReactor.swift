@@ -177,12 +177,12 @@ extension CreateLinkViewReactor {
         guard let self else { return .empty() }
         guard let _ = self.currentState.folder else {
           return .concat([
-            .just(Mutation.setFolderList(folderList.reversed())),
-            .just(Mutation.setFolder(folderList.reversed().first!)),
+            .just(Mutation.setFolderList(folderList.folders.reversed())),
+            .just(Mutation.setFolder(folderList.folders.first!)),
           ])
         }
 
-        return .just(Mutation.setFolderList(folderList.reversed()))
+        return .just(Mutation.setFolderList(folderList.folders.reversed()))
       }
   }
 

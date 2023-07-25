@@ -11,13 +11,15 @@ import Domain
 
 struct FolderListResponse: Codable {
   let linkBooks: [FolderDTO]
+  let totalLinkCount: Int?
 
   enum CodingKeys: String, CodingKey {
     case linkBooks
+    case totalLinkCount
   }
 
-  func toDomain()-> [Folder] {
-    linkBooks.map {
+  func toDomain()-> FolderList {
+    FolderList(folders: linkBooks.map {
       .init(
         id: $0.id,
         userID: $0.userID,
@@ -30,6 +32,8 @@ struct FolderListResponse: Codable {
         lastSavedAt: $0.lastSavedAt,
         isDefault: $0.isDefault == "y"
       )
-    }
+    }, totalLinkCount: totalLinkCount ?? 0)
   }
 }
+
+

@@ -45,14 +45,14 @@ public struct Folder: Hashable {
     self.isDefault = isDefault
   }
 
-  public static func all() -> Folder {
+  public static func all(count: Int = 0) -> Folder {
     .init(
       id: "all",
       userID: "all",
       title: "전체",
       backgroundColor: "#6D6D6F",
       titleColor: "#FFFFFF",
-      linkCount: 0,
+      linkCount: count,
       createdAt: "",
       lastSavedAt: "",
       isDefault: true

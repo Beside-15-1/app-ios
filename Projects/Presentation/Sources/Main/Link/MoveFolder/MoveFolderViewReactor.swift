@@ -108,7 +108,7 @@ extension MoveFolderViewReactor {
 
         let viewModel = MoveFolderSectionViewModel(
           section: .normal,
-          items: folderList.map {
+          items: folderList.folders.map {
             MoveFolderCell.ViewModel(
               id: $0.id,
               coverColor: $0.backgroundColor,
@@ -120,10 +120,10 @@ extension MoveFolderViewReactor {
           }
         )
 
-        let index = folderList.firstIndex(where: { $0.id == self.currentState.folderId }) ?? 0
+        let index = folderList.folders.firstIndex(where: { $0.id == self.currentState.folderId }) ?? 0
 
         return .concat([
-          .just(Mutation.setFolderList(folderList)),
+          .just(Mutation.setFolderList(folderList.folders)),
           .just(Mutation.setViewModel(viewModel)),
           .just(Mutation.setSelectedIndex(index))
         ])

@@ -16,6 +16,8 @@ final class LinkRepositoryImpl: LinkRepository {
 
   private let networking: PBNetworking<LinkAPI>
 
+  private var links: [Link] = []
+
   init(networking: PBNetworking<LinkAPI>) {
     self.networking = networking
   }
@@ -40,7 +42,10 @@ final class LinkRepositoryImpl: LinkRepository {
 
     return networking.request(target: target)
       .map([LinkDTO].self)
-      .map { $0.map { dtos in dtos.toDomain() } }
+      .map { [weak self] linkList in
+        self?.links = linkList.map { dtos in dtos.toDomain() }
+        return linkList.map { dtos in dtos.toDomain() }
+      }
   }
 
   func fetchLinksInLinkBook(linkBookID: String, sort: LinkSortingType, order: SortingOrderType) -> Single<[Link]> {
@@ -71,5 +76,9 @@ final class LinkRepositoryImpl: LinkRepository {
 
     return networking.request(target: target)
       .map { _ in }
+  }
+
+  func getAllLinks() -> [Link] {
+    return links
   }
 }

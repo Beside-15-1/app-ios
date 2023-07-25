@@ -19,6 +19,7 @@ final class MyFolderViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewWillAppear
     case searchText(String)
     case createFolderSucceed
     case deleteFolder(Folder)
@@ -46,18 +47,21 @@ final class MyFolderViewReactor: Reactor {
 
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let deleteFolderUseCase: DeleteFolderUseCase
+  private let getFolderListUseCase: GetFolderListUseCase
 
 
   // MARK: initializing
 
   init(
     fetchFolderListUseCase: FetchFolderListUseCase,
-    deleteFolderUseCase: DeleteFolderUseCase
+    deleteFolderUseCase: DeleteFolderUseCase,
+    getFolderListUseCase: GetFolderListUseCase
   ) {
     defer { _ = self.state }
 
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.deleteFolderUseCase = deleteFolderUseCase
+    self.getFolderListUseCase = getFolderListUseCase
 
     self.initialState = State()
   }
@@ -73,6 +77,18 @@ final class MyFolderViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return fetchFolderList(sort: .createAt)
+
+    case .viewWillAppear:
+      var newFolderList = getFolderListUseCase.execute().folders
+      newFolderList.insert(.all(count: getFolderListUseCase.execute().totalLinkCount), at: 0)
+
+      let viewModel = self.makeViewModel(withFolderList: newFolderList)
+
+      return .concat([
+        .just(Mutation.setFolderList(newFolderList)),
+        .just(Mutation.setFolderViewModel(viewModel)),
+      ])
+
 
     case .searchText(let text):
 
@@ -141,8 +157,8 @@ extension MyFolderViewReactor {
       .flatMap { [weak self] folderList -> Observable<Mutation> in
         guard let self else { return .empty() }
 
-        var newFolderList = folderList
-        newFolderList.insert(.all(), at: 0)
+        var newFolderList = folderList.folders
+        newFolderList.insert(.all(count: folderList.totalLinkCount), at: 0)
 
         let viewModel = self.makeViewModel(withFolderList: newFolderList)
 

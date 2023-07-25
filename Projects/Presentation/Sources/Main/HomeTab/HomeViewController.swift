@@ -70,7 +70,7 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
+    reactor?.action.onNext(.viewWillAppear)
     navigationController?.isNavigationBarHidden = true
   }
 

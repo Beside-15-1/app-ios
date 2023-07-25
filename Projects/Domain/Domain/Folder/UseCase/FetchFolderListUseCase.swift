@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 public protocol FetchFolderListUseCase {
-  func execute(sort: FolderSortingType) -> Single<[Folder]>
+  func execute(sort: FolderSortingType) -> Single<FolderList>
 }
 
 public class FetchFolderListUseCaseImpl: FetchFolderListUseCase {
@@ -21,7 +21,7 @@ public class FetchFolderListUseCaseImpl: FetchFolderListUseCase {
     self.folderRepository = folderRepository
   }
 
-  public func execute(sort: FolderSortingType) -> Single<[Folder]> {
+  public func execute(sort: FolderSortingType) -> Single<FolderList> {
     folderRepository.fetchFolderList(sort: sort.rawValue)
   }
 }

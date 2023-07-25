@@ -10,7 +10,9 @@ import Foundation
 import RxSwift
 
 public protocol FolderRepository {
-  func fetchFolderList(sort: String) -> Single<[Folder]>
+  func fetchFolderList(sort: String) -> Single<FolderList>
+
+  func getFolderList() -> FolderList
 
   func createFolder(
     backgroundColor: String,

@@ -76,6 +76,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     super.viewWillAppear(animated)
 
     navigationController?.isNavigationBarHidden = true
+    reactor?.action.onNext(.viewWillAppear)
   }
 
 
