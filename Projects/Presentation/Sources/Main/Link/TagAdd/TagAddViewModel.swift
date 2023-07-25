@@ -78,7 +78,7 @@ extension TagAddViewModel: TagAddViewModelInput {
         shouldShowTagLimitToast.accept(())
         var tagList = localTagList.value
         if !tagList.contains(where: { $0 == text }) {
-          tagList.append(text)
+          tagList.insert(text, at: 0)
         }
         localTagList.accept(tagList)
         userDefaults.tagList = tagList
@@ -96,7 +96,7 @@ extension TagAddViewModel: TagAddViewModelInput {
       // 태그 리스트에 추가
       var tagList = localTagList.value
       if !tagList.contains(where: { $0 == text }) {
-        tagList.append(text)
+        tagList.insert(text, at: 0)
       }
       localTagList.accept(tagList)
       userDefaults.tagList = tagList
