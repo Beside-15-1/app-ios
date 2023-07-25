@@ -154,6 +154,13 @@ extension HomeViewReactor {
     fetchLinkListUseCase.execute(sort: .createAt, order: .asc)
       .asObservable()
       .flatMap { linkList -> Observable<Mutation> in
+        guard !linkList.isEmpty else {
+          return .concat([
+            .just(Mutation.setLinkList([])),
+            .just(Mutation.setLinkViewModel(.init(section: .normal, items: []))),
+          ])
+        }
+
         let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)
         let linkList = linkList.reversed()[linkList.startIndex..<lastIndex]
 
@@ -172,6 +179,7 @@ extension HomeViewReactor {
             )
           }
         )
+
 
         viewModel.items.append(.init(id: "", imageURL: nil, title: "", tag: "", date: "", isMore: true))
 
