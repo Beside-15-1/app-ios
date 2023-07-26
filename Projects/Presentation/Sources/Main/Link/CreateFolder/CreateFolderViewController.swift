@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 final class CreateFolderViewController: UIViewController, StoryboardView {
@@ -58,6 +59,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     bindContent(with: reactor)
     bindTextField(with: reactor)
     bindRoute(with: reactor)
+    bindError(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateFolderViewReactor) {
@@ -152,6 +154,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
         self.dismiss(animated: true) {
           self.delegate?.createFolderSucceed()
         }
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindError(with reactor: CreateFolderViewReactor) {
+    reactor.pulse(\.$error)
+      .compactMap { $0 }
+      .subscribe(with: self) { `self`, error in
+        PBToast(content: error)
+          .show()
       }
       .disposed(by: disposeBag)
   }
