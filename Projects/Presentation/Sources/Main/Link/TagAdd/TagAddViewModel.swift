@@ -135,20 +135,10 @@ extension TagAddViewModel: TagAddViewModelInput {
 
   func removeTagListTag(at row: Int) {
     var local = localTagList.value
-    let removedTag = localTagList.value[row]
-
-    guard let removedRowInAddedList = addedTagList.value.firstIndex(of: removedTag) else {
-      local.remove(at: row)
-      localTagList.accept(local)
-      userDefaults.tagList = local
-      return
-    }
 
     local.remove(at: row)
     localTagList.accept(local)
     userDefaults.tagList = local
-
-    removeAddedTag(at: removedRowInAddedList)
   }
 
   func inputText(text: String) {

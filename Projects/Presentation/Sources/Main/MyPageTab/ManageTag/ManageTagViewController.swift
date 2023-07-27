@@ -77,7 +77,7 @@ final class ManageTagViewController: UIViewController {
       .delay(.milliseconds(100), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] local in
         guard !local.isEmpty else { return }
-        self?.contentView.tagListView.applyTagList(by: local, selected: [])
+        self?.contentView.tagListView.applyTagList(by: local)
       })
       .disposed(by: disposeBag)
 

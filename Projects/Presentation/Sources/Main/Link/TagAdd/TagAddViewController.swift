@@ -63,7 +63,7 @@ final class TagAddViewController: UIViewController {
     viewModel.addedTagList
       .subscribe(with: self) { `self`, list in
         self.contentView.addedTagView.applyAddedTag(by: list)
-        self.contentView.tagListView.configureTagCount(count: list.count)
+        self.contentView.addedTagView.configureTagCount(count: list.count)
       }
       .disposed(by: disposeBag)
 
@@ -71,7 +71,7 @@ final class TagAddViewController: UIViewController {
       .delay(.milliseconds(100), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] local in
         guard !local.isEmpty else { return }
-        self?.contentView.tagListView.applyTagList(by: local, selected: viewModel.addedTagList.value)
+        self?.contentView.tagListView.applyTagList(by: local)
       })
       .disposed(by: disposeBag)
 
@@ -195,15 +195,7 @@ extension TagAddViewController: UITextFieldDelegate {
 
 extension TagAddViewController: AddedTagViewDelegate {
   func removeAddedTag(at row: Int) {
-    let deletedTag = viewModel.addedTagList.value[row]
-
     viewModel.removeAddedTag(at: row)
-    guard let index = viewModel.localTagList.value.firstIndex(of: deletedTag),
-          let cell = contentView.tagListView.tableView
-          .cellForRow(at: IndexPath(item: index, section: 0)) as? TagListCell
-    else { return }
-
-    cell.configureSelected(isSelected: false)
   }
 }
 
@@ -216,13 +208,9 @@ extension TagAddViewController: TagListViewDelegate {
 
     let selectedTag = viewModel.localTagList.value[at]
 
-    if let index = viewModel.addedTagList.value.firstIndex(of: selectedTag) {
-      // 해제
-      viewModel.removeAddedTag(at: index)
-      cell.configureSelected(isSelected: false)
-    } else {
-      // 선택
+    guard let index = viewModel.addedTagList.value.firstIndex(of: selectedTag) else {
       viewModel.addTag(text: selectedTag)
+      return
     }
   }
 
