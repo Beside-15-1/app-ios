@@ -13,11 +13,13 @@ import RxSwift
 import SnapKit
 import Then
 
-enum TabSection: Hashable {
+import PBLog
+
+enum WhiteTabSection: Hashable {
   case normal
 }
 
-public struct Tab: Hashable {
+public struct WhiteTab: Hashable {
   public let title: String
   public let id: UUID
 
@@ -27,11 +29,7 @@ public struct Tab: Hashable {
   }
 }
 
-public protocol TabViewDelegate: AnyObject {
-  func tabView(_ tabView: TabView, didSelectedTab: String)
-}
-
-public final class TabView: UIView {
+public final class WhiteTabView: UIView {
 
   // MARK: UI
 
@@ -41,7 +39,7 @@ public final class TabView: UIView {
   ).then {
     $0.backgroundColor = .clear
     $0.showsHorizontalScrollIndicator = false
-    $0.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
+    $0.register(WhiteTabCell.self, forCellWithReuseIdentifier: WhiteTabCell.identifier)
     $0.delegate = self
     $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
   }
@@ -56,14 +54,8 @@ public final class TabView: UIView {
   public weak var delegate: TabViewDelegate?
   public var selectedTab: PublishRelay<String> = .init()
 
-  var colorType: TabColorType = .primary
 
   // MARK: Initialize
-
-  public convenience init(colorType: TabColorType) {
-    self.init(frame: .zero)
-    self.colorType = colorType
-  }
 
   public override init(frame: CGRect) {
     super.init(frame: frame)
@@ -80,21 +72,28 @@ public final class TabView: UIView {
 
   public func applyTabs(by tabs: [String]) {
     self.tabs = tabs
-    var snapshot = NSDiffableDataSourceSnapshot<TabSection, Tab>()
+    var snapshot = NSDiffableDataSourceSnapshot<WhiteTabSection, WhiteTab>()
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tabs.map { Tab(title: $0, id: UUID()) }, toSection: .normal)
+    snapshot.appendItems(tabs.map { WhiteTab(title: $0, id: UUID()) }, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
   }
 
   public func selectItem(at row: Int) {
-    DispatchQueue.main.async {
+    DispatchQueue.main.asyncAfter(deadline: .now()) {
       self.collectionView.selectItem(
         at: IndexPath(item: row, section: 0),
-        animated: true,
+        animated: false,
         scrollPosition: .centeredHorizontally
       )
+    }
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+      guard let cell = self.collectionView.cellForItem(at: IndexPath(item: row, section: 0))
+              as? WhiteTabCell else { return }
+
+      cell.configure(isSelected: true)
     }
   }
 
@@ -129,17 +128,15 @@ public final class TabView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, Tab> {
-    let dataSource = UICollectionViewDiffableDataSource<TabSection, Tab>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<WhiteTabSection, WhiteTab> {
+    let dataSource = UICollectionViewDiffableDataSource<WhiteTabSection, WhiteTab>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
-        withReuseIdentifier: TabCell.identifier, for: indexPath
-      ).then { [weak self] cell in
-        guard let self else { return }
-
-        guard let cell = cell as? TabCell else { return }
-        cell.configure(title: item.title, colorType: self.colorType)
+        withReuseIdentifier: WhiteTabCell.identifier, for: indexPath
+      ).then { cell in
+        guard let cell = cell as? WhiteTabCell else { return }
+        cell.configure(title: item.title)
       }
     }
 
@@ -161,18 +158,18 @@ public final class TabView: UIView {
 }
 
 
-extension TabView: UICollectionViewDelegate {
+extension WhiteTabView: UICollectionViewDelegate {
   public func collectionView(
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
-    collectionView.scrollToItem(
-      at: IndexPath(item: indexPath.row, section: 0),
-      at: .centeredHorizontally,
-      animated: true
-    )
+//    collectionView.scrollToItem(
+//      at: IndexPath(item: indexPath.row, section: 0),
+//      at: .centeredHorizontally,
+//      animated: true
+//    )
 
-    delegate?.tabView(self, didSelectedTab: tabs[indexPath.row])
+    delegate?.tabView(didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])
   }
 }

@@ -22,7 +22,7 @@ final class TagAddView: UIView {
   let tagListView = TagListView()
 
   let makeButton = BasicButton(priority: .primary).then {
-    $0.text = "만들기"
+    $0.text = "완료"
   }
 
   // MARK: Initializing

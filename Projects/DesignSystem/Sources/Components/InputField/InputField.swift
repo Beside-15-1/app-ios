@@ -116,6 +116,14 @@ public class InputField: UIView {
     textField.resignFirstResponder()
   }
 
+  public func addAction(_ action: UIAction, for controlEvents: UIControl.Event) {
+    textField.addAction(action, for: controlEvents)
+  }
+
+  public func addTarget(_ target: Any?, action: Selector, for controlEvents: UIControl.Event) {
+    textField.addTarget(target, action: action, for: controlEvents)
+  }
+
   // MARK: UI
 
   private let stackView = UIStackView().then {

@@ -50,6 +50,12 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    contentView.linkBookTabView.folderView.inputField.addTarget(
+      self,
+      action: #selector(textDidChange),
+      for: .editingChanged
+    )
   }
 
   // MARK: Binding
@@ -186,6 +192,18 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     }
 
     return nil
+  }
+
+  @objc
+  private func textDidChange(_ textField: UITextField) {
+    if let text = textField.text {
+      // 초과되는 텍스트 제거
+      if text.count > 10 {
+        DispatchQueue.main.async {
+          textField.text = String(text.prefix(10))
+        }
+      }
+    }
   }
 }
 

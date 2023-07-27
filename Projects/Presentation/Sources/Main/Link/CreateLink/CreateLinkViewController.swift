@@ -59,6 +59,10 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+
+    if let _ = reactor?.currentState.link {
+      contentView.linkInputField.isEnabled = false
+    }
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -142,6 +146,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .asObservable()
       .subscribe(with :self) { `self`, link in
         self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .white)
+
+
       }
       .disposed(by: disposeBag)
 
@@ -165,7 +171,8 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     reactor.pulse(\.$titleError)
       .subscribe(with: self) { `self`, errorDescription in
-        guard let errorDescription else {
+        guard let errorDescription,
+              let _ = reactor.currentState.thumbnail else {
           self.contentView.titleInputField.hideError()
           return
         }

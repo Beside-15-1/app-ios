@@ -8,7 +8,6 @@ import PBUserDefaults
 // MARK: - TagAddViewModelInput
 
 protocol TagAddViewModelInput {
-  func inputText(text: String)
   func addTag(text: String)
   func editTag(text: String)
   func removeAddedTag(at row: Int)
@@ -139,13 +138,6 @@ extension TagAddViewModel: TagAddViewModelInput {
     local.remove(at: row)
     localTagList.accept(local)
     userDefaults.tagList = local
-  }
-
-  func inputText(text: String) {
-    if text.count > 9 {
-      let validatedText = text[text.startIndex...text.index(text.startIndex, offsetBy: 9)]
-      self.validatedText.accept(String(validatedText))
-    }
   }
 
   func changeEditMode(text: String) {

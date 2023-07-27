@@ -21,6 +21,11 @@ protocol FolderDetailListViewDelegate: AnyObject {
 
 class FolderDetailListView: UIView {
 
+  struct EmptyViewModel: Hashable {
+    let text: String
+    let bold: String
+  }
+
   typealias Section = FolderDetailSection
   typealias SectionItem = FolderDetailCell.ViewModel
   private typealias DiffableDataSource = UICollectionViewDiffableDataSource<Section, SectionItem>
@@ -78,17 +83,17 @@ class FolderDetailListView: UIView {
   // MARK: Configuring
 
   func configureTotalCount(count: Int) {
-    totalCountLabel.attributedText = "\(count)개 주섬주섬"
+    totalCountLabel.attributedText = "\(count)개 주섬"
       .styled(font: .subTitleSemiBold, color: .gray800)
   }
 
-  func configureEmptyLabel(text: String) {
-    emptyLabel.attributedText = "검색한 ‘\(text)' 링크가 없어요\n폴더를 추가해보세요."
+  func configureEmptyLabel(viewModel: EmptyViewModel) {
+    emptyLabel.attributedText = viewModel.text
       .styled(
         font: .defaultRegular,
         color: .gray700
       )
-      .font(font: .defaultBold, target: text)
+      .font(font: .defaultBold, target: viewModel.bold)
 
     emptyLabel.textAlignment = .center
   }

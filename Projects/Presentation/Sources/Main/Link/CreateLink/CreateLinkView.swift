@@ -25,14 +25,14 @@ final class CreateLinkView: UIView {
 
   let linkInputField = InputField(type: .normal).then {
     $0.title = "링크".styled(font: .subTitleSemiBold, color: .white)
-    $0.placeHolder = "링크를 입력하세요."
+    $0.placeHolder = "URL을 입력하거나 붙여넣어주세요."
     $0.returnKeyType = .done
     $0.tag = 1
   }
 
   let titleInputField = InputField(type: .normal).then {
     $0.title = "제목".styled(font: .subTitleSemiBold, color: .staticBlack)
-    $0.placeHolder = "제목을 입력하세요."
+    $0.placeHolder = "제목을 입력해주세요."
     $0.tag = 2
     $0.returnKeyType = .done
   }

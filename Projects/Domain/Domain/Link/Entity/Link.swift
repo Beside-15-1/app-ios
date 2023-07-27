@@ -9,7 +9,7 @@ import Foundation
 
 public struct Link: Hashable {
   public let id: String
-  public let linkBookId: String
+  public var linkBookId: String
   public let userId: String
 
   public let readCount: Int
@@ -17,7 +17,7 @@ public struct Link: Hashable {
   public let url: String
   public let thumbnailURL: String?
   public let tags: [String]
-  public let folderName: String
+  public var folderName: String
 
   public let createdAt: String
   public let lastReadAt: String

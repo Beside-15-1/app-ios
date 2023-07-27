@@ -216,7 +216,7 @@ extension HomeViewController: CreateLinkDelegate {
 extension HomeViewController: HomeLinkViewDelegate {
   func homeLinkView(_ homeLinkView: HomeLinkView, didSelectItemAt row: Int) {
     guard let reactor else { return }
-    guard row < reactor.currentState.folderList.count else {
+    guard row < reactor.currentState.linkList.count else {
       let folderDetail = folderDetailBuilder.build(
         payload: .init(
           folderList: reactor.currentState.folderList,
@@ -235,9 +235,8 @@ extension HomeViewController: HomeLinkViewDelegate {
       return
     }
 
-    let web = webBuilder.build(payload: .init(url: url))
-    web.modalPresentationStyle = .popover
+    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
-    present(web, animated: true)
+    UIApplication.shared.open(url, options: options)
   }
 }

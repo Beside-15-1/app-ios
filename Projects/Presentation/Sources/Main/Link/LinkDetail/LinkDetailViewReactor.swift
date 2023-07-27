@@ -23,6 +23,7 @@ final class LinkDetailViewReactor: Reactor {
 
   enum Mutation {
     case setDeleted
+    case updateLink(Link)
   }
 
   struct State {
@@ -80,6 +81,9 @@ final class LinkDetailViewReactor: Reactor {
     switch mutation {
     case .setDeleted:
       newState.isDeleted = true
+
+    case .updateLink(let link):
+      newState.link = link
     }
 
     return newState
@@ -105,6 +109,14 @@ extension LinkDetailViewReactor {
       folderID: folder.id
     )
     .asObservable()
-    .flatMap { _ -> Observable<Mutation> in .empty() }
+    .flatMap { [weak self] _ -> Observable<Mutation> in
+      guard let self else { return .empty() }
+      var link = self.currentState.link
+
+      link.folderName = folder.title
+      link.linkBookId = folder.id
+
+      return .just(Mutation.updateLink(link))
+    }
   }
 }

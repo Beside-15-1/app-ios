@@ -29,20 +29,25 @@ final class FolderDetailViewReactor: Reactor {
     case setViewModel(FolderDetailSectionViewModel)
     case setSelectedFolder(Folder)
     case setSortingType(LinkSortingType)
+    case setOrderType(SortingOrderType)
     case setRefreshEnd
     case setLinkCount(Int)
+    case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
   }
 
   struct State {
     let folderList: [Folder]
     var selectedFolder: Folder
-    var linkCount: Int = 0
+    var linkCount = 0
 
     var linkList: [Link] = []
 
     var viewModel: FolderDetailSectionViewModel?
 
     var sortingType: LinkSortingType = .createAt
+    var orderType: SortingOrderType = .desc
+
+    var emptyLabelText: FolderDetailListView.EmptyViewModel = .init(text: "", bold: "")
 
     @Pulse var refreshEnd = false
   }
@@ -94,27 +99,29 @@ final class FolderDetailViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       if currentState.selectedFolder.id == Folder.all().id {
-        return fetchAllLinks(sort: currentState.sortingType, order: .desc)
+        return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
       } else {
-        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: .desc)
+        return fetchLinksInFolder(
+          id: currentState.selectedFolder.id,
+          sort: currentState.sortingType,
+          order: currentState.orderType
+        )
       }
 
     case .selectTab(let tab):
       let selectedFolder = currentState.folderList.first(where: { $0.title == tab }) ?? .all()
 
-      let order: SortingOrderType = currentState.sortingType == .lastedAt ? .asc : .desc
-
       if selectedFolder.title == Folder.all().title {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
-          fetchAllLinks(sort: currentState.sortingType, order: order),
-          .just(Mutation.setLinkCount(selectedFolder.linkCount))
+          fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType),
+          .just(Mutation.setLinkCount(selectedFolder.linkCount)),
         ])
       } else {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
-          fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: order),
-          .just(Mutation.setLinkCount(selectedFolder.linkCount))
+          fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: currentState.orderType),
+          .just(Mutation.setLinkCount(selectedFolder.linkCount)),
         ])
       }
 
@@ -129,7 +136,11 @@ final class FolderDetailViewReactor: Reactor {
           isAll: currentState.selectedFolder.title == Folder.all().title
         )
 
-        return .just(Mutation.setViewModel(viewModel))
+        return .concat([
+          .just(Mutation.setEmptyLabelText(.init(text: "아직 폴더에 저장된 링크가 없어요.", bold: ""))),
+          .just(Mutation.setViewModel(viewModel)),
+          .just(Mutation.setLinkCount(viewModel.items.count)),
+        ])
       }
 
       let filteredList = currentState.linkList.filter {
@@ -141,7 +152,11 @@ final class FolderDetailViewReactor: Reactor {
         isAll: currentState.selectedFolder.title == Folder.all().title
       )
 
-      return .just(Mutation.setViewModel(viewModel))
+      return .concat([
+        .just(Mutation.setEmptyLabelText(.init(text: "검색한 ‘\(text)' 링크가 없어요\n링크를 추가해보세요.", bold: text))),
+        .just(Mutation.setViewModel(viewModel)),
+        .just(Mutation.setLinkCount(filteredList.count)),
+      ])
 
     case .refresh:
       let order: SortingOrderType = currentState.sortingType == .lastedAt ? .asc : .desc
@@ -170,11 +185,17 @@ final class FolderDetailViewReactor: Reactor {
     case .setSortingType(let type):
       newState.sortingType = type
 
+    case .setOrderType(let type):
+      newState.orderType = type
+
     case .setRefreshEnd:
       newState.refreshEnd = true
 
     case .setLinkCount(let count):
       newState.linkCount = count
+
+    case .setEmptyLabelText(let text):
+      newState.emptyLabelText = text
     }
 
     return newState
@@ -195,6 +216,7 @@ extension FolderDetailViewReactor {
           .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
           .just(Mutation.setViewModel(viewModel)),
+          .just(Mutation.setLinkCount(links.count)),
         ])
       }
       .catch { _ in
@@ -212,6 +234,7 @@ extension FolderDetailViewReactor {
           .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
           .just(Mutation.setViewModel(viewModel)),
+          .just(Mutation.setLinkCount(links.count)),
         ])
       }.catch { _ in
         .just(Mutation.setRefreshEnd)
@@ -219,16 +242,29 @@ extension FolderDetailViewReactor {
   }
 
   private func updateSort(type: LinkSortingType) -> Observable<Mutation> {
-    let order: SortingOrderType = type == .lastedAt ? .asc : .desc
+    let order: SortingOrderType
+
+    switch type {
+    case .createAt:
+      order = .desc
+    case .lastedAt:
+      order = .asc
+    case .title:
+      order = .asc
+    case .updatedAt:
+      order = .asc
+    }
 
     if currentState.selectedFolder.title == Folder.all().title {
       return .concat([
         .just(Mutation.setSortingType(type)),
+        .just(Mutation.setOrderType(order)),
         fetchAllLinks(sort: type, order: order),
       ])
     } else {
       return .concat([
         .just(Mutation.setSortingType(type)),
+        .just(Mutation.setOrderType(order)),
         fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order),
       ])
     }

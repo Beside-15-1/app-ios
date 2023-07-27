@@ -1,5 +1,5 @@
 //
-//  TabCell.swift
+//  PrimaryTabCell.swift
 //  DesignSystem
 //
 //  Created by 박천송 on 2023/06/12.
@@ -8,23 +8,9 @@
 import Foundation
 import UIKit
 
-public enum TabColorType {
-  case white
-  case primary
+class PrimaryTabCell: UICollectionViewCell {
 
-  var selectColor: UIColor {
-    switch self {
-    case .white:
-      return .white
-    case .primary:
-      return .primary500
-    }
-  }
-}
-
-class TabCell: UICollectionViewCell {
-
-  static let identifier = "TabCell"
+  static let identifier = "PrimaryTabCell"
 
   // MARK: UI
 
@@ -51,8 +37,6 @@ class TabCell: UICollectionViewCell {
     }
   }
 
-  var colorType: TabColorType = .primary
-
   // MARK: Initialize
 
   override init(frame: CGRect) {
@@ -68,22 +52,22 @@ class TabCell: UICollectionViewCell {
 
   // MARK: Configuring
 
-  func configure(title: String, colorType: TabColorType) {
-    titleLabel.text = title
-    self.colorType = colorType
+  func configure(title: String) {
+    titleLabel.attributedText = title.styled(font: .subTitleRegular, color: .gray600)
+    titleLabel.textAlignment = .center
   }
 
   func configure(isSelected: Bool) {
-    underBar.backgroundColor = colorType.selectColor
+    underBar.backgroundColor = .primary500
 
     if isSelected {
       underBar.isHidden = false
-      titleLabel.textColor = colorType.selectColor
-      titleLabel.font = .subTitleBold
+      titleLabel.attributedText = titleLabel.text?.styled(font: .subTitleBold, color: .primary500)
+      titleLabel.textAlignment = .center
     } else {
       underBar.isHidden = true
-      titleLabel.textColor = .gray600
-      titleLabel.font = .subTitleRegular
+      titleLabel.attributedText = titleLabel.text?.styled(font: .subTitleRegular, color: .gray600)
+      titleLabel.textAlignment = .center
     }
   }
 

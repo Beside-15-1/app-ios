@@ -12,8 +12,8 @@ class CreateFolderTabView: UIView {
 
   // MARK: UI
 
-  lazy var tabView = TabView(colorType: .primary).then {
-    $0.applyTabs(by: ["폴더명", "컬러", "일러스트"])
+  lazy var tabView = PrimaryTabView().then {
+    $0.applyTabs(by: ["폴더명", "색상", "일러스트"])
   }
 
   lazy var folderView = CreateFolderFolderView()
@@ -89,7 +89,7 @@ class CreateFolderTabView: UIView {
           self?.folderView.isHidden = false
           self?.colorView.isHidden = true
           self?.illustView.isHidden = true
-        case "컬러":
+        case "색상":
           self?.folderView.isHidden = true
           self?.colorView.isHidden = false
           self?.illustView.isHidden = true

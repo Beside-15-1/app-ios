@@ -221,14 +221,18 @@ extension CreateLinkViewReactor {
       .asObservable()
       .flatMap { [weak self] folderList -> Observable<Mutation> in
         guard let self else { return .empty() }
-        guard let _ = self.currentState.folder else {
+
+        if let folder = folderList.folders.first(where: { $0.id == self.currentState.link?.linkBookId }) {
           return .concat([
-            .just(Mutation.setFolderList(folderList.folders.reversed())),
-            .just(Mutation.setFolder(folderList.folders.first!)),
+            .just(Mutation.setFolderList(folderList.folders)),
+            .just(Mutation.setFolder(folder)),
           ])
         }
 
-        return .just(Mutation.setFolderList(folderList.folders.reversed()))
+        return .concat([
+          .just(Mutation.setFolderList(folderList.folders)),
+          .just(Mutation.setFolder(folderList.folders.first!)),
+        ])
       }
   }
 
@@ -238,7 +242,7 @@ extension CreateLinkViewReactor {
       return .empty()
     }
 
-    if var link = currentState.link {
+    if let link = currentState.link {
       // 편집
       return updateLinkUseCase.execute(
         id: link.id,

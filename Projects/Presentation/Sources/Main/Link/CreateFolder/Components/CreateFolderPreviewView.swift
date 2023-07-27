@@ -42,7 +42,7 @@ class CreateFolderPreviewView: UIView {
   }()
 
   private let bookText = UILabel().then {
-    $0.attributedText = "제목을 입력하세요".styled(font: .bodyBold, color: .white)
+    $0.attributedText = "폴더명을 입력해주세요.".styled(font: .bodyBold, color: .white)
     $0.numberOfLines = 3
   }
 

@@ -50,6 +50,12 @@ final class TagAddViewController: UIViewController {
     super.viewDidLoad()
 
     bind(with: viewModel)
+
+    contentView.inputField.addTarget(
+      self,
+      action: #selector(textDidChange),
+      for: .editingChanged
+    )
   }
 
   // MARK: Binding
@@ -73,16 +79,6 @@ final class TagAddViewController: UIViewController {
         guard !local.isEmpty else { return }
         self?.contentView.tagListView.applyTagList(by: local)
       })
-      .disposed(by: disposeBag)
-
-    contentView.inputField.rx.text
-      .subscribe(with: self) { `self`, text in
-        self.viewModel.inputText(text: text)
-      }
-      .disposed(by: disposeBag)
-
-    viewModel.validatedText
-      .bind(to: contentView.inputField.rx.text)
       .disposed(by: disposeBag)
 
     viewModel.shouldShowTagLimitToast
@@ -188,6 +184,18 @@ extension TagAddViewController: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     viewModel.editedTag = nil
     viewModel.tagInputMode = .input
+  }
+
+  @objc
+  private func textDidChange(_ textField: UITextField) {
+    if let text = textField.text {
+      // 초과되는 텍스트 제거
+      if text.count > 10 {
+        DispatchQueue.main.async {
+          textField.text = String(text.prefix(10))
+        }
+      }
+    }
   }
 }
 
