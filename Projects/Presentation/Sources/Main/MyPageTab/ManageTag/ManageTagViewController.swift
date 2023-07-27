@@ -176,7 +176,7 @@ extension ManageTagViewController: TagListViewDelegate {
   func tagListView(_ tagListView: TagListView, didSelectedRow at: Int) {}
 
   func updateTagList(_ tagListView: TagListView, tagList: [String]) {
-    reactor.localTagList.accept(tagList)
+    reactor.updateTagList(tags: tagList)
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {

@@ -20,6 +20,7 @@ protocol ManageTagViewReactorInput {
   func editTag(text: String)
   func removeTagListTag(at row: Int)
   func changeEditMode(text: String)
+  func updateTagList(tags: [String])
 }
 
 // MARK: - TagAddViewModelOutput
@@ -121,5 +122,10 @@ extension ManageTagViewReactor: ManageTagViewReactorInput {
     tagInputMode = .edit
     editedTag = text
     validatedText.accept(text)
+  }
+
+  func updateTagList(tags: [String]) {
+    localTagList.accept(tags)
+    userDefaults.tagList = tags
   }
 }
