@@ -43,6 +43,7 @@ final class MyPageView: UIView {
 
   let themeButton = MyPageItemButton().then {
     $0.configure(type: .theme)
+    $0.isHidden = true
   }
 
   private let accountStackView = UIStackView().then {

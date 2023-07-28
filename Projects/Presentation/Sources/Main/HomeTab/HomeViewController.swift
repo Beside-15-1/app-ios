@@ -163,7 +163,11 @@ extension HomeViewController: HomeFolderViewDelegate {
         delegate: self
       )
     ).then {
-      $0.modalPresentationStyle = .popover
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.modalPresentationStyle = .overFullScreen
+      } else {
+        $0.modalPresentationStyle = .popover
+      }
     }
 
     present(vc, animated: true)

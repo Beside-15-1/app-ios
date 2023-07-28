@@ -231,6 +231,13 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
   }
 
   func listViewMoreButtonTapped(id: String) {
+    guard let reactor else { return }
 
+    if let link = reactor.currentState.linkList.first(where: { $0.id == id }),
+       let url = URL(string: link.url) {
+
+      let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+      UIApplication.shared.open(url)
+    }
   }
 }

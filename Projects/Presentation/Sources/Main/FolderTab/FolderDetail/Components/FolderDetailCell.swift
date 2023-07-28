@@ -87,14 +87,20 @@ class FolderDetailCell: UICollectionViewCell {
     }
 
     captionLabel.do {
+      var caption = ""
 
-      // URL
-      let prefixes = ["https://", "http://"]
-      var caption = viewModel.url
+      if let url = URL(string: viewModel.url) {
+        var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        urlComponents?.path = ""
 
-      for prefix in prefixes {
-        if caption.hasPrefix(prefix) {
-          caption = String(caption.dropFirst(prefix.count))
+        // URL
+        let prefixes = ["https://", "http://"]
+        caption = urlComponents?.url?.absoluteString ?? ""
+
+        for prefix in prefixes {
+          if caption.hasPrefix(prefix) {
+            caption = String(caption.dropFirst(prefix.count))
+          }
         }
       }
 

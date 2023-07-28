@@ -124,7 +124,11 @@ final class MyFolderViewController: UIViewController, StoryboardView {
             delegate: self
           )
         ).then {
-          $0.modalPresentationStyle = .popover
+          if UIDevice.current.userInterfaceIdiom == .pad {
+            $0.modalPresentationStyle = .overFullScreen
+          } else {
+            $0.modalPresentationStyle = .popover
+          }
         }
 
         self.present(vc, animated: true)
@@ -207,7 +211,11 @@ extension MyFolderViewController: EditFolderDelegate {
         delegate: self
       )
     ).then {
-      $0.modalPresentationStyle = .popover
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.modalPresentationStyle = .overFullScreen
+      } else {
+        $0.modalPresentationStyle = .popover
+      }
     }
 
     present(vc, animated: true)

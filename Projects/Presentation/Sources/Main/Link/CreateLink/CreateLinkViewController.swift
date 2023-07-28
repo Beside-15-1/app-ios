@@ -4,9 +4,9 @@ import PanModal
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import Domain
 import PresentationInterface
-import DesignSystem
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -90,7 +90,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .bind(to: contentView.saveButton.rx.isEnabled)
-      .disposed( by: disposeBag)
+      .disposed(by: disposeBag)
 
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
@@ -117,7 +117,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           )
         )
 
-        vc.modalPresentationStyle = .popover
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          vc.modalPresentationStyle = .overFullScreen
+        } else {
+          vc.modalPresentationStyle = .popover
+        }
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
@@ -129,7 +133,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           delegate: self
         ))
 
-        vc.modalPresentationStyle = .popover
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          vc.modalPresentationStyle = .overFullScreen
+        } else {
+          vc.modalPresentationStyle = .popover
+        }
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
@@ -146,8 +154,6 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .asObservable()
       .subscribe(with :self) { `self`, link in
         self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .white)
-
-
       }
       .disposed(by: disposeBag)
 
@@ -232,7 +238,6 @@ extension CreateLinkViewController: UITextFieldDelegate {
       guard let text = textField.text else { return true }
 
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
-
         let newText = "https://\(text)"
         reactor?.action.onNext(.fetchThumbnail(newText))
         view.endEditing(true)

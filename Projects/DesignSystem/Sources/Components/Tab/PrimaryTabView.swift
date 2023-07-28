@@ -13,8 +13,6 @@ import RxSwift
 import SnapKit
 import Then
 
-import PBLog
-
 enum PrimaryTabSection: Hashable {
   case normal
 }
