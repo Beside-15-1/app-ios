@@ -158,7 +158,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
     contentView.securityButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        guard let url = URL(string: "https://joosum.notion.site/33975a64eb55468ea523f707353743cf?pvs=4") else {
+        guard let url = URL(string: "https://joosum.notion.site/a078243be717462296cbe664a121212c?pvs=4") else {
           return
         }
 

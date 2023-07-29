@@ -55,7 +55,7 @@ extension Project {
       platform: .iOS,
       product: product,
       bundleId: bundleID,
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone, .ipad]),
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       resources: resources,
