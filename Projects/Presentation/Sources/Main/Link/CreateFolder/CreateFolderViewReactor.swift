@@ -18,7 +18,7 @@ final class CreateFolderViewReactor: Reactor {
   enum Mutation {
     case updateFolder(Folder?)
     case updateViewModel(CreateFolderPreviewView.ViewModel)
-    case setSucceed
+    case setSucceed(Folder)
     case setError(String)
   }
 
@@ -48,7 +48,7 @@ final class CreateFolderViewReactor: Reactor {
       !viewModel.title.isEmpty == true
     }
 
-    var isSuccess = false
+    var isSucceed: Folder?
     @Pulse var error: String?
   }
 
@@ -182,8 +182,8 @@ final class CreateFolderViewReactor: Reactor {
     case .updateViewModel(let viewModel):
       newState.viewModel = viewModel
 
-    case .setSucceed:
-      newState.isSuccess = true
+    case .setSucceed(let folder):
+      newState.isSucceed = folder
 
     case .setError(let error):
       newState.error = error
@@ -208,8 +208,8 @@ extension CreateFolderViewReactor {
       illustration: currentState.viewModel.illuste
     )
     .asObservable()
-    .flatMap { _ -> Observable<Mutation> in
-      .just(Mutation.setSucceed)
+    .flatMap { folder -> Observable<Mutation> in
+      .just(Mutation.setSucceed(folder))
     }
   }
 
@@ -222,8 +222,8 @@ extension CreateFolderViewReactor {
       illustration: currentState.viewModel.illuste
     )
     .asObservable()
-    .flatMap { _ -> Observable<Mutation> in
-      .just(Mutation.setSucceed)
+    .flatMap { folder -> Observable<Mutation> in
+      .just(Mutation.setSucceed(folder))
     }
     .catch { _ in
       .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))

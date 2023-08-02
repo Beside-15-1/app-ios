@@ -31,7 +31,7 @@ class FolderRepositoryImpl: FolderRepository {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void> {
+  ) -> Single<Folder> {
     let target = FolderAPI
       .createFolder(.init(
         backgroundColor: backgroundColor,
@@ -41,7 +41,8 @@ class FolderRepositoryImpl: FolderRepository {
       ))
 
     return networking.request(target: target)
-      .map { _ in }
+      .map(FolderDTO.self)
+      .map { $0.toDomain() }
   }
 
   func fetchFolderList(sort: String) -> Single<FolderList> {
@@ -61,7 +62,7 @@ class FolderRepositoryImpl: FolderRepository {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void> {
+  ) -> Single<Folder> {
     let target = FolderAPI.updateFolder(
       id: id,
       request: .init(
@@ -73,7 +74,8 @@ class FolderRepositoryImpl: FolderRepository {
     )
 
     return networking.request(target: target)
-      .map { _ in }
+      .map(FolderDTO.self)
+      .map { $0.toDomain() }
   }
 
   func deleteFolder(id: String) -> Single<Void> {

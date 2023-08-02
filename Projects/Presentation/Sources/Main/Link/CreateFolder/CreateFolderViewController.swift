@@ -153,12 +153,11 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   }
 
   private func bindRoute(with reactor: CreateFolderViewReactor) {
-    reactor.state.map(\.isSuccess)
+    reactor.state.compactMap(\.isSucceed)
       .distinctUntilChanged()
-      .filter { $0 }
-      .subscribe(with: self) { `self`, _ in
+      .subscribe(with: self) { `self`, folder in
         self.dismiss(animated: true) {
-          self.delegate?.createFolderSucceed()
+          self.delegate?.createFolderSucceed(folder: folder)
         }
       }
       .disposed(by: disposeBag)

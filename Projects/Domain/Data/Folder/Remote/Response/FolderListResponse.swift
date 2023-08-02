@@ -27,7 +27,7 @@ struct FolderListResponse: Codable {
         backgroundColor: $0.backgroundColor,
         titleColor: $0.titleColor,
         illustration: $0.illustration,
-        linkCount: $0.linkCount,
+        linkCount: $0.linkCount ?? 0,
         createdAt: $0.createdAt,
         lastSavedAt: $0.lastSavedAt,
         isDefault: $0.isDefault == "y"

@@ -165,7 +165,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 // MARK: CreateFolderDelegate
 
 extension MyFolderViewController: CreateFolderDelegate {
-  func createFolderSucceed() {
+  func createFolderSucceed(folder: Folder) {
     reactor?.action.onNext(.createFolderSucceed)
   }
 }

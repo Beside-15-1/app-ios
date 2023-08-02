@@ -7,6 +7,8 @@
 
 import Foundation
 
+import Domain
+
 public protocol CreateFolderDelegate: AnyObject {
-  func createFolderSucceed()
+  func createFolderSucceed(folder: Folder)
 }

@@ -19,7 +19,7 @@ public protocol FolderRepository {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void>
+  ) -> Single<Folder>
 
   func updateFolder(
     id: String,
@@ -27,7 +27,7 @@ public protocol FolderRepository {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void>
+  ) -> Single<Folder>
 
   func deleteFolder(id: String) -> Single<Void>
 }
