@@ -1,24 +1,31 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let bundleID = "com.cheonsong"
-let iosVersion = "14.0"
-
 let protject = Project(
-  name: Module.designSystem.name,
+  name: Module.DesignSystem.rawValue,
+  options: .options(
+    textSettings: .textSettings(
+      indentWidth: 2,
+      tabWidth: 2,
+      wrapsLines: true
+    )
+  ),
   targets: [
     Target(
-      name: "DesignSystem",
+      name: Module.DesignSystem.rawValue,
       platform: .iOS,
       product: .staticFramework,
-      bundleId: bundleID + ".designsystem",
-      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      bundleId: Project.bundleID + ".\(Module.DesignSystem.rawValue)".lowercased(),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       resources: .default,
       dependencies: [
-        .snapKit,
-        .then
+        .external(dependency: .SnapKit),
+        .external(dependency: .Then),
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay)
       ]
     )
   ]

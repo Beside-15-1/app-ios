@@ -19,6 +19,14 @@ let dependencies = Dependencies(
     .rxGesture,
     .swiftyJson,
     .reactorKit,
+    .swinject,
+    .sdWebImage,
+    .firebase,
+    .nimble,
+    .keyChainAccess,
+    .panModal,
+    .toaster,
+    .swiftSoup
   ],
   platforms: [.iOS]
 )
@@ -60,5 +68,36 @@ extension Package {
     url: "https://github.com/ReactorKit/ReactorKit.git",
     requirement: .upToNextMajor(from: "3.0.0")
   )
-
+  public static let swinject: Package = .remote(
+    url: "https://github.com/Swinject/Swinject",
+    requirement: .upToNextMajor(from: "2.0.0")
+  )
+  public static let sdWebImage: Package = .remote(
+    url: "https://github.com/SDWebImage/SDWebImage.git",
+    requirement: .upToNextMajor(from: "5.0.0")
+  )
+  public static let firebase: Package = .remote(
+    url: "https://github.com/firebase/firebase-ios-sdk.git",
+    requirement: .upToNextMajor(from: "10.4.0")
+  )
+  public static let nimble: Package = .remote(
+    url: "https://github.com/Quick/Nimble.git",
+    requirement: .upToNextMajor(from: "12.0.0")
+  )
+  public static let keyChainAccess: Package = .remote(
+    url: "https://github.com/kishikawakatsumi/KeychainAccess.git",
+    requirement: .upToNextMajor(from: "4.0.0")
+  )
+  public static let panModal: Package = .remote(
+    url: "https://github.com/slackhq/PanModal.git",
+    requirement: .upToNextMajor(from: "1.0.0")
+  )
+  public static let toaster: Package = .remote(
+    url: "https://github.com/devxoul/Toaster.git",
+    requirement: .branch("master")
+  )
+  public static let swiftSoup: Package = .remote(
+    url: "https://github.com/scinfu/SwiftSoup.git",
+    requirement: .upToNextMajor(from: "2.0.0")
+  )
 }

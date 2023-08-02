@@ -1,0 +1,16 @@
+dotenv(
+  path: ".env"
+)
+
+
+app_identifier(ENV['APP_IDENTIFIER'])
+apple_id(ENV['APPLE_ID'])
+
+username(ENV['APPLE_ID'])
+
+team_id(ENV['TEAM_ID'])
+itc_team_id(ENV['FASTLANE_ITC_TEAM_ID'])
+
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

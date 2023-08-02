@@ -4,37 +4,49 @@ platform :ios, '11.0'
 use_frameworks!
 inhibit_all_warnings!
 
-
-workspace 'Projects'
-project 'Projects/App.xcodeproj'
+workspace 'joosum'
+project 'Projects/Joosum.xcodeproj'
 project 'Projects/Domain.xcodeproj'
 project 'Projects/Presentation.xcodeproj'
-project 'Projects/Core.xcodeproj'
+project 'Projects/DesignSystem.xcodeproj'
+# Core
+project 'Projects/Core/PBNetworking/PBNetworking.xcodeproj'
 
-target 'App' do
-  project 'Projects/App/App.xcodeproj'
-  pod 'FlexLayout', '~> 1.0'
+def flex_layout
+  pod 'FlexLayout', :git => 'git@github.com:pink-boss/FlexLayout.git'
+end
+
+target 'Joosum' do
+  project 'Projects/Joosum/Joosum.xcodeproj'
+  flex_layout
   pod 'PinLayout', '~> 1.0'
-  pod 'PINRemoteImage/PINCache', '~> 3.0'
-  pod 'PINRemoteImage/iOS', '~> 3.0'
+  pod 'GoogleSignIn'
 end
 
 target 'Domain' do
   project 'Projects/Domain/Domain.xcodeproj'
-
 end
 
 target 'Presentation' do
   project 'Projects/Presentation/Presentation.xcodeproj'
-  pod 'FlexLayout', '~> 1.0'
+  flex_layout
   pod 'PinLayout', '~> 1.0'
-  pod 'PINRemoteImage/PINCache', '~> 3.0'
-  pod 'PINRemoteImage/iOS', '~> 3.0'
-
+  pod 'GoogleSignIn'
 end
 
-target 'Core' do
-  project 'Projects/Core/Core.xcodeproj'
+target 'PresentationTests' do
+  project 'Projects/Presentation/Presentation.xcodeproj'
+  pod 'GoogleSignIn'
+end
 
+target 'DesignSystem' do
+  project 'Projects/DesignSystem/DesignSystem.xcodeproj'
+  flex_layout
+  pod 'PinLayout', '~> 1.0'
+end
 
+# Core
+
+target 'PBNetworking' do
+  project 'Projects/Core/PBNetworking/PBNetworking.xcodeproj'
 end

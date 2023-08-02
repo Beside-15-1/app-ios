@@ -6,9 +6,8 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
-
-  static let bundleID = "com.cheonsong"
-  static let iosVersion = "14.0"
+  public static let bundleID = "com.pinkboss"
+  public static let iosVersion = "14.0"
 
   /// Helper function to create the Project for this ExampleApp
   public static func app(
@@ -19,7 +18,7 @@ extension Project {
     project(
       name: name,
       product: .app,
-      bundleID: bundleID + "\(name.lowercased())",
+      bundleID: bundleID + ".\(name.lowercased())",
       dependencies: dependencies,
       resources: resources
     )
@@ -41,8 +40,6 @@ extension Project {
     )
   }
 
-
-
   public static func project(
     name: String,
     product: Product,
@@ -51,62 +48,25 @@ extension Project {
     dependencies: [TargetDependency] = [],
     resources: ProjectDescription.ResourceFileElements? = nil
   ) -> Project {
-    var target: [Target] = []
-    if product == .app {
-      target = [Target(
-        name: name,
-        platform: .iOS,
-        product: product,
-        bundleId: bundleID,
-        deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-        infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-        sources: ["Sources/**"],
-        resources: resources,
-        dependencies: dependencies
-      )]
-    } else {
-      target = [
-        Target(
-          name: "\(name)Interface",
-          platform: .iOS,
-          product: product,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: ["Interfaces/**"],
-          resources: resources,
-          dependencies: dependencies
-        )
-        ,Target(
-          name: name,
-          platform: .iOS,
-          product: product,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: ["Sources/**"],
-          resources: resources,
-          dependencies: dependencies
-        ),
-        Target(
-          name: "\(name)Tests",
-          platform: .iOS,
-          product: .unitTests,
-          bundleId: bundleID,
-          deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-          infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
-          sources: "Tests/**",
-          dependencies: [
-            .target(name: "\(name)"),
-            .target(name: "\(name)Interface")
-          ]
-        )
-      ]
-    }
+    var targets: [Target] = []
+
+    targets = [Target(
+      name: name,
+      platform: .iOS,
+      product: product,
+      bundleId: bundleID,
+      deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      sources: ["Sources/**"],
+      resources: resources,
+      entitlements: .relativeToRoot("Projects/Joosum/Joosum.entitlements"),
+      scripts: [.SwiftFormatString],
+      dependencies: dependencies
+    )]
 
     return Project(
       name: name,
-      targets: target,
+      targets: targets,
       schemes: schemes
     )
   }
