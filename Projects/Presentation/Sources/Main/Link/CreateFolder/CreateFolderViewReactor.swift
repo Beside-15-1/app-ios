@@ -214,11 +214,6 @@ extension CreateFolderViewReactor {
   }
 
   private func updateFolder() -> Observable<Mutation> {
-
-    if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
-      return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
-    }
-
     return updateFolderUseCase.execute(
       id: currentState.folder?.id ?? "",
       backgroundColor: currentState.viewModel.backgroundColor,
@@ -229,6 +224,9 @@ extension CreateFolderViewReactor {
     .asObservable()
     .flatMap { _ -> Observable<Mutation> in
       .just(Mutation.setSucceed)
+    }
+    .catch { _ in
+      .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
     }
   }
 }
