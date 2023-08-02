@@ -80,6 +80,10 @@ final class MyPageView: UIView {
     $0.configure(type: .security)
   }
 
+  let csButton = MyPageItemButton().then {
+    $0.configure(type: .cs)
+  }
+
   let versionButton = MyPageItemButton().then {
     $0.configure(type: .version)
   }
@@ -123,7 +127,7 @@ final class MyPageView: UIView {
 
     [tagButton, themeButton].forEach { settingStackView.addArrangedSubview($0) }
     [accountButton].forEach { accountStackView.addArrangedSubview($0) }
-    [serviceButton, securityButton, versionButton, logoutButton]
+    [serviceButton, securityButton, csButton, versionButton, logoutButton]
       .forEach { appInfoStackView.addArrangedSubview($0) }
     deleteAccountButton.addSubview(deleteAccountLabel)
 

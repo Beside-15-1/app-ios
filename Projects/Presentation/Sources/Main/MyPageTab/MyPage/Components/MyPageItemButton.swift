@@ -22,6 +22,7 @@ enum MyPageItemType {
   case service
   case security
   case version
+  case cs
 
   case logout
 }
@@ -151,6 +152,14 @@ final class MyPageItemButton: UIControl {
     case .security:
       leftIcon.image = DesignSystemAsset.iconFolderLock.image.withTintColor(.gray900)
       titleLabel.attributedText = "개인정보 처리방침".styled(font: .defaultBold, color: .gray900)
+      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      leftIcon.isHidden = false
+      titleLabel.isHidden = false
+      rightIcon.isHidden = false
+
+    case .cs:
+      leftIcon.image = DesignSystemAsset.iconMail.image.withTintColor(.gray900)
+      titleLabel.attributedText = "문의하기".styled(font: .defaultBold, color: .gray900)
       rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
