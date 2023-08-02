@@ -45,7 +45,7 @@ final class CreateFolderViewReactor: Reactor {
     var viewModel: CreateFolderPreviewView.ViewModel
 
     var isMakeButtonEnabled: Bool {
-      viewModel.title != "폴더명을 입력해주세요." && !viewModel.title.isEmpty == true
+      !viewModel.title.isEmpty == true
     }
 
     var isSuccess = false
@@ -81,7 +81,7 @@ final class CreateFolderViewReactor: Reactor {
         return .init(
           backgroundColor: "#91B0C4",
           titleColor: "#FFFFFF",
-          title: "폴더명을 입력해주세요",
+          title: "",
           illuste: nil
         )
       }

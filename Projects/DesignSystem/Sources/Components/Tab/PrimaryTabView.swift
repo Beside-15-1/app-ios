@@ -86,9 +86,16 @@ public final class PrimaryTabView: UIView {
     DispatchQueue.main.async {
       self.collectionView.selectItem(
         at: IndexPath(item: row, section: 0),
-        animated: true,
+        animated: false,
         scrollPosition: .centeredHorizontally
       )
+    }
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+      guard let cell = self.collectionView.cellForItem(at: IndexPath(item: row, section: 0))
+              as? PrimaryTabCell else { return }
+
+      cell.configure(isSelected: true)
     }
   }
 
@@ -158,11 +165,6 @@ extension PrimaryTabView: UICollectionViewDelegate {
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
-    collectionView.scrollToItem(
-      at: IndexPath(item: indexPath.row, section: 0),
-      at: .centeredHorizontally,
-      animated: true
-    )
 
     delegate?.tabView(didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])
