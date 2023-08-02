@@ -33,4 +33,6 @@ public protocol LinkRepository {
     id: String,
     folderID: String
   ) -> Single<Void>
+
+  func getAllLinks() -> [Link]
 }

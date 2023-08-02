@@ -108,7 +108,11 @@ final class TermsOfUseViewController: UIViewController {
         }
 
         let web = self.webBuilder.build(payload: .init(url: url)).then {
-          $0.modalPresentationStyle = .popover
+          if UIDevice.current.userInterfaceIdiom == .pad {
+            $0.modalPresentationStyle = .overFullScreen
+          } else {
+            $0.modalPresentationStyle = .popover
+          }
         }
 
         self.present(web, animated: true)
@@ -122,7 +126,11 @@ final class TermsOfUseViewController: UIViewController {
         }
 
         let web = self.webBuilder.build(payload: .init(url: url)).then {
-          $0.modalPresentationStyle = .popover
+          if UIDevice.current.userInterfaceIdiom == .pad {
+            $0.modalPresentationStyle = .overFullScreen
+          } else {
+            $0.modalPresentationStyle = .popover
+          }
         }
 
         self.present(web, animated: true)

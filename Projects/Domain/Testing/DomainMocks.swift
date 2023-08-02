@@ -104,6 +104,16 @@ public final class LoginRepositoryMock: LoginRepository {
         }
         fatalError("getMeHandler returns can't have a default value thus its handler must be set")
     }
+
+    public private(set) var deleteAccountCallCount = 0
+    public var deleteAccountHandler: (() -> (Single<Void>))?
+    public func deleteAccount() -> Single<Void> {
+        deleteAccountCallCount += 1
+        if let deleteAccountHandler = deleteAccountHandler {
+            return deleteAccountHandler()
+        }
+        fatalError("deleteAccountHandler returns can't have a default value thus its handler must be set")
+    }
 }
 
 public final class LogoutUseCaseMock: LogoutUseCase {

@@ -16,7 +16,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Interface",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Interfaces/**"],
       scripts: [
@@ -44,7 +44,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       dependencies: [
@@ -68,7 +68,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Testing",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Testing/**",
       dependencies: [
@@ -80,7 +80,7 @@ let project = Project(
       platform: .iOS,
       product: .unitTests,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Tests",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: "Tests/**",
       dependencies: [

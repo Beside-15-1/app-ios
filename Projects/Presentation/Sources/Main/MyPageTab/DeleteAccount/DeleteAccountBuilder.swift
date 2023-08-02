@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct DeleteAccountDependency {}
+struct DeleteAccountDependency {
+  let loginRepository: LoginRepository
+}
 
 final class DeleteAccountBuilder: DeleteAccountBuildable {
 
@@ -22,7 +24,11 @@ final class DeleteAccountBuilder: DeleteAccountBuildable {
   }
 
   func build(payload: DeleteAccountPayload) -> UIViewController {
-    let reactor = DeleteAccountViewReactor()
+    let reactor = DeleteAccountViewReactor(
+      deleteAccountUseCase: DeleteAccountUseCaseImpl(
+        loginRepository: dependency.loginRepository
+      )
+    )
 
     let viewController = DeleteAccountViewController(
       reactor: reactor

@@ -83,6 +83,7 @@ class MyFolderCell: UICollectionViewCell {
     folderCover.backgroundColor = .clear
     disposeBag = DisposeBag()
     buttonContainer.isHidden = false
+    illust.image = nil
   }
 
 

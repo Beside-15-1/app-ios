@@ -35,6 +35,9 @@ final class MyFolderBuilder: MyFolderBuildable {
       ),
       deleteFolderUseCase: DeleteFolderUseCaseImpl(
         folderRepository: dependency.folderRepository
+      ),
+      getFolderListUseCase: GetFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
       )
     )
 

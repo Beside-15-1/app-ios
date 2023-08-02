@@ -16,23 +16,22 @@ final class SignUpView: UIView {
   private let container = UIView()
 
   private let titleLabel = UILabel().then {
-    $0.text = "만나서 반가워요!\n성별과 연령을 입력해주세요."
-    $0.font = .titleBold
-    $0.textColor = .white
+    $0.attributedText = "만나서 반가워요!\n성별과 연령을 입력해주세요."
+      .styled(
+        font: .titleBold,
+        color: .staticBlack
+      )
     $0.numberOfLines = 0
   }
 
   private let subtitle = UILabel().then {
-    $0.text = "※"
-    $0.font = .captionRegular
-    $0.textColor = .gray600
+    $0.attributedText = "※".styled(font: .captionRegular, color: .gray600)
     $0.numberOfLines = 0
   }
 
   private let subtitleLabel = UILabel().then {
-    $0.text = "입력한 성별/연령 정보는 주섬 앱 개선을 위해서만 사용되며\n다른 용도로 사용되지 않아요."
-    $0.font = .captionRegular
-    $0.textColor = .gray600
+    $0.attributedText = "입력한 성별/연령 정보는 주섬 앱 개선을 위해서만 사용되며\n다른 용도로 사용되지 않아요."
+      .styled(font: .captionRegular, color: .gray600)
     $0.numberOfLines = 0
   }
 
@@ -83,6 +82,10 @@ final class SignUpView: UIView {
     backgroundColor = .paperWhite
 
     defineLayout()
+
+    ageInputField.iconActionHandler = { [weak self] in
+      self?.ageInputField.becomeFirstResponder()
+    }
   }
 
   @available(*, unavailable)
@@ -105,7 +108,7 @@ final class SignUpView: UIView {
     }
 
     titleLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().offset(24.0)
+      $0.top.equalToSuperview().inset(24.0)
       $0.left.right.equalToSuperview()
     }
 

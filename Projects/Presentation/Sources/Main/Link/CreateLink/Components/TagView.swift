@@ -47,15 +47,14 @@ final class TagView: UIView {
   }
 
   private let emptyImage = UIImageView().then {
-    $0.image = DesignSystemAsset.createLinkTagEmptyImage.image
+    $0.image = DesignSystemAsset.imgNone.image.withTintColor(.gray700)
   }
 
   private let emptyLabel = UILabel().then {
-    $0.text = "아직 선택한 태그가 없네요\n태그를 추가해서\n저장한 링크를 나중에도 쉽게 찾아보세요"
+    $0.attributedText = "아직 선택한 태그가 없네요.\n태그를 추가해서\n저장한 링크를 나중에도 쉽게 찾아보세요."
+      .styled(font: .bodyRegular, color: .gray600)
     $0.textAlignment = .center
     $0.numberOfLines = 0
-    $0.font = .bodyRegular
-    $0.textColor = .gray600
   }
 
   private lazy var diffableDataSource = collectionViewDataSource()
@@ -163,7 +162,8 @@ final class TagView: UIView {
 
     emptyImage.snp.makeConstraints {
       $0.top.centerX.equalToSuperview()
-      $0.size.equalTo(94.0)
+      $0.width.equalTo(117.0)
+      $0.height.equalTo(81.0)
     }
 
     emptyLabel.snp.makeConstraints {

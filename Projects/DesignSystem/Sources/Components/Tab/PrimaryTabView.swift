@@ -13,11 +13,11 @@ import RxSwift
 import SnapKit
 import Then
 
-enum TabSection: Hashable {
+enum PrimaryTabSection: Hashable {
   case normal
 }
 
-public struct Tab: Hashable {
+public struct PrimaryTab: Hashable {
   public let title: String
   public let id: UUID
 
@@ -28,10 +28,10 @@ public struct Tab: Hashable {
 }
 
 public protocol TabViewDelegate: AnyObject {
-  func tabView(_ tabView: TabView, didSelectedTab: String)
+  func tabView(didSelectedTab: String)
 }
 
-public final class TabView: UIView {
+public final class PrimaryTabView: UIView {
 
   // MARK: UI
 
@@ -41,7 +41,7 @@ public final class TabView: UIView {
   ).then {
     $0.backgroundColor = .clear
     $0.showsHorizontalScrollIndicator = false
-    $0.register(TabCell.self, forCellWithReuseIdentifier: TabCell.identifier)
+    $0.register(PrimaryTabCell.self, forCellWithReuseIdentifier: PrimaryTabCell.identifier)
     $0.delegate = self
     $0.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
   }
@@ -56,14 +56,8 @@ public final class TabView: UIView {
   public weak var delegate: TabViewDelegate?
   public var selectedTab: PublishRelay<String> = .init()
 
-  var colorType: TabColorType = .primary
 
   // MARK: Initialize
-
-  public convenience init(colorType: TabColorType) {
-    self.init(frame: .zero)
-    self.colorType = colorType
-  }
 
   public override init(frame: CGRect) {
     super.init(frame: frame)
@@ -80,10 +74,10 @@ public final class TabView: UIView {
 
   public func applyTabs(by tabs: [String]) {
     self.tabs = tabs
-    var snapshot = NSDiffableDataSourceSnapshot<TabSection, Tab>()
+    var snapshot = NSDiffableDataSourceSnapshot<PrimaryTabSection, PrimaryTab>()
 
     snapshot.appendSections([.normal])
-    snapshot.appendItems(tabs.map { Tab(title: $0, id: UUID()) }, toSection: .normal)
+    snapshot.appendItems(tabs.map { PrimaryTab(title: $0, id: UUID()) }, toSection: .normal)
 
     diffableDataSource.apply(snapshot)
   }
@@ -129,17 +123,15 @@ public final class TabView: UIView {
     }
   }
 
-  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<TabSection, Tab> {
-    let dataSource = UICollectionViewDiffableDataSource<TabSection, Tab>(
+  private func collectionViewDataSource() -> UICollectionViewDiffableDataSource<PrimaryTabSection, PrimaryTab> {
+    let dataSource = UICollectionViewDiffableDataSource<PrimaryTabSection, PrimaryTab>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       collectionView.dequeueReusableCell(
-        withReuseIdentifier: TabCell.identifier, for: indexPath
-      ).then { [weak self] cell in
-        guard let self else { return }
-
-        guard let cell = cell as? TabCell else { return }
-        cell.configure(title: item.title, colorType: self.colorType)
+        withReuseIdentifier: PrimaryTabCell.identifier, for: indexPath
+      ).then { cell in
+        guard let cell = cell as? PrimaryTabCell else { return }
+        cell.configure(title: item.title)
       }
     }
 
@@ -161,7 +153,7 @@ public final class TabView: UIView {
 }
 
 
-extension TabView: UICollectionViewDelegate {
+extension PrimaryTabView: UICollectionViewDelegate {
   public func collectionView(
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
@@ -172,7 +164,7 @@ extension TabView: UICollectionViewDelegate {
       animated: true
     )
 
-    delegate?.tabView(self, didSelectedTab: tabs[indexPath.row])
+    delegate?.tabView(didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])
   }
 }

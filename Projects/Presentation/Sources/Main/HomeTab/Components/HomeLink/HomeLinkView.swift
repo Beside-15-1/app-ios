@@ -40,7 +40,7 @@ class HomeLinkView: UIView {
   private let emptyView = UIView()
 
   private let newLinkImage = UIImageView().then {
-    $0.image = DesignSystemAsset.homeNewLinkEmptyImage.image
+    $0.image = DesignSystemAsset.imgLink.image.withTintColor(.staticBlack)
   }
 
   let newLinkButton = SmallButton(priority: .primary).then {
@@ -148,9 +148,10 @@ class HomeLinkView: UIView {
     }
 
     newLinkImage.snp.makeConstraints {
-      $0.left.right.equalToSuperview().inset(20.0)
+      $0.centerX.equalToSuperview()
       $0.top.equalToSuperview().inset(16.0)
-      $0.height.equalTo(142.0)
+      $0.width.equalTo(295)
+      $0.height.equalTo(142)
     }
 
     newLinkButton.snp.makeConstraints {

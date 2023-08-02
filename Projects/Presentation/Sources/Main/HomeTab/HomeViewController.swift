@@ -70,7 +70,7 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
+    reactor?.action.onNext(.viewWillAppear)
     navigationController?.isNavigationBarHidden = true
   }
 
@@ -113,9 +113,12 @@ final class HomeViewController: UIViewController, StoryboardView {
 
     contentView.viewAllButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        var folderList = reactor.currentState.folderList
+        folderList.insert(.all(), at: 0)
+
         let folderDetail = self.folderDetailBuilder.build(
           payload: .init(
-            folderList: reactor.currentState.folderList,
+            folderList: folderList,
             selectedFolder: .all()
           )
         )
@@ -143,7 +146,7 @@ final class HomeViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.homeLinkView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
   }
@@ -160,7 +163,11 @@ extension HomeViewController: HomeFolderViewDelegate {
         delegate: self
       )
     ).then {
-      $0.modalPresentationStyle = .popover
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.modalPresentationStyle = .overFullScreen
+      } else {
+        $0.modalPresentationStyle = .popover
+      }
     }
 
     present(vc, animated: true)
@@ -168,12 +175,16 @@ extension HomeViewController: HomeFolderViewDelegate {
 
   func homeFolderView(didSelectItemAt row: Int) {
     // 라우팅
-    guard let folder = reactor?.currentState.folderList[row] else { return }
+    guard let folderList = reactor?.currentState.folderList
+    else { return }
+
+    var newFolderList = folderList
+    newFolderList.insert(.all(), at: 0)
 
     let folderDetail = folderDetailBuilder.build(
       payload: .init(
-        folderList: reactor?.currentState.folderList ?? [],
-        selectedFolder: folder
+        folderList: newFolderList,
+        selectedFolder: folderList[row]
       )
     )
 
@@ -209,7 +220,7 @@ extension HomeViewController: CreateLinkDelegate {
 extension HomeViewController: HomeLinkViewDelegate {
   func homeLinkView(_ homeLinkView: HomeLinkView, didSelectItemAt row: Int) {
     guard let reactor else { return }
-    guard row < reactor.currentState.folderList.count else {
+    guard row < reactor.currentState.linkList.count else {
       let folderDetail = folderDetailBuilder.build(
         payload: .init(
           folderList: reactor.currentState.folderList,
@@ -228,9 +239,8 @@ extension HomeViewController: HomeLinkViewDelegate {
       return
     }
 
-    let web = webBuilder.build(payload: .init(url: url))
-    web.modalPresentationStyle = .popover
+    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
-    present(web, animated: true)
+    UIApplication.shared.open(url, options: options)
   }
 }

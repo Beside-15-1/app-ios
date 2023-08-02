@@ -31,6 +31,17 @@ protocol AddedTagViewDelegate: AnyObject {
 class AddedTagView: UIView {
   // MARK: UI
 
+  private let titleLabel = UILabel().then {
+    $0.text = "추가한 태그"
+    $0.textColor = .staticBlack
+    $0.font = .subTitleSemiBold
+  }
+
+  private let tagCountLabel = UILabel().then {
+    $0.textColor = .gray600
+    $0.font = .defaultRegular
+  }
+
   lazy var collectionView = UICollectionView(
     frame: .zero,
     collectionViewLayout: collectionViewLayout()
@@ -67,6 +78,14 @@ class AddedTagView: UIView {
   required init?(coder: NSCoder) {
     super.init(coder: coder)
   }
+
+
+  // MARK: Configuring
+
+  func configureTagCount(count: Int) {
+    tagCountLabel.text = "\(count)/10"
+  }
+  
 
   // MARK: CollectionView
 
@@ -134,15 +153,27 @@ class AddedTagView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
+    addSubview(titleLabel)
+    addSubview(tagCountLabel)
     addSubview(emptyLabel)
     addSubview(collectionView)
 
+    titleLabel.snp.makeConstraints {
+      $0.top.left.equalToSuperview()
+    }
+
+    tagCountLabel.snp.makeConstraints {
+      $0.left.equalTo(titleLabel.snp.right).offset(8.0)
+      $0.bottom.equalTo(titleLabel)
+    }
+
     emptyLabel.snp.makeConstraints {
-      $0.center.equalToSuperview()
+      $0.center.equalTo(collectionView)
     }
 
     collectionView.snp.makeConstraints {
-      $0.edges.equalToSuperview()
+      $0.top.equalTo(titleLabel.snp.bottom).offset(10.0)
+      $0.left.right.bottom.equalToSuperview()
       $0.height.equalTo(28.0)
     }
   }

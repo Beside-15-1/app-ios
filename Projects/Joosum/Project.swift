@@ -15,8 +15,8 @@ let project = Project(
       name: Module.App.rawValue,
       platform: .iOS,
       product: .app,
-      bundleId: Project.bundleID + ".\(Module.App.rawValue)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      bundleId: Project.bundleID + ".\(Module.App.rawValue)app".lowercased(),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
       sources: ["Sources/**"],
       resources: [

@@ -102,4 +102,14 @@ final class LoginRepositoryImpl: LoginRepository {
         self?.userDefaultRepository.social = me.social
       }
   }
+
+  func deleteAccount() -> Single<Void> {
+    let target = LoginAPI.deleteAccount
+
+    return provider.request(target: target)
+      .map { [weak self] _ in
+        self?.keychainDataSource.accessToken = nil
+        self?.keychainDataSource.refreshToken = nil
+      }
+  }
 }

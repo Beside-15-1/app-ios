@@ -84,6 +84,21 @@ final class DeleteAccountViewController: UIViewController, StoryboardView {
       .bind(to: contentView.useButton.rx.isEnabled)
       .disposed(by: disposeBag)
 
+    contentView.deleteButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        PBDialog(
+          title: "정말로 탈퇴하시겠습니까?",
+          content: "계정 정보 및 링크, 폴더가 삭제되며\n삭제된 데이터는 복구되지 않습니다.",
+          from: self
+        )
+        .addAction(content: "탈퇴 확인", priority: .secondary, action: {
+          reactor.action.onNext(.deleteAccountButtonTapped)
+        })
+        .addAction(content: "탈퇴 취소", priority: .primary, action: nil)
+        .show()
+      }
+      .disposed(by: disposeBag)
+
     contentView.useButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.navigationController?.popViewController(animated: true)

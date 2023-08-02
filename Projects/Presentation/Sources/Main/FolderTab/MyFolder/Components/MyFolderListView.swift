@@ -86,6 +86,8 @@ class MyFolderListView: UIView {
         color: .gray700
       )
       .font(font: .defaultBold, target: text)
+
+    emptyLabel.textAlignment = .center
   }
 
 

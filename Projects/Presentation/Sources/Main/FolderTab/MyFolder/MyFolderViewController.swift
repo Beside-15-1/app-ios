@@ -76,6 +76,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     super.viewWillAppear(animated)
 
     navigationController?.isNavigationBarHidden = true
+    reactor?.action.onNext(.viewWillAppear)
   }
 
 
@@ -123,7 +124,11 @@ final class MyFolderViewController: UIViewController, StoryboardView {
             delegate: self
           )
         ).then {
-          $0.modalPresentationStyle = .popover
+          if UIDevice.current.userInterfaceIdiom == .pad {
+            $0.modalPresentationStyle = .overFullScreen
+          } else {
+            $0.modalPresentationStyle = .popover
+          }
         }
 
         self.present(vc, animated: true)
@@ -146,7 +151,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: nil,
+          delegate: self,
           link: nil
         ))
         vc.modalPresentationStyle = .fullScreen
@@ -206,7 +211,11 @@ extension MyFolderViewController: EditFolderDelegate {
         delegate: self
       )
     ).then {
-      $0.modalPresentationStyle = .popover
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.modalPresentationStyle = .overFullScreen
+      } else {
+        $0.modalPresentationStyle = .popover
+      }
     }
 
     present(vc, animated: true)
@@ -232,5 +241,12 @@ extension MyFolderViewController: EditFolderDelegate {
 extension MyFolderViewController: FolderSortDelegate {
   func folderSortListItemTapped(type: FolderSortModel) {
     reactor?.action.onNext(.updateSort(type))
+  }
+}
+
+
+extension MyFolderViewController: CreateLinkDelegate {
+  func createLinkSucceed(link: Link) {
+    reactor?.action.onNext(.createFolderSucceed)
   }
 }

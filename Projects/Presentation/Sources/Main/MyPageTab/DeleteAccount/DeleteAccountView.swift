@@ -15,7 +15,7 @@ import DesignSystem
 final class DeleteAccountView: UIView {
 
   let imageView = UIImageView().then {
-    $0.image = DesignSystemAsset.imgAccountDeletion.image.withTintColor(.staticBlack)
+    $0.image = DesignSystemAsset.imgOut.image.withTintColor(.staticBlack)
   }
 
   let titleLabel = UILabel().then {
@@ -101,8 +101,8 @@ final class DeleteAccountView: UIView {
     imageView.snp.makeConstraints {
       $0.top.equalTo(safeAreaLayoutGuide).inset(49.0)
       $0.centerX.equalToSuperview()
-      $0.width.equalTo(114)
-      $0.height.equalTo(93)
+      $0.width.equalTo(193)
+      $0.height.equalTo(108)
     }
 
     titleLabel.snp.makeConstraints {

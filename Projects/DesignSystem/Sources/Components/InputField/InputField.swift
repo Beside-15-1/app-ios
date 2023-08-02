@@ -116,6 +116,14 @@ public class InputField: UIView {
     textField.resignFirstResponder()
   }
 
+  public func addAction(_ action: UIAction, for controlEvents: UIControl.Event) {
+    textField.addAction(action, for: controlEvents)
+  }
+
+  public func addTarget(_ target: Any?, action: Selector, for controlEvents: UIControl.Event) {
+    textField.addTarget(target, action: action, for: controlEvents)
+  }
+
   // MARK: UI
 
   private let stackView = UIStackView().then {
@@ -128,7 +136,7 @@ public class InputField: UIView {
     $0.textColor = .gray900
   }
 
-  private let container = UIView().then {
+  private let container = UIControl().then {
     $0.backgroundColor = .gray200
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true

@@ -25,7 +25,7 @@ final class TermsOfUsePersonalView: UIControl {
   }
 
   private let titleLabel = UILabel().then {
-    $0.text = "개인정보 이용약관 동의"
+    $0.text = "개인정보 수집 및 이용 동의"
     $0.font = .defaultRegular
     $0.textColor = .gray900
   }

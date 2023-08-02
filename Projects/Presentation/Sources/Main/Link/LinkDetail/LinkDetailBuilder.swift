@@ -15,6 +15,7 @@ struct LinkDetailDependency {
   let linkRepository: LinkRepository
   let createLinkBuilder: CreateLinkBuildable
   let moveFolderBuilder: MoveFolderBuildable
+  let webBuilder: PBWebBuildable
 }
 
 final class LinkDetailBuilder: LinkDetailBuildable {
@@ -39,7 +40,8 @@ final class LinkDetailBuilder: LinkDetailBuildable {
     let viewController = LinkDetailViewController(
       reactor: reactor,
       createLinkBuilder: dependency.createLinkBuilder,
-      moveFolderBuilder: dependency.moveFolderBuilder
+      moveFolderBuilder: dependency.moveFolderBuilder,
+      webBuilder: dependency.webBuilder
     )
 
     return viewController

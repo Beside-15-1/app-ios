@@ -8,7 +8,6 @@ import PBUserDefaults
 // MARK: - TagAddViewModelInput
 
 protocol TagAddViewModelInput {
-  func inputText(text: String)
   func addTag(text: String)
   func editTag(text: String)
   func removeAddedTag(at row: Int)
@@ -78,7 +77,7 @@ extension TagAddViewModel: TagAddViewModelInput {
         shouldShowTagLimitToast.accept(())
         var tagList = localTagList.value
         if !tagList.contains(where: { $0 == text }) {
-          tagList.append(text)
+          tagList.insert(text, at: 0)
         }
         localTagList.accept(tagList)
         userDefaults.tagList = tagList
@@ -96,7 +95,7 @@ extension TagAddViewModel: TagAddViewModelInput {
       // 태그 리스트에 추가
       var tagList = localTagList.value
       if !tagList.contains(where: { $0 == text }) {
-        tagList.append(text)
+        tagList.insert(text, at: 0)
       }
       localTagList.accept(tagList)
       userDefaults.tagList = tagList
@@ -135,27 +134,10 @@ extension TagAddViewModel: TagAddViewModelInput {
 
   func removeTagListTag(at row: Int) {
     var local = localTagList.value
-    let removedTag = localTagList.value[row]
-
-    guard let removedRowInAddedList = addedTagList.value.firstIndex(of: removedTag) else {
-      local.remove(at: row)
-      localTagList.accept(local)
-      userDefaults.tagList = local
-      return
-    }
 
     local.remove(at: row)
     localTagList.accept(local)
     userDefaults.tagList = local
-
-    removeAddedTag(at: removedRowInAddedList)
-  }
-
-  func inputText(text: String) {
-    if text.count > 9 {
-      let validatedText = text[text.startIndex...text.index(text.startIndex, offsetBy: 9)]
-      self.validatedText.accept(String(validatedText))
-    }
   }
 
   func changeEditMode(text: String) {

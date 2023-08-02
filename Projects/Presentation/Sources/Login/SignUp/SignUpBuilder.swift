@@ -9,6 +9,7 @@ import PresentationInterface
 struct SignUpDependency {
   let loginRepository: LoginRepository
   let mainTabBuilder: MainTabBarBuildable
+  let signUpSuccessBuilder: SingUpSuccessBuildable
 }
 
 // MARK: - SignUpBuilder
@@ -29,7 +30,8 @@ final class SignUpBuilder: SignUpBuildable {
 
     let viewController = SignUpViewController(
       reactor: reactor,
-      mainTabBuilder: dependency.mainTabBuilder
+      mainTabBuilder: dependency.mainTabBuilder,
+      signUpSuccessBuilder: dependency.signUpSuccessBuilder
     )
 
     return viewController

@@ -39,6 +39,12 @@ final class HomeBuilder: HomeBuildable {
       ),
       getMeUseCase: GetMeUsecaseImpl(
         loginRepository: dependency.loginRepository
+      ),
+      getLinkListUseCase: GetAllLinksUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
+      getFolderListUseCase: GetFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
       )
     )
 

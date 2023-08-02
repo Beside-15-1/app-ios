@@ -39,18 +39,12 @@ class TagListCell: UITableViewCell {
   }
 
   override func prepareForReuse() {
-    configureSelected(isSelected: false)
   }
 
   // MARK: Configuring
 
   func configureText(text: String) {
     titleLabel.text = text
-  }
-
-  func configureSelected(isSelected: Bool) {
-    iconCheck.isHidden = !isSelected
-    titleLabel.font = isSelected ? .bodyBold : .bodyRegular
   }
 
   // MARK: Layout

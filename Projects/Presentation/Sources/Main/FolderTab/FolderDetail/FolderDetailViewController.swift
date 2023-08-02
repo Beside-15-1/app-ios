@@ -127,13 +127,26 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.refreshControl.endRefreshing()
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.linkCount)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, count in
+        self.contentView.listView.configureTotalCount(count: count)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {
     contentView.tabView.selectedTab
       .asObservable()
-      .map { Reactor.Action.selectTab($0) }
-      .bind(to: reactor.action)
+      .subscribe(with: self) { `self`, tab in
+        guard tab != reactor.currentState.selectedFolder.title else {
+          return
+        }
+
+        reactor.action.onNext(.selectTab(tab))
+        self.contentView.searchField.text = ""
+      }
       .disposed(by: disposeBag)
   }
 
@@ -156,7 +169,13 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     contentView.searchField.rx.text
       .subscribe(with: self) { `self`, text in
         reactor.action.onNext(.searchLink(text))
-        self.contentView.listView.configureEmptyLabel(text: text)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.map(\.emptyLabelText)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.listView.configureEmptyLabel(viewModel: viewModel)
       }
       .disposed(by: disposeBag)
   }
@@ -212,6 +231,13 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
   }
 
   func listViewMoreButtonTapped(id: String) {
+    guard let reactor else { return }
 
+    if let link = reactor.currentState.linkList.first(where: { $0.id == id }),
+       let url = URL(string: link.url) {
+
+      let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+      UIApplication.shared.open(url)
+    }
   }
 }

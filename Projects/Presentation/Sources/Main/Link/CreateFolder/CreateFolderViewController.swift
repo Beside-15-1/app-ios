@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 final class CreateFolderViewController: UIViewController, StoryboardView {
@@ -49,6 +50,12 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    contentView.linkBookTabView.folderView.inputField.addTarget(
+      self,
+      action: #selector(textDidChange),
+      for: .editingChanged
+    )
   }
 
   // MARK: Binding
@@ -58,6 +65,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     bindContent(with: reactor)
     bindTextField(with: reactor)
     bindRoute(with: reactor)
+    bindError(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateFolderViewReactor) {
@@ -156,6 +164,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
   }
 
+  private func bindError(with reactor: CreateFolderViewReactor) {
+    reactor.pulse(\.$error)
+      .compactMap { $0 }
+      .subscribe(with: self) { `self`, error in
+        PBToast(content: error)
+          .show()
+      }
+      .disposed(by: disposeBag)
+  }
+
   func extractNumber(from string: String) -> Int? {
     let pattern = "illust(\\d+)"
 
@@ -174,6 +192,18 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     }
 
     return nil
+  }
+
+  @objc
+  private func textDidChange(_ textField: UITextField) {
+    if let text = textField.text {
+      // 초과되는 텍스트 제거
+      if text.count > 10 {
+        DispatchQueue.main.async {
+          textField.text = String(text.prefix(10))
+        }
+      }
+    }
   }
 }
 

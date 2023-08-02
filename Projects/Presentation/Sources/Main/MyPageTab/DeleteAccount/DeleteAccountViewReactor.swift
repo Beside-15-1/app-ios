@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import PresentationInterface
+import Domain
 
 final class DeleteAccountViewReactor: Reactor {
 
@@ -46,11 +47,18 @@ final class DeleteAccountViewReactor: Reactor {
 
   let initialState: State
 
+  private let deleteAccountUseCase: DeleteAccountUseCase
+
 
   // MARK: initializing
 
-  init() {
+  init(
+    deleteAccountUseCase: DeleteAccountUseCase
+  ) {
     defer { _ = self.state }
+
+    self.deleteAccountUseCase = deleteAccountUseCase
+
     self.initialState = State()
   }
 
@@ -92,6 +100,10 @@ final class DeleteAccountViewReactor: Reactor {
 extension DeleteAccountViewReactor {
 
   private func deleteAccount() -> Observable<Mutation> {
-    return .empty()
+    deleteAccountUseCase.execute()
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        return .just(Mutation.setSucceed)
+      }
   }
 }

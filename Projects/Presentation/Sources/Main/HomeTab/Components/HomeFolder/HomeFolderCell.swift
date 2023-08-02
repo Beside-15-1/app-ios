@@ -62,7 +62,7 @@ class HomeFolderCell: UICollectionViewCell {
     $0.isHidden = true
   }
 
-  private let addFolderButton = TextButton(type: .regular, color: .gray600).then {
+  private let addFolderButton = TextButton(type: .small, color: .gray600).then {
     $0.text = "폴더 만들기"
     $0.leftIconImage = DesignSystemAsset.iconPlus.image
     $0.isUserInteractionEnabled = false
@@ -86,6 +86,7 @@ class HomeFolderCell: UICollectionViewCell {
     addFolderView.isHidden = true
     folderCover.backgroundColor = .clear
     countContainer.isHidden = false
+    illust.image = nil
   }
 
 

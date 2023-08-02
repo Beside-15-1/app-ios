@@ -10,6 +10,7 @@ enum LoginAPI {
   case apple(String)
   case signUp(SignUpRequest)
   case getMe
+  case deleteAccount
 }
 
 // MARK: TargetType
@@ -29,6 +30,9 @@ extension LoginAPI: BaseTargetType {
 
     case .getMe:
       return "auth/me"
+
+    case .deleteAccount:
+      return "auth/me"
     }
   }
 
@@ -45,6 +49,9 @@ extension LoginAPI: BaseTargetType {
 
     case .getMe:
       return .get
+
+    case .deleteAccount:
+      return .delete
     }
   }
 
@@ -61,6 +68,9 @@ extension LoginAPI: BaseTargetType {
 
     case .getMe:
       return .requestPlain
+
+    case .deleteAccount:
+      return .requestPlain
     }
   }
 
@@ -69,7 +79,7 @@ extension LoginAPI: BaseTargetType {
     case .google, .apple, .signUp:
       return nil
 
-    case .getMe:
+    case .getMe, .deleteAccount:
       return .bearer
     }
   }

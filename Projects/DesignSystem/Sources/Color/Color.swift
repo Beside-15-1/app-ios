@@ -27,7 +27,7 @@ public extension UIColor {
     }
   }
 
-  /// light: #6B5FDE / dark: #392A95
+  /// light: #392A95 / dark: #6B5FDE
   static let primary500 = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
       return UIColor(hexString: "#6B5FDE")
@@ -90,7 +90,7 @@ public extension UIColor {
   /// light: #F3F4F5 / dark: #1D1D1D
   static let gray200 = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#1D1D1D")
+      return UIColor(hexString: "#2F2F2F")
     } else {
       return UIColor(hexString: "#F3F4F5")
     }

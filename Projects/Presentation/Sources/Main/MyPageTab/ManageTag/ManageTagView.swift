@@ -24,7 +24,7 @@ final class ManageTagView: UIView {
   let tagListView = TagListView()
 
   let saveButton = BasicButton(priority: .primary).then {
-    $0.text = "만들기"
+    $0.text = "저장"
   }
 
   // MARK: Initializing

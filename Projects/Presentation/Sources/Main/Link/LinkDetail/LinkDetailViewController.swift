@@ -28,18 +28,21 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   private let createLinkBuilder: CreateLinkBuildable
   private let moveFolderBuilder: MoveFolderBuildable
+  private let webBuilder: PBWebBuildable
 
   // MARK: Initializing
 
   init(
     reactor: LinkDetailViewReactor,
     createLinkBuilder: CreateLinkBuildable,
-    moveFolderBuilder: MoveFolderBuildable
+    moveFolderBuilder: MoveFolderBuildable,
+    webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.createLinkBuilder = createLinkBuilder
     self.moveFolderBuilder = moveFolderBuilder
+    self.webBuilder = webBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -125,6 +128,18 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         self.presentPanModal(moveFolder)
       }
       .disposed(by: disposeBag)
+
+    contentView.thumbnail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(thumbnailTapped)))
+  }
+
+  @objc
+  private func thumbnailTapped() {
+    guard let reactor,
+          let url = URL(string: reactor.currentState.link.url) else { return }
+
+    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+
+    UIApplication.shared.open(url, options: options)
   }
 
   private func bindRoute(with reactor: LinkDetailViewReactor) {
@@ -161,8 +176,8 @@ extension LinkDetailViewController {
 
     navigationItem.leftBarButtonItem = backButton
     navigationItem.leftBarButtonItem?.tintColor = .staticBlack
-    navigationItem.rightBarButtonItem = shareButton
-    navigationItem.rightBarButtonItem?.tintColor = .staticBlack
+    //navigationItem.rightBarButtonItem = shareButton
+    //navigationItem.rightBarButtonItem?.tintColor = .staticBlack
     navigationItem.title = "링크 상세정보"
 
     let attributes = [
@@ -187,6 +202,8 @@ extension LinkDetailViewController {
 extension LinkDetailViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     contentView.configure(withLink: link)
+    PBToast(content: "변경사항이 저장되었어요.")
+      .show()
   }
 }
 
@@ -197,5 +214,7 @@ extension LinkDetailViewController: MoveFolderDelegate {
   func moveFolderSuccess(folder: Folder) {
     reactor?.action.onNext(.moveFolder(folder))
     contentView.configureFolder(withFolder: folder)
+    PBToast(content: "변경사항이 저장되었어요.")
+      .show()
   }
 }

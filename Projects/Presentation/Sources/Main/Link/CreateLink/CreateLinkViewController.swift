@@ -4,9 +4,9 @@ import PanModal
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import Domain
 import PresentationInterface
-import DesignSystem
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
 
@@ -59,6 +59,10 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+
+    if let _ = reactor?.currentState.link {
+      contentView.linkInputField.isEnabled = false
+    }
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -86,7 +90,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .bind(to: contentView.saveButton.rx.isEnabled)
-      .disposed( by: disposeBag)
+      .disposed(by: disposeBag)
 
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
@@ -113,7 +117,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           )
         )
 
-        vc.modalPresentationStyle = .popover
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          vc.modalPresentationStyle = .overFullScreen
+        } else {
+          vc.modalPresentationStyle = .popover
+        }
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
@@ -125,7 +133,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           delegate: self
         ))
 
-        vc.modalPresentationStyle = .popover
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          vc.modalPresentationStyle = .overFullScreen
+        } else {
+          vc.modalPresentationStyle = .popover
+        }
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
@@ -141,7 +153,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .asObservable()
       .subscribe(with :self) { `self`, link in
-        self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .staticBlack)
+        self.contentView.titleLabel.attributedText = "링크 수정".styled(font: .defaultRegular, color: .white)
       }
       .disposed(by: disposeBag)
 
@@ -151,6 +163,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         self.contentView.linkInputField.text = thumbnail.url ?? ""
         self.contentView.titleInputField.text = thumbnail.title
         self.contentView.linkInputField.hideError()
+        self.contentView.titleInputField.hideError()
       }
       .disposed(by: disposeBag)
 
@@ -159,6 +172,19 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, errorDescription in
         self.contentView.linkInputField.errorDescription = errorDescription
         self.contentView.linkInputField.showError()
+      }
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$titleError)
+      .subscribe(with: self) { `self`, errorDescription in
+        guard let errorDescription,
+              let _ = reactor.currentState.thumbnail else {
+          self.contentView.titleInputField.hideError()
+          return
+        }
+
+        self.contentView.titleInputField.errorDescription = errorDescription
+        self.contentView.titleInputField.showError()
       }
       .disposed(by: disposeBag)
 
@@ -180,6 +206,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   }
 
   private func bindTextField(with reactor: CreateLinkViewReactor) {
+    contentView.linkInputField.rx.text
+      .map { Reactor.Action.inputURL($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
     contentView.titleInputField.rx.text
       .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)
@@ -207,7 +238,6 @@ extension CreateLinkViewController: UITextFieldDelegate {
       guard let text = textField.text else { return true }
 
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
-
         let newText = "https://\(text)"
         reactor?.action.onNext(.fetchThumbnail(newText))
         view.endEditing(true)

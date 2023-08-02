@@ -28,14 +28,9 @@ final class TagListView: UIView {
   // MARK: UI
 
   private let titleLabel = UILabel().then {
-    $0.text = "태그 목록"
+    $0.text = "최근 사용한 태그"
     $0.textColor = .staticBlack
     $0.font = .subTitleSemiBold
-  }
-
-  private let tagCountLabel = UILabel().then {
-    $0.textColor = .gray600
-    $0.font = .defaultRegular
   }
 
   lazy var tableView = UITableView(frame: .zero, style: .plain).then {
@@ -49,7 +44,7 @@ final class TagListView: UIView {
   }
 
   private let emptyLabel = UILabel().then {
-    $0.text = "아직 선택된 태그가 없어요"
+    $0.text = "아직 등록된 태그가 없어요."
     $0.textColor = .gray500
     $0.font = .bodyRegular
   }
@@ -57,7 +52,6 @@ final class TagListView: UIView {
   // MARK: Properties
 
   private var tags: [String] = []
-  private var selectedTags: [String] = []
   weak var delegate: TagListViewDelegate?
 
   // MARK: Initialize
@@ -72,46 +66,26 @@ final class TagListView: UIView {
     super.init(coder: coder)
   }
 
-  // MARK: Configuring
-
-  func configureTagCount(count: Int) {
-    tagCountLabel.text = "\(count)/10"
-  }
 
   // MARK: TableView
 
-  func applyTagList(by tags: [String], selected list: [String]) {
+  func applyTagList(by tags: [String]) {
     self.tags = tags
-    selectedTags = list
 
     emptyLabel.isHidden = !tags.isEmpty
 
     tableView.reloadData()
-
-    list.forEach {
-      if let index = tags.firstIndex(of: $0) {
-        guard let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0))
-          as? TagListCell else { return }
-        cell.configureSelected(isSelected: true)
-      }
-    }
   }
 
   // MARK: Layout
 
   private func defineLayout() {
     addSubview(titleLabel)
-    addSubview(tagCountLabel)
     addSubview(emptyLabel)
     addSubview(tableView)
 
     titleLabel.snp.makeConstraints {
       $0.top.left.equalToSuperview()
-    }
-
-    tagCountLabel.snp.makeConstraints {
-      $0.left.equalTo(titleLabel.snp.right).offset(8.0)
-      $0.bottom.equalTo(titleLabel)
     }
 
     tableView.snp.makeConstraints {
@@ -150,12 +124,9 @@ extension TagListView: UITableViewDelegate, UITableViewDataSource {
       withIdentifier: TagListCell.identifier, for: indexPath
     ) as? TagListCell else { return UITableViewCell() }
 
-    let isSelected = selectedTags.contains(where: { $0 == tags[indexPath.row] })
-
     return cell.then {
       $0.selectionStyle = .none
       $0.configureText(text: self.tags[indexPath.row])
-      $0.configureSelected(isSelected: isSelected)
     }
   }
 

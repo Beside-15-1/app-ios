@@ -19,6 +19,7 @@ final class CreateFolderViewReactor: Reactor {
     case updateFolder(Folder?)
     case updateViewModel(CreateFolderPreviewView.ViewModel)
     case setSucceed
+    case setError(String)
   }
 
   struct State {
@@ -39,14 +40,16 @@ final class CreateFolderViewReactor: Reactor {
     let titleColors = ["#FFFFFF", "#000000"]
 
     var folder: Folder?
+    let folderList: [Folder]
 
     var viewModel: CreateFolderPreviewView.ViewModel
 
     var isMakeButtonEnabled: Bool {
-      !viewModel.title.isEmpty == true
+      viewModel.title != "폴더명을 입력해주세요." && !viewModel.title.isEmpty == true
     }
 
     var isSuccess = false
+    @Pulse var error: String?
   }
 
   // MARK: Properties
@@ -57,25 +60,28 @@ final class CreateFolderViewReactor: Reactor {
 
   private let createFolderUseCase: CreateFolderUseCase
   private let updateFolderUseCase: UpdateFolderUseCase
+  private let getFolderListUseCase: GetFolderListUseCase
 
   // MARK: initializing
 
   init(
     createFolderUseCase: CreateFolderUseCase,
     updateFolderUseCase: UpdateFolderUseCase,
+    getFolderListUseCase: GetFolderListUseCase,
     folder: Folder?
   ) {
     defer { _ = self.state }
 
     self.createFolderUseCase = createFolderUseCase
     self.updateFolderUseCase = updateFolderUseCase
+    self.getFolderListUseCase = getFolderListUseCase
 
     var viewModel: CreateFolderPreviewView.ViewModel {
       guard let folder else {
         return .init(
           backgroundColor: "#91B0C4",
           titleColor: "#FFFFFF",
-          title: "제목을 입력해주세요",
+          title: "폴더명을 입력해주세요",
           illuste: nil
         )
       }
@@ -90,6 +96,7 @@ final class CreateFolderViewReactor: Reactor {
 
     self.initialState = State(
       folder: folder,
+      folderList: getFolderListUseCase.execute().folders,
       viewModel: viewModel
     )
   }
@@ -105,10 +112,16 @@ final class CreateFolderViewReactor: Reactor {
     switch action {
     case .updateTitle(let title):
       var folder = currentState.folder
-      folder?.title = title
+      var validatedTitle = title
+
+      if title.count > 10 {
+        validatedTitle = String(title.prefix(10))
+      }
+
+      folder?.title = validatedTitle
 
       var viewModel = currentState.viewModel
-      viewModel.title = title
+      viewModel.title = validatedTitle
 
       return .concat([
         .just(Mutation.updateFolder(folder)),
@@ -171,6 +184,9 @@ final class CreateFolderViewReactor: Reactor {
 
     case .setSucceed:
       newState.isSuccess = true
+
+    case .setError(let error):
+      newState.error = error
     }
 
     return newState
@@ -181,7 +197,11 @@ final class CreateFolderViewReactor: Reactor {
 extension CreateFolderViewReactor {
 
   private func createFolder() -> Observable<Mutation> {
-    createFolderUseCase.execute(
+    if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
+      return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
+    }
+
+    return createFolderUseCase.execute(
       backgroundColor: currentState.viewModel.backgroundColor,
       title: currentState.viewModel.title,
       titleColor: currentState.viewModel.titleColor,
@@ -194,7 +214,12 @@ extension CreateFolderViewReactor {
   }
 
   private func updateFolder() -> Observable<Mutation> {
-    updateFolderUseCase.execute(
+
+    if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
+      return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
+    }
+
+    return updateFolderUseCase.execute(
       id: currentState.folder?.id ?? "",
       backgroundColor: currentState.viewModel.backgroundColor,
       title: currentState.viewModel.title,

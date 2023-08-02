@@ -48,6 +48,7 @@ class MoveFolderCell: UICollectionViewCell {
   private let currentView = UIView().then {
     $0.backgroundColor = .staticBlack.withAlphaComponent(0.6)
     $0.isHidden = true
+    $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 8
   }
