@@ -217,6 +217,9 @@ extension MyPageViewController: UINavigationControllerDelegate {
 
 extension MyPageViewController: DeleteAccountDelegate {
   func deleteAccountSuccess() {
-    reactor?.action.onNext(.logoutButtonTapped)
+    let vc = self.loginBuilder.build(payload: .init())
+    self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+    self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+    self.transition = nil
   }
 }

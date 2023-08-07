@@ -10,6 +10,7 @@ struct SignUpDependency {
   let loginRepository: LoginRepository
   let mainTabBuilder: MainTabBarBuildable
   let signUpSuccessBuilder: SingUpSuccessBuildable
+  let onboardingBuilder: OnboardingBuildable
 }
 
 // MARK: - SignUpBuilder
@@ -31,7 +32,8 @@ final class SignUpBuilder: SignUpBuildable {
     let viewController = SignUpViewController(
       reactor: reactor,
       mainTabBuilder: dependency.mainTabBuilder,
-      signUpSuccessBuilder: dependency.signUpSuccessBuilder
+      signUpSuccessBuilder: dependency.signUpSuccessBuilder,
+      onboardingBuilder: dependency.onboardingBuilder
     )
 
     return viewController
