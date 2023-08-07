@@ -223,21 +223,19 @@ extension FolderDetailViewController: LinkSortDelegate {
 
 extension FolderDetailViewController: FolderDetailListViewDelegate {
   func listViewItemDidTapped(at row: Int) {
-    guard let reactor else { return }
+    guard let reactor,
+          let url = URL(string: reactor.currentState.linkList[row].url) else { return }
 
-    let linkDetail = linkDetailBuilder.build(payload: .init(link: reactor.currentState.linkList[row]))
-
-    self.navigationController?.pushViewController(linkDetail, animated: true)
+    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+    UIApplication.shared.open(url, options: options)
   }
 
   func listViewMoreButtonTapped(id: String) {
-    guard let reactor else { return }
+    guard let reactor,
+          let link = reactor.currentState.linkList.first(where: { $0.id == id }) else { return }
 
-    if let link = reactor.currentState.linkList.first(where: { $0.id == id }),
-       let url = URL(string: link.url) {
+    let linkDetail = linkDetailBuilder.build(payload: .init(link: link))
 
-      let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
-      UIApplication.shared.open(url)
-    }
+    navigationController?.pushViewController(linkDetail, animated: true)
   }
 }
