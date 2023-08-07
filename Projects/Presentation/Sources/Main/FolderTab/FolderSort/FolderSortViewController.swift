@@ -92,6 +92,12 @@ final class FolderSortViewController: UIViewController, StoryboardView {
         }
       }
       .disposed(by: disposeBag)
+
+    contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.dismiss(animated: true)
+      }
+      .disposed(by: disposeBag)
   }
 }
 

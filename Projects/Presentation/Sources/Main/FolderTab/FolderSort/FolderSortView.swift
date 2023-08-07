@@ -15,7 +15,7 @@ import PresentationInterface
 
 final class FolderSortView: UIView {
 
-  private let titleView = TitleView().then {
+  let titleView = TitleView().then {
     $0.title = "옵션 선택"
   }
 
