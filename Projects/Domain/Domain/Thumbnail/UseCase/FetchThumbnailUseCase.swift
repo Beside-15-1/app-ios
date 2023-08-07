@@ -48,14 +48,11 @@ public class FetchThumbnailUseCaseImpl: FetchThumbnailUseCase {
           let linkUrl = url.absoluteString
 
           // 추출한 정보로 LinkMetadata 객체를 생성합니다.
-          if title == nil, thumbnailUrl == nil {
-            single(.success(nil))
-          } else {
-            let metadata = Thumbnail(title: title, url: linkUrl, imageURL: thumbnailUrl)
-            single(.success(metadata))
-          }
+          let metadata = Thumbnail(title: title, url: linkUrl, imageURL: thumbnailUrl)
+          single(.success(metadata))
         } catch {
-          single(.failure(error))
+          let metadata = Thumbnail(title: "", url: url.absoluteString, imageURL: nil)
+          single(.success(metadata))
         }
       }
 
