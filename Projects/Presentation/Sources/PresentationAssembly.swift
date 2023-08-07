@@ -46,6 +46,7 @@ public final class PresentationAssembly: Assembly {
       LoginBuilder(dependency: .init(
         analytics: r.resolve(),
         loginRepository: r.resolve(),
+        tagRepository: r.resolve(),
         mainTabBuilder: r.resolve(),
         signUpBuilder: r.resolve(),
         termsOfUseBuilder: r.resolve()
@@ -94,6 +95,7 @@ public final class PresentationAssembly: Assembly {
     container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
         loginRepository: r.resolve(),
+        tagRepository: r.resolve(),
         manageTagBuilder: r.resolve(),
         webBuilder: r.resolve(),
         deleteAccountBuilder: r.resolve()

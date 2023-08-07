@@ -11,6 +11,7 @@ import PresentationInterface
 struct LoginDependency {
   let analytics: PBAnalytics
   let loginRepository: LoginRepository
+  let tagRepository: TagRepository
   let mainTabBuilder: MainTabBarBuildable
   let signUpBuilder: SignUpBuildable
   let termsOfUseBuilder: TermsOfUseBuildable
@@ -31,8 +32,14 @@ final class LoginBuilder: LoginBuildable {
     let viewModel = LoginViewModel(
       analytics: dependency.analytics,
       loginManager: loginManager,
-      googleLoginUseCase: GoogleLoginUseCaseImpl(loginRepository: dependency.loginRepository),
-      appleLoginUseCase: AppleLoginUseCaseImpl(loginRepository: dependency.loginRepository)
+      googleLoginUseCase: GoogleLoginUseCaseImpl(
+        loginRepository: dependency.loginRepository,
+        tagRepository: dependency.tagRepository
+      ),
+      appleLoginUseCase: AppleLoginUseCaseImpl(
+        loginRepository: dependency.loginRepository,
+        tagRepository: dependency.tagRepository
+      )
     )
 
     let viewController = LoginViewController(
