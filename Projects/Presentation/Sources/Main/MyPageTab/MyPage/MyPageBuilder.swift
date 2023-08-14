@@ -13,6 +13,7 @@ import PresentationInterface
 
 struct MyPageDependency {
   let loginRepository: LoginRepository
+  let tagRepository: TagRepository
   let manageTagBuilder: ManageTagBuildable
   let webBuilder: PBWebBuildable
   let deleteAccountBuilder: DeleteAccountBuildable
@@ -30,7 +31,8 @@ final class MyPageBuilder: MyPageBuildable {
   func build(payload: MyPagePayload) -> UIViewController {
     let reactor = MyPageViewReactor(
       logoutUseCase: LogoutUseCaseImpl(
-        loginRepository: dependency.loginRepository
+        loginRepository: dependency.loginRepository,
+        tagRepository: dependency.tagRepository
       )
     )
 

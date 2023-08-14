@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+import RxSwift
 import SnapKit
 import Then
 
@@ -26,12 +27,23 @@ class CreateFolderView: UIView {
   let linkBookTabView = CreateFolderTabView()
 
 
+  // MARK: Properties
+
+  private let disposeBag = DisposeBag()
+
+
   override init(frame: CGRect) {
     super.init(frame: frame)
 
     self.backgroundColor = .paperWhite
 
     defineLayout()
+
+    linkBookTabView.tabView.selectedTab
+      .subscribe(with: self) { `self`, _ in
+        self.endEditing(true)
+      }
+      .disposed(by: disposeBag)
   }
 
   required init?(coder: NSCoder) {

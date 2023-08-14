@@ -7,6 +7,8 @@
 
 import Foundation
 
+import Domain
+
 struct FolderDTO: Codable {
   let id: String
   let userID: String
@@ -14,7 +16,7 @@ struct FolderDTO: Codable {
   let backgroundColor: String
   let titleColor: String
   let illustration: String?
-  let linkCount: Int
+  let linkCount: Int?
   let createdAt: String
   let lastSavedAt: String
   let isDefault: String
@@ -30,5 +32,19 @@ struct FolderDTO: Codable {
     case createdAt
     case lastSavedAt
     case isDefault
+  }
+
+  public func toDomain() -> Folder {
+    .init(
+      id: id,
+      userID: userID,
+      title: title,
+      backgroundColor: backgroundColor,
+      titleColor: titleColor,
+      linkCount: linkCount ?? 0,
+      createdAt: createdAt,
+      lastSavedAt: lastSavedAt,
+      isDefault: isDefault == "y"
+    )
   }
 }

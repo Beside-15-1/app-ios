@@ -161,11 +161,6 @@ extension WhiteTabView: UICollectionViewDelegate {
     _ collectionView: UICollectionView,
     didSelectItemAt indexPath: IndexPath
   ) {
-//    collectionView.scrollToItem(
-//      at: IndexPath(item: indexPath.row, section: 0),
-//      at: .centeredHorizontally,
-//      animated: true
-//    )
 
     delegate?.tabView(didSelectedTab: tabs[indexPath.row])
     selectedTab.accept(tabs[indexPath.row])

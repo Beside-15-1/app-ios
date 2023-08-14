@@ -297,7 +297,7 @@ extension CreateLinkViewController: TagViewDelegate {
 // MARK: CreateFolderDelegate
 
 extension CreateLinkViewController: CreateFolderDelegate {
-  func createFolderSucceed() {
-    reactor?.action.onNext(.updateFolderList)
+  func createFolderSucceed(folder: Folder) {
+    reactor?.action.onNext(.createFolderSucceed(folder))
   }
 }

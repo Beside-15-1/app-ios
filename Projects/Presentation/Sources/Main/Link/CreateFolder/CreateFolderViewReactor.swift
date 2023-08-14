@@ -18,7 +18,7 @@ final class CreateFolderViewReactor: Reactor {
   enum Mutation {
     case updateFolder(Folder?)
     case updateViewModel(CreateFolderPreviewView.ViewModel)
-    case setSucceed
+    case setSucceed(Folder)
     case setError(String)
   }
 
@@ -45,10 +45,10 @@ final class CreateFolderViewReactor: Reactor {
     var viewModel: CreateFolderPreviewView.ViewModel
 
     var isMakeButtonEnabled: Bool {
-      viewModel.title != "폴더명을 입력해주세요." && !viewModel.title.isEmpty == true
+      !viewModel.title.isEmpty == true
     }
 
-    var isSuccess = false
+    var isSucceed: Folder?
     @Pulse var error: String?
   }
 
@@ -81,7 +81,7 @@ final class CreateFolderViewReactor: Reactor {
         return .init(
           backgroundColor: "#91B0C4",
           titleColor: "#FFFFFF",
-          title: "폴더명을 입력해주세요",
+          title: "",
           illuste: nil
         )
       }
@@ -182,8 +182,8 @@ final class CreateFolderViewReactor: Reactor {
     case .updateViewModel(let viewModel):
       newState.viewModel = viewModel
 
-    case .setSucceed:
-      newState.isSuccess = true
+    case .setSucceed(let folder):
+      newState.isSucceed = folder
 
     case .setError(let error):
       newState.error = error
@@ -208,17 +208,12 @@ extension CreateFolderViewReactor {
       illustration: currentState.viewModel.illuste
     )
     .asObservable()
-    .flatMap { _ -> Observable<Mutation> in
-      .just(Mutation.setSucceed)
+    .flatMap { folder -> Observable<Mutation> in
+      .just(Mutation.setSucceed(folder))
     }
   }
 
   private func updateFolder() -> Observable<Mutation> {
-
-    if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
-      return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
-    }
-
     return updateFolderUseCase.execute(
       id: currentState.folder?.id ?? "",
       backgroundColor: currentState.viewModel.backgroundColor,
@@ -227,8 +222,11 @@ extension CreateFolderViewReactor {
       illustration: currentState.viewModel.illuste
     )
     .asObservable()
-    .flatMap { _ -> Observable<Mutation> in
-      .just(Mutation.setSucceed)
+    .flatMap { folder -> Observable<Mutation> in
+      .just(Mutation.setSucceed(folder))
+    }
+    .catch { _ in
+      .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
     }
   }
 }

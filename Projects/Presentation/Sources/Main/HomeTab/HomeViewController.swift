@@ -201,7 +201,7 @@ extension HomeViewController: HomeFolderViewDelegate {
 // MARK: CreateFolderDelegate
 
 extension HomeViewController: CreateFolderDelegate {
-  func createFolderSucceed() {
+  func createFolderSucceed(folder: Folder) {
     reactor?.action.onNext(.createFolderSucceed)
   }
 }

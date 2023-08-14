@@ -7,9 +7,9 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
-import PanModal
 
 import DesignSystem
 import PresentationInterface

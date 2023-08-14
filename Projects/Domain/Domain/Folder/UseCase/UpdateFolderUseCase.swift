@@ -16,7 +16,7 @@ public protocol UpdateFolderUseCase {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void>
+  ) -> Single<Folder>
 }
 
 public class UpdateFolderUseCaseImpl: UpdateFolderUseCase {
@@ -33,7 +33,7 @@ public class UpdateFolderUseCaseImpl: UpdateFolderUseCase {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void> {
+  ) -> Single<Folder> {
     folderRepository.updateFolder(
       id: id,
       backgroundColor: backgroundColor,

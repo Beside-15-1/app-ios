@@ -174,6 +174,18 @@ final class MyPageViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
+    contentView.csButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://forms.gle/NcvHeu6FGyKuwm1Z8") else {
+          return
+        }
+
+        let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+
+        UIApplication.shared.open(url, options: options)
+      }
+      .disposed(by: disposeBag)
+
     contentView.deleteAccountButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let deleteAccount = self.deleteAccountBuilder.build(
@@ -205,6 +217,9 @@ extension MyPageViewController: UINavigationControllerDelegate {
 
 extension MyPageViewController: DeleteAccountDelegate {
   func deleteAccountSuccess() {
-    reactor?.action.onNext(.logoutButtonTapped)
+    let vc = self.loginBuilder.build(payload: .init())
+    self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+    self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+    self.transition = nil
   }
 }

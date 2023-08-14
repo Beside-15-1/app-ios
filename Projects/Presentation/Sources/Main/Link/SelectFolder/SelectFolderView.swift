@@ -114,7 +114,7 @@ final class SelectFolderView: UIView {
       return cell.then {
         $0.configure(
           with: item,
-          isSelected: item == self?.selectedFolder
+          isSelected: item.id == self?.selectedFolder?.id
         )
       }
     }

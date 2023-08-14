@@ -66,9 +66,15 @@ class CreateFolderPreviewView: UIView {
 
   func configure(with folder: ViewModel) {
     bookCover.backgroundColor = UIColor(hexString: folder.backgroundColor)
-    bookText.text = folder.title
-    bookText.textColor = UIColor(hexString: folder.titleColor)
-    bookText.attributedText = folder.title.styled(font: .defaultBold, color: UIColor(hexString: folder.titleColor))
+
+    bookText.do {
+      if folder.title.isEmpty {
+        $0.attributedText = "폴더명을 입력해주세요".styled(font: .bodyBold, color: UIColor(hexString: folder.titleColor))
+      } else {
+        $0.attributedText = folder.title.styled(font: .bodyBold, color: UIColor(hexString: folder.titleColor))
+      }
+    }
+
     illust.image = UIImage(
       named: folder.illuste ?? "",
       in: DesignSystemResources.bundle,

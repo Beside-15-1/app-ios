@@ -18,6 +18,7 @@ final class CreateLinkViewReactor: Reactor {
     case updateFolderList
     case saveButtonTapped
     case inputURL(String)
+    case createFolderSucceed(Folder)
   }
 
   enum Mutation {
@@ -162,7 +163,24 @@ final class CreateLinkViewReactor: Reactor {
         ])
       }
       return .just(Mutation.setInputURL(url))
+
+    case .createFolderSucceed(let folder):
+      return fetchFolderListAndSetFolder(folder: folder)
     }
+  }
+
+  private func fetchFolderListAndSetFolder(folder: Folder) -> Observable<Mutation> {
+    fetchFolderListUseCase.execute(sort: .createAt)
+      .asObservable()
+      .flatMap { folderList -> Observable<Mutation> in
+        return .concat([
+          .just(Mutation.setFolderList(folderList.folders)),
+          .just(Mutation.setFolder(folder))
+        ])
+      }
+      .catch { _ in
+        .just(Mutation.setFolder(folder))
+      }
   }
 
   func reduce(state: State, mutation: Mutation) -> State {

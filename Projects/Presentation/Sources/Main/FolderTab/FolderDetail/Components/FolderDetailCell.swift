@@ -95,7 +95,7 @@ class FolderDetailCell: UICollectionViewCell {
 
         // URL
         let prefixes = ["https://", "http://"]
-        caption = urlComponents?.url?.absoluteString ?? ""
+        caption = urlComponents?.host ?? ""
 
         for prefix in prefixes {
           if caption.hasPrefix(prefix) {

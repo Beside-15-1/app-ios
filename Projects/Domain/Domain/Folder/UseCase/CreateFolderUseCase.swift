@@ -15,7 +15,7 @@ public protocol CreateFolderUseCase {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void>
+  ) -> Single<Folder>
 }
 
 public class CreateFolderUseCaseImpl: CreateFolderUseCase {
@@ -31,7 +31,7 @@ public class CreateFolderUseCaseImpl: CreateFolderUseCase {
     title: String,
     titleColor: String,
     illustration: String?
-  ) -> Single<Void> {
+  ) -> Single<Folder> {
     folderRepository.createFolder(
       backgroundColor: backgroundColor,
       title: title,

@@ -22,6 +22,7 @@ final class SignUpViewController: UIViewController, StoryboardView {
 
   private let mainTabBuilder: MainTabBarBuildable
   private let signUpSuccessBuilder: SingUpSuccessBuildable
+  private let onboardingBuilder: OnboardingBuildable
 
   var disposeBag = DisposeBag()
 
@@ -30,11 +31,13 @@ final class SignUpViewController: UIViewController, StoryboardView {
   init(
     reactor: SignUpViewReactor,
     mainTabBuilder: MainTabBarBuildable,
-    signUpSuccessBuilder: SingUpSuccessBuildable
+    signUpSuccessBuilder: SingUpSuccessBuildable,
+    onboardingBuilder: OnboardingBuildable
   ) {
     defer { self.reactor = reactor }
     self.mainTabBuilder = mainTabBuilder
     self.signUpSuccessBuilder = signUpSuccessBuilder
+    self.onboardingBuilder = onboardingBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -136,10 +139,9 @@ final class SignUpViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
-        guard let vc = self.signUpSuccessBuilder.build(payload: .init(delegate: self))
-                as? PanModalPresentable.LayoutType else { return }
+        let onboarding = self.onboardingBuilder.build(payload: .init())
 
-        self.presentPanModal(vc)
+        self.navigationController?.pushViewController(onboarding, animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -211,17 +213,5 @@ extension SignUpViewController: UINavigationControllerDelegate {
 extension SignUpViewController: SignUpViewDelegate {
   func inputFieldDidSelectYear(year: Int) {
     reactor?.action.onNext(.selectYear(year))
-  }
-}
-
-
-// MARK: SignUpSuccessDelegate
-
-extension SignUpViewController: SignUpSuccessDelegate {
-  func startJoosumButtonTapped() {
-    let mainTab = self.mainTabBuilder.build(payload: .init())
-    self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-    self.navigationController?.setViewControllers([mainTab], animated: true)
-    self.transition = nil
   }
 }
