@@ -17,7 +17,7 @@ def flex_layout
 end
 
 target 'Joosum' do
-  project 'Projects/Joosum/Joosum.xcodeproj'
+  project 'Projects/App/Joosum.xcodeproj'
   flex_layout
   pod 'PinLayout', '~> 1.0'
   pod 'GoogleSignIn'

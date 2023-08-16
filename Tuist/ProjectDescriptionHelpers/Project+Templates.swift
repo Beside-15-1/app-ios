@@ -56,7 +56,7 @@ extension Project {
       product: product,
       bundleId: bundleID,
       deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       resources: resources,
       entitlements: .relativeToRoot("Projects/Joosum/Joosum.entitlements"),

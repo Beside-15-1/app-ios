@@ -17,7 +17,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
         // External
@@ -35,7 +35,7 @@ let project = Project(
       product: .unitTests,
       bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: "Tests/**",
       dependencies: [
         .target(name: "\(CoreModule.PBNetworking.rawValue)")

@@ -17,7 +17,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".domain",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Domain/**"],
       scripts: [
         TargetScript.pre(
@@ -47,7 +47,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".data",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Data/**"],
       dependencies: [
         .target(name: "Domain"),
@@ -67,7 +67,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".domaintesting",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Testing/**"],
       dependencies: [
         .target(name: "Domain")
@@ -79,7 +79,7 @@ let project = Project(
       product: .unitTests,
       bundleId: Project.bundleID + ".domaintests",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Tests/**"],
       dependencies: [
         .target(name: "Domain"),
