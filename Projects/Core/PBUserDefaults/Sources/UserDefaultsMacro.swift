@@ -12,18 +12,18 @@ public class UserDefault<Value> {
 
   public var wrappedValue: Value {
     get {
-      userDefaults.object(forKey: key) as? Value ?? defaultValue
+      userDefaults?.object(forKey: key) as? Value ?? defaultValue
     }
 
     set {
-      userDefaults.setValue(newValue, forKey: key)
+      userDefaults?.setValue(newValue, forKey: key)
     }
   }
 
   var defaultValue: Value
   var key: String
 
-  private let userDefaults = UserDefaults.standard
+  private let userDefaults = UserDefaults.init(suiteName: "group.pinkboss.joosum")
 
   public init(
     wrappedValue defaultValue: Value,

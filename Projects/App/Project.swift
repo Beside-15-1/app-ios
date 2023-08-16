@@ -51,7 +51,11 @@ let project = Project(
       bundleId: Project.bundleID + ".joosumapp".lowercased() + ".share",
       infoPlist: .file(path: "ShareExtension/Supporting Files/Info.plist"),
       sources: ["ShareExtension/Sources/**"],
-      resources: ["ShareExtension/Resources/**"],
+      resources: [
+        "ShareExtension/Resources/**",
+        .glob(pattern: .relativeToRoot("Projects/App/Joosum/Supporting Files/GoogleService-Info.plist")),
+      ],
+      entitlements: .relativeToRoot("Projects/App/ShareExtension/Supporting Files/ShareExtension.entitlements"),
       dependencies: [
         // Module
         .data(),
@@ -60,9 +64,14 @@ let project = Project(
         .core(impl: .PBNetworking),
         .core(impl: .PBLog),
         .core(impl: .PBAuth),
+        .core(impl: .PBUserDefaults),
         .core(interface: .PBAuth),
         // External
         .external(dependency: .Swinject),
+        .external(dependency: .ReactorKit),
+        .external(dependency: .RxSwift),
+        .external(dependency: .RxCocoa),
+        .external(dependency: .RxRelay),
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
