@@ -10,6 +10,7 @@ import PBAuth
 import PBAuthInterface
 import Presentation
 import PresentationInterface
+import ShareExtension
 
 // MARK: - AppDependency
 

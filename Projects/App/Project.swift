@@ -49,6 +49,7 @@ let project = Project(
       platform: .iOS,
       product: .appExtension,
       bundleId: Project.bundleID + ".joosumapp".lowercased() + ".share",
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
       infoPlist: .file(path: "ShareExtension/Supporting Files/Info.plist"),
       sources: ["ShareExtension/Sources/**"],
       resources: [
@@ -60,6 +61,7 @@ let project = Project(
         // Module
         .data(),
         .designSystem(),
+        .domain(),
         // Core
         .core(impl: .PBNetworking),
         .core(impl: .PBLog),
@@ -72,6 +74,8 @@ let project = Project(
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
         .external(dependency: .RxRelay),
+        .external(dependency: .KeychainAccess),
+        .external(dependency: .SwiftSoup),
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
