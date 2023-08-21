@@ -9,6 +9,7 @@ import UIKit
 
 import ReactorKit
 import RxSwift
+import RxKeyboard
 
 import KeychainAccess
 import Domain
@@ -41,6 +42,8 @@ final class ShareViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.boxView.titleInputField.setDelegate(self)
   }
 
   override func viewDidLoad() {
@@ -122,6 +125,12 @@ final class ShareViewController: UIViewController, StoryboardView {
         self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
+
+    RxKeyboard.instance.visibleHeight
+      .drive(with: self) { `self`, height in
+        self.view.transform = CGAffineTransform(translationX: 0, y: -height)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -167,5 +176,23 @@ extension ShareViewController {
 extension ShareViewController: SelectFolderDelegate {
   func selectFolderViewItemTapped(folder: Folder) {
     reactor?.action.onNext(.updateFolder(folder))
+  }
+}
+
+
+// MARK: TextField
+
+extension ShareViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    let currentTitle = reactor?.currentState.link?.title ?? ""
+
+    guard currentTitle != textField.text else {
+      view.endEditing(true)
+      return true
+    }
+
+    reactor?.action.onNext(.updateTitle(textField.text ?? ""))
+    view.endEditing(true)
+    return true
   }
 }

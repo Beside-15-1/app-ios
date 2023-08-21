@@ -23,6 +23,7 @@ final class ShareViewReactor: Reactor {
     case fetchThumbnail(URL)
     case retryFetchThumbnail
     case updateFolder(Folder)
+    case updateTitle(String)
   }
 
   enum Mutation {
@@ -87,13 +88,19 @@ final class ShareViewReactor: Reactor {
       ])
 
     case .updateFolder(let folder):
-
       guard var link = currentState.link else { return .empty() }
 
       link.folderName = folder.title
       link.linkBookId = folder.id
 
       return updateFolder(link: link)
+
+    case .updateTitle(let title):
+      guard var link = currentState.link else { return .empty() }
+
+      link.title = title
+
+      return updateLink(link: link)
     }
   }
 
@@ -165,5 +172,19 @@ extension ShareViewReactor {
       .flatMap { _ -> Observable<Mutation> in
         .just(Mutation.setLink(link))
       }
+  }
+
+  private func updateLink(link: Link) -> Observable<Mutation> {
+    repository.updateLink(
+      id: link.id,
+      title: link.title,
+      url: link.url,
+      thumbnailURL: link.thumbnailURL,
+      tags: link.tags
+    )
+    .asObservable()
+    .flatMap { _ -> Observable<Mutation> in
+      .just(Mutation.setLink(link))
+    }
   }
 }

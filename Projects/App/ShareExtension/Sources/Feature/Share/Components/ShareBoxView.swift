@@ -32,6 +32,7 @@ class ShareBoxView: UIView {
   let titleInputField = InputField(type: .normal).then {
     $0.title = "제목".styled(font: .subTitleSemiBold, color: .staticBlack)
     $0.placeHolder = "제목을 입력해주세요."
+    $0.returnKeyType = .done
   }
 
   let selectFolderButton = SelectFolderButton()

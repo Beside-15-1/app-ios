@@ -74,6 +74,7 @@ let project = Project(
         .external(dependency: .RxSwift),
         .external(dependency: .RxCocoa),
         .external(dependency: .RxRelay),
+        .external(dependency: .RxKeyboard),
         .external(dependency: .KeychainAccess),
         .external(dependency: .SwiftSoup),
       ],
