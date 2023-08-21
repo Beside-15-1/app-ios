@@ -60,13 +60,13 @@ class CreateLinkSuccessView: UIView {
       checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
 
     case .needLogin:
-      titleLabel.attributedText = "로그인이 필요해요!".styled(font: .defaultSemiBold, color: .staticBlack)
-      subtitleLabel.attributedText = "앱으로 이동해 로그인을 해주세요.".styled(font: .bodyRegular, color: .staticBlack)
+      titleLabel.attributedText = "로그인 후 저장할 수 있어요!".styled(font: .defaultSemiBold, color: .staticBlack)
+      subtitleLabel.attributedText = "앱으로 접속하여 로그인 후 사용해보세요.".styled(font: .bodyRegular, color: .staticBlack)
       checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
 
     case .failure:
-      titleLabel.attributedText = "링크 저장을 실패했어요.".styled(font: .defaultSemiBold, color: .staticBlack)
-      subtitleLabel.attributedText = "잠시후 다시 시도해주세요.".styled(font: .bodyRegular, color: .staticBlack)
+      titleLabel.attributedText = "네트워크 에러.".styled(font: .defaultSemiBold, color: .staticBlack)
+      subtitleLabel.attributedText = "연결 확인 후 다시 시도해주세요.".styled(font: .bodyRegular, color: .staticBlack)
       checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
     }
   }

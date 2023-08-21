@@ -13,6 +13,7 @@ import PBNetworking
 
 enum API {
   case createLink(CreateLinkRequest)
+  case fetchFolderList
 }
 
 extension API: BaseTargetType {
@@ -21,6 +22,9 @@ extension API: BaseTargetType {
     switch self {
     case .createLink:
       return "links"
+
+    case .fetchFolderList:
+      return "link-books"
     }
   }
 
@@ -28,6 +32,9 @@ extension API: BaseTargetType {
     switch self {
     case .createLink:
       return .post
+
+    case .fetchFolderList:
+      return .get
     }
   }
 
@@ -35,6 +42,9 @@ extension API: BaseTargetType {
     switch self {
     case .createLink(let request):
       return .requestJSONEncodable(request)
+
+    case .fetchFolderList:
+      return .requestParameters(parameters: ["sort": "create_at"], encoding: URLEncoding.queryString)
     }
   }
 }

@@ -20,17 +20,22 @@ final class ShareViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
-    case fetchThumbnaiil(URL)
+    case fetchThumbnail(URL)
+    case retryFetchThumbnail
   }
 
   enum Mutation {
     case setLink(Link)
     case setStatus(ShareStatus)
+    case setURL(URL)
+    case setFolderList([Folder])
   }
 
   struct State {
     var link: Link?
     var status: ShareStatus = .loading
+    var url: URL?
+    var folderList: [Folder] = []
   }
 
   // MARK: Properties
@@ -64,9 +69,17 @@ final class ShareViewReactor: Reactor {
         return .just(Mutation.setStatus(.needLogin))
       }
 
-      return .empty()
+      return fetchFolderList()
 
-    case .fetchThumbnaiil(let url):
+    case .fetchThumbnail(let url):
+      return .concat([
+        .just(Mutation.setURL(url)),
+        .just(Mutation.setStatus(.loading)),
+        fetchThumbnailAndCreateLink(url: url),
+      ])
+
+    case .retryFetchThumbnail:
+      guard let url = currentState.url else { return .empty() }
       return .concat([
         .just(Mutation.setStatus(.loading)),
         fetchThumbnailAndCreateLink(url: url),
@@ -83,6 +96,12 @@ final class ShareViewReactor: Reactor {
 
     case .setStatus(let status):
       newState.status = status
+
+    case .setURL(let url):
+      newState.url = url
+
+    case .setFolderList(let folderList):
+      newState.folderList = folderList
     }
 
     return newState
@@ -93,6 +112,12 @@ final class ShareViewReactor: Reactor {
 // MARK: - Private
 
 extension ShareViewReactor {
+
+  private func fetchFolderList() -> Observable<Mutation> {
+    repository.fetchFolderList()
+      .asObservable()
+      .map { Mutation.setFolderList($0.folders) }
+  }
 
   private func fetchThumbnailAndCreateLink(url: URL) -> Observable<Mutation> {
     fetchThumbnailUseCase.execute(url: url)

@@ -41,4 +41,9 @@ class Repository {
       .map { $0.toDomain() }
   }
 
+  func fetchFolderList() -> Single<FolderList> {
+    networking.request(target: API.fetchFolderList)
+      .map(FolderListResponse.self)
+      .map { $0.toDomain() }
+  }
 }

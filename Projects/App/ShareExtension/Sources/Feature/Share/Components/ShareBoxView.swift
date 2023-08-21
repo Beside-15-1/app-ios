@@ -18,6 +18,11 @@ class ShareBoxView: UIView {
 
   // MARK: UI
 
+  let container = UIStackView().then {
+    $0.axis = .vertical
+    $0.distribution = .fill
+  }
+
   let titleView = TitleView().then {
     $0.title = "링크 저장"
   }
@@ -99,29 +104,26 @@ class ShareBoxView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleView, createLinkSuccessView, titleInputField, completeButton, indicator].forEach {
+    [titleView, container, indicator].forEach {
       addSubview($0)
+    }
+
+    [createLinkSuccessView, titleInputField, completeButton].forEach {
+      container.addArrangedSubview($0)
     }
 
     titleView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
     }
 
-    createLinkSuccessView.snp.makeConstraints {
+    container.snp.makeConstraints {
+      $0.left.right.equalToSuperview().inset(20.0)
       $0.top.equalTo(titleView.snp.bottom).offset(12.0)
-      $0.left.right.equalToSuperview().inset(20.0)
-    }
-
-    titleInputField.snp.makeConstraints {
-      $0.top.equalTo(createLinkSuccessView.snp.bottom).offset(16.0)
-      $0.left.right.equalToSuperview().inset(20.0)
-    }
-
-    completeButton.snp.makeConstraints {
-      $0.top.equalTo(titleInputField.snp.bottom).offset(20.0)
-      $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(20.0)
     }
+
+    container.setCustomSpacing(16.0, after: createLinkSuccessView)
+    container.setCustomSpacing(20.0, after: titleInputField)
 
     indicator.snp.makeConstraints {
       $0.center.equalToSuperview()

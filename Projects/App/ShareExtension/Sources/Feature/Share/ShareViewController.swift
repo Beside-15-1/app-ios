@@ -49,8 +49,9 @@ final class ShareViewController: UIViewController, StoryboardView {
       return
     }
 
+    reactor?.action.onNext(.viewDidLoad)
     getURL { [weak self] url in
-      self?.reactor?.action.onNext(.fetchThumbnaiil(url))
+      self?.reactor?.action.onNext(.fetchThumbnail(url))
     }
   }
 
@@ -58,7 +59,7 @@ final class ShareViewController: UIViewController, StoryboardView {
     super.viewWillAppear(true)
     if reactor?.currentState.status == .needLogin, let _ = Keychain(service: "com.pinkboss.joosum")["accessToken"] {
       getURL { [weak self] url in
-        self?.reactor?.action.onNext(.fetchThumbnaiil(url))
+        self?.reactor?.action.onNext(.fetchThumbnail(url))
       }
     }
   }
@@ -81,23 +82,29 @@ final class ShareViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
+    contentView.boxView.titleView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.extensionContext?.completeRequest(returningItems: nil)
+      }
+      .disposed(by: disposeBag)
+
     contentView.boxView.completeButton.rx.controlEvent(.touchUpInside)
       .withLatestFrom(reactor.state.map(\.status))
       .subscribe(with: self) { `self`, status in
         switch status {
         case .loading:
-          self.dismiss(animated: true)
+          break
 
         case .success:
-          self.dismiss(animated: true)
+          self.extensionContext?.completeRequest(returningItems: nil)
 
         case .needLogin:
-          self.dismiss(animated: true) {
+          self.extensionContext?.completeRequest(returningItems: nil) { _ in
             let _ = self.openURL(URL(string: "joosum://")!)
           }
 
         case .failure:
-          self.dismiss(animated: true)
+          reactor.action.onNext(.retryFetchThumbnail)
         }
       }
       .disposed(by: disposeBag)
