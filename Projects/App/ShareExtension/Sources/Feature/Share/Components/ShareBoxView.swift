@@ -34,6 +34,8 @@ class ShareBoxView: UIView {
     $0.placeHolder = "제목을 입력해주세요."
   }
 
+  let selectFolderButton = SelectFolderButton()
+
   let completeButton = BasicButton(priority: .primary).then {
     $0.text = "완료"
   }
@@ -69,26 +71,33 @@ class ShareBoxView: UIView {
       createLinkSuccessView.isHidden = true
       titleInputField.isHidden = true
       completeButton.isHidden = true
+      selectFolderButton.isHidden = true
       indicator.isHidden = false
       indicator.startAnimating()
 
     case .success:
       createLinkSuccessView.isHidden = false
       titleInputField.isHidden = false
+      selectFolderButton.isHidden = false
       completeButton.isHidden = false
+      completeButton.text = "완료"
       indicator.isHidden = true
-      indicator.startAnimating()
+      indicator.stopAnimating()
 
     case .needLogin:
       createLinkSuccessView.isHidden = false
       completeButton.isHidden = false
       completeButton.text = "앱으로 이동"
       indicator.isHidden = true
-      indicator.startAnimating()
+      indicator.stopAnimating()
 
     case .failure:
+      createLinkSuccessView.isHidden = false
       indicator.isHidden = true
-      indicator.startAnimating()
+      completeButton.isHidden = false
+      completeButton.text = "다시 시도"
+      indicator.isHidden = true
+      indicator.stopAnimating()
     }
 
     createLinkSuccessView.configure(status: status)
@@ -98,6 +107,8 @@ class ShareBoxView: UIView {
     titleInputField.do {
       $0.text = link?.title
     }
+
+    selectFolderButton.configure(withFolder: link?.folderName ?? "기본")
   }
 
 
@@ -108,7 +119,7 @@ class ShareBoxView: UIView {
       addSubview($0)
     }
 
-    [createLinkSuccessView, titleInputField, completeButton].forEach {
+    [createLinkSuccessView, titleInputField, selectFolderButton, completeButton].forEach {
       container.addArrangedSubview($0)
     }
 
@@ -124,6 +135,7 @@ class ShareBoxView: UIView {
 
     container.setCustomSpacing(16.0, after: createLinkSuccessView)
     container.setCustomSpacing(20.0, after: titleInputField)
+    container.setCustomSpacing(20.0, after: selectFolderButton)
 
     indicator.snp.makeConstraints {
       $0.center.equalToSuperview()

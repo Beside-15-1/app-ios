@@ -46,4 +46,27 @@ class Repository {
       .map(FolderListResponse.self)
       .map { $0.toDomain() }
   }
+
+  func updateLink(
+    id: String,
+    title: String,
+    url: String,
+    thumbnailURL: String?,
+    tags: [String]
+  ) -> Single<Link> {
+    networking.request(target: API.updateLink(
+      id: id,
+      .init(title: title, url: url, thumbnailURL: thumbnailURL, tags: tags)
+    ))
+    .map(LinkDTO.self)
+    .map { $0.toDomain() }
+  }
+
+  func updateLink(
+    id: String,
+    folderID: String
+  ) -> Single<Void> {
+    networking.request(target: API.updateLinkWithFolderID(id: id, folderID: folderID))
+      .map { _ in }
+  }
 }

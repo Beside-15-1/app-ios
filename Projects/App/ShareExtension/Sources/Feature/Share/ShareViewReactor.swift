@@ -22,6 +22,7 @@ final class ShareViewReactor: Reactor {
     case viewDidLoad
     case fetchThumbnail(URL)
     case retryFetchThumbnail
+    case updateFolder(Folder)
   }
 
   enum Mutation {
@@ -84,6 +85,15 @@ final class ShareViewReactor: Reactor {
         .just(Mutation.setStatus(.loading)),
         fetchThumbnailAndCreateLink(url: url),
       ])
+
+    case .updateFolder(let folder):
+
+      guard var link = currentState.link else { return .empty() }
+
+      link.folderName = folder.title
+      link.linkBookId = folder.id
+
+      return updateFolder(link: link)
     }
   }
 
@@ -147,5 +157,13 @@ extension ShareViewReactor {
     .catch { _ in
       .just(Mutation.setStatus(.failure))
     }
+  }
+
+  private func updateFolder(link: Link) -> Observable<Mutation> {
+    repository.updateLink(id: link.id, folderID: link.linkBookId)
+      .asObservable()
+      .flatMap { _ -> Observable<Mutation> in
+        .just(Mutation.setLink(link))
+      }
   }
 }

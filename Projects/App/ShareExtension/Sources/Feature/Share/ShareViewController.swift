@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import KeychainAccess
+import Domain
 
 final class ShareViewController: UIViewController, StoryboardView {
 
@@ -108,6 +109,19 @@ final class ShareViewController: UIViewController, StoryboardView {
         }
       }
       .disposed(by: disposeBag)
+
+    contentView.boxView.selectFolderButton.container.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = SelectFolderViewController(reactor: .init(
+          folders: reactor.currentState.folderList, selectedFolder: reactor.currentState.folderList.first)
+        ).then {
+          $0.modalPresentationStyle = .popover
+          $0.delegate = self
+        }
+
+        self.present(vc, animated: true)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -144,5 +158,14 @@ extension ShareViewController {
       responder = responder?.next
     }
     return false
+  }
+}
+
+
+// MARK: SelectFolderDelegate
+
+extension ShareViewController: SelectFolderDelegate {
+  func selectFolderViewItemTapped(folder: Folder) {
+    reactor?.action.onNext(.updateFolder(folder))
   }
 }
