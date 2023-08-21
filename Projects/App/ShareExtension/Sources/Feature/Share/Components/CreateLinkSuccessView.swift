@@ -47,6 +47,31 @@ class CreateLinkSuccessView: UIView {
   }
 
 
+  // MARK: Configuring
+
+  func configure(status: ShareStatus) {
+    switch status {
+    case .loading:
+      break
+
+    case .success:
+      titleLabel.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .staticBlack)
+      subtitleLabel.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .staticBlack)
+      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+
+    case .needLogin:
+      titleLabel.attributedText = "로그인이 필요해요!".styled(font: .defaultSemiBold, color: .staticBlack)
+      subtitleLabel.attributedText = "앱으로 이동해 로그인을 해주세요.".styled(font: .bodyRegular, color: .staticBlack)
+      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+
+    case .failure:
+      titleLabel.attributedText = "링크 저장을 실패했어요.".styled(font: .defaultSemiBold, color: .staticBlack)
+      subtitleLabel.attributedText = "잠시후 다시 시도해주세요.".styled(font: .bodyRegular, color: .staticBlack)
+      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+    }
+  }
+
+
   // MARK: Layout
 
   private func defineLayout() {

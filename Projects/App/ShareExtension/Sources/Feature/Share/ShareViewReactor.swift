@@ -60,7 +60,6 @@ final class ShareViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-
       guard let _ = Keychain(service: "com.pinkboss.joosum")["accessToken"] else {
         return .just(Mutation.setStatus(.needLogin))
       }
@@ -68,7 +67,10 @@ final class ShareViewReactor: Reactor {
       return .empty()
 
     case .fetchThumbnaiil(let url):
-      return fetchThumbnailAndCreateLink(url: url)
+      return .concat([
+        .just(Mutation.setStatus(.loading)),
+        fetchThumbnailAndCreateLink(url: url),
+      ])
     }
   }
 

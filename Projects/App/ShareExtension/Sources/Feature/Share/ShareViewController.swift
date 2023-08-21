@@ -54,6 +54,15 @@ final class ShareViewController: UIViewController, StoryboardView {
     }
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(true)
+    if reactor?.currentState.status == .needLogin, let _ = Keychain(service: "com.pinkboss.joosum")["accessToken"] {
+      getURL { [weak self] url in
+        self?.reactor?.action.onNext(.fetchThumbnaiil(url))
+      }
+    }
+  }
+
 
   // MARK: Binding
 
@@ -71,6 +80,27 @@ final class ShareViewController: UIViewController, StoryboardView {
         self.contentView.boxView.configure(link: link)
       }
       .disposed(by: disposeBag)
+
+    contentView.boxView.completeButton.rx.controlEvent(.touchUpInside)
+      .withLatestFrom(reactor.state.map(\.status))
+      .subscribe(with: self) { `self`, status in
+        switch status {
+        case .loading:
+          self.dismiss(animated: true)
+
+        case .success:
+          self.dismiss(animated: true)
+
+        case .needLogin:
+          self.dismiss(animated: true) {
+            let _ = self.openURL(URL(string: "joosum://")!)
+          }
+
+        case .failure:
+          self.dismiss(animated: true)
+        }
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -80,19 +110,13 @@ final class ShareViewController: UIViewController, StoryboardView {
 extension ShareViewController {
 
   private func getURL(handleURL: ((URL) -> Void)?) {
-    // Get the extension context
     if let inputItems = extensionContext?.inputItems as? [NSExtensionItem] {
-      // Loop through the input items
       for item in inputItems {
-        // Check if there are attachments
         if let attachments = item.attachments {
-          // Loop through the attachments
           for attachment in attachments {
-            // Check if the attachment contains a URL
             if attachment.hasItemConformingToTypeIdentifier("public.url") {
               attachment.loadItem(forTypeIdentifier: "public.url", options: nil) { url, error in
                 if let url = url as? URL {
-                  // Handle the URL
                   handleURL?(url)
                 }
               }
@@ -101,5 +125,17 @@ extension ShareViewController {
         }
       }
     }
+  }
+
+  @objc
+  func openURL(_ url: URL) -> Bool {
+    var responder: UIResponder? = self
+    while responder != nil {
+      if let application = responder as? UIApplication {
+        return application.perform(#selector(openURL(_:)), with: url) != nil
+      }
+      responder = responder?.next
+    }
+    return false
   }
 }

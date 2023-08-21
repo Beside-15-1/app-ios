@@ -75,6 +75,9 @@ class ShareBoxView: UIView {
       indicator.startAnimating()
 
     case .needLogin:
+      createLinkSuccessView.isHidden = false
+      completeButton.isHidden = false
+      completeButton.text = "앱으로 이동"
       indicator.isHidden = true
       indicator.startAnimating()
 
@@ -82,6 +85,8 @@ class ShareBoxView: UIView {
       indicator.isHidden = true
       indicator.startAnimating()
     }
+
+    createLinkSuccessView.configure(status: status)
   }
 
   func configure(link: Link?) {

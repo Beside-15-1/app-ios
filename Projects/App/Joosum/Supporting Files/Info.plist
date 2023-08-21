@@ -54,8 +54,11 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.pinkboss.joosumapp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>joosum</string>
 				<string>com.googleusercontent.apps.1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg</string>
 			</array>
 		</dict>
