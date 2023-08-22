@@ -30,6 +30,7 @@ final class CreateLinkViewReactor: Reactor {
     case setFolderList([Folder])
     case setSucceed(Link)
     case setInputURL(String)
+    case setLoading(Bool)
   }
 
   struct State {
@@ -61,6 +62,8 @@ final class CreateLinkViewReactor: Reactor {
     @Pulse var linkError: String?
     @Pulse var titleError: String?
     var isSucceed: Link?
+
+    var isLoading: Bool = false
   }
 
   // MARK: Properties
@@ -122,7 +125,11 @@ final class CreateLinkViewReactor: Reactor {
     case .fetchThumbnail(let url):
       guard let url = URL(string: url) else { return .empty() }
 
-      return fetchThumbnail(url: url)
+      return .concat([
+        .just(Mutation.setLoading(true)),
+        fetchThumbnail(url: url),
+        .just(Mutation.setLoading(false)),
+      ])
 
     case .updateTitle(let title):
       guard !title.isEmpty else {
@@ -210,6 +217,9 @@ final class CreateLinkViewReactor: Reactor {
 
     case .setTitleError(let error):
       newState.titleError = error
+
+    case .setLoading(let isLoading):
+      newState.isLoading = isLoading
     }
 
     return newState
@@ -291,7 +301,11 @@ extension CreateLinkViewReactor {
 
     if url.hasPrefix("https") || url.hasPrefix("http") {
       if let url = URL(string: url) {
-        return fetchThumbnail(url: url)
+        return .concat([
+          .just(Mutation.setLoading(true)),
+          fetchThumbnail(url: url),
+          .just(Mutation.setLoading(false)),
+        ])
       }
     }
 

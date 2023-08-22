@@ -203,6 +203,17 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         self.contentView.tagView.applyAddedTag(by: tags)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.isLoading)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, isLoading in
+        if isLoading {
+          self.contentView.startLoading()
+        } else {
+          self.contentView.stopLoading()
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: CreateLinkViewReactor) {
