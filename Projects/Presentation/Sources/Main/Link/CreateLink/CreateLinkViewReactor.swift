@@ -115,7 +115,8 @@ final class CreateLinkViewReactor: Reactor {
       return fetchFolderList()
 
     case .viewDidAppear:
-      if shouldValidateClipboard {
+      if shouldValidateClipboard,
+         currentState.link == nil {
         shouldValidateClipboard = false
         return validateClipboard()
       }
