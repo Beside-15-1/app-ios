@@ -100,7 +100,7 @@ final class ShareViewController: UIViewController, StoryboardView {
           break
 
         case .success:
-          self.extensionContext?.completeRequest(returningItems: nil)
+          reactor.action.onNext(.completeButtonTapped(self.contentView.boxView.titleInputField.text ?? ""))
 
         case .needLogin:
           self.extensionContext?.completeRequest(returningItems: nil) { _ in
@@ -129,6 +129,14 @@ final class ShareViewController: UIViewController, StoryboardView {
     RxKeyboard.instance.visibleHeight
       .drive(with: self) { `self`, height in
         self.view.transform = CGAffineTransform(translationX: 0, y: -height)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.map(\.shouldDismiss)
+      .filter { $0 }
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, _ in
+        self.extensionContext?.completeRequest(returningItems: nil)
       }
       .disposed(by: disposeBag)
   }

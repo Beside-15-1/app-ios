@@ -62,12 +62,12 @@ class CreateLinkSuccessView: UIView {
     case .needLogin:
       titleLabel.attributedText = "로그인 후 저장할 수 있어요!".styled(font: .defaultSemiBold, color: .staticBlack)
       subtitleLabel.attributedText = "앱으로 접속하여 로그인 후 사용해보세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+      checkIcon.image = DesignSystemAsset.iconPersonInShare.image.withTintColor(.primary400)
 
     case .failure:
       titleLabel.attributedText = "네트워크 에러.".styled(font: .defaultSemiBold, color: .staticBlack)
       subtitleLabel.attributedText = "연결 확인 후 다시 시도해주세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+      checkIcon.image = DesignSystemAsset.iconWifiInShare.image.withTintColor(.primary400)
     }
   }
 

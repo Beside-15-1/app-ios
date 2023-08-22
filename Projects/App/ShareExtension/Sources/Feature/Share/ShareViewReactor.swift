@@ -24,6 +24,7 @@ final class ShareViewReactor: Reactor {
     case retryFetchThumbnail
     case updateFolder(Folder)
     case updateTitle(String)
+    case completeButtonTapped(String)
   }
 
   enum Mutation {
@@ -31,6 +32,7 @@ final class ShareViewReactor: Reactor {
     case setStatus(ShareStatus)
     case setURL(URL)
     case setFolderList([Folder])
+    case setDismiss
   }
 
   struct State {
@@ -38,6 +40,8 @@ final class ShareViewReactor: Reactor {
     var status: ShareStatus = .loading
     var url: URL?
     var folderList: [Folder] = []
+
+    var shouldDismiss = false
   }
 
   // MARK: Properties
@@ -101,6 +105,20 @@ final class ShareViewReactor: Reactor {
       link.title = title
 
       return updateLink(link: link)
+
+    case .completeButtonTapped(let inputText):
+      guard var link = currentState.link,
+            link.title != inputText else {
+
+        return .just(.setDismiss)
+      }
+
+      link.title = inputText
+
+      return .concat([
+        updateLink(link: link),
+        .just(.setDismiss),
+      ])
     }
   }
 
@@ -119,6 +137,9 @@ final class ShareViewReactor: Reactor {
 
     case .setFolderList(let folderList):
       newState.folderList = folderList
+
+    case .setDismiss:
+      newState.shouldDismiss = true
     }
 
     return newState
