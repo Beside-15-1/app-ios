@@ -63,7 +63,7 @@ final class CreateLinkViewReactor: Reactor {
     @Pulse var titleError: String?
     var isSucceed: Link?
 
-    var isLoading: Bool = false
+    var isLoading = false
   }
 
   // MARK: Properties
@@ -138,7 +138,7 @@ final class CreateLinkViewReactor: Reactor {
 
         return .concat([
           .just(Mutation.setThumbnail(thumbnail)),
-          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요."))
+          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요.")),
         ])
       }
 
@@ -147,7 +147,7 @@ final class CreateLinkViewReactor: Reactor {
 
       return .concat([
         .just(Mutation.setThumbnail(thumbnail)),
-        .just(Mutation.setTitleError(nil))
+        .just(Mutation.setTitleError(nil)),
       ])
 
     case .updateFolder(let folder):
@@ -180,9 +180,9 @@ final class CreateLinkViewReactor: Reactor {
     fetchFolderListUseCase.execute(sort: .createAt)
       .asObservable()
       .flatMap { folderList -> Observable<Mutation> in
-        return .concat([
+        .concat([
           .just(Mutation.setFolderList(folderList.folders)),
-          .just(Mutation.setFolder(folder))
+          .just(Mutation.setFolder(folder)),
         ])
       }
       .catch { _ in
@@ -234,9 +234,9 @@ extension CreateLinkViewReactor {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
       .flatMap { thumbnail -> Observable<Mutation> in
-        return .concat([
+        .concat([
           .just(Mutation.setThumbnail(thumbnail)),
-          .just(Mutation.setInputURL(thumbnail?.url ?? ""))
+          .just(Mutation.setInputURL(thumbnail?.url ?? "")),
         ])
       }
       .catch { _ in
@@ -275,7 +275,7 @@ extension CreateLinkViewReactor {
       return updateLinkUseCase.execute(
         id: link.id,
         title: thumbnail.title ?? "",
-        url: thumbnail.url?.lowercased() ?? "",
+        url: lowercaseComponentsInURL(thumbnail.url ?? "") ?? thumbnail.url ?? "",
         thumbnailURL: thumbnail.imageURL,
         tags: currentState.tags
       )
@@ -287,7 +287,7 @@ extension CreateLinkViewReactor {
       return createLinkUseCase.execute(
         linkBookId: folder.id,
         title: thumbnail.title ?? "",
-        url: thumbnail.url?.lowercased() ?? "",
+        url: lowercaseComponentsInURL(thumbnail.url ?? "") ?? thumbnail.url ?? "",
         thumbnailURL: thumbnail.imageURL,
         tags: currentState.tags
       )
@@ -310,5 +310,31 @@ extension CreateLinkViewReactor {
     }
 
     return .empty()
+  }
+
+  private func lowercaseComponentsInURL(_ urlString: String) -> String? {
+    // 주어진 문자열을 URL로 변환
+    if let url = URL(string: urlString) {
+      // URL의 다른 구성 요소를 가져옴
+      // URL의 경로(path)를 제외한 나머지 구성 요소를 소문자로 변환
+      let lowercaseHost = url.host?.lowercased()
+      let lowercaseScheme = url.scheme?.lowercased()
+      let lowercaseFragment = url.fragment?.lowercased()
+
+      // 소문자로 변환한 구성 요소와 경로를 결합하여 새 URL을 생성
+      var components = URLComponents()
+      components.scheme = lowercaseScheme
+      components.host = lowercaseHost
+      components.port = url.port
+      components.path = url.path
+      components.query = url.query
+      components.fragment = lowercaseFragment
+
+      if let newURL = components.url {
+        return newURL.absoluteString
+      }
+    }
+
+    return nil
   }
 }
