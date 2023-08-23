@@ -37,6 +37,16 @@ class ShareBoxView: UIView {
 
   let selectFolderButton = SelectFolderButton()
 
+  let buttonStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.distribution = .fillEqually
+    $0.spacing = 8
+  }
+
+  let addTagButton = BasicButton(priority: .secondary).then {
+    $0.text = "태그 추가"
+  }
+
   let completeButton = BasicButton(priority: .primary).then {
     $0.text = "완료"
   }
@@ -71,7 +81,7 @@ class ShareBoxView: UIView {
     case .loading:
       createLinkSuccessView.isHidden = true
       titleInputField.isHidden = true
-      completeButton.isHidden = true
+      buttonStackView.isHidden = true
       selectFolderButton.isHidden = true
       indicator.isHidden = false
       indicator.startAnimating()
@@ -80,23 +90,25 @@ class ShareBoxView: UIView {
       createLinkSuccessView.isHidden = false
       titleInputField.isHidden = false
       selectFolderButton.isHidden = false
-      completeButton.isHidden = false
+      buttonStackView.isHidden = false
       completeButton.text = "완료"
       indicator.isHidden = true
       indicator.stopAnimating()
 
     case .needLogin:
       createLinkSuccessView.isHidden = false
-      completeButton.isHidden = false
+      buttonStackView.isHidden = false
       completeButton.text = "앱으로 이동"
+      addTagButton.isHidden = true
       indicator.isHidden = true
       indicator.stopAnimating()
 
     case .failure:
       createLinkSuccessView.isHidden = false
       indicator.isHidden = true
-      completeButton.isHidden = false
+      buttonStackView.isHidden = false
       completeButton.text = "다시 시도"
+      addTagButton.isHidden = true
       indicator.isHidden = true
       indicator.stopAnimating()
     }
@@ -116,12 +128,19 @@ class ShareBoxView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
+    self.snp.makeConstraints {
+      $0.height.greaterThanOrEqualTo(300.0)
+    }
+
     [titleView, container, indicator].forEach {
       addSubview($0)
     }
 
-    [createLinkSuccessView, titleInputField, selectFolderButton, completeButton].forEach {
+    [createLinkSuccessView, titleInputField, selectFolderButton, buttonStackView].forEach {
       container.addArrangedSubview($0)
+    }
+    [addTagButton, completeButton].forEach {
+      buttonStackView.addArrangedSubview($0)
     }
 
     titleView.snp.makeConstraints {

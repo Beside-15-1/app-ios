@@ -8,11 +8,12 @@
 import UIKit
 
 import ReactorKit
-import RxSwift
 import RxKeyboard
-
+import RxSwift
 import KeychainAccess
-import Domain
+
+import Domain
+import PBUserDefaults
 
 final class ShareViewController: UIViewController, StoryboardView {
 
@@ -115,8 +116,10 @@ final class ShareViewController: UIViewController, StoryboardView {
 
     contentView.boxView.selectFolderButton.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let vc = SelectFolderViewController(reactor: .init(
-          folders: reactor.currentState.folderList, selectedFolder: reactor.currentState.folderList.first)
+        let vc = SelectFolderViewController(
+          reactor: .init(
+            folders: reactor.currentState.folderList, selectedFolder: reactor.currentState.folderList.first
+          )
         ).then {
           $0.modalPresentationStyle = .popover
           $0.delegate = self
@@ -137,6 +140,19 @@ final class ShareViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, _ in
         self.extensionContext?.completeRequest(returningItems: nil)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.boxView.addTagButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = TagAddViewController(viewModel: .init(
+          userDefaults: UserDefaultsManager.shared,
+          addedTagList: reactor.currentState.link?.tags ?? [])
+        ).then {
+          $0.delegate = self
+        }
+
+        self.present(vc, animated: true)
       }
       .disposed(by: disposeBag)
   }
@@ -202,5 +218,14 @@ extension ShareViewController: UITextFieldDelegate {
     reactor?.action.onNext(.updateTitle(textField.text ?? ""))
     view.endEditing(true)
     return true
+  }
+}
+
+
+// MARK: TagAddDelegate
+
+extension ShareViewController: TagAddDelegate {
+  func tagAddViewControllerMakeButtonTapped(tagList: [String]) {
+    reactor?.action.onNext(.updateTags(tagList))
   }
 }

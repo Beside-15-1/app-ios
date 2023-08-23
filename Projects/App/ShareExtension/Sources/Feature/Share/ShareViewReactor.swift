@@ -24,6 +24,7 @@ final class ShareViewReactor: Reactor {
     case retryFetchThumbnail
     case updateFolder(Folder)
     case updateTitle(String)
+    case updateTags([String])
     case completeButtonTapped(String)
   }
 
@@ -103,6 +104,13 @@ final class ShareViewReactor: Reactor {
       guard var link = currentState.link else { return .empty() }
 
       link.title = title
+
+      return updateLink(link: link)
+
+    case .updateTags(let tags):
+      guard var link = currentState.link else { return .empty() }
+
+      link.tags = tags
 
       return updateLink(link: link)
 

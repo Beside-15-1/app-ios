@@ -57,7 +57,7 @@ class CreateLinkSuccessView: UIView {
     case .success:
       titleLabel.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .staticBlack)
       subtitleLabel.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+      checkIcon.image = DesignSystemAsset.iconCheckInShare.image.withTintColor(.primary400)
 
     case .needLogin:
       titleLabel.attributedText = "로그인 후 저장할 수 있어요!".styled(font: .defaultSemiBold, color: .staticBlack)
