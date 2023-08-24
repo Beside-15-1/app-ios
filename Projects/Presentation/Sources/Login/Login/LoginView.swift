@@ -25,7 +25,7 @@ class LoginView: UIView {
   private let flexContainer = UIView()
 
   private let imageJoosum = UIImageView().then {
-    $0.image = DesignSystemAsset.imgLink.image.withTintColor(.white)
+    $0.image = DesignSystemAsset.imgLoginJoosume.image.withTintColor(.white)
   }
 
   private let logoLabel = UILabel().then {
@@ -34,8 +34,8 @@ class LoginView: UIView {
 
   private let subTitleLabel = UILabel().then {
     $0.attributedText = "링크를 주섬주섬 담아\n나만의 책장을 만들어요".styled(
-      font: .defaultRegular,
-      color: .secondary4)
+      font: .subTitleRegular,
+      color: .primary100)
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }
@@ -100,14 +100,14 @@ class LoginView: UIView {
     addSubview(flexContainer)
 
     flexContainer.flex
+      .justifyContent(.center)
       .paddingHorizontal(20.0)
-      .justifyContent(.spaceBetween)
-      .grow(1.0)
       .define { flex in
 
         // Top
         flex.addItem()
-          .marginTop(200.0)
+          .grow(1.0)
+          .justifyContent(.center)
           .alignItems(.center)
           .define { flex in
             flex.addItem(imageJoosum)
@@ -117,12 +117,14 @@ class LoginView: UIView {
 
             flex.addItem(subTitleLabel)
               .shrink(1.0)
-              .marginTop(12.0)
+              .marginTop(20.0)
           }
 
         // Bottom
         flex.addItem()
+          .shrink(1.0)
           .width(100%)
+          .marginBottom(144.0)
           .define { flex in
             flex.addItem(appleButton)
               .marginBottom(12.0)
@@ -139,7 +141,6 @@ class LoginView: UIView {
               }
 
             flex.addItem(googleButton)
-              .marginBottom(152.0)
               .height(40.0)
               .justifyContent(.center)
               .alignItems(.center)
@@ -158,7 +159,7 @@ class LoginView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
 
-    flexContainer.pin.all()
+    flexContainer.pin.all(pin.safeArea)
     flexContainer.flex.layout()
   }
 }
