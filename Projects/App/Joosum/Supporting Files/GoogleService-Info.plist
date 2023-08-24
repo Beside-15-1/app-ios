@@ -3,32 +3,32 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg.apps.googleusercontent.com</string>
+	<string>454988091393-sdiabacur5v8pqbst1ssniu30rt6vg72.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg</string>
+	<string>com.googleusercontent.apps.454988091393-sdiabacur5v8pqbst1ssniu30rt6vg72</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCLrBNjRBWaUqyMTz_VkvtsV-Guk61sxjs</string>
+	<string>AIzaSyArp0YWWbwjNFyMnlzbGpf7s4GbD_vr01Q</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1087116486432</string>
+	<string>454988091393</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.pinkboss.joosum</string>
+	<string>com.pinkboss.joosumapp</string>
 	<key>PROJECT_ID</key>
-	<string>joosum-1683182414117</string>
+	<string>joosum</string>
 	<key>STORAGE_BUCKET</key>
-	<string>joosum-1683182414117.appspot.com</string>
+	<string>joosum.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1087116486432:ios:9e110f70407b7a8fd85945</string>
+	<string>1:454988091393:ios:86e13484f5a74d16157000</string>
 </dict>
 </plist>
