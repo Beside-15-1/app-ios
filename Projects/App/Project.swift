@@ -16,7 +16,7 @@ let project = Project(
       platform: .iOS,
       product: .app,
       bundleId: Project.bundleID + ".joosumapp".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: "Joosum/Supporting Files/Info.plist"),
       sources: ["Joosum/Sources/**"],
       resources: [
@@ -49,7 +49,7 @@ let project = Project(
       platform: .iOS,
       product: .appExtension,
       bundleId: Project.bundleID + ".joosumapp".lowercased() + ".share",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .file(path: "ShareExtension/Supporting Files/Info.plist"),
       sources: ["ShareExtension/Sources/**"],
       resources: [

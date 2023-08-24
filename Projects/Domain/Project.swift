@@ -16,7 +16,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".domain",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Domain/**"],
       scripts: [
@@ -46,7 +46,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".data",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Data/**"],
       dependencies: [
@@ -66,7 +66,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".domaintesting",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Testing/**"],
       dependencies: [
@@ -78,7 +78,7 @@ let project = Project(
       platform: .iOS,
       product: .unitTests,
       bundleId: Project.bundleID + ".domaintests",
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Tests/**"],
       dependencies: [

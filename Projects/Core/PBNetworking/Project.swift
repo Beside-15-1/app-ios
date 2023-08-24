@@ -16,7 +16,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
@@ -34,7 +34,7 @@ let project = Project(
       platform: .iOS,
       product: .unitTests,
       bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)Tests".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: "Tests/**",
       dependencies: [
