@@ -141,6 +141,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
     guard let reactor,
           let url = URL(string: reactor.currentState.link.url) else { return }
 
+    reactor.action.onNext(.readLink(reactor.currentState.link.id))
+
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
     UIApplication.shared.open(url, options: options)

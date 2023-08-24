@@ -81,4 +81,11 @@ final class LinkRepositoryImpl: LinkRepository {
   func getAllLinks() -> [Link] {
     return links
   }
+
+  func read(id: String) -> Single<Void> {
+    let target = LinkAPI.readLink(id: id)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
 }

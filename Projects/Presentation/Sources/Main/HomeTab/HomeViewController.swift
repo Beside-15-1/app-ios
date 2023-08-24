@@ -239,6 +239,8 @@ extension HomeViewController: HomeLinkViewDelegate {
       return
     }
 
+    reactor.action.onNext(.readLink(reactor.currentState.linkList[row].id))
+
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
     UIApplication.shared.open(url, options: options)
