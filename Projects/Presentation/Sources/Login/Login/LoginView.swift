@@ -15,7 +15,7 @@ class LoginView: UIView {
   // MARK: Constants
 
   private enum Metric {
-    static let logo = CGSize(width: 177.0, height: 49.0)
+    static let joosume = CGSize(width: 140.0, height: 105.0)
     static let appleLogo = CGSize(width: 18.0, height: 18.0)
     static let googleLogo = CGSize(width: 18.0, height: 18.0)
   }
@@ -24,8 +24,12 @@ class LoginView: UIView {
 
   private let flexContainer = UIView()
 
-  private let logo = UIImageView().then {
-    $0.image = DesignSystemAsset.loginLogo.image
+  private let imageJoosum = UIImageView().then {
+    $0.image = DesignSystemAsset.imgLink.image.withTintColor(.white)
+  }
+
+  private let logoLabel = UILabel().then {
+    $0.attributedText = "JOOSUM".styled(font: .logo, color: .white)
   }
 
   private let subTitleLabel = UILabel().then {
@@ -106,8 +110,10 @@ class LoginView: UIView {
           .marginTop(200.0)
           .alignItems(.center)
           .define { flex in
-            flex.addItem(logo)
-              .size(Metric.logo)
+            flex.addItem(imageJoosum)
+              .size(Metric.joosume)
+
+            flex.addItem(logoLabel)
 
             flex.addItem(subTitleLabel)
               .shrink(1.0)
