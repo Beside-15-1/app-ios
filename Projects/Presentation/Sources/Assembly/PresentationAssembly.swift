@@ -12,6 +12,7 @@ public final class PresentationAssembly: Assembly {
 
   public func assemble(container: Container) {
     let registerFunctions: [(Container) -> Void] = [
+      registerSplitBuilder,
       registerLoginBuilder,
       registerMainTabBuilder,
       registerCreateFolderBuilder,
@@ -39,6 +40,14 @@ public final class PresentationAssembly: Assembly {
 
     registerFunctions.forEach { function in
       function(container)
+    }
+  }
+
+  private func registerSplitBuilder(container: Container) {
+    container.register(SplitBuildable.self) { r in
+      SplitBuilder(dependency: .init(
+        mainTabBuilder: r.resolve(), loginBuilder: r.resolve()
+      ))
     }
   }
 

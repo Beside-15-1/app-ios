@@ -46,6 +46,12 @@ final class MainTabBarViewController: UITabBarController {
       item.imageInsets = UIEdgeInsets(top: 10, left: 0, bottom: -5, right: 0) // 원하는 간격 값으로 설정
       item.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 5) // 원하는 간격 값으로 설정
     }
+
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      tabBar.isHidden = true
+    } else {
+      tabBar.isHidden = false
+    }
   }
 
   private func setViewControllers() {
