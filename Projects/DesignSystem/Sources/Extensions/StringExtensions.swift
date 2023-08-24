@@ -44,8 +44,6 @@ extension String {
         style.minimumLineHeight = 14
       case .captionRegular, .captionSemiBold:
         style.minimumLineHeight = 12
-      case .logo:
-        style.minimumLineHeight = 24
       default:
         break
       }

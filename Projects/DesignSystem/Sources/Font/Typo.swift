@@ -46,5 +46,5 @@ extension UIFont {
 
 
   // MARK: Logo
-  public static let logo: UIFont = DesignSystemFontFamily.PTSansCaption.bold.font(size: 40.0)
+  public static let logo: UIFont = DesignSystemFontFamily.PTSansCaption.bold.font(size: 24.0)
 }
