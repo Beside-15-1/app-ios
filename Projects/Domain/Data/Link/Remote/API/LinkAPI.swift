@@ -18,6 +18,7 @@ enum LinkAPI {
   case deleteLink(id: String)
   case updateLink(id: String, UpdateLinkRequest)
   case updateLinkWithFolderID(id: String, folderID: String)
+  case readLink(id: String)
 }
 
 extension LinkAPI: BaseTargetType {
@@ -41,6 +42,9 @@ extension LinkAPI: BaseTargetType {
 
     case .updateLinkWithFolderID(let id, let folderID):
       return "links/\(id)/link-book-id/\(folderID)"
+
+    case .readLink(let id):
+      return "/links/\(id)/read-count"
     }
   }
 
@@ -62,6 +66,9 @@ extension LinkAPI: BaseTargetType {
       return .put
 
     case .updateLinkWithFolderID:
+      return .put
+
+    case .readLink:
       return .put
     }
   }
@@ -96,6 +103,9 @@ extension LinkAPI: BaseTargetType {
       return .requestJSONEncodable(request)
 
     case .updateLinkWithFolderID:
+      return .requestPlain
+
+    case .readLink:
       return .requestPlain
     }
   }

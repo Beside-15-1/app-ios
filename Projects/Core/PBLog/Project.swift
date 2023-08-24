@@ -17,7 +17,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(CoreModule.PBLog.rawValue)Interface".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Interfaces/**"],
       dependencies: [
         .external(dependency: .RxMoya)
@@ -29,7 +29,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(CoreModule.PBLog.rawValue)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
         .target(name: "\(CoreModule.PBLog.rawValue)Interface"),
@@ -45,7 +45,7 @@ let project = Project(
       product: .unitTests,
       bundleId: Project.bundleID + ".\(CoreModule.PBLog.rawValue)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: "Tests/**",
       dependencies: [
         .target(name: "\(CoreModule.PBLog.rawValue)"),

@@ -22,6 +22,7 @@ final class FolderDetailViewReactor: Reactor {
     case updateSort(LinkSortingType)
     case searchLink(String)
     case refresh
+    case readLink(String)
   }
 
   enum Mutation {
@@ -61,6 +62,7 @@ final class FolderDetailViewReactor: Reactor {
   private let fetchAllLinkUseCase: FetchAllLinksUseCase
   private let fetchLinkInFolderUseCase: FetchLinksInFolderUseCase
   private let getFolderListUseCase: GetFolderListUseCase
+  private let readLinkUseCase: ReadLinkUseCase
 
 
   // MARK: initializing
@@ -69,6 +71,7 @@ final class FolderDetailViewReactor: Reactor {
     fetchAllLinkUseCase: FetchAllLinksUseCase,
     fetchLinkInFolderUseCase: FetchLinksInFolderUseCase,
     getFolderListUseCase: GetFolderListUseCase,
+    readLinkUseCase: ReadLinkUseCase,
     folderList: [Folder],
     selectedFolder: Folder
   ) {
@@ -77,6 +80,7 @@ final class FolderDetailViewReactor: Reactor {
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
     self.getFolderListUseCase = getFolderListUseCase
+    self.readLinkUseCase = readLinkUseCase
 
     var folders = getFolderListUseCase.execute().folders
     folders.insert(.all(count: getFolderListUseCase.execute().totalLinkCount), at: 0)
@@ -166,6 +170,11 @@ final class FolderDetailViewReactor: Reactor {
       } else {
         return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: order)
       }
+
+    case .readLink(let id):
+      return readLinkUseCase.execute(id: id)
+        .asObservable()
+        .flatMap { _ in Observable<Mutation>.empty() }
     }
   }
 

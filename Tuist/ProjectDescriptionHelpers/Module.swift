@@ -8,7 +8,7 @@
 import ProjectDescription
 
 public enum Module: String, CaseIterable {
-  case App = "Joosum"
+  case App
   case Domain
   case Presentation
   case DesignSystem

@@ -7,13 +7,13 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
-import PanModal
 
 import DesignSystem
-import PresentationInterface
 import Domain
+import PresentationInterface
 
 final class LinkDetailViewController: UIViewController, StoryboardView {
 
@@ -107,9 +107,11 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
     contentView.bottomView.editButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let createLink = self.createLinkBuilder.build(payload: .init(
-          delegate: self,
-          link: reactor.currentState.link)
+        let createLink = self.createLinkBuilder.build(
+          payload: .init(
+            delegate: self,
+            link: reactor.currentState.link
+          )
         ).then {
           $0.modalPresentationStyle = .overFullScreen
         }
@@ -120,9 +122,11 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
     contentView.bottomView.moveButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        guard let moveFolder = self.moveFolderBuilder.build(payload: .init(
-          delegate: self,
-          folderID: reactor.currentState.link.linkBookId)
+        guard let moveFolder = self.moveFolderBuilder.build(
+          payload: .init(
+            delegate: self,
+            folderID: reactor.currentState.link.linkBookId
+          )
         ) as? PanModalPresentable.LayoutType else { return }
 
         self.presentPanModal(moveFolder)
@@ -136,6 +140,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   private func thumbnailTapped() {
     guard let reactor,
           let url = URL(string: reactor.currentState.link.url) else { return }
+
+    reactor.action.onNext(.readLink(reactor.currentState.link.id))
 
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
@@ -176,8 +182,8 @@ extension LinkDetailViewController {
 
     navigationItem.leftBarButtonItem = backButton
     navigationItem.leftBarButtonItem?.tintColor = .staticBlack
-    //navigationItem.rightBarButtonItem = shareButton
-    //navigationItem.rightBarButtonItem?.tintColor = .staticBlack
+    navigationItem.rightBarButtonItem = shareButton
+    navigationItem.rightBarButtonItem?.tintColor = .staticBlack
     navigationItem.title = "링크 상세정보"
 
     let attributes = [
@@ -193,7 +199,16 @@ extension LinkDetailViewController {
   }
 
   @objc
-  private func share() {}
+  private func share() {
+    guard let url = reactor?.currentState.link.url else {
+      return
+    }
+
+    let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+
+    activityViewController.excludedActivityTypes = []
+    present(activityViewController, animated: true, completion: nil)
+  }
 }
 
 

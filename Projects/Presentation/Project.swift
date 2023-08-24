@@ -17,7 +17,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Interface",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Interfaces/**"],
       scripts: [
         TargetScript.pre(
@@ -45,7 +45,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
         // Target
@@ -69,7 +69,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Testing",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: "Testing/**",
       dependencies: [
         .target(name: "\(Module.Presentation.rawValue)Interface")
@@ -81,7 +81,7 @@ let project = Project(
       product: .unitTests,
       bundleId: Project.bundleID + ".\(Module.Presentation.rawValue)Tests",
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: "Tests/**",
       dependencies: [
         .xctest,

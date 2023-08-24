@@ -43,4 +43,8 @@ extension UIFont {
 
   public static let captionSemiBold: UIFont = .pretendard(.semiBold, size: 12.0)
   public static let captionRegular: UIFont = .pretendard(.regular, size: 12.0)
+
+
+  // MARK: Logo
+  public static let logo: UIFont = DesignSystemFontFamily.PTSansCaption.bold.font(size: 24.0)
 }

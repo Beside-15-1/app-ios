@@ -45,6 +45,9 @@ final class HomeBuilder: HomeBuildable {
       ),
       getFolderListUseCase: GetFolderListUseCaseImpl(
         folderRepository: dependency.folderRepository
+      ),
+      readLinkUseCase: ReadLinkUseCaseImpl(
+        linkRepository: dependency.linkRepository
       )
     )
 

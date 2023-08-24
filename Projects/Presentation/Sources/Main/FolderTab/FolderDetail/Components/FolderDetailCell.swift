@@ -71,6 +71,7 @@ class FolderDetailCell: UICollectionViewCell {
 
   override func prepareForReuse() {
     super.prepareForReuse()
+    disposeBag = DisposeBag()
   }
 
 

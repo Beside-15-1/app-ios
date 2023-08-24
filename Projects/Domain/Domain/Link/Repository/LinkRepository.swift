@@ -35,4 +35,6 @@ public protocol LinkRepository {
   ) -> Single<Void>
 
   func getAllLinks() -> [Link]
+
+  func read(id: String) -> Single<Void>
 }

@@ -15,7 +15,7 @@ class LoginView: UIView {
   // MARK: Constants
 
   private enum Metric {
-    static let logo = CGSize(width: 177.0, height: 49.0)
+    static let joosume = CGSize(width: 140.0, height: 105.0)
     static let appleLogo = CGSize(width: 18.0, height: 18.0)
     static let googleLogo = CGSize(width: 18.0, height: 18.0)
   }
@@ -24,14 +24,18 @@ class LoginView: UIView {
 
   private let flexContainer = UIView()
 
-  private let logo = UIImageView().then {
-    $0.image = DesignSystemAsset.loginLogo.image
+  private let imageJoosum = UIImageView().then {
+    $0.image = DesignSystemAsset.imgLoginJoosume.image.withTintColor(.white)
+  }
+
+  private let logoLabel = UILabel().then {
+    $0.attributedText = "JOOSUM".styled(font: .logo, color: .white)
   }
 
   private let subTitleLabel = UILabel().then {
     $0.attributedText = "링크를 주섬주섬 담아\n나만의 책장을 만들어요".styled(
-      font: .defaultRegular,
-      color: .secondary4)
+      font: .subTitleRegular,
+      color: .primary100)
     $0.numberOfLines = 0
     $0.textAlignment = .center
   }
@@ -96,27 +100,31 @@ class LoginView: UIView {
     addSubview(flexContainer)
 
     flexContainer.flex
+      .justifyContent(.center)
       .paddingHorizontal(20.0)
-      .justifyContent(.spaceBetween)
-      .grow(1.0)
       .define { flex in
 
         // Top
         flex.addItem()
-          .marginTop(200.0)
+          .grow(1.0)
+          .justifyContent(.center)
           .alignItems(.center)
           .define { flex in
-            flex.addItem(logo)
-              .size(Metric.logo)
+            flex.addItem(imageJoosum)
+              .size(Metric.joosume)
+
+            flex.addItem(logoLabel)
 
             flex.addItem(subTitleLabel)
               .shrink(1.0)
-              .marginTop(12.0)
+              .marginTop(20.0)
           }
 
         // Bottom
         flex.addItem()
+          .shrink(1.0)
           .width(100%)
+          .marginBottom(144.0)
           .define { flex in
             flex.addItem(appleButton)
               .marginBottom(12.0)
@@ -133,7 +141,6 @@ class LoginView: UIView {
               }
 
             flex.addItem(googleButton)
-              .marginBottom(152.0)
               .height(40.0)
               .justifyContent(.center)
               .alignItems(.center)
@@ -152,7 +159,7 @@ class LoginView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
 
-    flexContainer.pin.all()
+    flexContainer.pin.all(pin.safeArea)
     flexContainer.flex.layout()
   }
 }

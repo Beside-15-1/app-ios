@@ -20,6 +20,7 @@ final class HomeViewReactor: Reactor {
     case viewWillAppear
     case createFolderSucceed
     case createLinkSucceed
+    case readLink(String)
   }
 
   enum Mutation {
@@ -49,6 +50,7 @@ final class HomeViewReactor: Reactor {
   private let getMeUseCase: GetMeUseCase
   private let getLinkListUseCase: GetAllLinksUseCase
   private let getFolderListUseCase: GetFolderListUseCase
+  private let readLinkUseCase: ReadLinkUseCase
 
 
   // MARK: initializing
@@ -58,7 +60,8 @@ final class HomeViewReactor: Reactor {
     fetchFolderListUseCase: FetchFolderListUseCase,
     getMeUseCase: GetMeUseCase,
     getLinkListUseCase: GetAllLinksUseCase,
-    getFolderListUseCase: GetFolderListUseCase
+    getFolderListUseCase: GetFolderListUseCase,
+    readLinkUseCase: ReadLinkUseCase
   ) {
     defer { _ = self.state }
 
@@ -67,6 +70,7 @@ final class HomeViewReactor: Reactor {
     self.getMeUseCase = getMeUseCase
     self.getLinkListUseCase = getLinkListUseCase
     self.getFolderListUseCase = getFolderListUseCase
+    self.readLinkUseCase = readLinkUseCase
 
     self.initialState = State()
   }
@@ -101,6 +105,11 @@ final class HomeViewReactor: Reactor {
         fetchLinkList(),
         fetchFolderList(),
       ])
+
+    case .readLink(let id):
+      return readLinkUseCase.execute(id: id)
+        .asObservable()
+        .flatMap { _ in Observable<Mutation>.empty() }
     }
   }
 

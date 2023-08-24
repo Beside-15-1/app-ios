@@ -31,8 +31,8 @@ final class HomeView: UIView {
     $0.backgroundColor = .paperAboveBg
   }
 
-  private let logoImage = UIImageView().then {
-    $0.image = DesignSystemAsset.homeLogo.image.withTintColor(.white)
+  private let logoLabel = UILabel().then {
+    $0.attributedText = "JOOSUM".styled(font: .logo, color: .white)
   }
 
   private let titleLabel = UILabel().then {
@@ -89,7 +89,7 @@ final class HomeView: UIView {
 
   private func defineLayout() {
     addSubview(colorBackground)
-    [logoImage, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { addSubview($0) }
+    [logoLabel, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { addSubview($0) }
     addSubview(fab)
 
     colorBackground.snp.makeConstraints {
@@ -97,15 +97,13 @@ final class HomeView: UIView {
       $0.height.equalTo(349.0)
     }
 
-    logoImage.snp.makeConstraints {
+    logoLabel.snp.makeConstraints {
       $0.top.equalTo(safeAreaLayoutGuide).inset(10.0)
       $0.left.equalToSuperview().inset(20.0)
-      $0.width.equalTo(88.0)
-      $0.height.equalTo(24.0)
     }
 
     titleLabel.snp.makeConstraints {
-      $0.top.equalTo(logoImage.snp.bottom).offset(34.0)
+      $0.top.equalTo(logoLabel.snp.bottom).offset(34.0)
       $0.left.equalToSuperview().inset(20.0)
     }
 

@@ -27,7 +27,7 @@ public final class LogoutUseCaseImpl: LogoutUseCase {
     tagRepository.updateTagList()
       .flatMap { [weak self] _ -> Single<Bool> in
         guard let self else { return .error(RxError.unknown)}
-        
+
         return self.loginRepository.logout()
       }
   }

@@ -34,6 +34,7 @@ final class LinkDetailBuilder: LinkDetailBuildable {
       updateLinkWithFolderUseCase: UpdateLinkWithFolderUseCaseImpl(
         linkRepository: dependency.linkRepository
       ),
+      readLinkUseCase: ReadLinkUseCaseImpl(linkRepository: dependency.linkRepository),
       link: payload.link
     )
 

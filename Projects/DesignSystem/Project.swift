@@ -17,7 +17,7 @@ let protject = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(Module.DesignSystem.rawValue)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       resources: .default,
       dependencies: [

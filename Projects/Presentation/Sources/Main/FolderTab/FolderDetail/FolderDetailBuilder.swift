@@ -31,6 +31,7 @@ final class FolderDetailBuilder: FolderDetailBuildable {
       fetchAllLinkUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
       fetchLinkInFolderUseCase: FetchLinksInFolderUseCaseImpl(linkRepository: dependency.linkRepository),
       getFolderListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository),
+      readLinkUseCase: ReadLinkUseCaseImpl(linkRepository: dependency.linkRepository),
       folderList: payload.folderList,
       selectedFolder: payload.selectedFolder
     )

@@ -28,7 +28,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Interfaces/**"],
       dependencies: []
     ),
@@ -38,7 +38,7 @@ let project = Project(
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
         .target(name: "\(moduleName)Interface"),
@@ -52,7 +52,7 @@ let project = Project(
       product: .unitTests,
       bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
       deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
-      infoPlist: .file(path: .relativeToRoot("Supporting Files/Info.plist")),
+      infoPlist: .default,
       sources: "Tests/**",
       dependencies: [
         .target(name: "\(moduleName)"),

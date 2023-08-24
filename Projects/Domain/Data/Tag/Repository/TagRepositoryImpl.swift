@@ -26,6 +26,7 @@ final class TagRepositoryImpl: TagRepository {
 
     return networking.request(target: target)
       .map([String].self)
+      .catchAndReturn([])
       .map { tagList in
         UserDefaultsManager.shared.tagList = tagList
       }

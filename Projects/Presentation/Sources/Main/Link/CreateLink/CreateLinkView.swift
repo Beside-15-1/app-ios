@@ -45,6 +45,8 @@ final class CreateLinkView: UIView {
     $0.text = "저장"
   }
 
+  let spinner = UIActivityIndicatorView(style: .large)
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
@@ -66,10 +68,26 @@ final class CreateLinkView: UIView {
     endEditing(true)
   }
 
+
+  // MARK: Loading
+
+  func startLoading() {
+    spinner.isHidden = false
+    spinner.startAnimating()
+    isUserInteractionEnabled = false
+  }
+
+  func stopLoading() {
+    spinner.isHidden = true
+    spinner.stopAnimating()
+    isUserInteractionEnabled = true
+  }
+
+
   // MARK: Layout
 
   private func defineLayout() {
-    [colorBackground, titleInputField, selectFolderView, tagView, saveButton].forEach {
+    [colorBackground, titleInputField, selectFolderView, tagView, saveButton, spinner].forEach {
       addSubview($0)
     }
     [titleLabel, closeButton, linkInputField].forEach { colorBackground.addSubview($0) }
@@ -115,6 +133,9 @@ final class CreateLinkView: UIView {
       $0.top.equalTo(tagView.snp.bottom).offset(13.0)
     }
 
+    spinner.snp.makeConstraints {
+      $0.center.equalToSuperview()
+    }
   }
 
   override func layoutSubviews() {

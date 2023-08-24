@@ -19,6 +19,7 @@ final class LinkDetailViewReactor: Reactor {
   enum Action {
     case deleteButtonTapped
     case moveFolder(Folder)
+    case readLink(String)
   }
 
   enum Mutation {
@@ -40,18 +41,21 @@ final class LinkDetailViewReactor: Reactor {
 
   private let deleteLinkUseCase: DeleteLinkUseCase
   private let updateLinkWithFolderUseCase: UpdateLinkWithFolderUseCase
+  private let readLinkUseCase: ReadLinkUseCase
 
   // MARK: initializing
 
   init(
     deleteLinkUseCase: DeleteLinkUseCase,
     updateLinkWithFolderUseCase: UpdateLinkWithFolderUseCase,
+    readLinkUseCase: ReadLinkUseCase,
     link: Link
   ) {
     defer { _ = self.state }
 
     self.deleteLinkUseCase = deleteLinkUseCase
     self.updateLinkWithFolderUseCase = updateLinkWithFolderUseCase
+    self.readLinkUseCase = readLinkUseCase
 
     self.initialState = State(
       link: link
@@ -72,6 +76,11 @@ final class LinkDetailViewReactor: Reactor {
 
     case .moveFolder(let folder):
       return updateLink(withFolder: folder)
+
+    case .readLink(let id):
+      return readLinkUseCase.execute(id: id)
+        .asObservable()
+        .flatMap { _ in Observable<Mutation>.empty() }
     }
   }
 

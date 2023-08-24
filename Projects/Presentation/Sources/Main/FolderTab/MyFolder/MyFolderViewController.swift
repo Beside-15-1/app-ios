@@ -223,7 +223,7 @@ extension MyFolderViewController: EditFolderDelegate {
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {
     PBDialog(
-      title: "정말로 삭제하시겠습니까??",
+      title: "정말로 삭제하시겠습니까?",
       content: "\(folder.title)폴더가 삭제되며\n삭제된 데이터는 복구되지 않습니다.",
       from: self
     )
