@@ -55,6 +55,8 @@ final class MyPageItemButton: UIControl {
     $0.isHidden = true
   }
 
+  var canUpdate: Bool = false
+
   // MARK: Properties
 
   override var isHighlighted: Bool {
@@ -250,7 +252,7 @@ final class MyPageItemButton: UIControl {
 
   private func getVersionText() {
     // URL 생성
-    guard let url = URL(string: "http://itunes.apple.com/lookup?bundleId=com.pinkboss.joosum") else {
+    guard let url = URL(string: "http://itunes.apple.com/lookup?bundleId=com.pinkboss.joosumapp") else {
       let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
       versionLabel.attributedText = "현재\(currentVersion ?? "버전을 불러오는데 실패했어요")"
         .styled(font: .bodyRegular, color: .gray700)
@@ -283,6 +285,8 @@ final class MyPageItemButton: UIControl {
           .styled(font: .bodyRegular, color: .gray600)
           .underLine(target: currentVersion)
           .color(color: .gray700, target: "현재\(currentVersion)")
+
+        self.canUpdate = currentVersion != appStoreVersion
       }
     }
 
