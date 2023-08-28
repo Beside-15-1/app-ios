@@ -61,6 +61,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    navigationController?.interactivePopGestureRecognizer?.delegate = nil
+
     reactor?.action.onNext(.viewDidLoad)
   }
 

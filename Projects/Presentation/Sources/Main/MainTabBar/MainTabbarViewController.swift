@@ -4,8 +4,8 @@ import RxCocoa
 import RxSwift
 import Then
 
-import PresentationInterface
 import DesignSystem
+import PresentationInterface
 
 // MARK: - MainTabBarViewController
 
@@ -55,12 +55,12 @@ final class MainTabBarViewController: UITabBarController {
 
     let selecteAttributes = [
       NSAttributedString.Key.font: UIFont.captionSemiBold,
-      NSAttributedString.Key.foregroundColor: UIColor.primary500
+      NSAttributedString.Key.foregroundColor: UIColor.primary500,
     ]
 
     let deselecteAttributes = [
       NSAttributedString.Key.font: UIFont.captionSemiBold,
-      NSAttributedString.Key.foregroundColor: UIColor.gray500
+      NSAttributedString.Key.foregroundColor: UIColor.gray500,
     ]
 
     homeVC.tabBarItem = UITabBarItem(
