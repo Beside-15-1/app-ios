@@ -49,8 +49,10 @@ final class MainTabBarViewController: UITabBarController {
 
     if UIDevice.current.userInterfaceIdiom == .pad {
       tabBar.isHidden = true
+      splitViewController?.preferredDisplayMode = .oneBesideSecondary
     } else {
       tabBar.isHidden = false
+      splitViewController?.preferredDisplayMode = .secondaryOnly
     }
   }
 

@@ -50,6 +50,9 @@ final class LoginViewController: UIViewController {
     super.viewDidLoad()
     navigationController?.delegate = self
     navigationController?.isNavigationBarHidden = true
+
+    splitViewController?.preferredDisplayMode = .secondaryOnly
+
     bind(with: viewModel)
   }
 

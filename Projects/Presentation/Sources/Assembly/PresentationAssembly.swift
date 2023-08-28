@@ -36,6 +36,7 @@ public final class PresentationAssembly: Assembly {
       registerDeleteAccountBuilder,
       registerSignUpSuccessBuilder,
       registerOnboardingBuilder,
+      registerMasterBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -46,7 +47,9 @@ public final class PresentationAssembly: Assembly {
   private func registerSplitBuilder(container: Container) {
     container.register(SplitBuildable.self) { r in
       SplitBuilder(dependency: .init(
-        mainTabBuilder: r.resolve(), loginBuilder: r.resolve()
+        masterBuilder: r.resolve(),
+        mainTabBuilder: r.resolve(),
+        loginBuilder: r.resolve()
       ))
     }
   }
@@ -250,6 +253,12 @@ public final class PresentationAssembly: Assembly {
           mainTabBuilder: r.resolve()
         )
       )
+    }
+  }
+
+  private func registerMasterBuilder(container: Container) {
+    container.register(MasterBuildable.self) { r in
+      MasterBuilder(dependency: .init())
     }
   }
 }

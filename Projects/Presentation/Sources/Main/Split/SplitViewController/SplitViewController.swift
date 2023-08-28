@@ -14,24 +14,23 @@ import PresentationInterface
 
 final class SplitViewController: UISplitViewController {
 
-  // MARK: UI
-
-  private lazy var contentView = SplitView()
-
 
   // MARK: Properties
 
   var disposeBag = DisposeBag()
 
-  private var viewController: UIViewController?
+  private var masterViewController: UIViewController?
+  private var detailViewController: UIViewController?
 
 
   // MARK: Initializing
 
-  init(
-    viewController: UIViewController?
-  ) {
-    super.init(style: .doubleColumn)
+  override init(style: UISplitViewController.Style) {
+    super.init(style: style)
+  }
+
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
   }
 
   required init?(coder: NSCoder) {
@@ -41,11 +40,13 @@ final class SplitViewController: UISplitViewController {
 
   // MARK: View Life Cycle
 
-  override func loadView() {
-    view = contentView
-  }
-
   override func viewDidLoad() {
     super.viewDidLoad()
+    delegate = self
   }
+}
+
+
+extension SplitViewController: UISplitViewControllerDelegate {
+
 }
