@@ -51,7 +51,7 @@
 	<key>CFBundleVersion</key>
 	<string>2</string>
 	<key>GIDClientID</key>
-	<string>1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg.apps.googleusercontent.com</string>
+	<string>454988091393-sdiabacur5v8pqbst1ssniu30rt6vg72.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -60,7 +60,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>joosum</string>
-				<string>com.googleusercontent.apps.1087116486432-5dk0gd9nnui0o490a2dmaoj0a90t80dg</string>
+				<string>com.googleusercontent.apps.454988091393-sdiabacur5v8pqbst1ssniu30rt6vg72</string>
 			</array>
 		</dict>
 	</array>
