@@ -130,6 +130,8 @@ final class LinkDetailView: UIView {
 
     urlIcon.snp.makeConstraints {
       $0.left.bottom.equalToSuperview()
+      $0.width.equalTo(18.65)
+      $0.height.equalTo(13)
     }
 
     urlLabel.snp.makeConstraints {

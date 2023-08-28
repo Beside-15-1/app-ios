@@ -120,7 +120,7 @@ final class MyPageItemButton: UIControl {
 
       addSubview(subTitleLabel)
       container.snp.remakeConstraints {
-        $0.left.right.equalToSuperview().inset(20.0)
+        $0.left.right.equalToSuperview()
         $0.top.bottom.equalToSuperview()
         $0.height.equalTo(90.0)
       }
