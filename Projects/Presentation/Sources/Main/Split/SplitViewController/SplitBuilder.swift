@@ -26,28 +26,14 @@ final class SplitBuilder: SplitBuildable {
   }
 
   func build(payload: SplitPayload) -> UIViewController {
-    let masterViewController = dependency.masterBuilder.build(payload: .init())
 
-    let detailViewController: UIViewController
-    if payload.isLogin {
-      detailViewController = dependency.mainTabBuilder.build(payload: .init())
-    } else {
-      detailViewController = dependency.loginBuilder.build(payload: .init())
-    }
-
-    let split = SplitViewController(style: .doubleColumn).then {
-      $0.setViewController(UINavigationController(rootViewController: masterViewController), for: .primary)
-      $0.setViewController(UINavigationController(rootViewController: detailViewController), for: .secondary)
-      $0.minimumPrimaryColumnWidth = 250
-      $0.maximumPrimaryColumnWidth = 250
-      $0.primaryBackgroundStyle = .sidebar
-      $0.presentsWithGesture = false
-      if payload.isLogin, UIDevice.current.userInterfaceIdiom == .pad {
-        $0.preferredDisplayMode = .oneBesideSecondary
-      } else {
-        $0.preferredDisplayMode = .automatic
-      }
-    }
+    let split = SplitViewController(
+      style: .doubleColumn,
+      masterBuilder: dependency.masterBuilder,
+      mainTabBuilder: dependency.mainTabBuilder,
+      loginBuilder: dependency.loginBuilder,
+      isLogin: payload.isLogin
+    )
 
     return split
   }

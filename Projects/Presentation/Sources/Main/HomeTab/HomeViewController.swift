@@ -131,6 +131,13 @@ final class HomeViewController: UIViewController, StoryboardView {
         }
       }
       .disposed(by: disposeBag)
+
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindContent(with reactor: HomeViewReactor) {
@@ -149,6 +156,13 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.contentView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
+  }
+
+
+  // MARK: Configuring
+
+  func configureMasterDetail() {
+    contentView.navigationBar.masterDetailButton.isHidden = false
   }
 }
 

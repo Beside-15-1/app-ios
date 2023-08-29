@@ -31,9 +31,7 @@ final class HomeView: UIView {
     $0.backgroundColor = .paperAboveBg
   }
 
-  private let logoLabel = UILabel().then {
-    $0.attributedText = "JOOSUM".styled(font: .logo, color: .white)
-  }
+  let navigationBar = MainNavigationBar(style: .home)
 
   private let titleLabel = UILabel().then {
     $0.attributedText = "최근 주섬주섬 했던\n링크를 확인해보세요"
@@ -89,7 +87,7 @@ final class HomeView: UIView {
 
   private func defineLayout() {
     addSubview(colorBackground)
-    [logoLabel, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { addSubview($0) }
+    [navigationBar, titleLabel, viewAllButton, homeLinkView, homeFolderView].forEach { addSubview($0) }
     addSubview(fab)
 
     colorBackground.snp.makeConstraints {
@@ -97,13 +95,12 @@ final class HomeView: UIView {
       $0.height.equalTo(349.0)
     }
 
-    logoLabel.snp.makeConstraints {
-      $0.top.equalTo(safeAreaLayoutGuide).inset(10.0)
-      $0.left.equalToSuperview().inset(20.0)
+    navigationBar.snp.makeConstraints {
+      $0.left.right.top.equalTo(safeAreaLayoutGuide)
     }
 
     titleLabel.snp.makeConstraints {
-      $0.top.equalTo(logoLabel.snp.bottom).offset(34.0)
+      $0.top.equalTo(navigationBar.snp.bottom).offset(14.0)
       $0.left.equalToSuperview().inset(20.0)
     }
 

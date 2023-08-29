@@ -45,8 +45,24 @@ final class MasterViewController: UIViewController, StoryboardView {
     super.viewDidLoad()
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    navigationController?.isNavigationBarHidden = true
+  }
+
 
   // MARK: Binding
 
-  func bind(reactor: MasterViewReactor) {}
+  func bind(reactor: MasterViewReactor) {
+    bindButtons(with: reactor)
+  }
+
+  private func bindButtons(with reactor: MasterViewReactor) {
+    contentView.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
+      }
+      .disposed(by: disposeBag)
+  }
 }

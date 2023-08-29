@@ -25,8 +25,34 @@ final class SplitViewController: UISplitViewController {
 
   // MARK: Initializing
 
-  override init(style: UISplitViewController.Style) {
+  init(
+    style: UISplitViewController.Style,
+    masterBuilder: MasterBuildable,
+    mainTabBuilder: MainTabBarBuildable,
+    loginBuilder: LoginBuildable,
+    isLogin: Bool
+  ) {
     super.init(style: style)
+
+    self.masterViewController = masterBuilder.build(payload: .init())
+
+    if isLogin {
+      self.detailViewController = mainTabBuilder.build(payload: .init())
+    } else {
+      self.detailViewController = loginBuilder.build(payload: .init())
+    }
+
+    setViewController(UINavigationController(rootViewController: masterViewController!), for: .primary)
+    setViewController(UINavigationController(rootViewController: detailViewController!), for: .secondary)
+    minimumPrimaryColumnWidth = 250
+    maximumPrimaryColumnWidth = 250
+    primaryBackgroundStyle = .sidebar
+    presentsWithGesture = false
+    if isLogin, UIDevice.current.userInterfaceIdiom == .pad {
+      preferredDisplayMode = .oneBesideSecondary
+    } else {
+      preferredDisplayMode = .automatic
+    }
   }
 
   override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -48,5 +74,35 @@ final class SplitViewController: UISplitViewController {
 
 
 extension SplitViewController: UISplitViewControllerDelegate {
+  func splitViewController(
+    _ splitViewController: UISplitViewController,
+    collapseSecondary secondaryViewController: UIViewController,
+    onto primaryViewController: UIViewController
+  ) -> Bool {
+    true
+  }
 
+  func splitViewController(_ svc: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {
+    guard displayMode == .secondaryOnly else { return }
+
+    guard let mainTab = detailViewController as? MainTabBarViewController else { return }
+
+    let selectedVC = mainTab.selectedViewController
+
+    if let home = selectedVC as? HomeViewController {
+      home.configureMasterDetail()
+    } else if let _ = selectedVC as? MyFolderViewController {
+    } else if let _ = selectedVC as? MyPageViewController {}
+  }
+}
+
+
+extension UISplitViewController {
+
+  func changeDisplayMode(to newDisplayMode: UISplitViewController.DisplayMode) {
+    UIView.animate(withDuration: 0.3) {
+      self.preferredDisplayMode = newDisplayMode
+      self.view.layoutIfNeeded()
+    }
+  }
 }
