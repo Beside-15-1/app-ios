@@ -6,6 +6,7 @@ import Then
 
 import PresentationInterface
 import DesignSystem
+import PBLog
 
 // MARK: - MainTabBarViewController
 
@@ -30,6 +31,10 @@ final class MainTabBarViewController: UITabBarController {
     super.init(nibName: nil, bundle: nil)
   }
 
+  deinit {
+    Log.info("🗑️ deinit: MainTabBarViewController")
+  }
+
   @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -49,10 +54,8 @@ final class MainTabBarViewController: UITabBarController {
 
     if UIDevice.current.userInterfaceIdiom == .pad {
       tabBar.isHidden = true
-      splitViewController?.preferredDisplayMode = .oneBesideSecondary
     } else {
       tabBar.isHidden = false
-      splitViewController?.preferredDisplayMode = .secondaryOnly
     }
   }
 

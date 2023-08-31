@@ -87,7 +87,9 @@ final class OnboardingViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         let mainTab = self.mainTabBuilder.build(payload: .init())
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.navigationController?.setViewControllers([mainTab], animated: true)
+        let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+        navigation?.setViewControllers([mainTab], animated: true)
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
         self.transition = nil
       }
       .disposed(by: disposeBag)

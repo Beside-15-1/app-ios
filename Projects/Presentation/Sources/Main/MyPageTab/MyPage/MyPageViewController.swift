@@ -115,8 +115,10 @@ final class MyPageViewController: UIViewController, StoryboardView {
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
         let vc = self.loginBuilder.build(payload: .init())
+        self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+        let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+        navigation?.setViewControllers([vc], animated: true)
         self.transition = nil
       }
       .disposed(by: disposeBag)
@@ -219,7 +221,9 @@ extension MyPageViewController: DeleteAccountDelegate {
   func deleteAccountSuccess() {
     let vc = self.loginBuilder.build(payload: .init())
     self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-    self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+    self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
+    let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+    navigation?.setViewControllers([vc], animated: true)
     self.transition = nil
   }
 }

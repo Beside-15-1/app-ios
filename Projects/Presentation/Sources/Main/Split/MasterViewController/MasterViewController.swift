@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import PresentationInterface
 
 final class MasterViewController: UIViewController, StoryboardView {
 
@@ -21,6 +22,8 @@ final class MasterViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  weak var delegate: MasterDelegate?
 
 
   // MARK: Initializing
@@ -62,6 +65,24 @@ final class MasterViewController: UIViewController, StoryboardView {
     contentView.masterDetailButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.homeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.delegate?.masterHomeTapped()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.folderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.delegate?.masterFolderTapped()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.myPageButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.delegate?.masterMyPageTapped()
       }
       .disposed(by: disposeBag)
   }

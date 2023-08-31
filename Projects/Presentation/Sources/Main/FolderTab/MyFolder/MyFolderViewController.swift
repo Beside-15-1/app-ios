@@ -90,7 +90,6 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   private func bindContent(with reactor: MyFolderViewReactor) {
     reactor.state.compactMap(\.folderViewModel)
-      .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.myFolderListView.applyCollectionViewDataSource(by: viewModel)
@@ -98,7 +97,6 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
 
     reactor.state.map(\.folderSortType)
-      .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, type in
         self.contentView.myFolderListView.sortButton.text = type.rawValue

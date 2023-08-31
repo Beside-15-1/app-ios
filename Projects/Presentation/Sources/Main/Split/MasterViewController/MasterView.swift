@@ -20,6 +20,18 @@ final class MasterView: UIView {
     $0.setImage(DesignSystemAsset.iconMasterDetail.image.withTintColor(.staticBlack), for: .normal)
   }
 
+  let homeButton = UIButton().then {
+    $0.setTitle("Home", for: .normal)
+  }
+
+  let folderButton = UIButton().then {
+    $0.setTitle("Folder", for: .normal)
+  }
+
+  let myPageButton = UIButton().then {
+    $0.setTitle("MyPage", for: .normal)
+  }
+
 
   // MARK: Initializing
 
@@ -43,12 +55,30 @@ final class MasterView: UIView {
   }
 
   private func defineLayout() {
-    [masterDetailButton].forEach { addSubview($0) }
+    [masterDetailButton, homeButton, folderButton, myPageButton].forEach { addSubview($0) }
 
     masterDetailButton.snp.makeConstraints {
       $0.left.equalTo(safeAreaLayoutGuide).inset(20.0)
       $0.top.equalTo(safeAreaLayoutGuide).inset(8.0)
       $0.size.equalTo(28.0)
+    }
+
+    homeButton.snp.makeConstraints {
+      $0.left.right.equalTo(safeAreaLayoutGuide).inset(20.0)
+      $0.top.equalTo(masterDetailButton.snp.bottom).offset(50.0)
+      $0.height.equalTo(44.0)
+    }
+
+    folderButton.snp.makeConstraints {
+      $0.left.right.equalTo(safeAreaLayoutGuide).inset(20.0)
+      $0.top.equalTo(homeButton.snp.bottom).offset(50.0)
+      $0.height.equalTo(44.0)
+    }
+
+    myPageButton.snp.makeConstraints {
+      $0.left.right.equalTo(safeAreaLayoutGuide).inset(20.0)
+      $0.top.equalTo(folderButton.snp.bottom).offset(50.0)
+      $0.height.equalTo(44.0)
     }
   }
 }

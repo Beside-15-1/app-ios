@@ -19,9 +19,6 @@ final class SplitViewController: UISplitViewController {
 
   var disposeBag = DisposeBag()
 
-  private var masterViewController: UIViewController?
-  private var detailViewController: UIViewController?
-
 
   // MARK: Initializing
 
@@ -34,16 +31,17 @@ final class SplitViewController: UISplitViewController {
   ) {
     super.init(style: style)
 
-    self.masterViewController = masterBuilder.build(payload: .init())
+    let masterViewController = masterBuilder.build(payload: .init(delegate: self))
+    let detailViewController: UIViewController
 
     if isLogin {
-      self.detailViewController = mainTabBuilder.build(payload: .init())
+      detailViewController = mainTabBuilder.build(payload: .init())
     } else {
-      self.detailViewController = loginBuilder.build(payload: .init())
+      detailViewController = loginBuilder.build(payload: .init())
     }
 
-    setViewController(UINavigationController(rootViewController: masterViewController!), for: .primary)
-    setViewController(UINavigationController(rootViewController: detailViewController!), for: .secondary)
+    setViewController(UINavigationController(rootViewController: masterViewController), for: .primary)
+    setViewController(UINavigationController(rootViewController: detailViewController), for: .secondary)
     minimumPrimaryColumnWidth = 250
     maximumPrimaryColumnWidth = 250
     primaryBackgroundStyle = .sidebar
@@ -70,6 +68,12 @@ final class SplitViewController: UISplitViewController {
     super.viewDidLoad()
     delegate = self
   }
+
+  func getRootViewController(svc: UISplitViewController) -> UIViewController? {
+    let navigation = svc.viewController(for: .secondary) as? UINavigationController
+    let rootViewController = navigation?.viewControllers.first
+    return rootViewController
+  }
 }
 
 
@@ -85,7 +89,7 @@ extension SplitViewController: UISplitViewControllerDelegate {
   func splitViewController(_ svc: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {
     guard displayMode == .secondaryOnly else { return }
 
-    guard let mainTab = detailViewController as? MainTabBarViewController else { return }
+    guard let mainTab = getRootViewController(svc: svc) as? MainTabBarViewController else { return }
 
     let selectedVC = mainTab.selectedViewController
 
@@ -104,5 +108,23 @@ extension UISplitViewController {
       self.preferredDisplayMode = newDisplayMode
       self.view.layoutIfNeeded()
     }
+  }
+}
+
+
+extension SplitViewController: MasterDelegate {
+  func masterHomeTapped() {
+    guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedIndex = 0
+  }
+
+  func masterFolderTapped() {
+    guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedIndex = 1
+  }
+
+  func masterMyPageTapped() {
+    guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedIndex = 2
   }
 }

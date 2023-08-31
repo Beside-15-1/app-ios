@@ -88,6 +88,7 @@ final class LoginViewController: UIViewController {
         let mainTab = self.mainTabBuilder.build(payload: .init())
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
         self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
         self.transition = nil
       }
       .disposed(by: disposeBag)

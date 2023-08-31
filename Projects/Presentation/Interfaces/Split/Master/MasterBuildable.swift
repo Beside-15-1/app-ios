@@ -16,5 +16,12 @@ public protocol MasterBuildable {
 }
 
 public struct MasterPayload {
-  public init() {}
+
+  public let delegate: MasterDelegate?
+
+  public init(
+    delegate: MasterDelegate?
+  ) {
+    self.delegate = delegate
+  }
 }

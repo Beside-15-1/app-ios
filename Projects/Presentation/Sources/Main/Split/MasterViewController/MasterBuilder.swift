@@ -26,7 +26,9 @@ final class MasterBuilder: MasterBuildable {
 
     let viewController = MasterViewController(
       reactor: reactor
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }
