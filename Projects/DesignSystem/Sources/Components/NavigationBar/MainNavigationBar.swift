@@ -20,9 +20,7 @@ public enum MainNavigationBarStyle {
 
 public class MainNavigationBar: UIView {
 
-  private let logo = UILabel().then {
-    $0.attributedText = "JOOSUM".styled(font: .logo, color: .white)
-  }
+  private let titleLabel = UILabel()
 
   private let leftButtonStackView = UIStackView().then {
     $0.spacing = 12.0
@@ -43,11 +41,26 @@ public class MainNavigationBar: UIView {
 
     backgroundColor = .paperAboveBg
 
+    configureTitle(style: style)
     defineLayout(style: style)
   }
 
   required init?(coder: NSCoder) {
     super.init(coder: coder)
+  }
+
+
+  // MARK: Configuring
+
+  private func configureTitle(style: MainNavigationBarStyle) {
+    switch style {
+    case .home:
+      titleLabel.attributedText = "JOOSUM".styled(font: .logo, color: .white)
+    case .folder:
+      titleLabel.attributedText = "내 폴더".styled(font: .titleBold, color: .white)
+    case .mypage:
+      titleLabel.attributedText = "내 정보".styled(font: .titleBold, color: .white)
+    }
   }
 
 
@@ -61,10 +74,10 @@ public class MainNavigationBar: UIView {
     switch style {
     case .home, .folder, .mypage:
       if UIDevice.current.userInterfaceIdiom == .pad {
-        [leftButtonStackView, logo].forEach { addSubview($0) }
+        [leftButtonStackView, titleLabel].forEach { addSubview($0) }
         [masterDetailButton].forEach { leftButtonStackView.addArrangedSubview($0) }
 
-        logo.snp.makeConstraints {
+        titleLabel.snp.makeConstraints {
           $0.center.equalToSuperview()
         }
 
@@ -75,7 +88,7 @@ public class MainNavigationBar: UIView {
 
       } else {
         [leftButtonStackView].forEach { addSubview($0) }
-        [logo].forEach { leftButtonStackView.addArrangedSubview($0) }
+        [titleLabel].forEach { leftButtonStackView.addArrangedSubview($0) }
 
         leftButtonStackView.snp.makeConstraints {
           $0.left.equalToSuperview().inset(20.0)
