@@ -86,11 +86,11 @@ final class HomeViewController: UIViewController, StoryboardView {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: self,
+          delegate: self, 
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -100,8 +100,8 @@ final class HomeViewController: UIViewController, StoryboardView {
           delegate: self,
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -176,15 +176,9 @@ extension HomeViewController: HomeFolderViewDelegate {
         folder: nil,
         delegate: self
       )
-    ).then {
-      if UIDevice.current.userInterfaceIdiom == .pad {
-        $0.modalPresentationStyle = .overFullScreen
-      } else {
-        $0.modalPresentationStyle = .popover
-      }
-    }
+    )
 
-    present(vc, animated: true)
+    self.presentFormSheet(vc)
   }
 
   func homeFolderView(didSelectItemAt row: Int) {

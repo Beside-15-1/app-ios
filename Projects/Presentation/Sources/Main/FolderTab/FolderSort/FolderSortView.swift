@@ -66,7 +66,6 @@ final class FolderSortView: UIView {
     buttonStackView.snp.makeConstraints {
       $0.top.equalTo(titleView.snp.bottom).offset(12.0)
       $0.left.right.equalToSuperview().inset(12.0)
-      $0.bottom.equalTo(safeAreaLayoutGuide).inset(28.0)
     }
   }
 

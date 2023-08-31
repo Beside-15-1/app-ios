@@ -103,7 +103,12 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         ) as? PanModalPresentable.LayoutType else { return }
 
         self.contentView.selectFolderView.select()
-        self.presentPanModal(vc)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          self.presentFormSheet(vc)
+        } else {
+          self.presentModal(vc)
+        }
+
       }
       .disposed(by: disposeBag)
 
@@ -117,12 +122,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           )
         )
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-          vc.modalPresentationStyle = .overFullScreen
-        } else {
-          vc.modalPresentationStyle = .popover
-        }
-        self.present(vc, animated: true)
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -133,12 +133,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           delegate: self
         ))
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-          vc.modalPresentationStyle = .overFullScreen
-        } else {
-          vc.modalPresentationStyle = .popover
-        }
-        self.present(vc, animated: true)
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
 

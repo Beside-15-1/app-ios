@@ -121,15 +121,9 @@ final class MyFolderViewController: UIViewController, StoryboardView {
             folder: nil,
             delegate: self
           )
-        ).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        )
 
-        self.present(vc, animated: true)
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -142,7 +136,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(vc)
+        self.presentModal(vc)
       }
       .disposed(by: disposeBag)
 
@@ -152,8 +146,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           delegate: self,
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
   }
@@ -180,10 +174,9 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
     guard let vc = editFolderBuilder.build(payload: .init(
       delegate: self,
       folder: folder
-    ))
-      as? PanModalPresentable.LayoutType else { return }
+    )) as? PanModalPresentable.LayoutType else { return }
 
-    presentPanModal(vc)
+    presentModal(vc)
   }
 
   func collectionViewItemDidTapped(at row: Int) {
@@ -208,15 +201,9 @@ extension MyFolderViewController: EditFolderDelegate {
         folder: folder,
         delegate: self
       )
-    ).then {
-      if UIDevice.current.userInterfaceIdiom == .pad {
-        $0.modalPresentationStyle = .overFullScreen
-      } else {
-        $0.modalPresentationStyle = .popover
-      }
-    }
+    )
 
-    present(vc, animated: true)
+    self.presentFormSheet(vc)
   }
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {

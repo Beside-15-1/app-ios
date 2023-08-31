@@ -160,7 +160,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(vc)
+        self.presentModal(vc)
       }
       .disposed(by: disposeBag)
   }

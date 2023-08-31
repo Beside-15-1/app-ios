@@ -146,15 +146,9 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentFormSheet(web)
       }
       .disposed(by: disposeBag)
 
@@ -164,15 +158,9 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentFormSheet(web)
       }
       .disposed(by: disposeBag)
 

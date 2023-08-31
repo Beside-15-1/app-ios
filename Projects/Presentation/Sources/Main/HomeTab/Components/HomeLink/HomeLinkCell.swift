@@ -54,6 +54,7 @@ class HomeLinkCell: UICollectionViewCell {
   let moreTextButton = TextButton(type: .regular, color: .gray700).then {
     $0.text = "더보기"
     $0.leftIconImage = DesignSystemAsset.iconPlus.image
+    $0.isUserInteractionEnabled = false
   }
 
   override var isHighlighted: Bool {

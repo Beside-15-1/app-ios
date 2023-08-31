@@ -112,11 +112,9 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
             delegate: self,
             link: reactor.currentState.link
           )
-        ).then {
-          $0.modalPresentationStyle = .overFullScreen
-        }
+        )
 
-        self.present(createLink, animated: true)
+        self.presentFormSheet(createLink)
       }
       .disposed(by: disposeBag)
 
@@ -129,7 +127,15 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(moveFolder)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+          moveFolder.modalPresentationStyle = .custom
+          moveFolder.modalPresentationCapturesStatusBarAppearance = true
+          moveFolder.transitioningDelegate = PanModalPresentationDelegate.default
+          self.present(moveFolder, animated: true)
+        } else {
+          self.presentModal(moveFolder)
+        }
+
       }
       .disposed(by: disposeBag)
 

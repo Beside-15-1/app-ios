@@ -157,7 +157,6 @@ final class MoveFolderView: UIView {
     saveButton.snp.makeConstraints {
       $0.top.equalTo(collectionView.snp.bottom).offset(30.0)
       $0.left.right.equalToSuperview().inset(20.0)
-      $0.bottom.equalTo(safeAreaLayoutGuide).inset(20.0)
     }
   }
 
