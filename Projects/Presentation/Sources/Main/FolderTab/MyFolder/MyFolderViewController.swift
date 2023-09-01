@@ -136,7 +136,19 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentModal(vc)
+        self.presentModal(
+          vc,
+          preferredContentSize: .init(width: 375, height: 252 - self.view.safeAreaInsets.bottom),
+          arrowDirection: .up,
+          sourceView: self.contentView.myFolderListView.sortButton,
+          sourceRect: .init(
+            origin: .init(
+              x: self.contentView.myFolderListView.sortButton.frame.width / 2,
+              y: self.contentView.myFolderListView.sortButton.frame.height
+            ),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
 
@@ -168,7 +180,8 @@ extension MyFolderViewController: CreateFolderDelegate {
 extension MyFolderViewController: MyFolderCollectionViewDelegate {
   func collectionViewEditButtonTapped(id: String) {
     guard let reactor,
-          let folder = reactor.currentState.folderList.first(where: { $0.id == id })
+          let folder = reactor.currentState.folderList.first(where: { $0.id == id }),
+          let index = reactor.currentState.folderList.firstIndex(of: folder)
     else { return }
 
     guard let vc = editFolderBuilder.build(payload: .init(
@@ -176,7 +189,35 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
       folder: folder
     )) as? PanModalPresentable.LayoutType else { return }
 
-    presentModal(vc)
+    guard let selectedCell = contentView.myFolderListView.collectionView
+      .cellForItem(at: IndexPath(item: index, section: 0)) as? MyFolderCell
+    else {
+      presentModal(
+        vc,
+        preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+        arrowDirection: .any,
+        sourceView: contentView.myFolderListView.sortButton,
+        sourceRect: .init(
+          origin: .init(
+            x: contentView.myFolderListView.sortButton.frame.width / 2,
+            y: contentView.myFolderListView.sortButton.frame.height
+          ),
+          size: .zero
+        )
+      )
+      return
+    }
+
+    presentModal(
+      vc,
+      preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+      arrowDirection: .down,
+      sourceView: selectedCell.moreButton,
+      sourceRect: .init(
+        origin: .init(x: 16, y: 0),
+        size: .zero
+      )
+    )
   }
 
   func collectionViewItemDidTapped(at row: Int) {
@@ -203,7 +244,7 @@ extension MyFolderViewController: EditFolderDelegate {
       )
     )
 
-    self.presentFormSheet(vc)
+    presentFormSheet(vc)
   }
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {

@@ -101,7 +101,7 @@ final class LoginViewController: UIViewController {
         ))
           as? PanModalPresentable.LayoutType else { return }
 
-        self.presentModal(termsOfUse)
+        self.presentPanModalInIpad(termsOfUse)
       }
       .disposed(by: disposeBag)
 

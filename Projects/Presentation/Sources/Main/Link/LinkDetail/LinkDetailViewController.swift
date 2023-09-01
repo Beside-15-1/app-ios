@@ -127,15 +127,16 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-          moveFolder.modalPresentationStyle = .custom
-          moveFolder.modalPresentationCapturesStatusBarAppearance = true
-          moveFolder.transitioningDelegate = PanModalPresentationDelegate.default
-          self.present(moveFolder, animated: true)
-        } else {
-          self.presentModal(moveFolder)
-        }
-
+        self.presentModal(
+          moveFolder,
+          preferredContentSize: .init(width: 450, height: 333),
+          arrowDirection: .down,
+          sourceView: self.contentView.bottomView.moveButton,
+          sourceRect: .init(
+            origin: .init(x: self.contentView.bottomView.moveButton.frame.width / 2, y: 0),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
 

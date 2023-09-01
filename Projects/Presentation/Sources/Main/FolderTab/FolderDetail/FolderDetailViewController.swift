@@ -160,7 +160,19 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentModal(vc)
+        self.presentModal(
+          vc,
+          preferredContentSize: .init(width: 375, height: 252 - self.view.safeAreaInsets.bottom),
+          arrowDirection: .up,
+          sourceView: self.contentView.listView.sortButton,
+          sourceRect: .init(
+            origin: .init(
+              x: self.contentView.listView.sortButton.frame.width / 2,
+              y: self.contentView.listView.sortButton.frame.height
+            ),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
   }

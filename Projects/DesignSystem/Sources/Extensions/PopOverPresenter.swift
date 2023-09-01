@@ -14,7 +14,7 @@ extension UIViewController {
 
   public func presentFormSheet(_ viewController: UIViewController) {
     if UIDevice.current.userInterfaceIdiom == .pad {
-      viewController.modalPresentationStyle = .formSheet
+      viewController.modalPresentationStyle = .pageSheet
     } else {
       viewController.modalPresentationStyle = .popover
     }
@@ -25,18 +25,27 @@ extension UIViewController {
 
 extension UIViewController {
 
-  public func presentModal(_ viewController: UIViewController & PanModalPresentable.LayoutType) {
+  public func presentModal(
+    _ viewController: UIViewController & PanModalPresentable.LayoutType,
+    preferredContentSize: CGSize = .zero,
+    arrowDirection: UIPopoverArrowDirection = .any,
+    sourceView: UIView? = nil,
+    sourceRect: CGRect = .zero
+  ) {
     if UIDevice.current.userInterfaceIdiom == .pad {
-      presentPanModalInIpad(viewController)
+      viewController.preferredContentSize = preferredContentSize
+      viewController.popoverPresentationController?.permittedArrowDirections = arrowDirection
+      viewController.modalPresentationStyle = .popover
+      viewController.popoverPresentationController?.sourceRect = sourceRect
+      viewController.popoverPresentationController?.sourceView = sourceView ?? view
+      self.present(viewController, animated: true)
     } else {
       presentPanModal(viewController)
     }
   }
 
-  private func presentPanModalInIpad(
-    _ viewControllerToPresent: PanModalPresentable.LayoutType,
-    sourceView: UIView? = nil,
-    sourceRect: CGRect = .zero
+  public func presentPanModalInIpad(
+    _ viewControllerToPresent: PanModalPresentable.LayoutType
   ) {
     viewControllerToPresent.modalPresentationStyle = .custom
     viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = true

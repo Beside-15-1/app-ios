@@ -64,7 +64,6 @@ final class EditFolderView: UIView {
     deleteButton.snp.makeConstraints {
       $0.left.right.equalToSuperview().inset(20.0)
       $0.top.equalTo(modifyButton.snp.bottom).offset(4.0)
-      $0.bottom.equalTo(safeAreaLayoutGuide).inset(28.0)
     }
   }
 
