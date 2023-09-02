@@ -5,8 +5,7 @@ import PBAnalyticsInterface
 // MARK: - LoginEvent
 
 enum LoginEvent {
-  case clickGoogleLogin
-  case clickAppleLogin
+  case click(component: String)
 }
 
 // MARK: PBAnalyticsType
@@ -14,14 +13,10 @@ enum LoginEvent {
 extension LoginEvent: PBAnalyticsType {
   var name: String {
     switch self {
-    case .clickGoogleLogin:
-      return PBAnalyticsEventNameBuilder()
-        .screen(with: "login")
-        .version(with: 1)
-        .build()
 
-    case .clickAppleLogin:
+    case .click:
       return PBAnalyticsEventNameBuilder()
+        .action(with: .clicked)
         .screen(with: "login")
         .version(with: 1)
         .build()
@@ -30,16 +25,9 @@ extension LoginEvent: PBAnalyticsType {
 
   var parameters: [String: Any]? {
     switch self {
-    case .clickGoogleLogin:
+    case .click(let component):
       return PBAnalyticsParameterBuilder()
-        .action(with: .click)
-        .component(with: "googleButton")
-        .build()
-
-    case .clickAppleLogin:
-      return PBAnalyticsParameterBuilder()
-        .action(with: .click)
-        .component(with: "appleButton")
+        .component(with: component)
         .build()
     }
   }
