@@ -24,9 +24,7 @@ final class MyFolderView: UIView {
     $0.backgroundColor = .paperAboveBg
   }
 
-  private let titleLabel = UILabel().then {
-    $0.attributedText = "내 폴더".styled(font: .titleBold, color: .white)
-  }
+  let navigationBar = MainNavigationBar(style: .folder)
 
   let folderSearchField = InputField(type: .normal).then {
     $0.placeHolder = "폴더명으로 검색해보세요"
@@ -57,7 +55,7 @@ final class MyFolderView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [safeAreaView, colorBackground, titleLabel, folderSearchField, myFolderListView].forEach { addSubview($0) }
+    [safeAreaView, colorBackground, navigationBar, folderSearchField, myFolderListView].forEach { addSubview($0) }
 
     safeAreaView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
@@ -66,16 +64,15 @@ final class MyFolderView: UIView {
 
     colorBackground.snp.makeConstraints {
       $0.top.left.right.equalTo(safeAreaLayoutGuide)
-      $0.height.equalTo(146)
+      $0.bottom.equalTo(folderSearchField.snp.bottom).offset(24.0)
     }
 
-    titleLabel.snp.makeConstraints {
-      $0.left.equalToSuperview().inset(20.0)
-      $0.top.equalTo(safeAreaLayoutGuide).inset(24.0)
+    navigationBar.snp.makeConstraints {
+      $0.top.left.right.equalTo(safeAreaLayoutGuide)
     }
 
     folderSearchField.snp.makeConstraints {
-      $0.top.equalTo(titleLabel.snp.bottom).offset(12.0)
+      $0.top.equalTo(navigationBar.snp.bottom).offset(24.0)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 

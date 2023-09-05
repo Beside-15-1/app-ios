@@ -12,10 +12,6 @@ public protocol OrientationDelegate: AnyObject {
   func didChangeOrientation(orientation: UIDeviceOrientation)
 }
 
-extension OrientationDelegate {
-  public func didChangeOrientation(orientation: UIDeviceOrientation) {}
-}
-
 public class OrientationController {
 
   // MARK: Properties

@@ -102,13 +102,15 @@ class HomeFolderCell: UICollectionViewCell {
 
     folderCover.backgroundColor = UIColor(hexString: viewModel.coverColor)
 
+    let titleFont = UIDevice.current.userInterfaceIdiom == .pad ? UIFont.subTitleSemiBold : UIFont.bodyBold
     folderTitle.do {
       $0.attributedText = viewModel.title.styled(
-        font: .bodyBold,
+        font: titleFont,
         color: UIColor(hexString: viewModel.titleColor)
       )
     }
 
+    let countFont = UIDevice.current.userInterfaceIdiom == .pad ? UIFont.bodySemiBold : UIFont.captionRegular
     countLabel.attributedText = "\(viewModel.linkCount)건".styled(
       font: .captionRegular,
       color: .staticWhite
@@ -153,7 +155,11 @@ class HomeFolderCell: UICollectionViewCell {
     }
 
     illust.snp.makeConstraints {
-      $0.size.equalTo(72.0)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.size.equalTo(88.0)
+      } else {
+        $0.size.equalTo(72.0)
+      }
       $0.right.bottom.equalToSuperview().inset(15.0)
     }
 
@@ -171,8 +177,13 @@ class HomeFolderCell: UICollectionViewCell {
 
     countContainer.snp.makeConstraints {
       $0.right.bottom.equalToSuperview()
-      $0.width.equalTo(48.0)
-      $0.height.equalTo(24.0)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.width.equalTo(58.0)
+        $0.height.equalTo(30.0)
+      } else {
+        $0.width.equalTo(48.0)
+        $0.height.equalTo(24.0)
+      }
     }
 
     countLabel.snp.makeConstraints {

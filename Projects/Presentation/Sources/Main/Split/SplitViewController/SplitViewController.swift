@@ -87,15 +87,14 @@ extension SplitViewController: UISplitViewControllerDelegate {
   }
 
   func splitViewController(_ svc: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {
-    guard displayMode == .secondaryOnly else { return }
-
     guard let mainTab = getRootViewController(svc: svc) as? MainTabBarViewController else { return }
 
     let selectedVC = mainTab.selectedViewController
 
     if let home = selectedVC as? HomeViewController {
-      home.configureMasterDetail()
-    } else if let _ = selectedVC as? MyFolderViewController {
+      home.configureMasterDetail(displayMode: displayMode)
+    } else if let myFolder = selectedVC as? MyFolderViewController {
+      myFolder.configureMasterDetail(displayMode: displayMode)
     } else if let _ = selectedVC as? MyPageViewController {}
   }
 }

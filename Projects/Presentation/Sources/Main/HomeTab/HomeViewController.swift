@@ -157,7 +157,8 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   // MARK: Configuring
 
-  func configureMasterDetail() {
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    guard displayMode == .secondaryOnly else { return }
     contentView.navigationBar.masterDetailButton.isHidden = false
   }
 }

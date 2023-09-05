@@ -32,6 +32,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private let folderDetailBuilder: FolderDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
 
+  private let orientationController = OrientationController()
+
 
   // MARK: Initializing
 
@@ -70,6 +72,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+
+    orientationController.register(delegate: self)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -162,6 +166,25 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         self.presentFormSheet(vc)
       }
       .disposed(by: disposeBag)
+
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
+      }
+      .disposed(by: disposeBag)
+  }
+
+  // MARK: Configuring
+
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    DispatchQueue.main.async {
+      if displayMode == .secondaryOnly {
+        self.contentView.navigationBar.masterDetailButton.isHidden = false
+      }
+
+      self.contentView.myFolderListView.configureDisplayMode(displayMode: displayMode)
+    }
   }
 }
 
@@ -274,5 +297,16 @@ extension MyFolderViewController: FolderSortDelegate {
 extension MyFolderViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+// MARK: - OrientationController
+
+extension MyFolderViewController: OrientationDelegate {
+  func didChangeOrientation(orientation: UIDeviceOrientation) {
+    DispatchQueue.main.async {
+      self.contentView.myFolderListView.configureOrientation(orientation: orientation)
+    }
   }
 }
