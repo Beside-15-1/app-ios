@@ -14,9 +14,7 @@ import DesignSystem
 
 final class MyPageView: UIView {
 
-  private let titleLabel = UILabel().then {
-    $0.attributedText = "내 정보".styled(font: .titleBold, color: .white)
-  }
+  let navigationBar = MainNavigationBar(style: .mypage)
 
   private let colorBackground = UIView().then {
     $0.backgroundColor = .paperAboveBg
@@ -118,7 +116,7 @@ final class MyPageView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [colorBackground, titleLabel, scrollView].forEach {
+    [colorBackground, navigationBar, scrollView].forEach {
       addSubview($0)
     }
 
@@ -131,14 +129,13 @@ final class MyPageView: UIView {
       .forEach { appInfoStackView.addArrangedSubview($0) }
     deleteAccountButton.addSubview(deleteAccountLabel)
 
-    titleLabel.snp.makeConstraints {
-      $0.top.equalTo(safeAreaLayoutGuide).inset(40.0)
-      $0.left.equalToSuperview().inset(20.0)
+    navigationBar.snp.makeConstraints {
+      $0.top.left.right.equalTo(safeAreaLayoutGuide)
     }
 
     colorBackground.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
-      $0.bottom.equalTo(titleLabel.snp.bottom).offset(40.0)
+      $0.bottom.equalTo(navigationBar.snp.bottom).offset(24.0)
     }
 
     scrollView.snp.makeConstraints {

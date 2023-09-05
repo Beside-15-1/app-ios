@@ -106,6 +106,13 @@ final class MyPageViewController: UIViewController, StoryboardView {
         UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
       }
       .disposed(by: disposeBag)
+
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindRoute(with reactor: MyPageViewReactor) {
@@ -187,6 +194,14 @@ final class MyPageViewController: UIViewController, StoryboardView {
         self.navigationController?.pushViewController(deleteAccount, animated: true)
       }
       .disposed(by: disposeBag)
+  }
+
+
+  // MARK: Configuring
+
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    guard displayMode == .secondaryOnly else { return }
+    contentView.navigationBar.masterDetailButton.isHidden = false
   }
 }
 

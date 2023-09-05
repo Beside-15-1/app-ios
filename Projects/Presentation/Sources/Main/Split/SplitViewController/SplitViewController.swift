@@ -95,7 +95,9 @@ extension SplitViewController: UISplitViewControllerDelegate {
       home.configureMasterDetail(displayMode: displayMode)
     } else if let myFolder = selectedVC as? MyFolderViewController {
       myFolder.configureMasterDetail(displayMode: displayMode)
-    } else if let _ = selectedVC as? MyPageViewController {}
+    } else if let mypage = selectedVC as? MyPageViewController {
+      mypage.configureMasterDetail(displayMode: displayMode)
+    }
   }
 }
 
