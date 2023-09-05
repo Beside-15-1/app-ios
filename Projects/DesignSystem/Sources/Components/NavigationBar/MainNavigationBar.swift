@@ -55,7 +55,7 @@ public class MainNavigationBar: UIView {
   private func configureTitle(style: MainNavigationBarStyle) {
     switch style {
     case .home:
-      titleLabel.attributedText = "JOOSUM".styled(font: .logo, color: .white)
+      titleLabel.attributedText = "Joosum".styled(font: .logo, color: .white)
     case .folder:
       titleLabel.attributedText = "내 폴더".styled(font: .titleBold, color: .white)
     case .mypage:

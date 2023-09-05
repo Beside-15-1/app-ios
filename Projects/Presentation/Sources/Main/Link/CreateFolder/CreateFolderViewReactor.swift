@@ -203,7 +203,7 @@ extension CreateFolderViewReactor {
 
     return createFolderUseCase.execute(
       backgroundColor: currentState.viewModel.backgroundColor,
-      title: currentState.viewModel.title,
+      title: currentState.viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines),
       titleColor: currentState.viewModel.titleColor,
       illustration: currentState.viewModel.illuste
     )
@@ -217,7 +217,7 @@ extension CreateFolderViewReactor {
     return updateFolderUseCase.execute(
       id: currentState.folder?.id ?? "",
       backgroundColor: currentState.viewModel.backgroundColor,
-      title: currentState.viewModel.title,
+      title: currentState.viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines),
       titleColor: currentState.viewModel.titleColor,
       illustration: currentState.viewModel.illuste
     )
