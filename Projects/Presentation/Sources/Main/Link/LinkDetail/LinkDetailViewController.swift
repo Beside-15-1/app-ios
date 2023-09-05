@@ -213,10 +213,19 @@ extension LinkDetailViewController {
       return
     }
 
-    let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
 
-    activityViewController.excludedActivityTypes = []
-    present(activityViewController, animated: true, completion: nil)
+      if let popover = activityViewController.popoverPresentationController {
+        popover.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityViewController, animated: true)
+      }
+    } else {
+      let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+
+      activityViewController.excludedActivityTypes = []
+      present(activityViewController, animated: true, completion: nil)
+    }
   }
 }
 
