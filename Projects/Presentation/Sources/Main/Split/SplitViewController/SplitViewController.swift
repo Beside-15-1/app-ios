@@ -115,16 +115,19 @@ extension UISplitViewController {
 extension SplitViewController: MasterDelegate {
   func masterHomeTapped() {
     guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)
     mainTab.selectedIndex = 0
   }
 
   func masterFolderTapped() {
     guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)
     mainTab.selectedIndex = 1
   }
 
   func masterMyPageTapped() {
     guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)
     mainTab.selectedIndex = 2
   }
 }

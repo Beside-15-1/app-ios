@@ -86,7 +86,7 @@ final class HomeViewController: UIViewController, StoryboardView {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
-          delegate: self, 
+          delegate: self,
           link: nil
         ))
 
@@ -122,13 +122,9 @@ final class HomeViewController: UIViewController, StoryboardView {
             selectedFolder: .all()
           )
         )
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-          self.tabBarController?.selectedViewController?
-            .navigationController?.pushViewController(
-              folderDetail, animated: true
-            )
-        }
+        self.navigationController?.pushViewController(
+          folderDetail, animated: true
+        )
       }
       .disposed(by: disposeBag)
 
@@ -178,7 +174,7 @@ extension HomeViewController: HomeFolderViewDelegate {
       )
     )
 
-    self.presentFormSheet(vc)
+    presentFormSheet(vc)
   }
 
   func homeFolderView(didSelectItemAt row: Int) {
