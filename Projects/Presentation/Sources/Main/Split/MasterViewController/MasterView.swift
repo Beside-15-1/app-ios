@@ -22,14 +22,17 @@ final class MasterView: UIView {
 
   let homeButton = UIButton().then {
     $0.setTitle("Home", for: .normal)
+    $0.setTitleColor(.staticBlack, for: .normal)
   }
 
   let folderButton = UIButton().then {
     $0.setTitle("Folder", for: .normal)
+    $0.setTitleColor(.staticBlack, for: .normal)
   }
 
   let myPageButton = UIButton().then {
     $0.setTitle("MyPage", for: .normal)
+    $0.setTitleColor(.staticBlack, for: .normal)
   }
 
 
