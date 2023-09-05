@@ -29,7 +29,7 @@ enum AppAssembly {
       DataAssembly(),
       PresentationAssembly(),
       PBAnalyticsAssembly(),
-      PBAuthAssembly()
+      PBAuthAssembly(),
     ]
 
     _ = Assembler(assemblies, container: container)

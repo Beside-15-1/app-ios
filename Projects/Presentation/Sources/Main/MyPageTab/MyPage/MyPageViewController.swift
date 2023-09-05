@@ -194,6 +194,18 @@ final class MyPageViewController: UIViewController, StoryboardView {
         self.navigationController?.pushViewController(deleteAccount, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.versionButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        // 앱 미설치시 앱스토어로 연결
+        if self.contentView.versionButton.canUpdate {
+          if let openStore = URL(string: "https://apps.apple.com/kr/app/%EC%A3%BC%EC%84%AC-joosum/id6455258212"),
+             UIApplication.shared.canOpenURL(openStore) {
+            UIApplication.shared.open(openStore, options: [:], completionHandler: nil)
+          }
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
 
