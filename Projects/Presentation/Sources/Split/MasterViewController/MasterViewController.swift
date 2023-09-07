@@ -1,0 +1,120 @@
+//
+//  MasterViewController.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/08/28.
+//
+
+import UIKit
+
+import ReactorKit
+import RxSwift
+
+import PresentationInterface
+
+final class MasterViewController: UIViewController, StoryboardView {
+
+  // MARK: UI
+
+  private lazy var contentView = MasterView()
+
+
+  // MARK: Properties
+
+  var disposeBag = DisposeBag()
+
+  weak var delegate: MasterDelegate?
+
+  var indexPathForCurrentSelectedCell: IndexPath?
+
+  // MARK: Initializing
+
+  init(reactor: MasterViewReactor) {
+    defer { self.reactor = reactor }
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+
+  // MARK: View Life Cycle
+
+  override func loadView() {
+    view = contentView
+    contentView.tableView.delegate = self
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    navigationController?.isNavigationBarHidden = true
+  }
+
+
+  // MARK: Binding
+
+  func bind(reactor: MasterViewReactor) {
+    bindButtons(with: reactor)
+    bindContent(with: reactor)
+  }
+
+  private func bindButtons(with reactor: MasterViewReactor) {
+    contentView.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindContent(with reactor: MasterViewReactor) {
+    reactor.state.compactMap(\.viewModel)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, viewModel in
+        self.contentView.applyTableViewDataSource(by: viewModel.items)
+
+        let firstIndex = IndexPath(row: 0, section: 0)
+
+        if reactor.currentState.isFirstAPICall {
+          self.contentView.tableView.selectRow(
+            at: IndexPath(row: 0, section: 0),
+            animated: false,
+            scrollPosition: .top
+          )
+          self.indexPathForCurrentSelectedCell = firstIndex
+          let cell = self.contentView.tableView.cellForRow(at: firstIndex)
+          cell?.contentView.backgroundColor = .staticWhite
+
+          reactor.action.onNext(.firstAPICallEnded)
+        }
+      }
+      .disposed(by: disposeBag)
+  }
+}
+
+
+// MARK: - TableViewDelegate
+
+extension MasterViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    if let indexPathForCurrentSelectedCell {
+
+      if reactor?.currentState.viewModel?.items[indexPath.row].isMakeButton == false {
+        let deselectedCell = tableView.cellForRow(at: indexPathForCurrentSelectedCell)
+        deselectedCell?.contentView.backgroundColor = .gray300
+      } else {
+        return
+      }
+    }
+
+    let cell = tableView.cellForRow(at: indexPath)
+    cell?.contentView.backgroundColor = .staticWhite
+    indexPathForCurrentSelectedCell = indexPath
+  }
+}

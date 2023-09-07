@@ -258,7 +258,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerMasterBuilder(container: Container) {
     container.register(MasterBuildable.self) { r in
-      MasterBuilder(dependency: .init())
+      MasterBuilder(dependency: .init(
+        folderRepository: r.resolve()
+      ))
     }
   }
 }

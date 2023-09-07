@@ -5,13 +5,15 @@
 //  Created by 박천송 on 2023/08/28.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
 
-struct MasterDependency {}
+struct MasterDependency {
+  let folderRepository: FolderRepository
+}
 
 final class MasterBuilder: MasterBuildable {
 
@@ -22,7 +24,10 @@ final class MasterBuilder: MasterBuildable {
   }
 
   func build(payload: MasterPayload) -> UIViewController {
-    let reactor = MasterViewReactor()
+    let reactor = MasterViewReactor(
+      fetchFolderListUseCase: FetchFolderListUseCaseImpl(folderRepository: dependency.folderRepository),
+      getFodlerListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository)
+    )
 
     let viewController = MasterViewController(
       reactor: reactor
