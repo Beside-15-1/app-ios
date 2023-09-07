@@ -99,16 +99,48 @@ final class MasterViewController: UIViewController, StoryboardView {
 }
 
 
+// MARK: - Private
+
+extension MasterViewController {
+
+  private func delegateAction(withViewModel viewModel: MasterTabCell.ViewModel) {
+    if let tab = viewModel.tabViewType {
+      switch tab {
+      case .home:
+        delegate?.masterHomeTapped()
+      case .folder:
+        delegate?.masterFolderTapped()
+      case .mypage:
+        delegate?.masterMyPageTapped()
+      }
+    }
+
+    if let folder = viewModel.folderViewModel {
+      delegate?.masterFolderTapped(id: folder.id)
+    }
+
+    if viewModel.isMakeButton {
+      delegate?.masterMakeFolderButtonTapped()
+    }
+  }
+}
+
+
 // MARK: - TableViewDelegate
 
 extension MasterViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard let viewModel = reactor?.currentState.viewModel?.items[indexPath.row] else {
+      return
+    }
+
     if let indexPathForCurrentSelectedCell {
 
       if reactor?.currentState.viewModel?.items[indexPath.row].isMakeButton == false {
         let deselectedCell = tableView.cellForRow(at: indexPathForCurrentSelectedCell)
         deselectedCell?.contentView.backgroundColor = .gray300
       } else {
+        delegateAction(withViewModel: viewModel)
         return
       }
     }
@@ -116,5 +148,7 @@ extension MasterViewController: UITableViewDelegate {
     let cell = tableView.cellForRow(at: indexPath)
     cell?.contentView.backgroundColor = .staticWhite
     indexPathForCurrentSelectedCell = indexPath
+
+    delegateAction(withViewModel: viewModel)
   }
 }

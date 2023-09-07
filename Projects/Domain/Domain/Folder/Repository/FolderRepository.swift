@@ -8,11 +8,14 @@
 import Foundation
 
 import RxSwift
+import RxRelay
 
 public protocol FolderRepository {
   func fetchFolderList(sort: String) -> Single<FolderList>
 
   func getFolderList() -> FolderList
+
+  func bindFolderList() -> BehaviorRelay<FolderList>
 
   func createFolder(
     backgroundColor: String,

@@ -49,7 +49,9 @@ public final class PresentationAssembly: Assembly {
       SplitBuilder(dependency: .init(
         masterBuilder: r.resolve(),
         mainTabBuilder: r.resolve(),
-        loginBuilder: r.resolve()
+        loginBuilder: r.resolve(),
+        folderDetailBuilder: r.resolve(),
+        folderRepository: r.resolve()
       ))
     }
   }

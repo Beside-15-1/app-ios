@@ -186,6 +186,17 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       self.contentView.myFolderListView.configureDisplayMode(displayMode: displayMode)
     }
   }
+
+  func createFolder() {
+    let vc = self.createFolderBuilder.build(
+      payload: .init(
+        folder: nil,
+        delegate: self
+      )
+    )
+
+    self.presentFormSheet(vc)
+  }
 }
 
 

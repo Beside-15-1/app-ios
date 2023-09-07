@@ -34,6 +34,7 @@ class MasterTabCell: UITableViewCell {
 
   private let makeFolderView = MasterTabCellMakeFolderView().then {
     $0.isHidden = true
+    $0.isUserInteractionEnabled = false
   }
 
 

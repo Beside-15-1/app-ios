@@ -11,4 +11,6 @@ public protocol MasterDelegate: AnyObject {
   func masterHomeTapped()
   func masterFolderTapped()
   func masterMyPageTapped()
+  func masterFolderTapped(id: String)
+  func masterMakeFolderButtonTapped()
 }

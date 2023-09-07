@@ -26,7 +26,8 @@ final class MasterBuilder: MasterBuildable {
   func build(payload: MasterPayload) -> UIViewController {
     let reactor = MasterViewReactor(
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(folderRepository: dependency.folderRepository),
-      getFodlerListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository)
+      getFodlerListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository),
+      bindFolderListUseCase: BindFolderListUseCaseImpl(folderRepository: dependency.folderRepository)
     )
 
     let viewController = MasterViewController(

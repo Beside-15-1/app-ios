@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import Domain
 import PresentationInterface
 
 final class SplitViewController: UISplitViewController {
@@ -19,6 +20,8 @@ final class SplitViewController: UISplitViewController {
 
   var disposeBag = DisposeBag()
 
+  private var folderDetailBuilder: FolderDetailBuildable?
+  private var folderRepository: FolderRepository?
 
   // MARK: Initializing
 
@@ -27,12 +30,16 @@ final class SplitViewController: UISplitViewController {
     masterBuilder: MasterBuildable,
     mainTabBuilder: MainTabBarBuildable,
     loginBuilder: LoginBuildable,
+    folderDetailBuilder: FolderDetailBuildable,
+    folderRepository: FolderRepository,
     isLogin: Bool
   ) {
     super.init(style: style)
 
     let masterViewController = masterBuilder.build(payload: .init(delegate: self))
     let detailViewController: UIViewController
+    self.folderDetailBuilder = folderDetailBuilder
+    self.folderRepository = folderRepository
 
     if isLogin {
       detailViewController = mainTabBuilder.build(payload: .init())
@@ -114,6 +121,42 @@ extension UISplitViewController {
 
 
 extension SplitViewController: MasterDelegate {
+  func masterFolderTapped(id: String) {
+    guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    if let _ = mainTab.selectedViewController as? MyFolderViewController {
+    } else {
+      mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)
+      mainTab.selectedIndex = 1
+    }
+
+    let folders = folderRepository?.getFolderList() ?? .init(folders: [], totalLinkCount: 0)
+
+    let folderDetail = folderDetailBuilder?.build(
+      payload: .init(
+        folderList: folders.folders,
+        selectedFolder: folders.folders.first(where: { $0.id == id }) ?? .all(count: folders.totalLinkCount)
+      )
+    ) ?? UIViewController()
+
+    if let folder = mainTab.selectedViewController?.navigationController?.topViewController
+        as? FolderDetailViewController {
+      folder.selectTab(tab: folders.folders.first(where: { $0.id == id })?.title ?? Folder.all().title)
+    } else {
+      mainTab.selectedViewController?.navigationController?.pushViewController(folderDetail, animated: true)
+    }
+  }
+
+  func masterMakeFolderButtonTapped() {
+    guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
+    let selectedVC = mainTab.selectedViewController
+    mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)
+    mainTab.selectedIndex = 1
+
+    if let folder = selectedVC as? MyFolderViewController {
+      folder.createFolder()
+    }
+  }
+
   func masterHomeTapped() {
     guard let mainTab = getRootViewController(svc: self) as? MainTabBarViewController else { return }
     mainTab.selectedViewController?.navigationController?.popToRootViewController(animated: false)

@@ -6,6 +6,7 @@
 
 import Foundation
 import LinkPresentation
+import RxRelay
 import RxSwift
 import SwiftSoup
 @testable import Domain

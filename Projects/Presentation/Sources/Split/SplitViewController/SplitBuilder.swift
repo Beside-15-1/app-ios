@@ -15,6 +15,8 @@ struct SplitDependency {
   let masterBuilder: MasterBuildable
   let mainTabBuilder: MainTabBarBuildable
   let loginBuilder: LoginBuildable
+  let folderDetailBuilder: FolderDetailBuildable
+  let folderRepository: FolderRepository
 }
 
 final class SplitBuilder: SplitBuildable {
@@ -32,6 +34,8 @@ final class SplitBuilder: SplitBuildable {
       masterBuilder: dependency.masterBuilder,
       mainTabBuilder: dependency.mainTabBuilder,
       loginBuilder: dependency.loginBuilder,
+      folderDetailBuilder: dependency.folderDetailBuilder,
+      folderRepository: dependency.folderRepository,
       isLogin: payload.isLogin
     )
 

@@ -131,7 +131,7 @@ extension ManageTagViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
-      NSAttributedString.Key.font: UIFont.defaultRegular,
+      NSAttributedString.Key.font: UIFont.titleBold,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }

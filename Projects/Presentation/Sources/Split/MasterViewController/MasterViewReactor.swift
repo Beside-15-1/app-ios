@@ -18,6 +18,7 @@ final class MasterViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewModelRefresed(MasterSectionViewModel)
     case firstAPICallEnded
   }
 
@@ -41,17 +42,20 @@ final class MasterViewReactor: Reactor {
 
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let getFolderListUseCase: GetFolderListUseCase
+  private let bindFolderListUseCase: BindFolderListUseCase
 
 
   // MARK: initializing
 
   init(
     fetchFolderListUseCase: FetchFolderListUseCase,
-    getFodlerListUseCase: GetFolderListUseCase
+    getFodlerListUseCase: GetFolderListUseCase,
+    bindFolderListUseCase: BindFolderListUseCase
   ) {
     defer { _ = self.state }
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.getFolderListUseCase = getFodlerListUseCase
+    self.bindFolderListUseCase = bindFolderListUseCase
     self.initialState = State()
   }
 
@@ -65,10 +69,15 @@ final class MasterViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return fetchFolderListAndMakeViewModel()
+      bindFolderList()
+      return .empty()
+//      return fetchFolderListAndMakeViewModel()
 
     case .firstAPICallEnded:
       return .just(Mutation.setFirstAPICall)
+
+    case .viewModelRefresed(let viewModel):
+      return .just(Mutation.setViewModel(viewModel))
     }
   }
 
@@ -108,7 +117,7 @@ extension MasterViewReactor {
           .init(tabViewType: .mypage, folderViewModel: nil, isMakeButton: false),
         ])
 
-        let folderViewModels = folders.folders.map {
+        var folderViewModels = folders.folders.map {
           let folderViewModel = MasterTabCellFolderView.ViewModel(
             id: $0.id,
             color: $0.backgroundColor,
@@ -118,6 +127,19 @@ extension MasterViewReactor {
           return MasterTabCell.ViewModel(tabViewType: nil, folderViewModel: folderViewModel, isMakeButton: false)
         }
 
+        folderViewModels.insert(
+          .init(
+            tabViewType: nil,
+            folderViewModel: .init(
+              id: Folder.all().id,
+              color: Folder.all().backgroundColor,
+              title: Folder.all().title
+            ),
+            isMakeButton: false
+          ),
+          at: 0
+        )
+
         viewModel.items.insert(contentsOf: folderViewModels, at: 2)
 
         return .concat([
@@ -125,5 +147,45 @@ extension MasterViewReactor {
           .just(Mutation.setViewModel(viewModel)),
         ])
       }
+  }
+
+  private func bindFolderList() {
+    bindFolderListUseCase.execute()
+      .subscribe(with: self) { `self`, folders in
+        var viewModel = MasterSectionViewModel(section: .normal, items: [
+          .init(tabViewType: .home, folderViewModel: nil, isMakeButton: false),
+          .init(tabViewType: .folder, folderViewModel: nil, isMakeButton: false),
+          .init(tabViewType: nil, folderViewModel: nil, isMakeButton: true),
+          .init(tabViewType: .mypage, folderViewModel: nil, isMakeButton: false),
+        ])
+
+        var folderViewModels = folders.folders.map {
+          let folderViewModel = MasterTabCellFolderView.ViewModel(
+            id: $0.id,
+            color: $0.backgroundColor,
+            title: $0.title
+          )
+
+          return MasterTabCell.ViewModel(tabViewType: nil, folderViewModel: folderViewModel, isMakeButton: false)
+        }
+
+        folderViewModels.insert(
+          .init(
+            tabViewType: nil,
+            folderViewModel: .init(
+              id: Folder.all().id,
+              color: Folder.all().backgroundColor,
+              title: Folder.all().title
+            ),
+            isMakeButton: false
+          ),
+          at: 0
+        )
+
+        viewModel.items.insert(contentsOf: folderViewModels, at: 2)
+
+        self.action.onNext(.viewModelRefresed(viewModel))
+      }
+      .disposed(by: disposeBag)
   }
 }

@@ -193,6 +193,10 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
   }
+
+  func selectTab(tab: String) {
+    reactor?.action.onNext(.selectTab(tab))
+  }
 }
 
 
@@ -214,7 +218,7 @@ extension FolderDetailViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.white,
-      NSAttributedString.Key.font: UIFont.defaultRegular,
+      NSAttributedString.Key.font: UIFont.titleBold,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }

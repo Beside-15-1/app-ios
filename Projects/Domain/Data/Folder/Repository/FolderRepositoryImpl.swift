@@ -8,6 +8,7 @@
 import Foundation
 
 import RxSwift
+import RxRelay
 
 import Domain
 import PBNetworking
@@ -16,14 +17,18 @@ class FolderRepositoryImpl: FolderRepository {
 
   private let networking: PBNetworking<FolderAPI>
 
-  private var folderList: FolderList = FolderList(folders: [], totalLinkCount: 0)
+  private var folderListBehaviorRelay = BehaviorRelay<FolderList>(value: .init(folders: [], totalLinkCount: 0))
 
   init(networking: PBNetworking<FolderAPI>) {
     self.networking = networking
   }
 
   func getFolderList() -> FolderList {
-    return folderList
+    return folderListBehaviorRelay.value
+  }
+
+  func bindFolderList() -> BehaviorRelay<FolderList> {
+    return folderListBehaviorRelay
   }
 
   func createFolder(
@@ -51,7 +56,7 @@ class FolderRepositoryImpl: FolderRepository {
     return networking.request(target: target)
       .map(FolderListResponse.self)
       .map { [weak self] folderList in
-        self?.folderList = folderList.toDomain()
+        self?.folderListBehaviorRelay.accept(folderList.toDomain())
         return folderList.toDomain()
       }
   }
