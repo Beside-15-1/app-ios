@@ -67,7 +67,7 @@ final class LinkDetailView: UIView {
     folderTitleLabel.attributedText = link.folderName.styled(font: .captionRegular, color: .gray600)
 
     if let thumbnailURL = link.thumbnailURL, !thumbnailURL.isEmpty {
-      thumbnail.sd_setImage(with: URL(string: thumbnailURL))
+      thumbnail.sd_setImage(with: URL(string: thumbnailURL), placeholderImage: DesignSystemAsset.homeLinkEmptyImage.image)
     } else {
       thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
     }

@@ -92,7 +92,7 @@ class HomeLinkCell: UICollectionViewCell {
     }
 
     if let imageURL = viewModel.imageURL, !imageURL.isEmpty {
-      imageView.sd_setImage(with: URL(string: imageURL))
+      imageView.sd_setImage(with: URL(string: imageURL), placeholderImage: DesignSystemAsset.homeLinkEmptyImage.image)
     } else {
       imageView.image = DesignSystemAsset.homeLinkEmptyImage.image
     }

@@ -125,7 +125,10 @@ class FolderDetailCell: UICollectionViewCell {
     }
 
     if let thumbnailURL = viewModel.thumbnailURL, !thumbnailURL.isEmpty {
-      thumbnail.sd_setImage(with: URL(string: thumbnailURL), placeholderImage: UIImage().withTintColor(.gray300))
+      thumbnail.sd_setImage(
+        with: URL(string: thumbnailURL),
+        placeholderImage: DesignSystemAsset.homeLinkEmptyImage.image
+      )
     } else {
       thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
     }
