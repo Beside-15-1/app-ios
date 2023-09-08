@@ -89,8 +89,8 @@ final class HomeViewController: UIViewController, StoryboardView {
           delegate: self,
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -100,8 +100,8 @@ final class HomeViewController: UIViewController, StoryboardView {
           delegate: self,
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -122,13 +122,16 @@ final class HomeViewController: UIViewController, StoryboardView {
             selectedFolder: .all()
           )
         )
+        self.navigationController?.pushViewController(
+          folderDetail, animated: true
+        )
+      }
+      .disposed(by: disposeBag)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-          self.tabBarController?.selectedViewController?
-            .navigationController?.pushViewController(
-              folderDetail, animated: true
-            )
-        }
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
       }
       .disposed(by: disposeBag)
   }
@@ -150,6 +153,14 @@ final class HomeViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
   }
+
+
+  // MARK: Configuring
+
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    guard displayMode == .secondaryOnly else { return }
+    contentView.navigationBar.masterDetailButton.isHidden = false
+  }
 }
 
 
@@ -162,15 +173,9 @@ extension HomeViewController: HomeFolderViewDelegate {
         folder: nil,
         delegate: self
       )
-    ).then {
-      if UIDevice.current.userInterfaceIdiom == .pad {
-        $0.modalPresentationStyle = .overFullScreen
-      } else {
-        $0.modalPresentationStyle = .popover
-      }
-    }
+    )
 
-    present(vc, animated: true)
+    presentPaperSheet(vc)
   }
 
   func homeFolderView(didSelectItemAt row: Int) {

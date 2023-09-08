@@ -60,6 +60,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -112,11 +114,9 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
             delegate: self,
             link: reactor.currentState.link
           )
-        ).then {
-          $0.modalPresentationStyle = .overFullScreen
-        }
+        )
 
-        self.present(createLink, animated: true)
+        self.presentPaperSheet(createLink)
       }
       .disposed(by: disposeBag)
 
@@ -129,7 +129,16 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(moveFolder)
+        self.presentModal(
+          moveFolder,
+          preferredContentSize: .init(width: 450, height: 333),
+          arrowDirection: .down,
+          sourceView: self.contentView.bottomView.moveButton,
+          sourceRect: .init(
+            origin: .init(x: self.contentView.bottomView.moveButton.frame.width / 2, y: 0),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
 
@@ -188,7 +197,7 @@ extension LinkDetailViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
-      NSAttributedString.Key.font: UIFont.defaultRegular,
+      NSAttributedString.Key.font: UIFont.titleBold,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }
@@ -204,10 +213,19 @@ extension LinkDetailViewController {
       return
     }
 
-    let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
 
-    activityViewController.excludedActivityTypes = []
-    present(activityViewController, animated: true, completion: nil)
+      if let popover = activityViewController.popoverPresentationController {
+        popover.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityViewController, animated: true)
+      }
+    } else {
+      let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+
+      activityViewController.excludedActivityTypes = []
+      present(activityViewController, animated: true, completion: nil)
+    }
   }
 }
 

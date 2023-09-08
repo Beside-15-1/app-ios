@@ -50,6 +50,9 @@ final class LoginViewController: UIViewController {
     super.viewDidLoad()
     navigationController?.delegate = self
     navigationController?.isNavigationBarHidden = true
+
+    splitViewController?.preferredDisplayMode = .secondaryOnly
+
     bind(with: viewModel)
   }
 
@@ -85,6 +88,7 @@ final class LoginViewController: UIViewController {
         let mainTab = self.mainTabBuilder.build(payload: .init())
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
         self.navigationController?.setViewControllers([mainTab], animated: true)
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
         self.transition = nil
       }
       .disposed(by: disposeBag)
@@ -97,7 +101,7 @@ final class LoginViewController: UIViewController {
         ))
           as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(termsOfUse)
+        self.presentPanModalInIpad(termsOfUse)
       }
       .disposed(by: disposeBag)
 

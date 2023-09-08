@@ -54,6 +54,8 @@ final class ManageTagViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    navigationController?.interactivePopGestureRecognizer?.delegate = nil
+
     bind(reactor: reactor)
   }
 
@@ -129,7 +131,7 @@ extension ManageTagViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
-      NSAttributedString.Key.font: UIFont.defaultRegular,
+      NSAttributedString.Key.font: UIFont.titleBold,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }

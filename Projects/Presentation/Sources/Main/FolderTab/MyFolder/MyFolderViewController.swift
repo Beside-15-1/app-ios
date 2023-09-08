@@ -32,6 +32,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private let folderDetailBuilder: FolderDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
 
+  private let orientationController = OrientationController()
+
 
   // MARK: Initializing
 
@@ -70,6 +72,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
     reactor?.action.onNext(.viewDidLoad)
+
+    orientationController.register(delegate: self)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -90,7 +94,6 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   private func bindContent(with reactor: MyFolderViewReactor) {
     reactor.state.compactMap(\.folderViewModel)
-      .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.myFolderListView.applyCollectionViewDataSource(by: viewModel)
@@ -98,7 +101,6 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
 
     reactor.state.map(\.folderSortType)
-      .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, type in
         self.contentView.myFolderListView.sortButton.text = type.rawValue
@@ -123,15 +125,9 @@ final class MyFolderViewController: UIViewController, StoryboardView {
             folder: nil,
             delegate: self
           )
-        ).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        )
 
-        self.present(vc, animated: true)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -144,7 +140,19 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(vc)
+        self.presentModal(
+          vc,
+          preferredContentSize: .init(width: 375, height: 252 - self.view.safeAreaInsets.bottom),
+          arrowDirection: .up,
+          sourceView: self.contentView.myFolderListView.sortButton,
+          sourceRect: .init(
+            origin: .init(
+              x: self.contentView.myFolderListView.sortButton.frame.width / 2,
+              y: self.contentView.myFolderListView.sortButton.frame.height
+            ),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
 
@@ -154,10 +162,40 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           delegate: self,
           link: nil
         ))
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
+
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
+      }
+      .disposed(by: disposeBag)
+  }
+
+  // MARK: Configuring
+
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    DispatchQueue.main.async {
+      if displayMode == .secondaryOnly {
+        self.contentView.navigationBar.masterDetailButton.isHidden = false
+      }
+
+      self.contentView.myFolderListView.configureDisplayMode(displayMode: displayMode)
+    }
+  }
+
+  func createFolder() {
+    let vc = self.createFolderBuilder.build(
+      payload: .init(
+        folder: nil,
+        delegate: self
+      )
+    )
+
+    self.presentPaperSheet(vc)
   }
 }
 
@@ -176,16 +214,44 @@ extension MyFolderViewController: CreateFolderDelegate {
 extension MyFolderViewController: MyFolderCollectionViewDelegate {
   func collectionViewEditButtonTapped(id: String) {
     guard let reactor,
-          let folder = reactor.currentState.folderList.first(where: { $0.id == id })
+          let folder = reactor.currentState.folderList.first(where: { $0.id == id }),
+          let index = reactor.currentState.folderList.firstIndex(of: folder)
     else { return }
 
     guard let vc = editFolderBuilder.build(payload: .init(
       delegate: self,
       folder: folder
-    ))
-      as? PanModalPresentable.LayoutType else { return }
+    )) as? PanModalPresentable.LayoutType else { return }
 
-    presentPanModal(vc)
+    guard let selectedCell = contentView.myFolderListView.collectionView
+      .cellForItem(at: IndexPath(item: index, section: 0)) as? MyFolderCell
+    else {
+      presentModal(
+        vc,
+        preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+        arrowDirection: .any,
+        sourceView: contentView.myFolderListView.sortButton,
+        sourceRect: .init(
+          origin: .init(
+            x: contentView.myFolderListView.sortButton.frame.width / 2,
+            y: contentView.myFolderListView.sortButton.frame.height
+          ),
+          size: .zero
+        )
+      )
+      return
+    }
+
+    presentModal(
+      vc,
+      preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+      arrowDirection: .down,
+      sourceView: selectedCell.moreButton,
+      sourceRect: .init(
+        origin: .init(x: 16, y: 0),
+        size: .zero
+      )
+    )
   }
 
   func collectionViewItemDidTapped(at row: Int) {
@@ -210,15 +276,9 @@ extension MyFolderViewController: EditFolderDelegate {
         folder: folder,
         delegate: self
       )
-    ).then {
-      if UIDevice.current.userInterfaceIdiom == .pad {
-        $0.modalPresentationStyle = .overFullScreen
-      } else {
-        $0.modalPresentationStyle = .popover
-      }
-    }
+    )
 
-    present(vc, animated: true)
+    presentPaperSheet(vc)
   }
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {
@@ -248,5 +308,16 @@ extension MyFolderViewController: FolderSortDelegate {
 extension MyFolderViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+// MARK: - OrientationController
+
+extension MyFolderViewController: OrientationDelegate {
+  func didChangeOrientation(orientation: UIDeviceOrientation) {
+    DispatchQueue.main.async {
+      self.contentView.myFolderListView.configureOrientation(orientation: orientation)
+    }
   }
 }

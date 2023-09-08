@@ -61,6 +61,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    navigationController?.interactivePopGestureRecognizer?.delegate = nil
+
     reactor?.action.onNext(.viewDidLoad)
   }
 
@@ -160,7 +162,19 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           )
         ) as? PanModalPresentable.LayoutType else { return }
 
-        self.presentPanModal(vc)
+        self.presentModal(
+          vc,
+          preferredContentSize: .init(width: 375, height: 252 - self.view.safeAreaInsets.bottom),
+          arrowDirection: .up,
+          sourceView: self.contentView.listView.sortButton,
+          sourceRect: .init(
+            origin: .init(
+              x: self.contentView.listView.sortButton.frame.width / 2,
+              y: self.contentView.listView.sortButton.frame.height
+            ),
+            size: .zero
+          )
+        )
       }
       .disposed(by: disposeBag)
   }
@@ -178,6 +192,10 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.configureEmptyLabel(viewModel: viewModel)
       }
       .disposed(by: disposeBag)
+  }
+
+  func selectTab(tab: String) {
+    reactor?.action.onNext(.selectTab(tab))
   }
 }
 
@@ -200,7 +218,7 @@ extension FolderDetailViewController {
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.white,
-      NSAttributedString.Key.font: UIFont.defaultRegular,
+      NSAttributedString.Key.font: UIFont.titleBold,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }
@@ -238,6 +256,10 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
 
     let linkDetail = linkDetailBuilder.build(payload: .init(link: link))
 
-    navigationController?.pushViewController(linkDetail, animated: true)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      self.presentPaperSheet(linkDetail)
+    } else {
+      navigationController?.pushViewController(linkDetail, animated: true)
+    }
   }
 }

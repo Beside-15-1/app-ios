@@ -121,11 +121,10 @@ final class ShareViewController: UIViewController, StoryboardView {
             folders: reactor.currentState.folderList, selectedFolder: reactor.currentState.folderList.first
           )
         ).then {
-          $0.modalPresentationStyle = .popover
           $0.delegate = self
         }
 
-        self.present(vc, animated: true)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -152,7 +151,7 @@ final class ShareViewController: UIViewController, StoryboardView {
           $0.delegate = self
         }
 
-        self.present(vc, animated: true)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
   }

@@ -4,6 +4,7 @@ import PanModal
 import RxCocoa
 import RxSwift
 
+import DesignSystem
 import PresentationInterface
 
 // MARK: - TermsOfUseViewController
@@ -107,15 +108,9 @@ final class TermsOfUseViewController: UIViewController {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
 
@@ -125,15 +120,9 @@ final class TermsOfUseViewController: UIViewController {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
   }

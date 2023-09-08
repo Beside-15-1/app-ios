@@ -27,7 +27,7 @@ let project = Project(
       platform: .iOS,
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
@@ -40,7 +40,7 @@ let project = Project(
       platform: .iOS,
       product: .unitTests,
       bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone]),
+      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
       infoPlist: .default,
       sources: "Tests/**",
       dependencies: [

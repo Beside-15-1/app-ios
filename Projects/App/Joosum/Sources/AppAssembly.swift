@@ -29,23 +29,18 @@ enum AppAssembly {
       DataAssembly(),
       PresentationAssembly(),
       PBAnalyticsAssembly(),
-      PBAuthAssembly()
+      PBAuthAssembly(),
     ]
 
     _ = Assembler(assemblies, container: container)
     let resolver = container
 
-    let rootViewController = UINavigationController()
     let localDataSource = resolver.resolve(PBAuthLocalDataSource.self)!
+    let isLogin = localDataSource.accessToken != nil && !(localDataSource.accessToken?.isEmpty ?? true) == true
 
-    var vc: UIViewController {
-      if let accessToken = localDataSource.accessToken, !accessToken.isEmpty {
-        return resolver.resolve(MainTabBarBuildable.self)!.build(payload: .init())
-      } else {
-        return resolver.resolve(LoginBuildable.self)!.build(payload: .init())
-      }
-    }
-    rootViewController.setViewControllers([vc], animated: false)
+    let rootViewController = resolver.resolve(SplitBuildable.self)!.build(payload: .init(
+      isLogin: isLogin
+    ))
 
     return AppDependency(
       rootViewController: rootViewController,

@@ -106,6 +106,13 @@ final class MyPageViewController: UIViewController, StoryboardView {
         UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
       }
       .disposed(by: disposeBag)
+
+    contentView.navigationBar.masterDetailButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.splitViewController?.changeDisplayMode(to: .oneBesideSecondary)
+        self.contentView.navigationBar.masterDetailButton.isHidden = true
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindRoute(with reactor: MyPageViewReactor) {
@@ -115,8 +122,10 @@ final class MyPageViewController: UIViewController, StoryboardView {
       .filter { $0 }
       .subscribe(with: self) { `self`, _ in
         let vc = self.loginBuilder.build(payload: .init())
+        self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
         self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-        self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+        let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+        navigation?.setViewControllers([vc], animated: true)
         self.transition = nil
       }
       .disposed(by: disposeBag)
@@ -144,15 +153,9 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
 
@@ -162,15 +165,9 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
-        let web = self.webBuilder.build(payload: .init(url: url)).then {
-          if UIDevice.current.userInterfaceIdiom == .pad {
-            $0.modalPresentationStyle = .overFullScreen
-          } else {
-            $0.modalPresentationStyle = .popover
-          }
-        }
+        let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.present(web, animated: true)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
 
@@ -197,6 +194,26 @@ final class MyPageViewController: UIViewController, StoryboardView {
         self.navigationController?.pushViewController(deleteAccount, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.versionButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        // 앱 미설치시 앱스토어로 연결
+        if self.contentView.versionButton.canUpdate {
+          if let openStore = URL(string: "https://apps.apple.com/kr/app/%EC%A3%BC%EC%84%AC-joosum/id6455258212"),
+             UIApplication.shared.canOpenURL(openStore) {
+            UIApplication.shared.open(openStore, options: [:], completionHandler: nil)
+          }
+        }
+      }
+      .disposed(by: disposeBag)
+  }
+
+
+  // MARK: Configuring
+
+  func configureMasterDetail(displayMode: UISplitViewController.DisplayMode) {
+    guard displayMode == .secondaryOnly else { return }
+    contentView.navigationBar.masterDetailButton.isHidden = false
   }
 }
 
@@ -219,7 +236,9 @@ extension MyPageViewController: DeleteAccountDelegate {
   func deleteAccountSuccess() {
     let vc = self.loginBuilder.build(payload: .init())
     self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-    self.tabBarController?.navigationController?.setViewControllers([vc], animated: true)
+    self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
+    let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+    navigation?.setViewControllers([vc], animated: true)
     self.transition = nil
   }
 }

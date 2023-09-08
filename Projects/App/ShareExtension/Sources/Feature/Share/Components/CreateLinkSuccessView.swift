@@ -18,15 +18,15 @@ class CreateLinkSuccessView: UIView {
   // MARK: UI
 
   let titleLabel = UILabel().then {
-    $0.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .staticBlack)
+    $0.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .black)
   }
 
   let subtitleLabel = UILabel().then {
-    $0.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .staticBlack)
+    $0.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .black)
   }
 
   let checkIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.primary400)
+    $0.image = DesignSystemAsset.iconCheckFill.image.withTintColor(UIColor(hexString: "#6B5FDE"))
   }
 
 
@@ -55,19 +55,19 @@ class CreateLinkSuccessView: UIView {
       break
 
     case .success:
-      titleLabel.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .staticBlack)
-      subtitleLabel.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconCheckInShare.image.withTintColor(.primary400)
+      titleLabel.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .black)
+      subtitleLabel.attributedText = "제목이나 폴더를 수정해서 저장해보세요.".styled(font: .bodyRegular, color: .black)
+      checkIcon.image = DesignSystemAsset.iconCheckInShare.image.withTintColor(UIColor(hexString: "#6B5FDE"))
 
     case .needLogin:
-      titleLabel.attributedText = "로그인 후 저장할 수 있어요!".styled(font: .defaultSemiBold, color: .staticBlack)
-      subtitleLabel.attributedText = "앱으로 접속하여 로그인 후 사용해보세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconPersonInShare.image.withTintColor(.primary400)
+      titleLabel.attributedText = "로그인 후 저장할 수 있어요!".styled(font: .defaultSemiBold, color: .black)
+      subtitleLabel.attributedText = "앱으로 접속하여 로그인 후 사용해보세요.".styled(font: .bodyRegular, color: .black)
+      checkIcon.image = DesignSystemAsset.iconPersonInShare.image.withTintColor(UIColor(hexString: "#6B5FDE"))
 
     case .failure:
-      titleLabel.attributedText = "네트워크 에러.".styled(font: .defaultSemiBold, color: .staticBlack)
-      subtitleLabel.attributedText = "연결 확인 후 다시 시도해주세요.".styled(font: .bodyRegular, color: .staticBlack)
-      checkIcon.image = DesignSystemAsset.iconWifiInShare.image.withTintColor(.primary400)
+      titleLabel.attributedText = "네트워크 에러.".styled(font: .defaultSemiBold, color: .black)
+      subtitleLabel.attributedText = "연결 확인 후 다시 시도해주세요.".styled(font: .bodyRegular, color: .black)
+      checkIcon.image = DesignSystemAsset.iconWifiInShare.image.withTintColor(UIColor(hexString: "#6B5FDE"))
     }
   }
 

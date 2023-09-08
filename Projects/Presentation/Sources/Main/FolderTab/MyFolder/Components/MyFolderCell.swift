@@ -92,9 +92,10 @@ class MyFolderCell: UICollectionViewCell {
   func configure(viewModel: ViewModel) {
     folderCover.backgroundColor = UIColor(hexString: viewModel.coverColor)
 
+    let titleFont = UIDevice.current.userInterfaceIdiom == .pad ? UIFont.subTitleSemiBold : UIFont.bodyBold
     folderTitle.do {
       $0.attributedText = viewModel.title.styled(
-        font: .bodyBold,
+        font: titleFont,
         color: UIColor(hexString: viewModel.titleColor)
       )
     }
@@ -157,7 +158,11 @@ class MyFolderCell: UICollectionViewCell {
     }
 
     illust.snp.makeConstraints {
-      $0.size.equalTo(72.0)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.size.equalTo(88.0)
+      } else {
+        $0.size.equalTo(72.0)
+      }
       $0.right.bottom.equalTo(folderCover).inset(8.0)
     }
 

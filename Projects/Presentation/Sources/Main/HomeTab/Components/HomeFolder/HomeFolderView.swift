@@ -82,6 +82,14 @@ class HomeFolderView: UIView {
   }
 
   private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      return ipadCollectionViewLayout()
+    }
+
+     return iphoneCollectionViewLayout()
+  }
+
+  private func iphoneCollectionViewLayout() -> UICollectionViewCompositionalLayout {
     let item = NSCollectionLayoutItem(
       layoutSize: .init(
         widthDimension: .absolute(106.0),
@@ -92,6 +100,39 @@ class HomeFolderView: UIView {
     let groupSize = NSCollectionLayoutSize(
       widthDimension: .absolute(106.0),
       heightDimension: .absolute(142.0)
+    )
+
+    let group = NSCollectionLayoutGroup.horizontal(
+      layoutSize: groupSize,
+      subitem: item,
+      count: 1
+    )
+
+    let section = NSCollectionLayoutSection(group: group).then {
+      $0.interGroupSpacing = 16.0
+    }
+
+    let configuration = UICollectionViewCompositionalLayoutConfiguration().then {
+      $0.scrollDirection = .horizontal
+    }
+
+    return UICollectionViewCompositionalLayout(
+      section: section,
+      configuration: configuration
+    )
+  }
+
+  private func ipadCollectionViewLayout() -> UICollectionViewCompositionalLayout {
+    let item = NSCollectionLayoutItem(
+      layoutSize: .init(
+        widthDimension: .absolute(132.0),
+        heightDimension: .absolute(177.0)
+      )
+    )
+
+    let groupSize = NSCollectionLayoutSize(
+      widthDimension: .absolute(132.0),
+      heightDimension: .absolute(177.0)
     )
 
     let group = NSCollectionLayoutGroup.horizontal(
@@ -151,7 +192,12 @@ class HomeFolderView: UIView {
       $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
       $0.left.right.equalToSuperview()
       $0.bottom.equalToSuperview().inset(8.0)
-      $0.height.equalTo(147)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.height.equalTo(180.0)
+      } else {
+        $0.height.equalTo(147.0)
+      }
+
     }
   }
 

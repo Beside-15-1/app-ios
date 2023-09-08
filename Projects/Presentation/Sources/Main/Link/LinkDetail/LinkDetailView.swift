@@ -67,7 +67,7 @@ final class LinkDetailView: UIView {
     folderTitleLabel.attributedText = link.folderName.styled(font: .captionRegular, color: .gray600)
 
     if let thumbnailURL = link.thumbnailURL, !thumbnailURL.isEmpty {
-      thumbnail.sd_setImage(with: URL(string: thumbnailURL))
+      thumbnail.sd_setImage(with: URL(string: thumbnailURL), placeholderImage: DesignSystemAsset.homeLinkEmptyImage.image)
     } else {
       thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
     }
@@ -130,6 +130,8 @@ final class LinkDetailView: UIView {
 
     urlIcon.snp.makeConstraints {
       $0.left.bottom.equalToSuperview()
+      $0.width.equalTo(18.65)
+      $0.height.equalTo(13)
     }
 
     urlLabel.snp.makeConstraints {

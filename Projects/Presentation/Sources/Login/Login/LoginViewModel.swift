@@ -61,13 +61,13 @@ final class LoginViewModel: LoginViewModelOutput {
 
 extension LoginViewModel: LoginViewModelInput {
   func googleLoginButtonTapped() {
-    analytics.log(type: LoginEvent.clickGoogleLogin)
+    analytics.log(type: LoginEvent.click(component: "google"))
 
     loginManager.login(with: .google)
   }
 
   func appleLoginButtonTapped() {
-    analytics.log(type: LoginEvent.clickAppleLogin)
+    analytics.log(type: LoginEvent.click(component: "apple"))
 
     loginManager.login(with: .apple)
   }

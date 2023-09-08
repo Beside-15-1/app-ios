@@ -62,6 +62,11 @@ class MyFolderListView: UIView {
 
   weak var delegate: MyFolderCollectionViewDelegate?
 
+  private var displayMode: UISplitViewController.DisplayMode = .oneBesideSecondary
+  private var orientation: UIDeviceOrientation = .portrait
+
+  let layoutBuilder = MyFolderLayoutBuilder()
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
@@ -90,6 +95,64 @@ class MyFolderListView: UIView {
     emptyLabel.textAlignment = .center
   }
 
+  func configureOrientation(orientation: UIDeviceOrientation) {
+    self.orientation = orientation
+
+    if orientation.isPortrait {
+      if displayMode == .secondaryOnly {
+        let layout = layoutBuilder.build(layout: .portraitWide)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+
+      if displayMode == .oneBesideSecondary {
+        let layout = layoutBuilder.build(layout: .portraitNarrow)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+    }
+
+    if orientation.isLandscape {
+      if displayMode == .secondaryOnly {
+        let layout = layoutBuilder.build(layout: .landscapeWide)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+
+      if displayMode == .oneBesideSecondary {
+        let layout = layoutBuilder.build(layout: .landscapeNarrow)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+    }
+
+    collectionView.reloadData()
+  }
+
+  func configureDisplayMode(displayMode: UISplitViewController.DisplayMode) {
+    self.displayMode = displayMode
+
+    if displayMode == .secondaryOnly {
+      if orientation.isPortrait {
+        let layout = layoutBuilder.build(layout: .portraitWide)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+
+      if orientation.isLandscape {
+        let layout = layoutBuilder.build(layout: .landscapeWide)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+    }
+
+    if displayMode == .oneBesideSecondary {
+      if orientation.isPortrait {
+        let layout = layoutBuilder.build(layout: .portraitNarrow)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+
+      if orientation.isLandscape {
+        let layout = layoutBuilder.build(layout: .landscapeNarrow)
+        collectionView.setCollectionViewLayout(layout, animated: true)
+      }
+    }
+  }
+
 
   // MARK: CollectionView
 
@@ -109,39 +172,24 @@ class MyFolderListView: UIView {
     diffableDataSource.apply(snapshot)
   }
 
-  private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
-    let item = NSCollectionLayoutItem(
-      layoutSize: .init(
-        widthDimension: .fractionalWidth(1/3),
-        heightDimension: .fractionalWidth(1.6/3)
-      )
-    )
-
-    let groupSize = NSCollectionLayoutSize(
-      widthDimension: .fractionalWidth(1),
-      heightDimension: .fractionalWidth(1.6/3)
-    )
-
-    let group = NSCollectionLayoutGroup.horizontal(
-      layoutSize: groupSize,
-      subitem: item,
-      count: 3
-    ).then {
-      $0.interItemSpacing = .fixed(8.5)
+  private func collectionViewLayout() -> UICollectionViewLayout {
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      if UIDevice.current.orientation.isPortrait || UIDevice.current.orientation == .unknown {
+        if displayMode == .secondaryOnly {
+          return layoutBuilder.build(layout: .portraitWide)
+        } else {
+          return layoutBuilder.build(layout: .portraitNarrow)
+        }
+      } else {
+        if displayMode == .secondaryOnly {
+          return layoutBuilder.build(layout: .landscapeWide)
+        } else {
+          return layoutBuilder.build(layout: .landscapeNarrow)
+        }
+      }
     }
 
-    let section = NSCollectionLayoutSection(group: group).then {
-      $0.interGroupSpacing = 12.0
-    }
-
-    let configuration = UICollectionViewCompositionalLayoutConfiguration().then {
-      $0.scrollDirection = .vertical
-    }
-
-    return UICollectionViewCompositionalLayout(
-      section: section,
-      configuration: configuration
-    )
+    return layoutBuilder.build(layout: .portraitWide)
   }
 
   private func collectionViewDiffableDataSource() -> DiffableDataSource {
