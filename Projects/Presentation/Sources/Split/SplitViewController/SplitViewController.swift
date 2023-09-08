@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import Domain
 import PresentationInterface
 
@@ -21,6 +22,7 @@ final class SplitViewController: UISplitViewController {
   var disposeBag = DisposeBag()
 
   private var folderDetailBuilder: FolderDetailBuildable?
+  private var createFolderBuilder: CreateFolderBuildable?
   private var folderRepository: FolderRepository?
 
   // MARK: Initializing
@@ -31,6 +33,7 @@ final class SplitViewController: UISplitViewController {
     mainTabBuilder: MainTabBarBuildable,
     loginBuilder: LoginBuildable,
     folderDetailBuilder: FolderDetailBuildable,
+    createFolderBuilder: CreateFolderBuildable,
     folderRepository: FolderRepository,
     isLogin: Bool
   ) {
@@ -39,6 +42,7 @@ final class SplitViewController: UISplitViewController {
     let masterViewController = masterBuilder.build(payload: .init(delegate: self))
     let detailViewController: UIViewController
     self.folderDetailBuilder = folderDetailBuilder
+    self.createFolderBuilder = createFolderBuilder
     self.folderRepository = folderRepository
 
     if isLogin {
@@ -139,7 +143,7 @@ extension SplitViewController: MasterDelegate {
     ) ?? UIViewController()
 
     if let folder = mainTab.selectedViewController?.navigationController?.topViewController
-        as? FolderDetailViewController {
+      as? FolderDetailViewController {
       folder.selectTab(tab: folders.folders.first(where: { $0.id == id })?.title ?? Folder.all().title)
     } else {
       mainTab.selectedViewController?.navigationController?.pushViewController(folderDetail, animated: true)

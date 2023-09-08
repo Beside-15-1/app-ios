@@ -90,7 +90,7 @@ final class HomeViewController: UIViewController, StoryboardView {
           link: nil
         ))
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -101,7 +101,7 @@ final class HomeViewController: UIViewController, StoryboardView {
           link: nil
         ))
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -175,7 +175,7 @@ extension HomeViewController: HomeFolderViewDelegate {
       )
     )
 
-    presentFormSheet(vc)
+    presentPaperSheet(vc)
   }
 
   func homeFolderView(didSelectItemAt row: Int) {

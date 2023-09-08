@@ -116,7 +116,7 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
           )
         )
 
-        self.presentFormSheet(createLink)
+        self.presentPaperSheet(createLink)
       }
       .disposed(by: disposeBag)
 

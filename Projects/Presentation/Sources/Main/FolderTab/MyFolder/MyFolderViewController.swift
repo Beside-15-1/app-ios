@@ -127,7 +127,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           )
         )
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -163,7 +163,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
           link: nil
         ))
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -195,7 +195,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
       )
     )
 
-    self.presentFormSheet(vc)
+    self.presentPaperSheet(vc)
   }
 }
 
@@ -278,7 +278,7 @@ extension MyFolderViewController: EditFolderDelegate {
       )
     )
 
-    presentFormSheet(vc)
+    presentPaperSheet(vc)
   }
 
   func editFolderDeleteButtonTapped(withFolder folder: Folder) {

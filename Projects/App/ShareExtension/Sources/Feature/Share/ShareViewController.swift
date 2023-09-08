@@ -124,7 +124,7 @@ final class ShareViewController: UIViewController, StoryboardView {
           $0.delegate = self
         }
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -151,7 +151,7 @@ final class ShareViewController: UIViewController, StoryboardView {
           $0.delegate = self
         }
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
   }

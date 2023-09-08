@@ -12,7 +12,7 @@ import PanModal
 
 extension UIViewController {
 
-  public func presentFormSheet(_ viewController: UIViewController) {
+  public func presentPaperSheet(_ viewController: UIViewController) {
     if UIDevice.current.userInterfaceIdiom == .pad {
       viewController.modalPresentationStyle = .pageSheet
     } else {

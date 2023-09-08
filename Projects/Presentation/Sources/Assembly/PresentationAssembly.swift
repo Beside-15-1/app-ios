@@ -51,6 +51,7 @@ public final class PresentationAssembly: Assembly {
         mainTabBuilder: r.resolve(),
         loginBuilder: r.resolve(),
         folderDetailBuilder: r.resolve(),
+        createFolderBuilder: r.resolve(),
         folderRepository: r.resolve()
       ))
     }

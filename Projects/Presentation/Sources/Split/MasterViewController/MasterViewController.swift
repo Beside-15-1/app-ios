@@ -120,6 +120,12 @@ extension MasterViewController {
     }
 
     if viewModel.isMakeButton {
+      let indexPath = IndexPath(row: 1, section: 0)
+      let currentCell = contentView.tableView.cellForRow(at: indexPathForCurrentSelectedCell ?? indexPath)
+      currentCell?.contentView.backgroundColor = .gray300
+      let folderTabCell = contentView.tableView.cellForRow(at: indexPath)
+      folderTabCell?.contentView.backgroundColor = .staticWhite
+      indexPathForCurrentSelectedCell = indexPath
       delegate?.masterMakeFolderButtonTapped()
     }
   }

@@ -256,6 +256,10 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
 
     let linkDetail = linkDetailBuilder.build(payload: .init(link: link))
 
-    navigationController?.pushViewController(linkDetail, animated: true)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      self.presentPaperSheet(linkDetail)
+    } else {
+      navigationController?.pushViewController(linkDetail, animated: true)
+    }
   }
 }

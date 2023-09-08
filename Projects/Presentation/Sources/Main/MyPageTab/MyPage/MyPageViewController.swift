@@ -155,7 +155,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
         let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.presentFormSheet(web)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
 
@@ -167,7 +167,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
         let web = self.webBuilder.build(payload: .init(url: url))
 
-        self.presentFormSheet(web)
+        self.presentPaperSheet(web)
       }
       .disposed(by: disposeBag)
 

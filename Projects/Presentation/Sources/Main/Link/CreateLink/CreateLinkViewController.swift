@@ -104,7 +104,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
         self.contentView.selectFolderView.select()
         if UIDevice.current.userInterfaceIdiom == .pad {
-          self.presentFormSheet(vc)
+          self.presentPaperSheet(vc)
         } else {
           self.presentModal(vc)
         }
@@ -122,7 +122,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           )
         )
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
@@ -133,7 +133,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
           delegate: self
         ))
 
-        self.presentFormSheet(vc)
+        self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
 
