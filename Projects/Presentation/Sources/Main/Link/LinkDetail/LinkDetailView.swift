@@ -103,7 +103,11 @@ final class LinkDetailView: UIView {
     [urlIcon, urlLabel].forEach { urlContainer.addSubview($0) }
 
     folderTitleContainer.snp.makeConstraints {
-      $0.top.equalTo(safeAreaLayoutGuide)
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.top.equalTo(safeAreaLayoutGuide).inset(20.0)
+      } else {
+        $0.top.equalTo(safeAreaLayoutGuide)
+      }
       $0.centerX.equalToSuperview()
     }
 
@@ -117,10 +121,19 @@ final class LinkDetailView: UIView {
       $0.left.equalTo(folderTitleIcon.snp.right).offset(4.0)
     }
 
-    thumbnail.snp.makeConstraints {
-      $0.top.equalTo(folderTitleLabel.snp.bottom).offset(24.0)
-      $0.left.right.equalToSuperview().inset(20.0)
-      $0.height.equalTo((UIScreen.main.bounds.width - 40) * 9.0 / 16.0)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      thumbnail.snp.makeConstraints {
+        $0.top.equalTo(folderTitleLabel.snp.bottom).offset(24.0)
+        $0.width.equalTo(440.0)
+        $0.height.equalTo(440.0 * 9.0 / 16.0)
+        $0.centerX.equalToSuperview()
+      }
+    } else {
+      thumbnail.snp.makeConstraints {
+        $0.top.equalTo(folderTitleLabel.snp.bottom).offset(24.0)
+        $0.left.right.equalToSuperview().inset(20.0)
+        $0.height.equalTo((UIScreen.main.bounds.width - 40) * 9.0 / 16.0)
+      }
     }
 
     urlContainer.snp.makeConstraints {
