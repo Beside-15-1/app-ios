@@ -245,13 +245,13 @@ extension CreateLinkViewController: UITextFieldDelegate {
 
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
         let newText = "https://\(text)"
-        reactor?.action.onNext(.fetchThumbnail(newText))
         view.endEditing(true)
+        reactor?.action.onNext(.fetchThumbnail(newText))
         return true
       }
 
-      reactor?.action.onNext(.fetchThumbnail(text))
       view.endEditing(true)
+      reactor?.action.onNext(.fetchThumbnail(text))
       return true
 
     case 2:
