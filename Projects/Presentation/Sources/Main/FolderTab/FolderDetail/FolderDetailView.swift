@@ -31,7 +31,13 @@ final class FolderDetailView: UIView {
     $0.placeHolder = "링크 제목으로 검색해보세요"
   }
 
+  let unreadFilterButton = UnreadFilterButton()
+
   let listView = FolderDetailListView()
+
+  let fab = FAB().then {
+    $0.expand()
+  }
 
 
   // MARK: Initializing
@@ -63,7 +69,7 @@ final class FolderDetailView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [safeAreaView, colorBackground, tabView, searchField, listView].forEach { addSubview($0) }
+    [safeAreaView, colorBackground, tabView, searchField, listView, unreadFilterButton].forEach { addSubview($0) }
 
     safeAreaView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
@@ -72,7 +78,12 @@ final class FolderDetailView: UIView {
 
     colorBackground.snp.makeConstraints {
       $0.left.right.top.equalTo(safeAreaLayoutGuide)
-      $0.height.equalTo(200 - 44)
+      $0.bottom.equalTo(unreadFilterButton).offset(16.0)
+    }
+
+    unreadFilterButton.snp.makeConstraints {
+      $0.top.equalTo(searchField.snp.bottom).offset(12.0)
+      $0.left.equalToSuperview().inset(20.0)
     }
 
     tabView.snp.makeConstraints {
@@ -88,6 +99,13 @@ final class FolderDetailView: UIView {
       $0.top.equalTo(colorBackground.snp.bottom)
       $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalTo(safeAreaLayoutGuide)
+    }
+
+    addSubview(fab)
+
+    fab.snp.makeConstraints {
+      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide).inset(12.0)
     }
   }
 
