@@ -24,6 +24,7 @@ final class FolderDetailViewReactor: Reactor {
     case refresh
     case readLink(String)
     case updateUnreadFiltering(Bool)
+    case createFolderSucceed
   }
 
   enum Mutation {
@@ -185,6 +186,16 @@ final class FolderDetailViewReactor: Reactor {
         updateUnreadFilter(isFiltering: isFiltering)
       ])
 
+    case .createFolderSucceed:
+      if currentState.selectedFolder.id == Folder.all().id {
+        return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
+      } else {
+        return fetchLinksInFolder(
+          id: currentState.selectedFolder.id,
+          sort: currentState.sortingType,
+          order: currentState.orderType
+        )
+      }
     }
   }
 

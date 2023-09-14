@@ -35,6 +35,10 @@ final class FolderDetailView: UIView {
 
   let listView = FolderDetailListView()
 
+  let fab = FAB().then {
+    $0.expand()
+  }
+
 
   // MARK: Initializing
 
@@ -95,6 +99,13 @@ final class FolderDetailView: UIView {
       $0.top.equalTo(colorBackground.snp.bottom)
       $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalTo(safeAreaLayoutGuide)
+    }
+
+    addSubview(fab)
+
+    fab.snp.makeConstraints {
+      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide).inset(12.0)
     }
   }
 
