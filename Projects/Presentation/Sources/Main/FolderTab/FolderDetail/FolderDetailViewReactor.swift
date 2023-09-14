@@ -291,7 +291,8 @@ extension FolderDetailViewReactor {
           url: $0.url,
           createAt: $0.createdAt,
           folderName: $0.folderName,
-          isAll: isAll
+          isAll: isAll,
+          readCount: $0.readCount
         )
       }
     )

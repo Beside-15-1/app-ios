@@ -120,13 +120,13 @@ class FolderDetailListView: UIView {
     let item = NSCollectionLayoutItem(
       layoutSize: .init(
         widthDimension: .fractionalWidth(1),
-        heightDimension: .absolute(124)
+        heightDimension: .absolute(148)
       )
     )
 
     let groupSize = NSCollectionLayoutSize(
       widthDimension: .fractionalWidth(1),
-      heightDimension: .absolute(124)
+      heightDimension: .absolute(148)
     )
 
     let group = NSCollectionLayoutGroup.vertical(
