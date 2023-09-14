@@ -23,6 +23,7 @@ final class FolderDetailViewReactor: Reactor {
     case searchLink(String)
     case refresh
     case readLink(String)
+    case updateUnreadFiltering(Bool)
   }
 
   enum Mutation {
@@ -34,6 +35,7 @@ final class FolderDetailViewReactor: Reactor {
     case setRefreshEnd
     case setLinkCount(Int)
     case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
+    case setUnreadFiltering(Bool)
   }
 
   struct State {
@@ -47,6 +49,7 @@ final class FolderDetailViewReactor: Reactor {
 
     var sortingType: LinkSortingType = .createAt
     var orderType: SortingOrderType = .desc
+    var isUnreadFiltering: Bool = false
 
     var emptyLabelText: FolderDetailListView.EmptyViewModel = .init(text: "", bold: "")
 
@@ -175,6 +178,13 @@ final class FolderDetailViewReactor: Reactor {
       return readLinkUseCase.execute(id: id)
         .asObservable()
         .flatMap { _ in Observable<Mutation>.empty() }
+
+    case .updateUnreadFiltering(let isFiltering):
+      return .concat([
+        .just(Mutation.setUnreadFiltering(isFiltering)),
+        updateUnreadFilter(isFiltering: isFiltering)
+      ])
+
     }
   }
 
@@ -205,6 +215,9 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setEmptyLabelText(let text):
       newState.emptyLabelText = text
+
+    case .setUnreadFiltering(let filtering):
+      newState.isUnreadFiltering = filtering
     }
 
     return newState
@@ -279,10 +292,45 @@ extension FolderDetailViewReactor {
     }
   }
 
-  private func makeViewModel(withLinkList linkList: [Link], isAll: Bool) -> FolderDetailSectionViewModel {
-    FolderDetailSectionViewModel(
+  private func updateUnreadFilter(isFiltering: Bool) -> Observable<Mutation> {
+    var unreadFilteredLinkList = currentState.linkList
+
+    if isFiltering {
+      unreadFilteredLinkList = currentState.linkList.filter { $0.readCount == 0 }
+    }
+
+    let viewModel = FolderDetailSectionViewModel(
       section: .normal,
-      items: linkList.map {
+      items: unreadFilteredLinkList.map {
+        .init(
+          id: $0.id,
+          title: $0.title,
+          tags: $0.tags,
+          thumbnailURL: $0.thumbnailURL,
+          url: $0.url,
+          createAt: $0.createdAt,
+          folderName: $0.folderName,
+          isAll: true,
+          readCount: $0.readCount
+        )
+      }
+    )
+
+    return .just(Mutation.setViewModel(viewModel))
+  }
+
+  private func makeViewModel(withLinkList linkList: [Link], isAll: Bool) -> FolderDetailSectionViewModel {
+    var unreadFilteredLinkList: [Link]
+
+    if currentState.isUnreadFiltering {
+      unreadFilteredLinkList = linkList.filter { $0.readCount == 0 }
+    } else {
+      unreadFilteredLinkList = linkList
+    }
+
+    return FolderDetailSectionViewModel(
+      section: .normal,
+      items: unreadFilteredLinkList.map {
         .init(
           id: $0.id,
           title: $0.title,
@@ -297,6 +345,4 @@ extension FolderDetailViewReactor {
       }
     )
   }
-
-
 }

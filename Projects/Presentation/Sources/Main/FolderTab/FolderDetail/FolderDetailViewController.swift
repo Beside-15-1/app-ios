@@ -82,6 +82,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     bindTab(with: reactor)
     bindRoute(with: reactor)
     bindTextField(with: reactor)
+    bindButton(with: reactor)
   }
 
   private func bindContent(with reactor: FolderDetailViewReactor) {
@@ -190,6 +191,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.listView.configureEmptyLabel(viewModel: viewModel)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindButton(with reactor: FolderDetailViewReactor) {
+    contentView.unreadFilterButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
       }
       .disposed(by: disposeBag)
   }
