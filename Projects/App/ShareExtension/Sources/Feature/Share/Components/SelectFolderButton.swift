@@ -23,7 +23,7 @@ final class SelectFolderButton: UIView {
   }
 
   let container = UIControl().then {
-    $0.backgroundColor = .gray200
+    $0.backgroundColor = .inputInactiveBg
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
     $0.layer.borderColor = UIColor.primary500.cgColor

@@ -115,6 +115,15 @@ extension UIColor {
       return UIColor(hexString: "#392A95")
     }
   }
+
+  public static let inputInactiveBg = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#1D1D1D")
+    } else {
+      return UIColor(hexString: "#F3F4F5")
+    }
+  }
+
   public static let modalBackgorund: UIColor = .black.withAlphaComponent(0.6)
 
   // MARK: NaviButton

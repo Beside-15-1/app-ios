@@ -25,7 +25,7 @@ final class SortListButton: UIControl {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .paperWhite
+    self.backgroundColor = .clear
     self.layer.cornerRadius = 8
     self.clipsToBounds = true
 
@@ -41,7 +41,7 @@ final class SortListButton: UIControl {
       self.backgroundColor = .gray100
       self.selectIcon.isHidden = false
     } else {
-      self.backgroundColor = .paperWhite
+      self.backgroundColor = .clear
       self.selectIcon.isHidden = true
     }
 
