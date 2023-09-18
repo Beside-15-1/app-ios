@@ -265,9 +265,11 @@ extension FolderDetailViewController: LinkSortDelegate {
 extension FolderDetailViewController: FolderDetailListViewDelegate {
   func listViewItemDidTapped(at row: Int) {
     guard let reactor,
-          let url = URL(string: reactor.currentState.linkList[row].url) else { return }
+          let id = reactor.currentState.viewModel?.items[row].id,
+          let link = reactor.currentState.linkList.first(where: { $0.id == id }),
+          let url = URL(string: link.url) else { return }
 
-    reactor.action.onNext(.readLink(reactor.currentState.linkList[row].id))
+    reactor.action.onNext(.readLink(id))
 
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
     UIApplication.shared.open(url, options: options)
