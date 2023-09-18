@@ -17,6 +17,7 @@ import PBLog
 protocol FolderDetailListViewDelegate: AnyObject {
   func listViewItemDidTapped(at row: Int)
   func listViewMoreButtonTapped(id: String)
+  func listViewDidScroll(_ scrollView: UIScrollView)
 }
 
 class FolderDetailListView: UIView {
@@ -120,13 +121,13 @@ class FolderDetailListView: UIView {
     let item = NSCollectionLayoutItem(
       layoutSize: .init(
         widthDimension: .fractionalWidth(1),
-        heightDimension: .absolute(124)
+        heightDimension: .absolute(148)
       )
     )
 
     let groupSize = NSCollectionLayoutSize(
       widthDimension: .fractionalWidth(1),
-      heightDimension: .absolute(124)
+      heightDimension: .absolute(148)
     )
 
     let group = NSCollectionLayoutGroup.vertical(
@@ -199,5 +200,9 @@ class FolderDetailListView: UIView {
 extension FolderDetailListView: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     delegate?.listViewItemDidTapped(at: indexPath.row)
+  }
+
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    delegate?.listViewDidScroll(scrollView)
   }
 }

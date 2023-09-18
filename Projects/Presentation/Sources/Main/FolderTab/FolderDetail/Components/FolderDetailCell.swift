@@ -27,6 +27,7 @@ class FolderDetailCell: UICollectionViewCell {
     let createAt: String
     let folderName: String
     let isAll: Bool
+    let readCount: Int
   }
 
   // MARK: UI
@@ -51,6 +52,17 @@ class FolderDetailCell: UICollectionViewCell {
   let underLine = UIView().then {
     $0.backgroundColor = .gray300
   }
+
+  private let folderContainer = UIView().then {
+    $0.backgroundColor = .gray200
+    $0.layer.cornerRadius = 12
+    $0.clipsToBounds = true
+  }
+
+  private let folderLabel = UILabel()
+
+  private let readCountLabel = UILabel()
+
 
   // MARK: Properties
 
@@ -116,11 +128,6 @@ class FolderDetailCell: UICollectionViewCell {
 
       caption += " | \(stringFromDate)"
 
-      // Folder
-      if viewModel.isAll {
-        caption += " | \(viewModel.folderName) "
-      }
-
       $0.attributedText = caption.styled(font: .captionRegular, color: .gray700)
     }
 
@@ -133,24 +140,33 @@ class FolderDetailCell: UICollectionViewCell {
       thumbnail.image = DesignSystemAsset.homeLinkEmptyImage.image
     }
 
+    // Folder
+    folderLabel.attributedText = viewModel.folderName
+      .styled(font: .captionSemiBold, color: .gray700)
+
+    readCountLabel.attributedText = "\(viewModel.readCount)회 읽음"
+      .styled(font: .captionRegular, color: .gray700)
   }
 
 
   // MARK: Layout
 
   private func defineLayout() {
-    [titleLabel, thumbnail, tagLabel, captionLabel, moreButton, underLine].forEach {
+    [titleLabel, thumbnail, tagLabel, captionLabel, moreButton, underLine, folderContainer, readCountLabel].forEach {
       contentView.addSubview($0)
     }
 
+    folderContainer.addSubview(folderLabel)
+
     thumbnail.snp.makeConstraints {
-      $0.size.equalTo(84)
+      $0.width.equalTo(82)
+      $0.height.equalTo(108)
       $0.left.equalToSuperview()
       $0.top.bottom.equalToSuperview().inset(20.0)
     }
 
     titleLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(20.0)
+      $0.top.equalTo(folderContainer.snp.bottom)
       $0.left.equalTo(thumbnail.snp.right).offset(12.0)
       $0.right.equalToSuperview()
     }
@@ -176,6 +192,23 @@ class FolderDetailCell: UICollectionViewCell {
     underLine.snp.makeConstraints {
       $0.left.right.bottom.equalToSuperview()
       $0.height.equalTo(1.0)
+    }
+
+    folderContainer.snp.makeConstraints {
+      $0.top.equalToSuperview().inset(20.0)
+      $0.left.equalTo(thumbnail.snp.right).offset(12.0)
+      $0.height.equalTo(24.0)
+    }
+
+    folderLabel.snp.makeConstraints {
+      $0.left.right.equalToSuperview().inset(8.0)
+      $0.centerY.equalToSuperview()
+    }
+
+    readCountLabel.snp.makeConstraints {
+      $0.left.equalTo(folderContainer.snp.right).offset(4.0)
+      $0.centerY.equalTo(folderLabel)
+      $0.right.lessThanOrEqualToSuperview()
     }
   }
 }

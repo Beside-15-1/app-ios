@@ -28,6 +28,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   private let linkSortBuilder: LinkSortBuildable
   private let linkDetailBuilder: LinkDetailBuildable
+  private let createLinkBuilder: CreateLinkBuildable
 
 
   // MARK: Initializing
@@ -35,12 +36,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   init(
     reactor: FolderDetailViewReactor,
     linkSortBuilder: LinkSortBuildable,
-    linkDetailBuilder: LinkDetailBuildable
+    linkDetailBuilder: LinkDetailBuildable,
+    createLinkBuilder: CreateLinkBuildable
   ) {
     defer { self.reactor = reactor }
 
     self.linkSortBuilder = linkSortBuilder
     self.linkDetailBuilder = linkDetailBuilder
+    self.createLinkBuilder = createLinkBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -82,6 +85,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     bindTab(with: reactor)
     bindRoute(with: reactor)
     bindTextField(with: reactor)
+    bindButton(with: reactor)
   }
 
   private func bindContent(with reactor: FolderDetailViewReactor) {
@@ -177,6 +181,17 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         )
       }
       .disposed(by: disposeBag)
+
+    contentView.fab.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let vc = self.createLinkBuilder.build(payload: .init(
+          delegate: self,
+          link: nil
+        ))
+
+        self.presentPaperSheet(vc)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: FolderDetailViewReactor) {
@@ -190,6 +205,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.listView.configureEmptyLabel(viewModel: viewModel)
+      }
+      .disposed(by: disposeBag)
+  }
+
+  private func bindButton(with reactor: FolderDetailViewReactor) {
+    contentView.unreadFilterButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
       }
       .disposed(by: disposeBag)
   }
@@ -261,5 +284,22 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
     } else {
       navigationController?.pushViewController(linkDetail, animated: true)
     }
+  }
+
+  func listViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView.contentOffset.y > 50 {
+      contentView.fab.contract()
+    } else {
+      contentView.fab.expand()
+    }
+  }
+}
+
+
+// MARK: CreateLinkDelegate
+
+extension FolderDetailViewController: CreateLinkDelegate {
+  func createLinkSucceed(link: Link) {
+    reactor?.action.onNext(.createFolderSucceed)
   }
 }

@@ -16,6 +16,7 @@ struct FolderDetailDependency {
   let folderRepository: FolderRepository
   let linkSortBuilder: LinkSortBuildable
   let linkDetailBuilder: LinkDetailBuildable
+  let createLinkBuilder: CreateLinkBuildable
 }
 
 final class FolderDetailBuilder: FolderDetailBuildable {
@@ -39,7 +40,8 @@ final class FolderDetailBuilder: FolderDetailBuildable {
     let viewController = FolderDetailViewController(
       reactor: reactor,
       linkSortBuilder: dependency.linkSortBuilder,
-      linkDetailBuilder: dependency.linkDetailBuilder
+      linkDetailBuilder: dependency.linkDetailBuilder,
+      createLinkBuilder: dependency.createLinkBuilder
     )
 
     return viewController
