@@ -82,7 +82,7 @@ final class FolderDetailView: UIView {
     }
 
     unreadFilterButton.snp.makeConstraints {
-      $0.top.equalTo(searchField.snp.bottom).offset(12.0)
+      $0.top.equalTo(searchField.snp.bottom).offset(14.0)
       $0.left.equalToSuperview().inset(20.0)
     }
 
