@@ -21,9 +21,9 @@ extension UIColor {
 
   public static let paperGray = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#2F2F2F")
+      return UIColor(hexString: "#1D1D1D")
     } else {
-      return UIColor(hexString: "#EFECFF")
+      return UIColor(hexString: "#EBECED")
     }
   }
 
@@ -37,7 +37,7 @@ extension UIColor {
 
   public static let paperAboveBg = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#2B1E7A")
+      return UIColor(hexString: "#2B254E")
     } else {
       return UIColor(hexString: "#5242BF")
     }
@@ -48,6 +48,22 @@ extension UIColor {
       return UIColor(hexString: "#909090")
     } else {
       return UIColor(hexString: "#EBECED")
+    }
+  }
+
+  public static let popupBg = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#2F2F2F")
+    } else {
+      return UIColor.white
+    }
+  }
+
+  public static let border1 = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#1D1D1D")
+    } else {
+      return UIColor(hexString: "#F3F4F5")
     }
   }
 
@@ -84,9 +100,9 @@ extension UIColor {
 
   // MARK: InputField
 
-  public static let inputContainerEditing = UIColor { (trait: UITraitCollection) -> UIColor in
+  public static let inputActiveBg = UIColor { (trait: UITraitCollection) -> UIColor in
     if trait.userInterfaceStyle == .dark {
-      return UIColor(hexString: "#221959")
+      return UIColor(hexString: "#0B081E")
     } else {
       return UIColor(hexString: "#EFECFF")
     }
@@ -100,4 +116,14 @@ extension UIColor {
     }
   }
   public static let modalBackgorund: UIColor = .black.withAlphaComponent(0.6)
+
+  // MARK: NaviButton
+
+  public static let naviBtnActive = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#A299F6")
+    } else {
+      return UIColor(hexString: "#392A95")
+    }
+  }
 }

@@ -64,7 +64,7 @@ final class SelectFolderButton: UIView {
   }
 
   func select() {
-    container.backgroundColor = .inputContainerEditing
+    container.backgroundColor = .inputActiveBg
     container.layer.borderWidth = 1
   }
 

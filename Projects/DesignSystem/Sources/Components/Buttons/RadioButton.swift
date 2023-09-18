@@ -109,7 +109,7 @@ public class RadioButton: UIControl {
       innerCircleLayer.path = innerCirclePath.cgPath
 
       if isSelected {
-        outCircleLayer.strokeColor = UIColor(hexString: "#D8D5ED").cgColor
+        outCircleLayer.strokeColor = UIColor.primarydown.cgColor
         innerCircleLayer.fillColor = UIColor.primary400.cgColor
       } else {
         outCircleLayer.strokeColor = UIColor.gray400.cgColor

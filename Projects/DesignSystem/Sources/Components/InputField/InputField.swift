@@ -257,7 +257,7 @@ public class InputField: UIView {
 
     textField.addAction(UIAction(handler: { [weak self] _ in
       self?.textField.font = .defaultSemiBold
-      self?.container.backgroundColor = .inputContainerEditing
+      self?.container.backgroundColor = .inputActiveBg
       self?.container.layer.borderWidth = 1
       self?.rightIcon.image = self?.rightIcon.image?.withTintColor(.gray600)
     }), for: .editingDidBegin)
