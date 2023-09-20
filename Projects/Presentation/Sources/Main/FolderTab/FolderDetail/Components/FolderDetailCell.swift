@@ -107,7 +107,7 @@ class FolderDetailCell: UICollectionViewCell {
         urlComponents?.path = ""
 
         // URL
-        let prefixes = ["https://", "http://"]
+        let prefixes = ["https://", "http://", "www."]
         caption = urlComponents?.host ?? ""
 
         for prefix in prefixes {
