@@ -75,11 +75,33 @@ final class HomeView: UIView {
   // MARK: Configuring
 
   func applyCollectionViewDataSource(by sectionViewModel: HomeLinkSectionViewModel) {
-    titleLabel.do {
-      let text = sectionViewModel.items.isEmpty ? "저장된 링크가 없어요\n새로운 링크를 저장해보세요" : "최근 주섬주섬 했던\n링크를 확인해보세요"
-      $0.attributedText = text.styled(font: .titleBold, color: .white)
-    }
     homeLinkView.applyCollectionViewDataSource(by: sectionViewModel)
+  }
+
+  func configureTitleWithUnreadLinkCount(linkCount: Int, unreadLinkCount: Int) {
+    if linkCount == 0 {
+      titleLabel.do {
+        $0.attributedText = "저장된 링크가 없어요\n새로운 링크를 저장해보세요"
+          .styled(font: .titleBold, color: .white)
+        $0.numberOfLines = 0
+      }
+    }
+
+    if unreadLinkCount > 0 {
+      titleLabel.do {
+        $0.attributedText = "읽지 않은 링크가\n\(unreadLinkCount)개 있어요."
+          .styled(font: .titleBold, color: .white)
+        $0.numberOfLines = 0
+      }
+    }
+
+    if unreadLinkCount == 0 {
+      titleLabel.do {
+        $0.attributedText = "최근 주섬주섬 했던\n링크를 확인해보세요"
+          .styled(font: .titleBold, color: .white)
+        $0.numberOfLines = 0
+      }
+    }
   }
 
 

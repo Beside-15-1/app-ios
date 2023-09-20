@@ -152,6 +152,14 @@ final class HomeViewController: UIViewController, StoryboardView {
         self.contentView.applyCollectionViewDataSource(by: viewModel)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.linkList)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, list in
+        let unreadCount = list.filter { $0.readCount == 0 }.count
+        self.contentView.configureTitleWithUnreadLinkCount(linkCount: list.count, unreadLinkCount: unreadCount)
+      }
+      .disposed(by: disposeBag)
   }
 
 
@@ -214,7 +222,7 @@ extension HomeViewController: CreateFolderDelegate {
 
 extension HomeViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
-    reactor?.action.onNext(.createLinkSucceed)
+    reactor?.action.onNext(.refresh)
 
     PBToast(content: "링크가 저장되었습니다")
       .show()
