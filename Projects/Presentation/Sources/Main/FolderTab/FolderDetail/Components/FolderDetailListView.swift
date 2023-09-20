@@ -84,8 +84,8 @@ class FolderDetailListView: UIView {
   // MARK: Configuring
 
   func configureTotalCount(count: Int) {
-    totalCountLabel.attributedText = "\(count)개 주섬"
-      .styled(font: .subTitleSemiBold, color: .gray800)
+//    totalCountLabel.attributedText = "\(count)개 주섬"
+//      .styled(font: .subTitleSemiBold, color: .gray800)
   }
 
   func configureEmptyLabel(viewModel: EmptyViewModel) {
@@ -115,6 +115,9 @@ class FolderDetailListView: UIView {
     snapshot.appendItems(sectionViewModel.items, toSection: sectionViewModel.section)
 
     diffableDataSource.apply(snapshot)
+
+    totalCountLabel.attributedText = "\(sectionViewModel.items.count)개 주섬"
+      .styled(font: .subTitleSemiBold, color: .gray800)
   }
 
   private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
