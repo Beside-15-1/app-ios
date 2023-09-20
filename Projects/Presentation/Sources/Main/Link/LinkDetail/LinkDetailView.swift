@@ -40,7 +40,7 @@ final class LinkDetailView: UIView {
     $0.numberOfLines = 0
   }
 
-  private let dateLabel = UILabel()
+  private let captionLabel = UILabel()
 
   private let tagView = LinkDetailTagView()
 
@@ -85,7 +85,12 @@ final class LinkDetailView: UIView {
 
     let stringFromDate = dateFormatter.string(from: date ?? Date())
 
-    dateLabel.attributedText = "\(stringFromDate)에 주섬주섬".styled(font: .captionRegular, color: .gray600)
+    if link.readCount > 0 {
+      captionLabel.attributedText = "\(stringFromDate)에 주섬주섬 | \(link.readCount)회 읽음".styled(font: .captionRegular, color: .gray600)
+    } else {
+      captionLabel.attributedText = "\(stringFromDate)에 주섬주섬 | 읽지 않음".styled(font: .captionRegular, color: .gray600)
+    }
+
 
     tagView.applyTag(by: link.tags)
   }
@@ -98,7 +103,7 @@ final class LinkDetailView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [folderTitleContainer, thumbnail, urlContainer, linkTitleLabel, dateLabel, tagView, bottomView].forEach { addSubview($0) }
+    [folderTitleContainer, thumbnail, urlContainer, linkTitleLabel, captionLabel, tagView, bottomView].forEach { addSubview($0) }
     [folderTitleIcon, folderTitleLabel].forEach { folderTitleContainer.addSubview($0) }
     [urlIcon, urlLabel].forEach { urlContainer.addSubview($0) }
 
@@ -157,13 +162,13 @@ final class LinkDetailView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    dateLabel.snp.makeConstraints {
+    captionLabel.snp.makeConstraints {
       $0.top.equalTo(linkTitleLabel.snp.bottom).offset(8.0)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
     tagView.snp.makeConstraints {
-      $0.top.equalTo(dateLabel.snp.bottom).offset(28.0)
+      $0.top.equalTo(captionLabel.snp.bottom).offset(28.0)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 

@@ -12,7 +12,7 @@ public struct Link: Hashable {
   public var linkBookId: String
   public let userId: String
 
-  public let readCount: Int
+  public var readCount: Int
   public var title: String
   public let url: String
   public let thumbnailURL: String?
