@@ -17,11 +17,14 @@ public protocol LinkDetailBuildable {
 
 public struct LinkDetailPayload {
 
+  public let delegate: LinkDetailDelegate?
   public let link: Link
 
   public init(
+    delegate: LinkDetailDelegate?,
     link: Link
   ) {
+    self.delegate = delegate
     self.link = link
   }
 }

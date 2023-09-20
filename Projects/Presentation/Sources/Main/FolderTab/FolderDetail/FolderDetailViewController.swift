@@ -279,7 +279,10 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
     guard let reactor,
           let link = reactor.currentState.linkList.first(where: { $0.id == id }) else { return }
 
-    let linkDetail = linkDetailBuilder.build(payload: .init(link: link))
+    let linkDetail = linkDetailBuilder.build(payload: .init(
+      delegate: self,
+      link: link
+    ))
 
     if UIDevice.current.userInterfaceIdiom == .pad {
       self.presentPaperSheet(linkDetail)
@@ -303,5 +306,14 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
 extension FolderDetailViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+// MARK: LinkDetailDelegate
+
+extension FolderDetailViewController: LinkDetailDelegate {
+  func linkDetailDismissed() {
+    reactor?.action.onNext(.refresh)
   }
 }
