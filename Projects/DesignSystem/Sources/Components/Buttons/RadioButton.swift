@@ -25,7 +25,7 @@ public class RadioButton: UIControl {
 
   // MARK: Properties
 
-  private var type: RadioButtonType?
+  private let type: RadioButtonType
 
   private var outCircleLayer = CAShapeLayer()
   private var innerCircleLayer = CAShapeLayer()
@@ -39,24 +39,24 @@ public class RadioButton: UIControl {
 
   // MARK: Initialize
 
-  public convenience init(type: RadioButtonType) {
-    self.init(frame: .zero)
+  public init(type: RadioButtonType) {
     self.type = type
-  }
-
-  public override init(frame: CGRect) {
-    super.init(frame: frame)
-
+    super.init(frame: .zero)
     defineLayout()
     addAction()
   }
 
+  public override init(frame: CGRect) {
+    self.type = .fill
+    super.init(frame: frame)
+  }
+
   public required init?(coder: NSCoder) {
+    self.type = .fill
     super.init(coder: coder)
   }
 
   override public func draw(_ rect: CGRect) {
-    guard let type else { return }
     drawLayer(type: type)
   }
 
