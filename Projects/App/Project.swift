@@ -38,6 +38,7 @@ let project = Project(
         // External
         .external(dependency: .Swinject),
         .external(dependency: .FirebaseAnalytics),
+        .external(dependency: .FirebaseMessaging),
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],

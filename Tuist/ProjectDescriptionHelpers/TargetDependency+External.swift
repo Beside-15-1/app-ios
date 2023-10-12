@@ -36,6 +36,7 @@ public enum External: String {
   case FirebaseAnalytics
   case FirebaseCrashlytics
   case FirebaseCore
+  case FirebaseMessaging
 }
 
 extension TargetDependency {
