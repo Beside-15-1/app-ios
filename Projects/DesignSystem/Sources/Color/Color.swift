@@ -36,8 +36,14 @@ public extension UIColor {
     }
   }
 
-  /// static: #2E2277
-  static let primary600 = UIColor(hexString: "#2E2277")
+  /// light: #2E2277 / dark: #392A95
+  static let primary600 = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#392A95")
+    } else {
+      return UIColor(hexString: "#2E2277")
+    }
+  }
 
   /// static: #221959
   static let primary700 = UIColor(hexString: "#221959")
@@ -48,15 +54,8 @@ public extension UIColor {
   /// static: #0B081E
   static let primary900 = UIColor(hexString: "#0B081E")
 
-  /// #7B63A4
-  static let secondary1 = UIColor(hexString: "#7B63A4")
-  /// #CBC7D8
-  static let secondary2 = UIColor(hexString: "#CBC7D8")
-  /// #F2B2AC"
-  static let secondary3 = UIColor(hexString: "#F2B2AC")
-  /// #FDEFE8
-  static let secondary4 = UIColor(hexString: "#FDEFE8")
-
+  /// static: #D8D5ED
+  static let primarydown = UIColor(hexString: "#D8D5ED")
 
   // MARK: Gray
 

@@ -25,6 +25,7 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+  weak var delegate: LinkDetailDelegate?
 
   private let createLinkBuilder: CreateLinkBuildable
   private let moveFolderBuilder: MoveFolderBuildable
@@ -70,6 +71,12 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
     navigationController?.isNavigationBarHidden = false
 
     configureNavigationBar()
+  }
+
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+
+    delegate?.linkDetailDismissed()
   }
 
 

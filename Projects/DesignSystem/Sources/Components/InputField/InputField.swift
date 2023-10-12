@@ -137,7 +137,7 @@ public class InputField: UIView {
   }
 
   private let container = UIControl().then {
-    $0.backgroundColor = .gray200
+    $0.backgroundColor = .border1
     $0.layer.cornerRadius = 8
     $0.clipsToBounds = true
   }
@@ -257,15 +257,15 @@ public class InputField: UIView {
 
     textField.addAction(UIAction(handler: { [weak self] _ in
       self?.textField.font = .defaultSemiBold
-      self?.container.backgroundColor = .inputContainerEditing
+      self?.container.backgroundColor = .inputActiveBg
       self?.container.layer.borderWidth = 1
       self?.rightIcon.image = self?.rightIcon.image?.withTintColor(.gray600)
     }), for: .editingDidBegin)
 
     textField.addAction(UIAction(handler: { [weak self] _ in
       self?.textField.font = .defaultRegular
-      self?.container.backgroundColor = .gray200
-      self?.container.layer.borderWidth = 0
+      self?.container.backgroundColor = .inputInactiveBg
+      self?.container.layer.borderWidth = 1
       self?.rightIcon.image = self?.rightIcon.image?.withTintColor(.gray500)
     }), for: .editingDidEnd)
   }

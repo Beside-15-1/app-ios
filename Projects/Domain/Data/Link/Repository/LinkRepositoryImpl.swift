@@ -88,4 +88,12 @@ final class LinkRepositoryImpl: LinkRepository {
     return networking.request(target: target)
       .map { _ in }
   }
+
+  func fetchThumbnail(url: String) -> Single<Thumbnail> {
+    let target = LinkAPI.fetchThumbnail(url: url)
+
+    return networking.request(target: target)
+      .map(ThumbnailResponse.self)
+      .map { $0.toDomain() }
+  }
 }

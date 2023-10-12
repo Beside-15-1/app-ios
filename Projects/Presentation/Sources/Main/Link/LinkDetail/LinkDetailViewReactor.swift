@@ -80,7 +80,12 @@ final class LinkDetailViewReactor: Reactor {
     case .readLink(let id):
       return readLinkUseCase.execute(id: id)
         .asObservable()
-        .flatMap { _ in Observable<Mutation>.empty() }
+        .flatMap { [weak self] _ -> Observable<Mutation> in
+          guard let self else { return .empty() }
+          var link = self.currentState.link
+          link.readCount += 1
+          return .just(Mutation.updateLink(link))
+        }
     }
   }
 

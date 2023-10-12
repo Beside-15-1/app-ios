@@ -25,7 +25,9 @@ final class CreateLinkBuilder: CreateLinkBuildable {
 
   func build(payload: CreateLinkPayload) -> UIViewController {
     let reactor = CreateLinkViewReactor(
-      fetchThumbnailUseCase: FetchThumbnailUseCaseImpl(metadataProvider: .init()),
+      fetchThumbnailUseCase: FetchThumbnailUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
       fetchFolderListUseCase: FetchFolderListUseCaseImpl(
         folderRepository: dependency.folderRepository
       ),

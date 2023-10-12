@@ -28,7 +28,7 @@ final class EditFolderView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .paperWhite
+    backgroundColor = .popupBg
 
     defineLayout()
   }

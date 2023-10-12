@@ -124,8 +124,6 @@ final class CreateLinkViewReactor: Reactor {
       return .empty()
 
     case .fetchThumbnail(let url):
-      guard let url = URL(string: url) else { return .empty() }
-
       return .concat([
         .just(Mutation.setLoading(true)),
         fetchThumbnail(url: url),
@@ -231,13 +229,13 @@ final class CreateLinkViewReactor: Reactor {
 // MARK: - Private
 
 extension CreateLinkViewReactor {
-  private func fetchThumbnail(url: URL) -> Observable<Mutation> {
+  private func fetchThumbnail(url: String) -> Observable<Mutation> {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
       .flatMap { thumbnail -> Observable<Mutation> in
         .concat([
           .just(Mutation.setThumbnail(thumbnail)),
-          .just(Mutation.setInputURL(thumbnail?.url ?? "")),
+          .just(Mutation.setInputURL(thumbnail.url ?? "")),
         ])
       }
       .catch { _ in
@@ -301,13 +299,11 @@ extension CreateLinkViewReactor {
     let url = pasteboard.string ?? ""
 
     if url.hasPrefix("https") || url.hasPrefix("http") {
-      if let url = URL(string: url) {
-        return .concat([
-          .just(Mutation.setLoading(true)),
-          fetchThumbnail(url: url),
-          .just(Mutation.setLoading(false)),
-        ])
-      }
+      return .concat([
+        .just(Mutation.setLoading(true)),
+        fetchThumbnail(url: url),
+        .just(Mutation.setLoading(false)),
+      ])
     }
 
     return .empty()

@@ -265,9 +265,11 @@ extension FolderDetailViewController: LinkSortDelegate {
 extension FolderDetailViewController: FolderDetailListViewDelegate {
   func listViewItemDidTapped(at row: Int) {
     guard let reactor,
-          let url = URL(string: reactor.currentState.linkList[row].url) else { return }
+          let id = reactor.currentState.viewModel?.items[row].id,
+          let link = reactor.currentState.linkList.first(where: { $0.id == id }),
+          let url = URL(string: link.url) else { return }
 
-    reactor.action.onNext(.readLink(reactor.currentState.linkList[row].id))
+    reactor.action.onNext(.readLink(id))
 
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
     UIApplication.shared.open(url, options: options)
@@ -277,7 +279,10 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
     guard let reactor,
           let link = reactor.currentState.linkList.first(where: { $0.id == id }) else { return }
 
-    let linkDetail = linkDetailBuilder.build(payload: .init(link: link))
+    let linkDetail = linkDetailBuilder.build(payload: .init(
+      delegate: self,
+      link: link
+    ))
 
     if UIDevice.current.userInterfaceIdiom == .pad {
       self.presentPaperSheet(linkDetail)
@@ -301,5 +306,14 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
 extension FolderDetailViewController: CreateLinkDelegate {
   func createLinkSucceed(link: Link) {
     reactor?.action.onNext(.createFolderSucceed)
+  }
+}
+
+
+// MARK: LinkDetailDelegate
+
+extension FolderDetailViewController: LinkDetailDelegate {
+  func linkDetailDismissed() {
+    reactor?.action.onNext(.refresh)
   }
 }

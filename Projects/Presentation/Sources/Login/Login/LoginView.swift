@@ -70,16 +70,6 @@ class LoginView: UIView {
       color: .white)
   }
 
-  private let termsLabel = UILabel().then {
-    $0.attributedText = "가입을 진행할 경우, 아래의 정책에 동의한 것으로 간주됩니다\n서비스이용약관 및 개인정보처리방침"
-      .underLine(range: ["서비스이용약관", "개인정보처리방침"])
-
-    $0.textColor = .secondary4.withAlphaComponent(0.6)
-    $0.font = .captionRegular
-    $0.numberOfLines = 0
-    $0.textAlignment = .center
-  }
-
   // MARK: Initializing
 
   override init(frame: CGRect) {

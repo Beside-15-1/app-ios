@@ -107,7 +107,7 @@ class FolderDetailCell: UICollectionViewCell {
         urlComponents?.path = ""
 
         // URL
-        let prefixes = ["https://", "http://"]
+        let prefixes = ["https://", "http://", "www."]
         caption = urlComponents?.host ?? ""
 
         for prefix in prefixes {
@@ -144,8 +144,13 @@ class FolderDetailCell: UICollectionViewCell {
     folderLabel.attributedText = viewModel.folderName
       .styled(font: .captionSemiBold, color: .gray700)
 
-    readCountLabel.attributedText = "\(viewModel.readCount)회 읽음"
-      .styled(font: .captionRegular, color: .gray700)
+    if viewModel.readCount == 0 {
+      readCountLabel.attributedText = "읽지 않음"
+        .styled(font: .captionSemiBold, color: .primary400)
+    } else {
+      readCountLabel.attributedText = "\(viewModel.readCount)회 읽음"
+        .styled(font: .captionSemiBold, color: .gray700)
+    }
   }
 
 
@@ -166,7 +171,7 @@ class FolderDetailCell: UICollectionViewCell {
     }
 
     titleLabel.snp.makeConstraints {
-      $0.top.equalTo(folderContainer.snp.bottom)
+      $0.top.equalTo(folderContainer.snp.bottom).offset(4.0)
       $0.left.equalTo(thumbnail.snp.right).offset(12.0)
       $0.right.equalToSuperview()
     }
@@ -206,7 +211,7 @@ class FolderDetailCell: UICollectionViewCell {
     }
 
     readCountLabel.snp.makeConstraints {
-      $0.left.equalTo(folderContainer.snp.right).offset(4.0)
+      $0.left.equalTo(folderContainer.snp.right).offset(8.0)
       $0.centerY.equalTo(folderLabel)
       $0.right.lessThanOrEqualToSuperview()
     }

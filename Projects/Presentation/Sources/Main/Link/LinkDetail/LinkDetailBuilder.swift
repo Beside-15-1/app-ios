@@ -43,7 +43,9 @@ final class LinkDetailBuilder: LinkDetailBuildable {
       createLinkBuilder: dependency.createLinkBuilder,
       moveFolderBuilder: dependency.moveFolderBuilder,
       webBuilder: dependency.webBuilder
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

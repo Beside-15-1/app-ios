@@ -61,7 +61,7 @@ class ShareBoxView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .paperWhite
+    backgroundColor = .popupBg
     layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     layer.cornerRadius = 16
     clipsToBounds = true

@@ -19,6 +19,7 @@ enum LinkAPI {
   case updateLink(id: String, UpdateLinkRequest)
   case updateLinkWithFolderID(id: String, folderID: String)
   case readLink(id: String)
+  case fetchThumbnail(url: String)
 }
 
 extension LinkAPI: BaseTargetType {
@@ -45,6 +46,9 @@ extension LinkAPI: BaseTargetType {
 
     case .readLink(let id):
       return "/links/\(id)/read-count"
+
+    case .fetchThumbnail:
+      return "links/thumbnail"
     }
   }
 
@@ -70,6 +74,9 @@ extension LinkAPI: BaseTargetType {
 
     case .readLink:
       return .put
+
+    case .fetchThumbnail:
+      return .post
     }
   }
 
@@ -107,6 +114,9 @@ extension LinkAPI: BaseTargetType {
 
     case .readLink:
       return .requestPlain
+
+    case .fetchThumbnail(let url):
+      return .requestJSONEncodable(["url": url])
     }
   }
 }

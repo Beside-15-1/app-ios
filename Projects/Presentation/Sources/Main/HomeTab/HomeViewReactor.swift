@@ -19,8 +19,8 @@ final class HomeViewReactor: Reactor {
     case viewDidLoad
     case viewWillAppear
     case createFolderSucceed
-    case createLinkSucceed
     case readLink(String)
+    case refresh
   }
 
   enum Mutation {
@@ -100,7 +100,7 @@ final class HomeViewReactor: Reactor {
     case .createFolderSucceed:
       return fetchFolderList()
 
-    case .createLinkSucceed:
+    case .refresh:
       return .concat([
         fetchLinkList(),
         fetchFolderList(),
@@ -109,6 +109,9 @@ final class HomeViewReactor: Reactor {
     case .readLink(let id):
       return readLinkUseCase.execute(id: id)
         .asObservable()
+        .do(onNext: { [weak self] in
+          self?.action.onNext(.refresh)
+        })
         .flatMap { _ in Observable<Mutation>.empty() }
     }
   }
@@ -207,7 +210,12 @@ extension HomeViewReactor {
   }
 
   private func getLinkList() -> Observable<Mutation> {
-    let linkList = getLinkListUseCase.execute()
+    var linkList = sortLinkList(linkList: getLinkListUseCase.execute())
+
+    // 읽지않은 링크가 존재한다면
+    if linkList.first(where: { $0.readCount == 0 }) != nil {
+      linkList = linkList.filter { $0.readCount == 0 }
+    }
 
     guard !linkList.isEmpty else {
       return .concat([
@@ -217,7 +225,7 @@ extension HomeViewReactor {
     }
 
     let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)
-    let slicedLinkList = linkList.reversed()[linkList.startIndex..<lastIndex]
+    let slicedLinkList = linkList[linkList.startIndex..<lastIndex]
 
     var viewModel = HomeLinkSectionViewModel(
       section: .normal,
@@ -245,9 +253,15 @@ extension HomeViewReactor {
   }
 
   private func fetchLinkList() -> Observable<Mutation> {
-    fetchLinkListUseCase.execute(sort: .createAt, order: .asc)
+    fetchLinkListUseCase.execute(sort: .createAt, order: .desc)
       .asObservable()
-      .flatMap { linkList -> Observable<Mutation> in
+      .flatMap { list -> Observable<Mutation> in
+        var linkList = list
+        // 읽지않은 링크가 존재한다면
+        if linkList.first(where: { $0.readCount == 0 }) != nil {
+          linkList = linkList.filter { $0.readCount == 0 }
+        }
+
         guard !linkList.isEmpty else {
           return .concat([
             .just(Mutation.setLinkList([])),
@@ -256,11 +270,11 @@ extension HomeViewReactor {
         }
 
         let lastIndex = linkList.count < 5 ? linkList.endIndex : linkList.index(0, offsetBy: 5)
-        let linkList = linkList.reversed()[linkList.startIndex..<lastIndex]
+        let linkList2 = linkList[linkList.startIndex..<lastIndex]
 
         var viewModel = HomeLinkSectionViewModel(
           section: .normal,
-          items: linkList.map {
+          items: linkList2.map {
             .init(
               id: $0.id,
               imageURL: $0.thumbnailURL,
@@ -288,5 +302,25 @@ extension HomeViewReactor {
     getMeUseCase.execute()
       .asObservable()
       .flatMap { _ -> Observable<Mutation> in .empty() }
+  }
+}
+
+
+// MARK: Date
+
+extension HomeViewReactor {
+
+  private func sortLinkList(linkList: [Link]) -> [Link] {
+    linkList.sorted { link1, link2 in
+      // Date
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+
+      guard let date1 = dateFormatter.date(from: link1.createdAt),
+            let date2 = dateFormatter.date(from: link2.createdAt)
+      else { return false }
+
+      return date1 > date2
+    }
   }
 }

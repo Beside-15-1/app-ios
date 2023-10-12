@@ -178,6 +178,9 @@ final class FolderDetailViewReactor: Reactor {
     case .readLink(let id):
       return readLinkUseCase.execute(id: id)
         .asObservable()
+        .do(onNext: { [weak self] in
+          self?.action.onNext(.refresh)
+        })
         .flatMap { _ in Observable<Mutation>.empty() }
 
     case .updateUnreadFiltering(let isFiltering):
