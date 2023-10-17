@@ -254,6 +254,7 @@ public final class PresentationAssembly: Assembly {
     container.register(OnboardingBuildable.self) { r in
       OnboardingBuilder(
         dependency: .init(
+          analytics: r.resolve(),
           mainTabBuilder: r.resolve()
         )
       )

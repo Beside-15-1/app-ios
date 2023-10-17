@@ -10,6 +10,8 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import PBAnalyticsInterface
+
 final class OnboardingViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
@@ -34,12 +36,16 @@ final class OnboardingViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
 
   // MARK: initializing
 
-  init() {
+  init(
+    analytics: PBAnalytics
+  ) {
     defer { _ = self.state }
-    initialState = State()
+    self.analytics = analytics
+    self.initialState = State()
   }
 
   deinit {
@@ -55,10 +61,13 @@ final class OnboardingViewReactor: Reactor {
 
       switch currentState.type {
       case .first:
+        analytics.log(type: OnboardingAddLinkEvent.click(component: .next))
         return .just(Mutation.setType(.second))
       case .second:
+        analytics.log(type: OnboardingFolderEvent.click(component: .next))
         return .just(Mutation.setType(.third))
       case .third:
+        analytics.log(type: OnboardingTagEvent.click(component: .startApp))
         return .just(Mutation.routeToMain)
       }
     }
