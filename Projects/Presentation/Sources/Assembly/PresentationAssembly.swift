@@ -124,6 +124,7 @@ public final class PresentationAssembly: Assembly {
   private func registerSignUpBuilder(container: Container) {
     container.register(SignUpBuildable.self) { r in
       SignUpBuilder(dependency: .init(
+        analytics: r.resolve(),
         loginRepository: r.resolve(),
         mainTabBuilder: r.resolve(),
         signUpSuccessBuilder: r.resolve(),
