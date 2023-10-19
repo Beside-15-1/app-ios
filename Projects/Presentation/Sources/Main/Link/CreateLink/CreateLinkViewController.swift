@@ -6,6 +6,7 @@ import RxSwift
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class CreateLinkViewController: UIViewController, StoryboardView {
@@ -19,6 +20,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   // MARK: Properties
 
+  private let analytics: PBAnalytics
   private let selectFolderBuilder: SelectFolderBuildable
   private let tagAddBuilder: TagAddBuildable
   private let createFolderBuilder: CreateFolderBuildable
@@ -30,11 +32,13 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
   init(
     reactor: CreateLinkViewReactor,
+    analytics: PBAnalytics,
     selectFolderBuilder: SelectFolderBuildable,
     tagAddBuilder: TagAddBuildable,
     createFolderBuilder: CreateFolderBuildable
   ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     self.selectFolderBuilder = selectFolderBuilder
     self.tagAddBuilder = tagAddBuilder
     self.createFolderBuilder = createFolderBuilder
@@ -82,6 +86,7 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   private func bindButtons(with reactor: CreateLinkViewReactor) {
     contentView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: AddLinkEvent.click(component: .close))
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -94,6 +99,9 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: AddLinkEvent.click(component: .selectFolder))
+
         guard let vc = self.selectFolderBuilder.build(
           payload: .init(
             folders: reactor.currentState.folderList,
@@ -108,13 +116,15 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
         } else {
           self.presentModal(vc)
         }
-
       }
       .disposed(by: disposeBag)
 
     contentView.tagView.addTagButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
+
+        self.analytics.log(type: AddLinkEvent.click(component: .addTag))
+
         let vc = self.tagAddBuilder.build(
           payload: .init(
             tagAddDelegate: self,
@@ -128,6 +138,9 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
 
     contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: AddLinkEvent.click(component: .addFolder))
+
         let vc = self.createFolderBuilder.build(payload: .init(
           folder: nil,
           delegate: self
@@ -242,7 +255,7 @@ extension CreateLinkViewController: UITextFieldDelegate {
     switch textField.tag {
     case 1:
       guard let text = textField.text else { return true }
-
+      analytics.log(type: AddLinkEvent.click(component: .urlDone))
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
         let newText = "https://\(text)"
         view.endEditing(true)
@@ -255,6 +268,7 @@ extension CreateLinkViewController: UITextFieldDelegate {
       return true
 
     case 2:
+      analytics.log(type: AddLinkEvent.click(component: .titleDone))
       view.endEditing(true)
       return true
 
@@ -292,6 +306,8 @@ extension CreateLinkViewController: TagAddDelegate {
 extension CreateLinkViewController: TagViewDelegate {
   func removeAddedTag(at: Int) {
     guard let reactor else { return }
+
+    analytics.log(type: AddLinkEvent.click(component: .deleteTag))
 
     var tags = reactor.currentState.tags
     tags.remove(at: at)

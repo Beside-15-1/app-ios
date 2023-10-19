@@ -152,6 +152,7 @@ public final class PresentationAssembly: Assembly {
   private func registerCreateLinkBuilder(container: Container) {
     container.register(CreateLinkBuildable.self) { r in
       CreateLinkBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         selectFolderBuilder: r.resolve(),

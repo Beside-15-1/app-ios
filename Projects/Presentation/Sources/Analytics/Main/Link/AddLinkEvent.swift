@@ -49,8 +49,8 @@ extension AddLinkEvent: PBAnalyticsType {
 }
 
 enum AddLinkClickComponent: String {
-  case urlInput
-  case titleInput
+  case urlDone
+  case titleDone
   case addFolder
   case addTag
   case selectFolder

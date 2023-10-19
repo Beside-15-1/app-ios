@@ -5,6 +5,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 
 final class CreateLinkViewReactor: Reactor {
 
@@ -68,6 +69,7 @@ final class CreateLinkViewReactor: Reactor {
 
   // MARK: Properties
 
+  private let analytics: PBAnalytics
   private let fetchThumbnailUseCase: FetchThumbnailUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let createLinkUseCase: CreateLinkUseCase
@@ -84,6 +86,7 @@ final class CreateLinkViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     fetchThumbnailUseCase: FetchThumbnailUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase,
     createLinkUseCase: CreateLinkUseCase,
@@ -92,6 +95,7 @@ final class CreateLinkViewReactor: Reactor {
     link: Link?
   ) {
     defer { _ = self.state }
+    self.analytics = analytics
     self.fetchThumbnailUseCase = fetchThumbnailUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.createLinkUseCase = createLinkUseCase
@@ -115,6 +119,9 @@ final class CreateLinkViewReactor: Reactor {
       return fetchFolderList()
 
     case .viewDidAppear:
+
+      analytics.log(type: AddLinkEvent.shown)
+
       if shouldValidateClipboard,
          currentState.link == nil {
         shouldValidateClipboard = false
@@ -159,6 +166,7 @@ final class CreateLinkViewReactor: Reactor {
       return fetchFolderList()
 
     case .saveButtonTapped:
+      analytics.log(type: AddLinkEvent.click(component: .saveLink))
       return saveLink()
 
     case .inputURL(let url):
