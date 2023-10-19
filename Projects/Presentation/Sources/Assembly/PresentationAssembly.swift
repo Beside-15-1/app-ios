@@ -191,7 +191,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerFolderSortBuilder(container: Container) {
     container.register(FolderSortBuildable.self) { r in
-      FolderSortBuilder(dependency: .init())
+      FolderSortBuilder(dependency: .init(
+        analytics: r.resolve()
+      ))
     }
   }
 
