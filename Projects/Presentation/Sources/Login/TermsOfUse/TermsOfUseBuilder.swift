@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 // MARK: - TermsOfUseDependency
 
 struct TermsOfUseDependency {
+  let analytics: PBAnalytics
   let webBuilder: PBWebBuildable
 }
 
@@ -20,10 +22,13 @@ final class TermsOfUseBuilder: TermsOfUseBuildable {
   }
 
   func build(payload: TermsOfUsePayload) -> UIViewController {
-    let viewModel = TermsOfUseViewModel()
+    let viewModel = TermsOfUseViewModel(
+      analytics: dependency.analytics
+    )
 
     let viewController = TermsOfUseViewController(
       viewModel: viewModel,
+      analytics: dependency.analytics,
       webBuilder: dependency.webBuilder
     ).then {
       $0.delegate = payload.delegate

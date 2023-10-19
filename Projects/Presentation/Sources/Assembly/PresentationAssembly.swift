@@ -136,6 +136,7 @@ public final class PresentationAssembly: Assembly {
   private func registerTermsOfUseBuilder(contaier: Container) {
     contaier.register(TermsOfUseBuildable.self) { r in
       TermsOfUseBuilder(dependency: .init(
+        analytics: r.resolve(),
         webBuilder: r.resolve()
       ))
     }

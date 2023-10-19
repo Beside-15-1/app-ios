@@ -3,7 +3,7 @@ import Foundation
 import RxRelay
 import RxSwift
 
-// MARK: - TermsOfUseViewModelInput
+import PBAnalyticsInterface
 
 protocol TermsOfUseViewModelInput {
   func allCheckButtonTapped()
@@ -11,24 +11,28 @@ protocol TermsOfUseViewModelInput {
   func personalCheckButtonTapped()
 }
 
-// MARK: - TermsOfUseViewModelOutput
-
 protocol TermsOfUseViewModelOutput {
   var isAllSelected: BehaviorRelay<Bool> { get }
   var isServiceSelected: BehaviorRelay<Bool> { get }
   var isPersonalSelected: BehaviorRelay<Bool> { get }
 }
 
-// MARK: - TermsOfUseViewModel
-
 final class TermsOfUseViewModel: TermsOfUseViewModelOutput {
+
   // MARK: Properties
 
   private let disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
+
+
   // MARK: initializing
 
-  init() {}
+  init(
+    analytics: PBAnalytics
+  ) {
+    self.analytics = analytics
+  }
 
   deinit {
     print("🗑️ deinit: \(type(of: self))")
@@ -47,6 +51,8 @@ extension TermsOfUseViewModel: TermsOfUseViewModelInput {
   func allCheckButtonTapped() {
     let newValue = !isAllSelected.value
 
+    analytics.log(type: TermsEvent.click(component: .checkAll))
+
     if newValue {
       isAllSelected.accept(true)
       isServiceSelected.accept(true)
@@ -62,6 +68,7 @@ extension TermsOfUseViewModel: TermsOfUseViewModelInput {
     let newValue = !isServiceSelected.value
 
     isServiceSelected.accept(newValue)
+    analytics.log(type: TermsEvent.click(component: .checkTermsOfService))
 
     if newValue, isPersonalSelected.value {
       isAllSelected.accept(true)
@@ -74,6 +81,7 @@ extension TermsOfUseViewModel: TermsOfUseViewModelInput {
     let newValue = !isPersonalSelected.value
 
     isPersonalSelected.accept(newValue)
+    analytics.log(type: TermsEvent.click(component: .checkPrivacyPolicy))
 
     if newValue, isServiceSelected.value {
       isAllSelected.accept(true)

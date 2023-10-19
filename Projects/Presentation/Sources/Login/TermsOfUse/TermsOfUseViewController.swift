@@ -5,6 +5,7 @@ import RxCocoa
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 import PresentationInterface
 
 // MARK: - TermsOfUseViewController
@@ -21,16 +22,18 @@ final class TermsOfUseViewController: UIViewController {
 
   weak var delegate: TermsOfUseDelegate?
 
+  private let analytics: PBAnalytics
   private let webBuilder: PBWebBuildable
 
   // MARK: Initializing
 
   init(
     viewModel: TermsOfUseViewModel,
+    analytics: PBAnalytics,
     webBuilder: PBWebBuildable
   ) {
     self.viewModel = viewModel
-
+    self.analytics = analytics
     self.webBuilder = webBuilder
 
     super.init(nibName: nil, bundle: nil)
@@ -53,6 +56,12 @@ final class TermsOfUseViewController: UIViewController {
     bind(with: viewModel)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: TermsEvent.shown)
+  }
+
   // MARK: Binding
 
   func bind(with viewModel: TermsOfUseViewModel) {
@@ -60,6 +69,13 @@ final class TermsOfUseViewController: UIViewController {
   }
 
   private func bindButtons(with viewModel: TermsOfUseViewModel) {
+    contentView.closeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: TermsEvent.click(component: .close))
+        self.dismiss(animated: true)
+      }
+      .disposed(by: disposeBag)
+
     contentView.checkAllButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.viewModel.allCheckButtonTapped()
@@ -96,6 +112,7 @@ final class TermsOfUseViewController: UIViewController {
 
     contentView.nextButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: TermsEvent.click(component: .next))
         self.dismiss(animated: true) {
           self.delegate?.termsOfUseNextButtonTapped()
         }
@@ -107,7 +124,7 @@ final class TermsOfUseViewController: UIViewController {
         guard let url = URL(string: "https://joosum.notion.site/6df241a6e3174b8fbfc7933a506a0b1e?pvs=4") else {
           return
         }
-
+        self.analytics.log(type: TermsEvent.click(component: .detailTermsOfService))
         let web = self.webBuilder.build(payload: .init(url: url))
 
         self.presentPaperSheet(web)
@@ -119,7 +136,7 @@ final class TermsOfUseViewController: UIViewController {
         guard let url = URL(string: "https://joosum.notion.site/33975a64eb55468ea523f707353743cf?pvs=4") else {
           return
         }
-
+        self.analytics.log(type: TermsEvent.click(component: .detailPrivacyPolicy))
         let web = self.webBuilder.build(payload: .init(url: url))
 
         self.presentPaperSheet(web)
