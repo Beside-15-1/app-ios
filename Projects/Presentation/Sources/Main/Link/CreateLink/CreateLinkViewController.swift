@@ -86,7 +86,12 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
   private func bindButtons(with reactor: CreateLinkViewReactor) {
     contentView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        self.analytics.log(type: AddLinkEvent.click(component: .close))
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditLinkEvent.click(component: .close))
+        } else {
+          self.analytics.log(type: AddLinkEvent.click(component: .close))
+        }
+
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -100,7 +105,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     contentView.selectFolderView.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
 
-        self.analytics.log(type: AddLinkEvent.click(component: .selectFolder))
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditLinkEvent.click(component: .selectFolder))
+        } else {
+          self.analytics.log(type: AddLinkEvent.click(component: .selectFolder))
+        }
 
         guard let vc = self.selectFolderBuilder.build(
           payload: .init(
@@ -123,7 +132,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
 
-        self.analytics.log(type: AddLinkEvent.click(component: .addTag))
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditLinkEvent.click(component: .addTag))
+        } else {
+          self.analytics.log(type: AddLinkEvent.click(component: .addTag))
+        }
 
         let vc = self.tagAddBuilder.build(
           payload: .init(
@@ -139,7 +152,11 @@ final class CreateLinkViewController: UIViewController, StoryboardView {
     contentView.selectFolderView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
 
-        self.analytics.log(type: AddLinkEvent.click(component: .addFolder))
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditLinkEvent.click(component: .addFolder))
+        } else {
+          self.analytics.log(type: AddLinkEvent.click(component: .addFolder))
+        }
 
         let vc = self.createFolderBuilder.build(payload: .init(
           folder: nil,
@@ -255,7 +272,14 @@ extension CreateLinkViewController: UITextFieldDelegate {
     switch textField.tag {
     case 1:
       guard let text = textField.text else { return true }
-      analytics.log(type: AddLinkEvent.click(component: .urlDone))
+
+      if reactor?.currentState.isEdit == true {
+        self.analytics.log(type: EditLinkEvent.click(component: .urlDone))
+      } else {
+        self.analytics.log(type: AddLinkEvent.click(component: .urlDone))
+      }
+
+
       guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
         let newText = "https://\(text)"
         view.endEditing(true)
@@ -268,7 +292,11 @@ extension CreateLinkViewController: UITextFieldDelegate {
       return true
 
     case 2:
-      analytics.log(type: AddLinkEvent.click(component: .titleDone))
+      if reactor?.currentState.isEdit == true {
+        self.analytics.log(type: EditLinkEvent.click(component: .titleDone))
+      } else {
+        self.analytics.log(type: AddLinkEvent.click(component: .titleDone))
+      }
       view.endEditing(true)
       return true
 
@@ -307,7 +335,11 @@ extension CreateLinkViewController: TagViewDelegate {
   func removeAddedTag(at: Int) {
     guard let reactor else { return }
 
-    analytics.log(type: AddLinkEvent.click(component: .deleteTag))
+    if reactor.currentState.isEdit {
+      self.analytics.log(type: EditLinkEvent.click(component: .deleteTag))
+    } else {
+      self.analytics.log(type: AddLinkEvent.click(component: .deleteTag))
+    }
 
     var tags = reactor.currentState.tags
     tags.remove(at: at)

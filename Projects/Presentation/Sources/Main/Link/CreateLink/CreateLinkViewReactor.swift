@@ -65,6 +65,14 @@ final class CreateLinkViewReactor: Reactor {
     var isSucceed: Link?
 
     var isLoading = false
+
+    var isEdit: Bool {
+      guard let _ = link else {
+        return false
+      }
+
+      return true
+    }
   }
 
   // MARK: Properties
@@ -119,8 +127,12 @@ final class CreateLinkViewReactor: Reactor {
       return fetchFolderList()
 
     case .viewDidAppear:
+      if currentState.isEdit {
+        analytics.log(type: EditLinkEvent.shown)
+      } else {
+        analytics.log(type: AddLinkEvent.shown)
+      }
 
-      analytics.log(type: AddLinkEvent.shown)
 
       if shouldValidateClipboard,
          currentState.link == nil {
@@ -166,7 +178,12 @@ final class CreateLinkViewReactor: Reactor {
       return fetchFolderList()
 
     case .saveButtonTapped:
-      analytics.log(type: AddLinkEvent.click(component: .saveLink))
+      if currentState.isEdit {
+        analytics.log(type: EditLinkEvent.click(component: .saveLink))
+      } else {
+        analytics.log(type: AddLinkEvent.click(component: .saveLink))
+      }
+
       return saveLink()
 
     case .inputURL(let url):

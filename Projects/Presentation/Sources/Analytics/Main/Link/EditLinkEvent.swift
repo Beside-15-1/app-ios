@@ -49,8 +49,8 @@ extension EditLinkEvent: PBAnalyticsType {
 }
 
 enum EditLinkClickComponent: String {
-  case urlInput
-  case titleInput
+  case urlDone
+  case titleDone
   case addFolder
   case addTag
   case selectFolder
