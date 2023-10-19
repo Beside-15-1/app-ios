@@ -10,8 +10,10 @@ import UIKit
 
 import Domain
 import PresentationInterface
+import PBAnalyticsInterface
 
 struct MyFolderDependency {
+  let analytics: PBAnalytics
   let folderRepository: FolderRepository
   let createFolderBuilder: CreateFolderBuildable
   let editFolderBuilder: EditFolderBuildable
@@ -43,6 +45,7 @@ final class MyFolderBuilder: MyFolderBuildable {
 
     let viewController = MyFolderViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       createFolderBuilder: dependency.createFolderBuilder,
       editFolderBuilder: dependency.editFolderBuilder,
       folderSortBuilder: dependency.folderSortBuilder,

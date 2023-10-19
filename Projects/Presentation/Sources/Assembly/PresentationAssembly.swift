@@ -98,6 +98,7 @@ public final class PresentationAssembly: Assembly {
   private func registerFolderBuilder(container: Container) {
     container.register(MyFolderBuildable.self) { r in
       MyFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
