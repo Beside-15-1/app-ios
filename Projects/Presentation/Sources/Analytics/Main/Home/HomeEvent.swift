@@ -56,6 +56,7 @@ enum HomeClickComponent: String {
   case folder
   case saveLink
   case close
+  case listUnreadLink
   case listSavedLink
   case moreUnreadLink
   case moreSavedLink

@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 import PBLog
 
 final class HomeViewReactor: Reactor {
@@ -45,6 +46,7 @@ final class HomeViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
   private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
   private let getMeUseCase: GetMeUseCase
@@ -56,6 +58,7 @@ final class HomeViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     fetchLinkListUseCase: FetchAllLinksUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase,
     getMeUseCase: GetMeUseCase,
@@ -65,6 +68,7 @@ final class HomeViewReactor: Reactor {
   ) {
     defer { _ = self.state }
 
+    self.analytics = analytics
     self.fetchLinkListUseCase = fetchLinkListUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
     self.getMeUseCase = getMeUseCase

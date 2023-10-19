@@ -83,6 +83,7 @@ public final class PresentationAssembly: Assembly {
   private func registerHomeBuilder(container: Container) {
     container.register(HomeBuildable.self) { r in
       HomeBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         loginRepository: r.resolve(),

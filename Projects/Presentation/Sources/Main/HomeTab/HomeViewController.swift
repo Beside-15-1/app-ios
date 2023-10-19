@@ -13,6 +13,7 @@ import Toaster
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PBLog
 import PresentationInterface
 
@@ -27,6 +28,7 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
   private let createLinkBuilder: CreateLinkBuildable
   private let createFolderBuilder: CreateFolderBuildable
   private let folderDetailBuilder: FolderDetailBuildable
@@ -36,12 +38,14 @@ final class HomeViewController: UIViewController, StoryboardView {
 
   init(
     reactor: HomeViewReactor,
+    analytics: PBAnalytics,
     createLinkBuilder: CreateLinkBuildable,
     createFolderBuilder: CreateFolderBuildable,
     folderDetailBuilder: FolderDetailBuildable,
     webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     self.createLinkBuilder = createLinkBuilder
     self.createFolderBuilder = createFolderBuilder
     self.folderDetailBuilder = folderDetailBuilder
@@ -74,6 +78,11 @@ final class HomeViewController: UIViewController, StoryboardView {
     navigationController?.isNavigationBarHidden = true
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    analytics.log(type: HomeEvent.shown)
+  }
+
 
   // MARK: Binding
 
@@ -85,6 +94,9 @@ final class HomeViewController: UIViewController, StoryboardView {
   private func bindButtons(with reactor: HomeViewReactor) {
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: HomeEvent.click(component: .floatingAddLink))
+
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
           link: nil
@@ -96,6 +108,9 @@ final class HomeViewController: UIViewController, StoryboardView {
 
     contentView.homeLinkView.newLinkButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: HomeEvent.click(component: .cardAddLink))
+
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
           link: nil
@@ -113,6 +128,9 @@ final class HomeViewController: UIViewController, StoryboardView {
 
     contentView.viewAllButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: HomeEvent.click(component: .myFolder))
+
         var folderList = reactor.currentState.folderList
         folderList.insert(.all(), at: 0)
 
@@ -176,6 +194,8 @@ final class HomeViewController: UIViewController, StoryboardView {
 
 extension HomeViewController: HomeFolderViewDelegate {
   func createFolderDidTapped() {
+    analytics.log(type: HomeEvent.click(component: .addFolder))
+
     let vc = createFolderBuilder.build(
       payload: .init(
         folder: nil,
@@ -190,6 +210,8 @@ extension HomeViewController: HomeFolderViewDelegate {
     // 라우팅
     guard let folderList = reactor?.currentState.folderList
     else { return }
+
+    analytics.log(type: HomeEvent.click(component: .folder))
 
     var newFolderList = folderList
     newFolderList.insert(.all(), at: 0)
@@ -234,6 +256,13 @@ extension HomeViewController: HomeLinkViewDelegate {
   func homeLinkView(_ homeLinkView: HomeLinkView, didSelectItemAt row: Int) {
     guard let reactor else { return }
     guard row < reactor.currentState.linkList.count else {
+
+      if reactor.currentState.linkList[row - 1].readCount == 0 {
+        analytics.log(type: HomeEvent.click(component: .moreUnreadLink))
+      } else {
+        analytics.log(type: HomeEvent.click(component: .moreSavedLink))
+      }
+
       let folderDetail = folderDetailBuilder.build(
         payload: .init(
           folderList: reactor.currentState.folderList,
@@ -246,6 +275,12 @@ extension HomeViewController: HomeLinkViewDelegate {
           folderDetail, animated: true
         )
       return
+    }
+
+    if reactor.currentState.linkList[row].readCount == 0 {
+      analytics.log(type: HomeEvent.click(component: .listUnreadLink))
+    } else {
+      analytics.log(type: HomeEvent.click(component: .listSavedLink))
     }
 
     guard let url = URL(string: reactor.currentState.linkList[row].url) else {
