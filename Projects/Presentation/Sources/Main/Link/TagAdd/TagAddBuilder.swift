@@ -2,12 +2,15 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PBUserDefaults
 import PresentationInterface
 
 // MARK: - TagAddDependency
 
-struct TagAddDependency {}
+struct TagAddDependency {
+  let analytics: PBAnalytics
+}
 
 // MARK: - TagAddBuilder
 
@@ -25,7 +28,8 @@ final class TagAddBuilder: TagAddBuildable {
     )
 
     let viewController = TagAddViewController(
-      viewModel: viewModel
+      viewModel: viewModel,
+      analytics: dependency.analytics
     ).then {
       $0.delegate = payload.tagAddDelegate
     }

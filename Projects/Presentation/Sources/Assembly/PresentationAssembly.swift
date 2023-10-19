@@ -144,8 +144,12 @@ public final class PresentationAssembly: Assembly {
   }
 
   private func registerTagAddBuilder(container: Container) {
-    container.register(TagAddBuildable.self) { _ in
-      TagAddBuilder(dependency: .init())
+    container.register(TagAddBuildable.self) { r in
+      TagAddBuilder(
+        dependency: .init(
+          analytics: r.resolve()
+        )
+      )
     }
   }
 
