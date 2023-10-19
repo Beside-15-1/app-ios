@@ -299,4 +299,12 @@ extension Reactive where Base: InputField {
   public var text: ControlProperty<String> {
     base.textField.rx.text.orEmpty
   }
+
+  public var editingDidBegin: ControlEvent<Void> {
+    base.textField.rx.controlEvent(.editingDidBegin)
+  }
+
+  public var editingDidEnd: ControlEvent<Void> {
+    base.textField.rx.controlEvent([.editingDidEnd, .editingDidEndOnExit])
+  }
 }

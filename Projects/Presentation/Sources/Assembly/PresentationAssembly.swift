@@ -176,6 +176,7 @@ public final class PresentationAssembly: Assembly {
   private func registerCreateFolderBuilder(container: Container) {
     container.register(CreateFolderBuildable.self) { r in
       CreateFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve()
       ))
     }

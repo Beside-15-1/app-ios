@@ -50,6 +50,14 @@ final class CreateFolderViewReactor: Reactor {
 
     var isSucceed: Folder?
     @Pulse var error: String?
+
+    var isEdit: Bool {
+      guard let _ = folder else {
+        return false
+      }
+
+      return true
+    }
   }
 
   // MARK: Properties

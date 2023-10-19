@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class CreateFolderViewController: UIViewController, StoryboardView {
@@ -23,12 +24,18 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
+
   weak var delegate: CreateFolderDelegate?
 
   // MARK: Initializing
 
-  init(reactor: CreateFolderViewReactor) {
+  init(
+    reactor: CreateFolderViewReactor,
+    analytics: PBAnalytics
+  ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -71,6 +78,12 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   private func bindButtons(with reactor: CreateFolderViewReactor) {
     contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditFolderEvent.click(component: .close))
+        } else {
+          self.analytics.log(type: AddFolderEvent.click(component: .close))
+        }
+
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -82,8 +95,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
 
     contentView.linkBookTabView.makeButton.rx.controlEvent(.touchUpInside)
-      .map { Reactor.Action.makeButtonTapped }
-      .bind(to: reactor.action)
+      .subscribe(with: self) { `self`, _ in
+
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditFolderEvent.click(component: .saveFolder))
+        } else {
+          self.analytics.log(type: AddFolderEvent.click(component: .saveFolder))
+        }
+
+        reactor.action.onNext(.makeButtonTapped)
+      }
       .disposed(by: disposeBag)
   }
 
@@ -142,6 +163,36 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
         self.contentView.previewView.configure(with: viewModel)
       }
       .disposed(by: disposeBag)
+
+    contentView.linkBookTabView.tabView.selectedTab
+      .subscribe(with: self) { `self`, tab in
+        switch tab {
+        case "폴더명":
+          if reactor.currentState.isEdit {
+            self.analytics.log(type: EditFolderEvent.click(component: .folderTitleTab))
+          } else {
+            self.analytics.log(type: AddFolderEvent.click(component: .folderTitleTab))
+          }
+          self.contentView.linkBookTabView.showFolderView()
+        case "색상":
+          if reactor.currentState.isEdit {
+            self.analytics.log(type: EditFolderEvent.click(component: .folderColorTab))
+          } else {
+            self.analytics.log(type: AddFolderEvent.click(component: .folderColorTab))
+          }
+          self.contentView.linkBookTabView.showColorView()
+        case "일러스트":
+          if reactor.currentState.isEdit {
+            self.analytics.log(type: EditFolderEvent.click(component: .folderIllustTab))
+          } else {
+            self.analytics.log(type: AddFolderEvent.click(component: .folderIllustTab))
+          }
+          self.contentView.linkBookTabView.showIllustView()
+        default:
+          self.contentView.linkBookTabView.showFolderView()
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: CreateFolderViewReactor) {
@@ -149,6 +200,16 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
       .skip(1)
       .map { Reactor.Action.updateTitle($0) }
       .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.linkBookTabView.folderView.inputField.rx.editingDidBegin
+      .subscribe(with: self) { `self`, _ in
+        if reactor.currentState.isEdit {
+          self.analytics.log(type: EditFolderEvent.click(component: .folderTitleInput))
+        } else {
+          self.analytics.log(type: AddFolderEvent.click(component: .folderTitleInput))
+        }
+      }
       .disposed(by: disposeBag)
   }
 
@@ -211,6 +272,11 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
 extension CreateFolderViewController: CreateFolderColorViewDelegate {
   func backgroundColorDidTap(at row: Int) {
+    if reactor?.currentState.isEdit == true {
+      self.analytics.log(type: EditFolderEvent.click(component: .folderColorButton))
+    } else {
+      self.analytics.log(type: AddFolderEvent.click(component: .folderColorButton))
+    }
     reactor?.action.onNext(.updateBackgroundColor(row))
   }
 
@@ -224,6 +290,11 @@ extension CreateFolderViewController: CreateFolderColorViewDelegate {
 
 extension CreateFolderViewController: CreateFolderIllustViewDelegate {
   func illustView(_ illustView: CreateFolderIllustView, didSelectItemAt indexPath: IndexPath) {
+    if reactor?.currentState.isEdit == true {
+      self.analytics.log(type: EditFolderEvent.click(component: .folderIllustButton))
+    } else {
+      self.analytics.log(type: AddFolderEvent.click(component: .folderIllustButton))
+    }
     reactor?.action.onNext(.updateIllust(indexPath.row))
   }
 }

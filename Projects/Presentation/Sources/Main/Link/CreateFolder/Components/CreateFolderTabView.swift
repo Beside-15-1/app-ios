@@ -32,7 +32,6 @@ class CreateFolderTabView: UIView {
     backgroundColor = .staticWhite
 
     setViews()
-    bind()
 
     tabView.selectItem(at: 0)
   }
@@ -81,28 +80,21 @@ class CreateFolderTabView: UIView {
     }
   }
 
-  private func bind() {
-    tabView.selectedTab
-      .subscribe { [weak self] tab in
-        switch tab.element {
-        case "폴더명":
-          self?.folderView.isHidden = false
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = true
-        case "색상":
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = false
-          self?.illustView.isHidden = true
-        case "일러스트":
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = false
-        default:
-          self?.folderView.isHidden = true
-          self?.colorView.isHidden = true
-          self?.illustView.isHidden = true
-        }
-      }
-      .disposed(by: disposeBag)
+  func showFolderView() {
+    folderView.isHidden = false
+    colorView.isHidden = true
+    illustView.isHidden = true
+  }
+
+  func showColorView() {
+    folderView.isHidden = true
+    colorView.isHidden = false
+    illustView.isHidden = true
+  }
+
+  func showIllustView() {
+    folderView.isHidden = true
+    colorView.isHidden = true
+    illustView.isHidden = false
   }
 }
