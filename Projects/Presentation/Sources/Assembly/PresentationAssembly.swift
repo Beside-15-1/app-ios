@@ -256,6 +256,7 @@ public final class PresentationAssembly: Assembly {
   private func registerDeleteAccountBuilder(container: Container) {
     container.register(DeleteAccountBuildable.self) { r in
       DeleteAccountBuilder(dependency: .init(
+        analytics: r.resolve(),
         loginRepository: r.resolve()
       ))
     }
