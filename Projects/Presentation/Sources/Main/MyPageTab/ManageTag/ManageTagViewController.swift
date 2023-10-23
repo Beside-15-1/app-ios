@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 
 final class ManageTagViewController: UIViewController {
 
@@ -25,11 +26,19 @@ final class ManageTagViewController: UIViewController {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
+
 
   // MARK: Initializing
 
-  init(reactor: ManageTagViewReactor) {
+  init(
+    reactor: ManageTagViewReactor,
+    analytics: PBAnalytics
+  ) {
     self.reactor = reactor
+
+    self.analytics = analytics
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -46,6 +55,7 @@ final class ManageTagViewController: UIViewController {
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] text in
+      self?.analytics.log(type: SettingTagEvent.click(component: .editTag))
       self?.contentView.inputField.becomeFirstResponder()
       self?.reactor.changeEditMode(text: text)
     }
@@ -65,6 +75,12 @@ final class ManageTagViewController: UIViewController {
     navigationController?.isNavigationBarHidden = false
 
     configureNavigationBar()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: SettingTagEvent.shown)
   }
 
   // MARK: Binding
@@ -101,11 +117,18 @@ final class ManageTagViewController: UIViewController {
         }
       }
       .disposed(by: disposeBag)
+
+    contentView.inputField.rx.editingDidBegin
+      .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: SettingTagEvent.click(component: .inputbox))
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindButton(with viewModel: ManageTagViewReactor) {
     contentView.saveButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: SettingTagEvent.click(component: .saveTag))
         self.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)
@@ -138,6 +161,7 @@ extension ManageTagViewController {
 
   @objc
   private func pop() {
+    self.analytics.log(type: SettingTagEvent.click(component: .back))
     navigationController?.popViewController(animated: true)
   }
 }
@@ -155,6 +179,8 @@ extension ManageTagViewController: UITextFieldDelegate {
 
     view.endEditing(true)
     textField.text = ""
+
+    self.analytics.log(type: SettingTagEvent.click(component: .keyboardDone))
 
     if reactor.tagInputMode == .input {
       reactor.addTag(text: text)
@@ -182,6 +208,7 @@ extension ManageTagViewController: TagListViewDelegate {
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {
+    self.analytics.log(type: SettingTagEvent.click(component: .deleteTag))
     reactor.removeTagListTag(at: at)
   }
 }

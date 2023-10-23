@@ -242,7 +242,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerManageTagBuilder(container: Container) {
     container.register(ManageTagBuildable.self) { r in
-      ManageTagBuilder(dependency: .init())
+      ManageTagBuilder(dependency: .init(
+        analytics: r.resolve()
+      ))
     }
   }
 
