@@ -13,6 +13,7 @@ import RxSwift
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class LinkDetailViewController: UIViewController, StoryboardView {
@@ -27,6 +28,7 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
   weak var delegate: LinkDetailDelegate?
 
+  private let analytics: PBAnalytics
   private let createLinkBuilder: CreateLinkBuildable
   private let moveFolderBuilder: MoveFolderBuildable
   private let webBuilder: PBWebBuildable
@@ -35,12 +37,14 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
   init(
     reactor: LinkDetailViewReactor,
+    analytics: PBAnalytics,
     createLinkBuilder: CreateLinkBuildable,
     moveFolderBuilder: MoveFolderBuildable,
     webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
 
+    self.analytics = analytics
     self.createLinkBuilder = createLinkBuilder
     self.moveFolderBuilder = moveFolderBuilder
     self.webBuilder = webBuilder
@@ -71,6 +75,12 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
     navigationController?.isNavigationBarHidden = false
 
     configureNavigationBar()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: LinkDetailEvent.shown)
   }
 
   override func viewDidDisappear(_ animated: Bool) {
@@ -108,6 +118,7 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         )
         .addAction(content: "취소", priority: .secondary, action: nil)
         .addAction(content: "삭제", priority: .primary, action: {
+          self.analytics.log(type: LinkDetailEvent.click(component: .delete))
           reactor.action.onNext(.deleteButtonTapped)
         })
         .show()
@@ -116,6 +127,9 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
     contentView.bottomView.editButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: LinkDetailEvent.click(component: .editLink))
+
         let createLink = self.createLinkBuilder.build(
           payload: .init(
             delegate: self,
@@ -129,6 +143,9 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
 
     contentView.bottomView.moveButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: LinkDetailEvent.click(component: .moveFolder))
+
         guard let moveFolder = self.moveFolderBuilder.build(
           payload: .init(
             delegate: self,
@@ -156,6 +173,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   private func thumbnailTapped() {
     guard let reactor,
           let url = URL(string: reactor.currentState.link.url) else { return }
+
+    analytics.log(type: LinkDetailEvent.click(component: .thumbnail))
 
     reactor.action.onNext(.readLink(reactor.currentState.link.id))
 
@@ -211,6 +230,7 @@ extension LinkDetailViewController {
 
   @objc
   private func pop() {
+    analytics.log(type: LinkDetailEvent.click(component: .back))
     navigationController?.popViewController(animated: true)
   }
 
@@ -219,6 +239,8 @@ extension LinkDetailViewController {
     guard let url = reactor?.currentState.link.url else {
       return
     }
+
+    analytics.log(type: LinkDetailEvent.click(component: .share))
 
     if UIDevice.current.userInterfaceIdiom == .pad {
       let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
