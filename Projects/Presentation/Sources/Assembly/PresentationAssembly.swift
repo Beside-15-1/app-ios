@@ -202,6 +202,7 @@ public final class PresentationAssembly: Assembly {
   private func registerFolderDetailBuilder(container: Container) {
     container.register(FolderDetailBuildable.self) { r in
       FolderDetailBuilder(dependency: .init(
+        analytics: r.resolve(),
         linkRepository: r.resolve(),
         folderRepository: r.resolve(),
         linkSortBuilder: r.resolve(),

@@ -5,13 +5,15 @@
 //  Created by 박천송 on 2023/07/17.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct FolderDetailDependency {
+  let analytics: PBAnalytics
   let linkRepository: LinkRepository
   let folderRepository: FolderRepository
   let linkSortBuilder: LinkSortBuildable
@@ -39,6 +41,7 @@ final class FolderDetailBuilder: FolderDetailBuildable {
 
     let viewController = FolderDetailViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       linkSortBuilder: dependency.linkSortBuilder,
       linkDetailBuilder: dependency.linkDetailBuilder,
       createLinkBuilder: dependency.createLinkBuilder
