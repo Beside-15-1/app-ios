@@ -10,8 +10,10 @@ import Foundation
 
 import Domain
 import PresentationInterface
+import PBAnalyticsInterface
 
 struct MoveFolderDependency {
+  let analytics: PBAnalytics
   let folderRepository: FolderRepository
 }
 
@@ -32,7 +34,8 @@ final class MoveFolderBuilder: MoveFolderBuildable {
     )
 
     let viewController = MoveFolderViewController(
-      reactor: reactor
+      reactor: reactor,
+      analytics: dependency.analytics
     ).then {
       $0.delegate = payload.delegate
     }

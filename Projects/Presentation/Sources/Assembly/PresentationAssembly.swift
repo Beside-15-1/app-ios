@@ -233,6 +233,7 @@ public final class PresentationAssembly: Assembly {
   private func registerMoveFolderBuilder(container: Container) {
     container.register(MoveFolderBuildable.self) { r in
       MoveFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve()
       ))
     }

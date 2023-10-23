@@ -11,6 +11,7 @@ import PanModal
 import ReactorKit
 import RxSwift
 
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class MoveFolderViewController: UIViewController, StoryboardView {
@@ -26,12 +27,18 @@ final class MoveFolderViewController: UIViewController, StoryboardView {
 
   weak var delegate: MoveFolderDelegate?
 
+  private let analytics: PBAnalytics
+
   // MARK: Initializing
 
   init(
-    reactor: MoveFolderViewReactor
+    reactor: MoveFolderViewReactor,
+    analytics: PBAnalytics
   ) {
     defer { self.reactor = reactor }
+
+    self.analytics = analytics
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -53,6 +60,12 @@ final class MoveFolderViewController: UIViewController, StoryboardView {
     contentView.delegate = self
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: MoveFolderEvent.shown)
+  }
+
 
   // MARK: Binding
 
@@ -64,6 +77,7 @@ final class MoveFolderViewController: UIViewController, StoryboardView {
   private func bindButton(with reactor: MoveFolderViewReactor) {
     contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: MoveFolderEvent.click(component: .close))
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -71,6 +85,7 @@ final class MoveFolderViewController: UIViewController, StoryboardView {
     contentView.saveButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.dismiss(animated: true) {
+          self.analytics.log(type: MoveFolderEvent.click(component: .moveFolder))
           self.delegate?.moveFolderSuccess(folder: reactor.currentState.folderList[reactor.currentState.selectedIndex])
         }
       }
@@ -122,6 +137,7 @@ extension MoveFolderViewController: PanModalPresentable {
 
 extension MoveFolderViewController: MoveFolderViewDelegate {
   func collectionView(didSelectItemAt indexPath: IndexPath) {
+    analytics.log(type: MoveFolderEvent.click(component: .folder))
     reactor?.action.onNext(.itemTapped(row: indexPath.row))
   }
 }
