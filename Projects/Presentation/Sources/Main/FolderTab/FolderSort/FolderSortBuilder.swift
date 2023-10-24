@@ -5,13 +5,16 @@
 //  Created by 박천송 on 2023/07/16.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
-struct FolderSortDependency {}
+struct FolderSortDependency {
+  let analytics: PBAnalytics
+}
 
 final class FolderSortBuilder: FolderSortBuildable {
 
@@ -27,7 +30,8 @@ final class FolderSortBuilder: FolderSortBuildable {
     )
 
     let viewController = FolderSortViewController(
-      reactor: reactor
+      reactor: reactor,
+      analytics: dependency.analytics
     ).then {
       $0.delegate = payload.delegate
     }

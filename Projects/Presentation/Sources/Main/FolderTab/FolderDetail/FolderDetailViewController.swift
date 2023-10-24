@@ -13,6 +13,7 @@ import RxSwift
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class FolderDetailViewController: UIViewController, StoryboardView {
@@ -26,6 +27,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
   private let linkSortBuilder: LinkSortBuildable
   private let linkDetailBuilder: LinkDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
@@ -35,12 +37,14 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
   init(
     reactor: FolderDetailViewReactor,
+    analytics: PBAnalytics,
     linkSortBuilder: LinkSortBuildable,
     linkDetailBuilder: LinkDetailBuildable,
     createLinkBuilder: CreateLinkBuildable
   ) {
     defer { self.reactor = reactor }
 
+    self.analytics = analytics
     self.linkSortBuilder = linkSortBuilder
     self.linkDetailBuilder = linkDetailBuilder
     self.createLinkBuilder = createLinkBuilder
@@ -75,6 +79,12 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     navigationController?.isNavigationBarHidden = false
 
     configureNavigationBar()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: LinkListEvent.shown)
   }
 
 
@@ -150,6 +160,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           return
         }
 
+        self.analytics.log(type: LinkListEvent.click(component: .tabOtherFolder))
+
         reactor.action.onNext(.selectTab(tab))
         self.contentView.searchField.text = ""
       }
@@ -159,6 +171,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   private func bindRoute(with reactor: FolderDetailViewReactor) {
     contentView.listView.sortButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: LinkListEvent.click(component: .sortby))
+
         guard let vc = self.linkSortBuilder.build(
           payload: .init(
             delegate: self,
@@ -207,11 +221,18 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.contentView.listView.configureEmptyLabel(viewModel: viewModel)
       }
       .disposed(by: disposeBag)
+
+    contentView.searchField.rx.editingDidBegin
+      .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: LinkListEvent.click(component: .searchInput))
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindButton(with reactor: FolderDetailViewReactor) {
     contentView.unreadFilterButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: LinkListEvent.click(component: .filterUnread))
         reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
       }
       .disposed(by: disposeBag)
@@ -248,6 +269,7 @@ extension FolderDetailViewController {
 
   @objc
   private func pop() {
+    analytics.log(type: LinkListEvent.click(component: .back))
     navigationController?.popViewController(animated: true)
   }
 }
@@ -269,6 +291,8 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
           let link = reactor.currentState.linkList.first(where: { $0.id == id }),
           let url = URL(string: link.url) else { return }
 
+    analytics.log(type: LinkListEvent.click(component: .link))
+
     reactor.action.onNext(.readLink(id))
 
     let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
@@ -279,13 +303,15 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
     guard let reactor,
           let link = reactor.currentState.linkList.first(where: { $0.id == id }) else { return }
 
+    analytics.log(type: LinkListEvent.click(component: .buttonKebab))
+
     let linkDetail = linkDetailBuilder.build(payload: .init(
       delegate: self,
       link: link
     ))
 
     if UIDevice.current.userInterfaceIdiom == .pad {
-      self.presentPaperSheet(linkDetail)
+      presentPaperSheet(linkDetail)
     } else {
       navigationController?.pushViewController(linkDetail, animated: true)
     }

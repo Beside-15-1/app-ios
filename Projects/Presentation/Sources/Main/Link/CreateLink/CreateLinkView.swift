@@ -62,12 +62,6 @@ final class CreateLinkView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    super.touchesBegan(touches, with: event)
-
-    endEditing(true)
-  }
-
 
   // MARK: Loading
 

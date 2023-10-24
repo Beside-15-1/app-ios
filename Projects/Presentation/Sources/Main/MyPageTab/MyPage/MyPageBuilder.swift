@@ -5,13 +5,15 @@
 //  Created by 박천송 on 2023/07/20.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct MyPageDependency {
+  let analytics: PBAnalytics
   let loginRepository: LoginRepository
   let tagRepository: TagRepository
   let manageTagBuilder: ManageTagBuildable
@@ -38,6 +40,7 @@ final class MyPageBuilder: MyPageBuildable {
 
     let viewController = MyPageViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       loginBuilder: loginBuilder!,
       manageTagBuilder: dependency.manageTagBuilder,
       webBuilder: dependency.webBuilder,

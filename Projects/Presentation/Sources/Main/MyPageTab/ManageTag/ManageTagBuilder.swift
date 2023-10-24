@@ -5,13 +5,16 @@
 //  Created by 박천송 on 2023/07/22.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
-struct ManageTagDependency {}
+struct ManageTagDependency {
+  let analytics: PBAnalytics
+}
 
 final class ManageTagBuilder: ManageTagBuildable {
 
@@ -27,7 +30,8 @@ final class ManageTagBuilder: ManageTagBuildable {
     )
 
     let viewController = ManageTagViewController(
-      reactor: reactor
+      reactor: reactor,
+      analytics: dependency.analytics
     )
 
     return viewController

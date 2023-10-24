@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class DeleteAccountViewController: UIViewController, StoryboardView {
@@ -26,11 +27,19 @@ final class DeleteAccountViewController: UIViewController, StoryboardView {
 
   weak var delegate: DeleteAccountDelegate?
 
+  private let analytics: PBAnalytics
+
 
   // MARK: Initializing
 
-  init(reactor: DeleteAccountViewReactor) {
+  init(
+    reactor: DeleteAccountViewReactor,
+    analytics: PBAnalytics
+  ) {
     defer { self.reactor = reactor }
+
+    self.analytics = analytics
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -57,13 +66,21 @@ final class DeleteAccountViewController: UIViewController, StoryboardView {
     configureNavigationBar()
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: DeleteAccountEvent.shown)
+  }
+
 
   // MARK: Binding
 
   func bind(reactor: DeleteAccountViewReactor) {
     contentView.checkBox.rx.controlEvent(.touchUpInside)
-      .map{ Reactor.Action.check(!reactor.currentState.isCheck) }
-      .bind(to: reactor.action)
+      .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: DeleteAccountEvent.click(component: .checkAgreeToDeleteData))
+        reactor.action.onNext(.check(!reactor.currentState.isCheck))
+      }
       .disposed(by: disposeBag)
 
     reactor.state.map(\.isCheck)
@@ -86,21 +103,27 @@ final class DeleteAccountViewController: UIViewController, StoryboardView {
 
     contentView.deleteButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: DeleteAccountEvent.click(component: .deleteAccount))
+
         PBDialog(
           title: "정말로 탈퇴하시겠습니까?",
           content: "계정 정보 및 링크, 폴더가 삭제되며\n삭제된 데이터는 복구되지 않습니다.",
           from: self
         )
         .addAction(content: "탈퇴 확인", priority: .secondary, action: {
+          self.analytics.log(type: DeleteAccountEvent.click(component: .confirmdelete))
           reactor.action.onNext(.deleteAccountButtonTapped)
         })
-        .addAction(content: "탈퇴 취소", priority: .primary, action: nil)
+        .addAction(content: "탈퇴 취소", priority: .primary, action: {
+          self.analytics.log(type: DeleteAccountEvent.click(component: .canceldelete))
+        })
         .show()
       }
       .disposed(by: disposeBag)
 
     contentView.useButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: DeleteAccountEvent.click(component: .continueUsing))
         self.navigationController?.popViewController(animated: true)
       }
       .disposed(by: disposeBag)

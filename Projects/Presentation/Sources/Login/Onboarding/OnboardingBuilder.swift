@@ -5,13 +5,15 @@
 //  Created by 박천송 on 2023/08/07.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct OnboardingDependency {
+  let analytics: PBAnalytics
   let mainTabBuilder: MainTabBarBuildable
 }
 
@@ -24,7 +26,9 @@ final class OnboardingBuilder: OnboardingBuildable {
   }
 
   func build(payload: OnboardingPayload) -> UIViewController {
-    let reactor = OnboardingViewReactor()
+    let reactor = OnboardingViewReactor(
+      analytics: dependency.analytics
+    )
 
     let viewController = OnboardingViewController(
       reactor: reactor,

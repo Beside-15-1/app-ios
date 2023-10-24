@@ -1,12 +1,13 @@
 import UIKit
 
-import RxSwift
-import ReactorKit
-import Toaster
 import PanModal
+import ReactorKit
+import RxSwift
+import Toaster
 
-import PresentationInterface
 import DesignSystem
+import PBAnalyticsInterface
+import PresentationInterface
 
 // MARK: - SignUpViewController
 
@@ -24,17 +25,21 @@ final class SignUpViewController: UIViewController, StoryboardView {
   private let signUpSuccessBuilder: SingUpSuccessBuildable
   private let onboardingBuilder: OnboardingBuildable
 
+  private let analytics: PBAnalytics
+
   var disposeBag = DisposeBag()
 
   // MARK: Initializing
 
   init(
     reactor: SignUpViewReactor,
+    analytics: PBAnalytics,
     mainTabBuilder: MainTabBarBuildable,
     signUpSuccessBuilder: SingUpSuccessBuildable,
     onboardingBuilder: OnboardingBuildable
   ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     self.mainTabBuilder = mainTabBuilder
     self.signUpSuccessBuilder = signUpSuccessBuilder
     self.onboardingBuilder = onboardingBuilder
@@ -170,21 +175,22 @@ final class SignUpViewController: UIViewController, StoryboardView {
     navigationItem.rightBarButtonItem = passButton
     navigationItem.rightBarButtonItem?.tintColor = .gray700
     navigationItem.rightBarButtonItem?.setTitleTextAttributes([
-      NSAttributedString.Key.font: UIFont.captionRegular
+      NSAttributedString.Key.font: UIFont.captionRegular,
     ], for: .normal)
     navigationItem.rightBarButtonItem?.setTitleTextAttributes([
-      NSAttributedString.Key.font: UIFont.captionRegular
+      NSAttributedString.Key.font: UIFont.captionRegular,
     ], for: .highlighted)
 
     let attributes = [
       NSAttributedString.Key.foregroundColor: UIColor.staticBlack,
-      NSAttributedString.Key.font: UIFont.defaultRegular
+      NSAttributedString.Key.font: UIFont.defaultRegular,
     ]
     navigationController?.navigationBar.titleTextAttributes = attributes
   }
 
   @objc
   private func pop() {
+    analytics.log(type: SignUpEvent.click(component: .back))
     navigationController?.popViewController(animated: true)
   }
 

@@ -11,7 +11,9 @@ import ReactorKit
 import RxKeyboard
 import RxSwift
 import KeychainAccess
+import FirebaseAnalytics
 
+import PBAnalytics
 import Domain
 import PBUserDefaults
 
@@ -25,6 +27,8 @@ final class ShareViewController: UIViewController, StoryboardView {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  private let analytics = PBAnalyticsImpl(firebaseAnalytics: FirebaseAnalytics.Analytics.self)
 
 
   // MARK: Initializing
@@ -69,6 +73,18 @@ final class ShareViewController: UIViewController, StoryboardView {
     }
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    switch reactor?.currentState.status {
+    case .needLogin:
+      analytics.log(type: ShareLoginEvent.shown)
+    default:
+      analytics.log(type: ShareAddLinkEvent.shown)
+    }
+
+  }
+
 
   // MARK: Binding
 
@@ -89,6 +105,12 @@ final class ShareViewController: UIViewController, StoryboardView {
 
     contentView.boxView.titleView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        if reactor.currentState.status == .needLogin {
+          self.analytics.log(type: ShareLoginEvent.click(component: .close))
+        } else {
+          self.analytics.log(type: ShareAddLinkEvent.click(component: .close))
+        }
+
         self.extensionContext?.completeRequest(returningItems: nil)
       }
       .disposed(by: disposeBag)
@@ -101,9 +123,11 @@ final class ShareViewController: UIViewController, StoryboardView {
           break
 
         case .success:
+          self.analytics.log(type: ShareAddLinkEvent.click(component: .selectFolder))
           reactor.action.onNext(.completeButtonTapped(self.contentView.boxView.titleInputField.text ?? ""))
 
         case .needLogin:
+          self.analytics.log(type: ShareLoginEvent.click(component: .login))
           self.extensionContext?.completeRequest(returningItems: nil) { _ in
             let _ = self.openURL(URL(string: "joosum://")!)
           }
@@ -116,6 +140,8 @@ final class ShareViewController: UIViewController, StoryboardView {
 
     contentView.boxView.selectFolderButton.container.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: ShareAddLinkEvent.click(component: .selectFolder))
+
         let vc = SelectFolderViewController(
           reactor: .init(
             folders: reactor.currentState.folderList, selectedFolder: reactor.currentState.folderList.first
@@ -144,6 +170,8 @@ final class ShareViewController: UIViewController, StoryboardView {
 
     contentView.boxView.addTagButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: ShareAddLinkEvent.click(component: .addTag))
+
         let vc = TagAddViewController(viewModel: .init(
           userDefaults: UserDefaultsManager.shared,
           addedTagList: reactor.currentState.link?.tags ?? [])
@@ -152,6 +180,12 @@ final class ShareViewController: UIViewController, StoryboardView {
         }
 
         self.presentPaperSheet(vc)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.boxView.titleInputField.rx.editingDidBegin
+      .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: ShareAddLinkEvent.click(component: .titleInput))
       }
       .disposed(by: disposeBag)
   }

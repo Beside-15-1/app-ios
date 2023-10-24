@@ -83,6 +83,7 @@ public final class PresentationAssembly: Assembly {
   private func registerHomeBuilder(container: Container) {
     container.register(HomeBuildable.self) { r in
       HomeBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         loginRepository: r.resolve(),
@@ -97,6 +98,7 @@ public final class PresentationAssembly: Assembly {
   private func registerFolderBuilder(container: Container) {
     container.register(MyFolderBuildable.self) { r in
       MyFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         createFolderBuilder: r.resolve(),
         editFolderBuilder: r.resolve(),
@@ -110,6 +112,7 @@ public final class PresentationAssembly: Assembly {
   private func registerMyPageBuilder(container: Container) {
     container.register(MyPageBuildable.self) { r in
       MyPageBuilder(dependency: .init(
+        analytics: r.resolve(),
         loginRepository: r.resolve(),
         tagRepository: r.resolve(),
         manageTagBuilder: r.resolve(),
@@ -124,6 +127,7 @@ public final class PresentationAssembly: Assembly {
   private func registerSignUpBuilder(container: Container) {
     container.register(SignUpBuildable.self) { r in
       SignUpBuilder(dependency: .init(
+        analytics: r.resolve(),
         loginRepository: r.resolve(),
         mainTabBuilder: r.resolve(),
         signUpSuccessBuilder: r.resolve(),
@@ -135,20 +139,26 @@ public final class PresentationAssembly: Assembly {
   private func registerTermsOfUseBuilder(contaier: Container) {
     contaier.register(TermsOfUseBuildable.self) { r in
       TermsOfUseBuilder(dependency: .init(
+        analytics: r.resolve(),
         webBuilder: r.resolve()
       ))
     }
   }
 
   private func registerTagAddBuilder(container: Container) {
-    container.register(TagAddBuildable.self) { _ in
-      TagAddBuilder(dependency: .init())
+    container.register(TagAddBuildable.self) { r in
+      TagAddBuilder(
+        dependency: .init(
+          analytics: r.resolve()
+        )
+      )
     }
   }
 
   private func registerCreateLinkBuilder(container: Container) {
     container.register(CreateLinkBuildable.self) { r in
       CreateLinkBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve(),
         linkRepository: r.resolve(),
         selectFolderBuilder: r.resolve(),
@@ -167,6 +177,7 @@ public final class PresentationAssembly: Assembly {
   private func registerCreateFolderBuilder(container: Container) {
     container.register(CreateFolderBuildable.self) { r in
       CreateFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve()
       ))
     }
@@ -175,6 +186,7 @@ public final class PresentationAssembly: Assembly {
   private func registerEditFolderBuilder(container: Container) {
     container.register(EditFolderBuildable.self) { r in
       EditFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         createFolderBuilder: r.resolve()
       ))
     }
@@ -182,13 +194,16 @@ public final class PresentationAssembly: Assembly {
 
   private func registerFolderSortBuilder(container: Container) {
     container.register(FolderSortBuildable.self) { r in
-      FolderSortBuilder(dependency: .init())
+      FolderSortBuilder(dependency: .init(
+        analytics: r.resolve()
+      ))
     }
   }
 
   private func registerFolderDetailBuilder(container: Container) {
     container.register(FolderDetailBuildable.self) { r in
       FolderDetailBuilder(dependency: .init(
+        analytics: r.resolve(),
         linkRepository: r.resolve(),
         folderRepository: r.resolve(),
         linkSortBuilder: r.resolve(),
@@ -207,6 +222,7 @@ public final class PresentationAssembly: Assembly {
   private func registerLinkDetailBuilder(container: Container) {
     container.register(LinkDetailBuildable.self) { r in
       LinkDetailBuilder(dependency: .init(
+        analytics: r.resolve(),
         linkRepository: r.resolve(),
         createLinkBuilder: r.resolve(),
         moveFolderBuilder: r.resolve(),
@@ -218,6 +234,7 @@ public final class PresentationAssembly: Assembly {
   private func registerMoveFolderBuilder(container: Container) {
     container.register(MoveFolderBuildable.self) { r in
       MoveFolderBuilder(dependency: .init(
+        analytics: r.resolve(),
         folderRepository: r.resolve()
       ))
     }
@@ -225,7 +242,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerManageTagBuilder(container: Container) {
     container.register(ManageTagBuildable.self) { r in
-      ManageTagBuilder(dependency: .init())
+      ManageTagBuilder(dependency: .init(
+        analytics: r.resolve()
+      ))
     }
   }
 
@@ -239,6 +258,7 @@ public final class PresentationAssembly: Assembly {
   private func registerDeleteAccountBuilder(container: Container) {
     container.register(DeleteAccountBuildable.self) { r in
       DeleteAccountBuilder(dependency: .init(
+        analytics: r.resolve(),
         loginRepository: r.resolve()
       ))
     }
@@ -254,6 +274,7 @@ public final class PresentationAssembly: Assembly {
     container.register(OnboardingBuildable.self) { r in
       OnboardingBuilder(
         dependency: .init(
+          analytics: r.resolve(),
           mainTabBuilder: r.resolve()
         )
       )

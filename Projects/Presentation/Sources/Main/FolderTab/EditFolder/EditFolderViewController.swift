@@ -12,6 +12,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class EditFolderViewController: UIViewController, StoryboardView {
@@ -25,6 +26,7 @@ final class EditFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
   private let createFolderBuilder: CreateFolderBuildable
 
   weak var delegate: EditFolderDelegate?
@@ -34,10 +36,12 @@ final class EditFolderViewController: UIViewController, StoryboardView {
 
   init(
     reactor: EditFolderViewReactor,
+    analytics: PBAnalytics,
     createFolderBuilder: CreateFolderBuildable
   ) {
     defer { self.reactor = reactor }
 
+    self.analytics = analytics
     self.createFolderBuilder = createFolderBuilder
 
     super.init(nibName: nil, bundle: nil)
@@ -76,6 +80,7 @@ final class EditFolderViewController: UIViewController, StoryboardView {
     contentView.modifyButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
+        self.analytics.log(type: MyFolderEvent.click(component: .editFolder))
         self.dismiss(animated: true) {
           self.delegate?.editFolderModifyButtonTapped(withFolder: reactor.currentState.folder)
         }
@@ -85,6 +90,7 @@ final class EditFolderViewController: UIViewController, StoryboardView {
     contentView.deleteButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         guard let reactor = self.reactor else { return }
+        self.analytics.log(type: MyFolderEvent.click(component: .deleteFolder))
         self.dismiss(animated: true) {
           self.delegate?.editFolderDeleteButtonTapped(withFolder: reactor.currentState.folder)
         }

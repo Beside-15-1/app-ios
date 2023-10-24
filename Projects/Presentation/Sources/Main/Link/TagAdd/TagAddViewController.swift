@@ -3,8 +3,9 @@ import UIKit
 import PanModal
 import RxSwift
 
-import PresentationInterface
 import DesignSystem
+import PBAnalyticsInterface
+import PresentationInterface
 
 // MARK: - TagAddViewController
 
@@ -20,10 +21,16 @@ final class TagAddViewController: UIViewController {
 
   weak var delegate: TagAddDelegate?
 
+  private let analytics: PBAnalytics
+
   // MARK: Initializing
 
-  init(viewModel: TagAddViewModel) {
+  init(
+    viewModel: TagAddViewModel,
+    analytics: PBAnalytics
+  ) {
     self.viewModel = viewModel
+    self.analytics = analytics
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -41,6 +48,7 @@ final class TagAddViewController: UIViewController {
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] text in
+      self?.analytics.log(type: AddTagEvent.click(component: .editTag))
       self?.contentView.inputField.becomeFirstResponder()
       self?.viewModel.changeEditMode(text: text)
     }
@@ -56,6 +64,11 @@ final class TagAddViewController: UIViewController {
       action: #selector(textDidChange),
       for: .editingChanged
     )
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    analytics.log(type: AddTagEvent.shown)
   }
 
   // MARK: Binding
@@ -107,6 +120,7 @@ final class TagAddViewController: UIViewController {
   private func bindButton(with viewModel: TagAddViewModel) {
     contentView.makeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: AddTagEvent.click(component: .saveTag))
         self.dismiss(animated: true) {
           self.delegate?.tagAddViewControllerMakeButtonTapped(
             tagList: self.viewModel.addedTagList.value
@@ -117,6 +131,7 @@ final class TagAddViewController: UIViewController {
 
     contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: AddTagEvent.click(component: .close))
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -155,7 +170,7 @@ extension TagAddViewController: PanModalPresentable {
   }
 
   func shouldRespond(to panModalGestureRecognizer: UIPanGestureRecognizer) -> Bool {
-    return false
+    false
   }
 }
 
@@ -173,6 +188,7 @@ extension TagAddViewController: UITextFieldDelegate {
     textField.text = ""
 
     if viewModel.tagInputMode == .input {
+      analytics.log(type: AddTagEvent.click(component: .tagInput))
       viewModel.addTag(text: text)
     } else {
       viewModel.editTag(text: text)
@@ -211,12 +227,12 @@ extension TagAddViewController: AddedTagViewDelegate {
 
 extension TagAddViewController: TagListViewDelegate {
   func tagListView(_ tagListView: TagListView, didSelectedRow at: Int) {
-    guard let cell = tagListView.tableView.cellForRow(at: IndexPath(row: at, section: 0))
+    guard let _ = tagListView.tableView.cellForRow(at: IndexPath(row: at, section: 0))
       as? TagListCell else { return }
 
     let selectedTag = viewModel.localTagList.value[at]
 
-    guard let index = viewModel.addedTagList.value.firstIndex(of: selectedTag) else {
+    guard let _ = viewModel.addedTagList.value.firstIndex(of: selectedTag) else {
       viewModel.addTag(text: selectedTag)
       return
     }
@@ -227,6 +243,7 @@ extension TagAddViewController: TagListViewDelegate {
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {
+    analytics.log(type: AddTagEvent.click(component: .deleteTag))
     viewModel.removeTagListTag(at: at)
   }
 }

@@ -7,12 +7,12 @@
 
 import UIKit
 
+import PanModal
 import ReactorKit
 import RxSwift
-import PanModal
 
+import PBAnalyticsInterface
 import PresentationInterface
-
 
 final class FolderSortViewController: UIViewController, StoryboardView {
 
@@ -27,11 +27,17 @@ final class FolderSortViewController: UIViewController, StoryboardView {
 
   weak var delegate: FolderSortDelegate?
 
+  private let analytics: PBAnalytics
+
 
   // MARK: Initializing
 
-  init(reactor: FolderSortViewReactor) {
+  init(
+    reactor: FolderSortViewReactor,
+    analytics: PBAnalytics
+  ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -56,6 +62,7 @@ final class FolderSortViewController: UIViewController, StoryboardView {
   func bind(reactor: FolderSortViewReactor) {
     contentView.createButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: MyFolderEvent.click(component: .createdDate))
         self.dismiss(animated: true) {
           self.delegate?.folderSortListItemTapped(type: .create)
         }
@@ -64,6 +71,7 @@ final class FolderSortViewController: UIViewController, StoryboardView {
 
     contentView.namingButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: MyFolderEvent.click(component: .name))
         self.dismiss(animated: true) {
           self.delegate?.folderSortListItemTapped(type: .naming)
         }
@@ -72,6 +80,7 @@ final class FolderSortViewController: UIViewController, StoryboardView {
 
     contentView.updateButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: MyFolderEvent.click(component: .updatedDate))
         self.dismiss(animated: true) {
           self.delegate?.folderSortListItemTapped(type: .update)
         }

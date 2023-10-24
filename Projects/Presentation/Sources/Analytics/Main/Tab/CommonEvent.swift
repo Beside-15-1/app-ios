@@ -1,23 +1,28 @@
+//
+//  CommonEvent.swift
+//  Presentation
+//
+//  Created by 박천송 on 2023/10/17.
+//
+
 import Foundation
 
 import PBAnalyticsInterface
 
-// MARK: - LoginEvent
-
-enum LoginEvent {
-  case click(component: String)
+enum CommonEvent {
+  case click(component: CommonClickComponent)
 }
 
 // MARK: PBAnalyticsType
 
-extension LoginEvent: PBAnalyticsType {
+extension CommonEvent: PBAnalyticsType {
   var name: String {
     switch self {
 
     case .click:
       return PBAnalyticsEventNameBuilder()
         .action(with: .clicked)
-        .screen(with: "login")
+        .screen(with: "common")
         .version(with: 1)
         .build()
     }
@@ -27,8 +32,15 @@ extension LoginEvent: PBAnalyticsType {
     switch self {
     case .click(let component):
       return PBAnalyticsParameterBuilder()
-        .component(with: component)
+        .component(with: component.rawValue)
         .build()
     }
   }
 }
+
+enum CommonClickComponent: String {
+  case naviHome
+  case naviMyFolder
+  case naviMyPage
+}
+

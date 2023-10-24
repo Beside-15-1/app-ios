@@ -1,10 +1,11 @@
 import Foundation
 
+import ReactorKit
 import RxRelay
 import RxSwift
-import ReactorKit
 
 import Domain
+import PBAnalyticsInterface
 
 final class SignUpViewReactor: Reactor {
 
@@ -42,7 +43,7 @@ final class SignUpViewReactor: Reactor {
       return false
     }
 
-    var isSucceed: Bool = false
+    var isSucceed = false
     @Pulse var error: Error?
   }
 
@@ -53,6 +54,8 @@ final class SignUpViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
+
 
   // MARK: UseCase
 
@@ -62,15 +65,17 @@ final class SignUpViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     signUpUseCase: SignUpUseCase,
     accessToken: String,
     social: String
   ) {
     defer { _ = self.state }
 
+    self.analytics = analytics
     self.signUpUseCase = signUpUseCase
 
-    initialState = State(
+    self.initialState = State(
       accessToken: accessToken,
       social: social
     )
@@ -86,15 +91,29 @@ final class SignUpViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .genderButtonTapped(let gender):
+      switch gender {
+      case "w":
+        analytics.log(type: SignUpEvent.click(component: .female))
+      case "m":
+        analytics.log(type: SignUpEvent.click(component: .male))
+      case "etc":
+        analytics.log(type: SignUpEvent.click(component: .etc))
+      default:
+        break
+      }
+
       return .just(Mutation.setGender(gender))
 
     case .selectYear(let year):
+      analytics.log(type: SignUpEvent.click(component: .birthyear))
       return .just(Mutation.setYear(year))
 
     case .completeButtonTapped:
+      analytics.log(type: SignUpEvent.click(component: .next))
       return signUp()
 
     case .passButtonTapped:
+      analytics.log(type: SignUpEvent.click(component: .skip))
       return pass()
     }
   }

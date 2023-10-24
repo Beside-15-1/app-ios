@@ -13,6 +13,7 @@ import RxSwift
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class MyFolderViewController: UIViewController, StoryboardView {
@@ -26,6 +27,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
   private let createFolderBuilder: CreateFolderBuildable
   private let editFolderBuilder: EditFolderBuildable
   private let folderSortBuilder: FolderSortBuildable
@@ -39,6 +41,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
   init(
     reactor: MyFolderViewReactor,
+    analytics: PBAnalytics,
     createFolderBuilder: CreateFolderBuildable,
     editFolderBuilder: EditFolderBuildable,
     folderSortBuilder: FolderSortBuildable,
@@ -47,6 +50,7 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   ) {
     defer { self.reactor = reactor }
 
+    self.analytics = analytics
     self.createFolderBuilder = createFolderBuilder
     self.editFolderBuilder = editFolderBuilder
     self.folderSortBuilder = folderSortBuilder
@@ -81,6 +85,12 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
     navigationController?.isNavigationBarHidden = true
     reactor?.action.onNext(.viewWillAppear)
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: MyFolderEvent.shown)
   }
 
 
@@ -120,6 +130,9 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   private func bindButton(with reactor: MyFolderViewReactor) {
     contentView.myFolderListView.createFolderButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: MyFolderEvent.click(component: .addFolder))
+
         let vc = self.createFolderBuilder.build(
           payload: .init(
             folder: nil,
@@ -133,6 +146,9 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
     contentView.myFolderListView.sortButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: MyFolderEvent.click(component: .sortBy))
+
         guard let vc = self.folderSortBuilder.build(
           payload: .init(
             delegate: self,
@@ -158,6 +174,9 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: MyFolderEvent.click(component: .addLink))
+
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
           link: nil
@@ -188,14 +207,14 @@ final class MyFolderViewController: UIViewController, StoryboardView {
   }
 
   func createFolder() {
-    let vc = self.createFolderBuilder.build(
+    let vc = createFolderBuilder.build(
       payload: .init(
         folder: nil,
         delegate: self
       )
     )
 
-    self.presentPaperSheet(vc)
+    presentPaperSheet(vc)
   }
 }
 
@@ -228,7 +247,7 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
     else {
       presentModal(
         vc,
-        preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+        preferredContentSize: CGSize(width: 375, height: 210 - view.safeAreaInsets.bottom),
         arrowDirection: .any,
         sourceView: contentView.myFolderListView.sortButton,
         sourceRect: .init(
@@ -244,7 +263,7 @@ extension MyFolderViewController: MyFolderCollectionViewDelegate {
 
     presentModal(
       vc,
-      preferredContentSize: CGSize(width: 375, height: 210 - self.view.safeAreaInsets.bottom),
+      preferredContentSize: CGSize(width: 375, height: 210 - view.safeAreaInsets.bottom),
       arrowDirection: .down,
       sourceView: selectedCell.moreButton,
       sourceRect: .init(

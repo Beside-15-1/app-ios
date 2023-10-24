@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 // MARK: - CreateLinkDependency
 
 struct CreateLinkDependency {
+  let analytics: PBAnalytics
   let folderRepository: FolderRepository
   let linkRepository: LinkRepository
   let selectFolderBuilder: SelectFolderBuildable
@@ -25,6 +27,7 @@ final class CreateLinkBuilder: CreateLinkBuildable {
 
   func build(payload: CreateLinkPayload) -> UIViewController {
     let reactor = CreateLinkViewReactor(
+      analytics: dependency.analytics,
       fetchThumbnailUseCase: FetchThumbnailUseCaseImpl(
         linkRepository: dependency.linkRepository
       ),
@@ -44,6 +47,7 @@ final class CreateLinkBuilder: CreateLinkBuildable {
 
     let viewController = CreateLinkViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       selectFolderBuilder: dependency.selectFolderBuilder,
       tagAddBuilder: dependency.tagAddBuilder,
       createFolderBuilder: dependency.createFolderBuilder

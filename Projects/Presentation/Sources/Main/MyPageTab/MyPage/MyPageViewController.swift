@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 import PBLog
 import PresentationInterface
 
@@ -27,6 +28,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
   private var transition: UIViewControllerAnimatedTransitioning?
 
+  private let analytics: PBAnalytics
   private let loginBuilder: LoginBuildable
   private let manageTagBuilder: ManageTagBuildable
   private let webBuilder: PBWebBuildable
@@ -36,6 +38,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
   init(
     reactor: MyPageViewReactor,
+    analytics: PBAnalytics,
     loginBuilder: LoginBuildable,
     manageTagBuilder: ManageTagBuildable,
     webBuilder: PBWebBuildable,
@@ -43,6 +46,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
   ) {
     defer { self.reactor = reactor }
 
+    self.analytics = analytics
     self.loginBuilder = loginBuilder
     self.manageTagBuilder = manageTagBuilder
     self.webBuilder = webBuilder
@@ -74,6 +78,12 @@ final class MyPageViewController: UIViewController, StoryboardView {
     navigationController?.isNavigationBarHidden = true
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: MyPageEvent.shown)
+  }
+
 
   // MARK: Binding
 
@@ -92,6 +102,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
         )
         .addAction(content: "아니오", priority: .secondary, action: nil)
         .addAction(content: "로그아웃", priority: .primary, action: {
+          self.analytics.log(type: MyPageEvent.click(component: .logout))
           self.reactor?.action.onNext(.logoutButtonTapped)
         })
         .show()
@@ -141,6 +152,9 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
     contentView.tagButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+
+        self.analytics.log(type: MyPageEvent.click(component: .settingTag))
+
         let manageTag = self.manageTagBuilder.build(payload: .init())
 
         self.navigationController?.pushViewController(manageTag, animated: true)
@@ -152,6 +166,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
         guard let url = URL(string: "https://joosum.notion.site/6df241a6e3174b8fbfc7933a506a0b1e?pvs=4") else {
           return
         }
+
+        self.analytics.log(type: MyPageEvent.click(component: .termsOfService))
 
         let web = self.webBuilder.build(payload: .init(url: url))
 
@@ -165,6 +181,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
+        self.analytics.log(type: MyPageEvent.click(component: .privacyPolicy))
+
         let web = self.webBuilder.build(payload: .init(url: url))
 
         self.presentPaperSheet(web)
@@ -177,6 +195,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
           return
         }
 
+        self.analytics.log(type: MyPageEvent.click(component: .contact))
+
         let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
 
         UIApplication.shared.open(url, options: options)
@@ -185,6 +205,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
 
     contentView.deleteAccountButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: MyPageEvent.click(component: .deleteAccount))
+
         let deleteAccount = self.deleteAccountBuilder.build(
           payload: .init(
             delegate: self
@@ -199,6 +221,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         // 앱 미설치시 앱스토어로 연결
         if self.contentView.versionButton.canUpdate {
+          self.analytics.log(type: MyPageEvent.click(component: .version))
           if let openStore = URL(string: "https://apps.apple.com/kr/app/%EC%A3%BC%EC%84%AC-joosum/id6455258212"),
              UIApplication.shared.canOpenURL(openStore) {
             UIApplication.shared.open(openStore, options: [:], completionHandler: nil)
@@ -234,11 +257,11 @@ extension MyPageViewController: UINavigationControllerDelegate {
 
 extension MyPageViewController: DeleteAccountDelegate {
   func deleteAccountSuccess() {
-    let vc = self.loginBuilder.build(payload: .init())
-    self.transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
-    self.splitViewController?.changeDisplayMode(to: .secondaryOnly)
-    let navigation = self.splitViewController?.viewController(for: .secondary) as? UINavigationController
+    let vc = loginBuilder.build(payload: .init())
+    transition = FadeAnimator(animationDuration: 0.5, isPresenting: true)
+    splitViewController?.changeDisplayMode(to: .secondaryOnly)
+    let navigation = splitViewController?.viewController(for: .secondary) as? UINavigationController
     navigation?.setViewControllers([vc], animated: true)
-    self.transition = nil
+    transition = nil
   }
 }

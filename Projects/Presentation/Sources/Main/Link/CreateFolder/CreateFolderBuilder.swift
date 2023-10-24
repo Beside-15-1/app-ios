@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 // MARK: - CreateFolderDependency
 
 struct CreateFolderDependency {
+  let analytics: PBAnalytics
   let folderRepository: FolderRepository
 }
 
@@ -34,7 +36,8 @@ final class CreateFolderBuilder: CreateFolderBuildable {
     )
 
     let viewController = CreateFolderViewController(
-      reactor: reactor
+      reactor: reactor,
+      analytics: dependency.analytics
     ).then {
       $0.delegate = payload.delegate
     }

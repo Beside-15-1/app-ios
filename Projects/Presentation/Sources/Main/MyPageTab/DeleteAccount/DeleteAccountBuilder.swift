@@ -5,13 +5,15 @@
 //  Created by 박천송 on 2023/07/22.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct DeleteAccountDependency {
+  let analytics: PBAnalytics
   let loginRepository: LoginRepository
 }
 
@@ -31,7 +33,8 @@ final class DeleteAccountBuilder: DeleteAccountBuildable {
     )
 
     let viewController = DeleteAccountViewController(
-      reactor: reactor
+      reactor: reactor,
+      analytics: dependency.analytics
     ).then {
       $0.delegate = payload.delegate
     }

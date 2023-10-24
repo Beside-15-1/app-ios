@@ -9,9 +9,11 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct LinkDetailDependency {
+  let analytics: PBAnalytics
   let linkRepository: LinkRepository
   let createLinkBuilder: CreateLinkBuildable
   let moveFolderBuilder: MoveFolderBuildable
@@ -40,6 +42,7 @@ final class LinkDetailBuilder: LinkDetailBuildable {
 
     let viewController = LinkDetailViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       createLinkBuilder: dependency.createLinkBuilder,
       moveFolderBuilder: dependency.moveFolderBuilder,
       webBuilder: dependency.webBuilder
