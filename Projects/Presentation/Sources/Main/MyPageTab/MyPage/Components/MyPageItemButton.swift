@@ -14,6 +14,7 @@ import DesignSystem
 import PBUserDefaults
 
 enum MyPageItemType {
+  case push
   case tag
   case theme
 
@@ -86,6 +87,14 @@ final class MyPageItemButton: UIControl {
 
   func configure(type: MyPageItemType) {
     switch type {
+    case .push:
+      leftIcon.image = DesignSystemAsset.iconBellOutline.image.withTintColor(.gray900)
+      titleLabel.attributedText = "알림 설정".styled(font: .defaultBold, color: .gray900)
+      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      leftIcon.isHidden = false
+      titleLabel.isHidden = false
+      rightIcon.isHidden = false
+
     case .tag:
       leftIcon.image = DesignSystemAsset.iconHash.image.withTintColor(.gray900)
       titleLabel.attributedText = "태그 관리".styled(font: .defaultBold, color: .gray900)

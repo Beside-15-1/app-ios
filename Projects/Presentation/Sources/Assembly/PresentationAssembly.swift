@@ -37,6 +37,7 @@ public final class PresentationAssembly: Assembly {
       registerSignUpSuccessBuilder,
       registerOnboardingBuilder,
       registerMasterBuilder,
+      registerPushSettingBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -117,7 +118,8 @@ public final class PresentationAssembly: Assembly {
         tagRepository: r.resolve(),
         manageTagBuilder: r.resolve(),
         webBuilder: r.resolve(),
-        deleteAccountBuilder: r.resolve()
+        deleteAccountBuilder: r.resolve(),
+        pushSettingBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -285,6 +287,14 @@ public final class PresentationAssembly: Assembly {
     container.register(MasterBuildable.self) { r in
       MasterBuilder(dependency: .init(
         folderRepository: r.resolve()
+      ))
+    }
+  }
+
+  private func registerPushSettingBuilder(container: Container) {
+    container.register(PushSettingBuildable.self) { r in
+      PushSettingBuilder(dependency: .init(
+        pushRepository: r.resolve()
       ))
     }
   }

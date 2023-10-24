@@ -33,6 +33,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
   private let manageTagBuilder: ManageTagBuildable
   private let webBuilder: PBWebBuildable
   private let deleteAccountBuilder: DeleteAccountBuildable
+  private let pushSettingBuilder: PushSettingBuildable
 
   // MARK: Initializing
 
@@ -42,7 +43,8 @@ final class MyPageViewController: UIViewController, StoryboardView {
     loginBuilder: LoginBuildable,
     manageTagBuilder: ManageTagBuildable,
     webBuilder: PBWebBuildable,
-    deleteAccountBuilder: DeleteAccountBuildable
+    deleteAccountBuilder: DeleteAccountBuildable,
+    pushSettingBuilder: PushSettingBuildable
   ) {
     defer { self.reactor = reactor }
 
@@ -51,6 +53,7 @@ final class MyPageViewController: UIViewController, StoryboardView {
     self.manageTagBuilder = manageTagBuilder
     self.webBuilder = webBuilder
     self.deleteAccountBuilder = deleteAccountBuilder
+    self.pushSettingBuilder = pushSettingBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -227,6 +230,14 @@ final class MyPageViewController: UIViewController, StoryboardView {
             UIApplication.shared.open(openStore, options: [:], completionHandler: nil)
           }
         }
+      }
+      .disposed(by: disposeBag)
+
+    contentView.pushButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let push = self.pushSettingBuilder.build(payload: .init())
+
+        self.navigationController?.pushViewController(push, animated: true)
       }
       .disposed(by: disposeBag)
   }
