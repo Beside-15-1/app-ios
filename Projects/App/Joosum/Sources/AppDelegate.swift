@@ -2,11 +2,15 @@ import UIKit
 
 import FirebaseCore
 import FirebaseMessaging
+import RxSwift
+
 import PBLog
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
   let dependency: AppDependency
+
+  let disposeBag = DisposeBag()
 
   override private init() {
     self.dependency = AppAssembly.resolve()
@@ -22,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     configureNotification(application)
 
     Messaging.messaging().delegate = self
-    
+
     return true
   }
 }
@@ -44,8 +48,10 @@ extension AppDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
 
   public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-    let firebaseToken = fcmToken ?? ""
-    print("firebase token: \(firebaseToken)")
+    guard let firebaseToken = fcmToken else { return }
+    dependency.pushRepository.updateDeviceID(id: firebaseToken)
+      .subscribe(onSuccess: nil)
+      .disposed(by: disposeBag)
   }
 
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
