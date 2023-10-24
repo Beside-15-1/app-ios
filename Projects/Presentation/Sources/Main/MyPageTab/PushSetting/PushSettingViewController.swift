@@ -45,6 +45,8 @@ final class PushSettingViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    reactor?.action.onNext(.viewDidLoad)
+
     navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
 
@@ -59,7 +61,27 @@ final class PushSettingViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: PushSettingViewReactor) {}
+  func bind(reactor: PushSettingViewReactor) {
+    reactor.state.map(\.config)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, config in
+        self.contentView.unreadItem.configureSwitch(isOn: config.isReadAgree)
+        self.contentView.unclassifyItem.configureSwitch(isOn: config.isClassifyAgree)
+      }
+      .disposed(by: disposeBag)
+
+    contentView.unreadItem.settingSwitch.rx.isOn
+      .skip(1)
+      .map { Reactor.Action.updateUnreadAgree($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.unclassifyItem.settingSwitch.rx.isOn
+      .skip(1)
+      .map { Reactor.Action.updateUnclassifyAgree($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+  }
 }
 
 

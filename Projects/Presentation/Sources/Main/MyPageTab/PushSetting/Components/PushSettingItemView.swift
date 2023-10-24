@@ -23,7 +23,7 @@ final class PushSettingItemView: UIView {
 
   private let descriptionLabel = UILabel()
 
-  private let settingSwitch = UISwitch().then {
+  let settingSwitch = UISwitch().then {
     $0.onTintColor = .naviBtnActive
     $0.isOn = false
   }
