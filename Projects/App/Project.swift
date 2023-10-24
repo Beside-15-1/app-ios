@@ -69,6 +69,7 @@ let project = Project(
         .core(impl: .PBAuth),
         .core(impl: .PBUserDefaults),
         .core(interface: .PBAuth),
+        .core(interface: .PBAnalytics),
         // External
         .external(dependency: .Swinject),
         .external(dependency: .ReactorKit),
@@ -78,6 +79,7 @@ let project = Project(
         .external(dependency: .RxKeyboard),
         .external(dependency: .KeychainAccess),
         .external(dependency: .SwiftSoup),
+        .external(dependency: .FirebaseAnalytics),
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
