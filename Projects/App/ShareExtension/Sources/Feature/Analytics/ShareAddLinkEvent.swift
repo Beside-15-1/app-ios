@@ -11,6 +11,7 @@ import PBAnalyticsInterface
 
 enum ShareAddLinkEvent {
   case click(component: ShareAddLinkClickComponent)
+  case shown
 }
 
 // MARK: PBAnalyticsType
@@ -24,6 +25,13 @@ extension ShareAddLinkEvent: PBAnalyticsType {
         .screen(with: "shareAddLink")
         .version(with: 1)
         .build()
+
+    case .shown:
+      return PBAnalyticsEventNameBuilder()
+        .action(with: .shown)
+        .screen(with: "shareAddLink")
+        .version(with: 1)
+        .build()
     }
   }
 
@@ -33,6 +41,9 @@ extension ShareAddLinkEvent: PBAnalyticsType {
       return PBAnalyticsParameterBuilder()
         .component(with: component.rawValue)
         .build()
+
+    case .shown:
+      return nil
     }
   }
 }
