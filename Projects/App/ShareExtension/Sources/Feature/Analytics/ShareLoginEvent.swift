@@ -11,6 +11,7 @@ import PBAnalyticsInterface
 
 enum ShareLoginEvent {
   case click(component: ShareLoginClickComponent)
+  case shown
 }
 
 // MARK: PBAnalyticsType
@@ -24,6 +25,13 @@ extension ShareLoginEvent: PBAnalyticsType {
         .screen(with: "shareLogin")
         .version(with: 1)
         .build()
+
+    case .shown:
+      return PBAnalyticsEventNameBuilder()
+        .action(with: .shown)
+        .screen(with: "shareLogin")
+        .version(with: 1)
+        .build()
     }
   }
 
@@ -33,6 +41,9 @@ extension ShareLoginEvent: PBAnalyticsType {
       return PBAnalyticsParameterBuilder()
         .component(with: component.rawValue)
         .build()
+
+    case .shown:
+      return nil
     }
   }
 }
