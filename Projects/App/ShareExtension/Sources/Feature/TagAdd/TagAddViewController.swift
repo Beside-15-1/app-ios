@@ -1,9 +1,11 @@
 import UIKit
 
+import FirebaseAnalytics
 import PanModal
 import RxSwift
 
 import DesignSystem
+import PBAnalyticsInterface
 
 protocol TagAddDelegate: AnyObject {
   func tagAddViewControllerMakeButtonTapped(tagList: [String])
@@ -21,6 +23,8 @@ final class TagAddViewController: UIViewController {
   private let disposeBag = DisposeBag()
 
   weak var delegate: TagAddDelegate?
+
+  private let analytics = PBAnalyticsImpl(firebaseAnalytics: FirebaseAnalytics.Analytics.self)
 
   // MARK: Initializing
 
@@ -43,6 +47,7 @@ final class TagAddViewController: UIViewController {
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] text in
+      self?.analytics.log(type: ShareSelectTagEvent.click(component: .editTag))
       self?.contentView.inputField.becomeFirstResponder()
       self?.viewModel.changeEditMode(text: text)
     }
@@ -58,6 +63,12 @@ final class TagAddViewController: UIViewController {
       action: #selector(textDidChange),
       for: .editingChanged
     )
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    analytics.log(type: ShareSelectTagEvent.shown)
   }
 
   // MARK: Binding
@@ -109,6 +120,7 @@ final class TagAddViewController: UIViewController {
   private func bindButton(with viewModel: TagAddViewModel) {
     contentView.makeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: ShareSelectTagEvent.click(component: .saveTag))
         self.dismiss(animated: true) {
           self.delegate?.tagAddViewControllerMakeButtonTapped(
             tagList: self.viewModel.addedTagList.value
@@ -119,6 +131,7 @@ final class TagAddViewController: UIViewController {
 
     contentView.titleView.closeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        self.analytics.log(type: ShareSelectTagEvent.click(component: .close))
         self.dismiss(animated: true)
       }
       .disposed(by: disposeBag)
@@ -157,7 +170,7 @@ extension TagAddViewController: PanModalPresentable {
   }
 
   func shouldRespond(to panModalGestureRecognizer: UIPanGestureRecognizer) -> Bool {
-    return false
+    false
   }
 }
 
@@ -186,6 +199,7 @@ extension TagAddViewController: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     viewModel.editedTag = nil
     viewModel.tagInputMode = .input
+    self.analytics.log(type: ShareSelectTagEvent.click(component: .tagInput))
   }
 
   @objc
@@ -205,6 +219,7 @@ extension TagAddViewController: UITextFieldDelegate {
 
 extension TagAddViewController: AddedTagViewDelegate {
   func removeAddedTag(at row: Int) {
+    self.analytics.log(type: ShareSelectTagEvent.click(component: .deleteTag))
     viewModel.removeAddedTag(at: row)
   }
 }

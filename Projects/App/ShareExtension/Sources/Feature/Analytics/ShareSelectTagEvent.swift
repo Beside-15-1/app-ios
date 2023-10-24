@@ -11,6 +11,7 @@ import PBAnalyticsInterface
 
 enum ShareSelectTagEvent {
   case click(component: ShareSelectTagClickComponent)
+  case shown
 }
 
 // MARK: PBAnalyticsType
@@ -24,6 +25,13 @@ extension ShareSelectTagEvent: PBAnalyticsType {
         .screen(with: "shareSelectTag")
         .version(with: 1)
         .build()
+
+    case .shown:
+      return PBAnalyticsEventNameBuilder()
+        .action(with: .shown)
+        .screen(with: "shareSelectTag")
+        .version(with: 1)
+        .build()
     }
   }
 
@@ -33,6 +41,9 @@ extension ShareSelectTagEvent: PBAnalyticsType {
       return PBAnalyticsParameterBuilder()
         .component(with: component.rawValue)
         .build()
+
+    case .shown:
+      return nil
     }
   }
 }
