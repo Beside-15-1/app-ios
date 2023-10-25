@@ -35,7 +35,7 @@ final class EditFolderDeleteButton: UIControl {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    backgroundColor = .paperWhite
+    backgroundColor = .clear
     transform = .identity
     clipsToBounds = true
     layer.cornerRadius = 8.0
@@ -75,7 +75,7 @@ final class EditFolderDeleteButton: UIControl {
       withDuration: 0.1,
       delay: 0,
       animations: {
-        self.backgroundColor = self.isHighlighted ? .gray100 : .paperWhite
+        self.backgroundColor = self.isHighlighted ? .gray100 : .gray100
         self.transform = self.isHighlighted ? .init(scaleX: 0.95, y: 0.95) : .identity
       }
     )
