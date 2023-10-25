@@ -19,6 +19,7 @@ public final class DataAssembly: Assembly {
       registerFolderRepository,
       registerLinkRepository,
       registerTagRepository,
+      registerPushRepository,
     ]
 
     registerFunctions.forEach { $0(container) }
@@ -58,6 +59,16 @@ public final class DataAssembly: Assembly {
   private func registerTagRepository(container: Container) {
     container.register(TagRepository.self) { r in
       TagRepositoryImpl(
+        networking: .init(
+          keychain: Keychain(service: "com.pinkboss.joosum")
+        )
+      )
+    }
+  }
+
+  private func registerPushRepository(container: Container) {
+    container.register(PushRepository.self) { r in
+      PushRepositoryImpl(
         networking: .init(
           keychain: Keychain(service: "com.pinkboss.joosum")
         )

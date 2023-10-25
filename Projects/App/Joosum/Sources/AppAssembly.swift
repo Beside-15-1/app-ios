@@ -5,6 +5,7 @@ import FirebaseCore
 import Swinject
 
 import Data
+import Domain
 import PBAnalytics
 import PBAuth
 import PBAuthInterface
@@ -17,6 +18,7 @@ import ShareExtension
 struct AppDependency {
   let rootViewController: UIViewController
   let configureFirebase: () -> Void
+  let pushRepository: PushRepository
 }
 
 // MARK: - AppAssembly
@@ -42,11 +44,14 @@ enum AppAssembly {
       isLogin: isLogin
     ))
 
+    let pushRepository = resolver.resolve(PushRepository.self)!
+
     return AppDependency(
       rootViewController: rootViewController,
       configureFirebase: {
         FirebaseApp.configure()
-      }
+      },
+      pushRepository: pushRepository
     )
   }
 }

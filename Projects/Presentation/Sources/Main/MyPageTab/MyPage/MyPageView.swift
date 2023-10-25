@@ -35,6 +35,10 @@ final class MyPageView: UIView {
     $0.configureTitle(title: "설정")
   }
 
+  let pushButton = MyPageItemButton().then {
+    $0.configure(type: .push)
+  }
+
   let tagButton = MyPageItemButton().then {
     $0.configure(type: .tag)
   }
@@ -123,7 +127,7 @@ final class MyPageView: UIView {
     [settingHeaderView, settingStackView, accountHeaderView, accountStackView, appInfoHeaderView, appInfoStackView, deleteAccountButton]
       .forEach { scrollView.addSubview($0) }
 
-    [tagButton, themeButton].forEach { settingStackView.addArrangedSubview($0) }
+    [pushButton, tagButton, themeButton].forEach { settingStackView.addArrangedSubview($0) }
     [accountButton].forEach { accountStackView.addArrangedSubview($0) }
     [serviceButton, securityButton, csButton, versionButton, logoutButton]
       .forEach { appInfoStackView.addArrangedSubview($0) }
