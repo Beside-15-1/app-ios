@@ -32,7 +32,7 @@ class WhiteTabCell: UICollectionViewCell {
 
   override var isSelected: Bool {
     didSet {
-      //guard isSelected != oldValue else { return }
+      guard isSelected != oldValue else { return }
       configure(isSelected: isSelected)
     }
   }
@@ -57,7 +57,11 @@ class WhiteTabCell: UICollectionViewCell {
   // MARK: Configuring
 
   func configure(title: String) {
-    titleLabel.attributedText = title.styled(font: .subTitleRegular, color: .gray600)
+    if isSelected {
+      titleLabel.attributedText = title.styled(font: .subTitleBold, color: .white)
+    } else {
+      titleLabel.attributedText = title.styled(font: .subTitleRegular, color: .gray600)
+    }
     titleLabel.textAlignment = .center
   }
 
@@ -73,6 +77,7 @@ class WhiteTabCell: UICollectionViewCell {
       titleLabel.attributedText = titleLabel.text?.styled(font: .subTitleRegular, color: .gray600)
       titleLabel.textAlignment = .center
     }
+    setNeedsLayout()
   }
 
 
