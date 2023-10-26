@@ -65,8 +65,14 @@ final class LinkSortView: UIView {
     }
 
     buttonStackView.snp.makeConstraints {
+      if UIDevice.current.userInterfaceIdiom == .pad {
+        $0.left.equalToSuperview().inset(12.0)
+        $0.right.equalToSuperview().inset(24.0)
+      } else {
+        $0.left.right.equalToSuperview().inset(12.0)
+      }
       $0.top.equalTo(titleView.snp.bottom).offset(12.0)
-      $0.left.right.equalToSuperview().inset(12.0)
+
       $0.bottom.equalTo(safeAreaLayoutGuide).inset(28.0)
     }
   }
