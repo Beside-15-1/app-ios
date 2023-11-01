@@ -24,7 +24,7 @@ final class TagAddTitleView: UIView {
   }
 
   private let divider = UIView().then {
-    $0.backgroundColor = UIColor(hexString: "#E0E0E0")
+    $0.backgroundColor = .border1
   }
 
   // MARK: Initialize
