@@ -72,9 +72,12 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
-    navigationController?.isNavigationBarHidden = false
-
-    configureNavigationBar()
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      configureIPadNavigationBar()
+    } else {
+      navigationController?.isNavigationBarHidden = false
+      configureNavigationBar()
+    }
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -246,7 +249,7 @@ extension LinkDetailViewController {
       let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
 
       if let popover = activityViewController.popoverPresentationController {
-        popover.barButtonItem = navigationItem.rightBarButtonItem
+        popover.sourceView = contentView.navigationBar.shareButton
         present(activityViewController, animated: true)
       }
     } else {
@@ -254,6 +257,16 @@ extension LinkDetailViewController {
 
       activityViewController.excludedActivityTypes = []
       present(activityViewController, animated: true, completion: nil)
+    }
+  }
+
+  private func configureIPadNavigationBar() {
+    contentView.navigationBar.configureCloseButtonAction { [weak self] in
+      self?.dismiss(animated: true)
+    }
+
+    contentView.navigationBar.configureShareButtonAction { [weak self] in
+      self?.share()
     }
   }
 }

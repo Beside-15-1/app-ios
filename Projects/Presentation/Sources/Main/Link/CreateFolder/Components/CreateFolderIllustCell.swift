@@ -19,6 +19,10 @@ final class CreateFolderIllustCell: UICollectionViewCell {
 
   // MARK: UI
 
+  private let container = UIView().then {
+    $0.backgroundColor = .illustBg
+  }
+
   private let noImageLabel = UILabel().then {
     $0.attributedText = "선택 안함".styled(font: .bodyRegular, color: .gray700)
   }
@@ -30,7 +34,7 @@ final class CreateFolderIllustCell: UICollectionViewCell {
 
   override var isSelected: Bool {
     didSet {
-      contentView.backgroundColor = isSelected ? .primary500.withAlphaComponent(0.2) : .gray300
+      container.backgroundColor = isSelected ? .primary500.withAlphaComponent(0.2) : .illustBg
     }
   }
 
@@ -40,7 +44,7 @@ final class CreateFolderIllustCell: UICollectionViewCell {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    contentView.backgroundColor = .gray300
+    contentView.backgroundColor = .illustBg
     contentView.layer.cornerRadius = 8
     contentView.clipsToBounds = true
 
@@ -78,7 +82,12 @@ final class CreateFolderIllustCell: UICollectionViewCell {
   // MARK: Layout
 
   private func defineLayout() {
-    [noImageLabel, illust].forEach { contentView.addSubview($0) }
+    [container].forEach { contentView.addSubview($0) }
+    [noImageLabel, illust].forEach { container.addSubview($0) }
+
+    container.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
 
     noImageLabel.snp.makeConstraints {
       $0.center.equalToSuperview()

@@ -32,6 +32,9 @@ final class SortListButton: UIControl {
     defineLayout()
   }
 
+
+  // MARK: Configuring
+
   func configureTitle(title: String) {
     titleLabel.attributedText = title.styled(font: .defaultSemiBold, color: .staticBlack)
   }
@@ -44,7 +47,6 @@ final class SortListButton: UIControl {
       self.backgroundColor = .clear
       self.selectIcon.isHidden = true
     }
-
   }
 
   required init?(coder: NSCoder) {

@@ -62,6 +62,7 @@ class MoveFolderCell: UICollectionViewCell {
     $0.isHidden = true
     $0.clipsToBounds = true
     $0.layer.cornerRadius = 8
+    $0.layer.borderWidth = 1
   }
 
   private let checkIcon = UIImageView().then {
@@ -145,6 +146,8 @@ class MoveFolderCell: UICollectionViewCell {
       roundedRect: contentView.bounds,
       cornerRadius: contentView.layer.cornerRadius
     ).cgPath
+
+    checkView.layer.borderColor = UIColor.staticBlack.cgColor
   }
 
   private func defineLayout() {

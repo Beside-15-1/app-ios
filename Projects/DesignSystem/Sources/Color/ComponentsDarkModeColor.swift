@@ -135,4 +135,14 @@ extension UIColor {
       return UIColor(hexString: "#392A95")
     }
   }
+
+  // MARK: IllustBG
+
+  public static let illustBg = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#BBBBBB")
+    } else {
+      return UIColor(hexString: "#EBECED")
+    }
+  }
 }
