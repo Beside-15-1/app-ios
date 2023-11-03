@@ -15,13 +15,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios upload
+### ios bump
 
 ```sh
-[bundle exec] fastlane ios upload
+[bundle exec] fastlane ios bump
 ```
 
-Description of what the lane does
+AppVersion 올리기
 
 ----
 
