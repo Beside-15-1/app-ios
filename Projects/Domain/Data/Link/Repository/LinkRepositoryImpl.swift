@@ -96,4 +96,11 @@ final class LinkRepositoryImpl: LinkRepository {
       .map(ThumbnailResponse.self)
       .map { $0.toDomain() }
   }
+
+  func deleteMultipleLink(idList: [String]) -> Single<Void> {
+    let target = LinkAPI.deleteMultipleLink(idList: idList)
+
+    return networking.request(target: target)
+      .map { _ in }
+  }
 }

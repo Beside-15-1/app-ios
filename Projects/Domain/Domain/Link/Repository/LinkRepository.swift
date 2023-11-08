@@ -39,4 +39,6 @@ public protocol LinkRepository {
   func read(id: String) -> Single<Void>
 
   func fetchThumbnail(url: String) -> Single<Thumbnail>
+
+  func deleteMultipleLink(idList: [String]) -> Single<Void>
 }
