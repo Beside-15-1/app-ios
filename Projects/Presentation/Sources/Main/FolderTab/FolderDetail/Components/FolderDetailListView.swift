@@ -79,7 +79,9 @@ class FolderDetailListView: UIView {
     $0.isHidden = true
   }
 
-  let selectAllCheckBox = CheckBox(type: .fill)
+  let selectAllCheckBox = CheckBox(type: .fill).then {
+    $0.scale = .small
+  }
 
   private let selectAllTitleLabel = UILabel().then {
     $0.attributedText = "모두 선택".styled(font: .defaultSemiBold, color: .gray600)
