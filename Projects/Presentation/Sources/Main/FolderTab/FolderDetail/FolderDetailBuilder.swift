@@ -31,6 +31,7 @@ final class FolderDetailBuilder: FolderDetailBuildable {
 
   func build(payload: FolderDetailPayload) -> UIViewController {
     let reactor = FolderDetailViewReactor(
+      linkRepository: dependency.linkRepository,
       fetchAllLinkUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
       fetchLinkInFolderUseCase: FetchLinksInFolderUseCaseImpl(linkRepository: dependency.linkRepository),
       getFolderListUseCase: GetFolderListUseCaseImpl(folderRepository: dependency.folderRepository),

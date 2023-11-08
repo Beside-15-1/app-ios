@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBLog
 
 final class FolderDetailViewReactor: Reactor {
 
@@ -25,6 +26,11 @@ final class FolderDetailViewReactor: Reactor {
     case readLink(String)
     case updateUnreadFiltering(Bool)
     case createFolderSucceed
+    case editingButtonTapped
+    case endEditingMode
+    case linkCheckBoxTapped(id: String)
+    case deleteButtonTapped
+    case selectAllCheckBoxTapped
   }
 
   enum Mutation {
@@ -37,6 +43,8 @@ final class FolderDetailViewReactor: Reactor {
     case setLinkCount(Int)
     case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
     case setUnreadFiltering(Bool)
+    case setEditing(Bool)
+    case setSelectedLinkListOnEditingMode([Link])
   }
 
   struct State {
@@ -50,9 +58,12 @@ final class FolderDetailViewReactor: Reactor {
 
     var sortingType: LinkSortingType = .createAt
     var orderType: SortingOrderType = .desc
-    var isUnreadFiltering: Bool = false
+    var isUnreadFiltering = false
 
     var emptyLabelText: FolderDetailListView.EmptyViewModel = .init(text: "", bold: "")
+
+    @Pulse var isEditing = false
+    var selectedLinkListOnEditingMode: [Link] = []
 
     @Pulse var refreshEnd = false
   }
@@ -63,6 +74,7 @@ final class FolderDetailViewReactor: Reactor {
 
   let initialState: State
 
+  private let linkRepository: LinkRepository
   private let fetchAllLinkUseCase: FetchAllLinksUseCase
   private let fetchLinkInFolderUseCase: FetchLinksInFolderUseCase
   private let getFolderListUseCase: GetFolderListUseCase
@@ -72,6 +84,7 @@ final class FolderDetailViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    linkRepository: LinkRepository,
     fetchAllLinkUseCase: FetchAllLinksUseCase,
     fetchLinkInFolderUseCase: FetchLinksInFolderUseCase,
     getFolderListUseCase: GetFolderListUseCase,
@@ -81,6 +94,7 @@ final class FolderDetailViewReactor: Reactor {
   ) {
     defer { _ = self.state }
 
+    self.linkRepository = linkRepository
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
     self.getFolderListUseCase = getFolderListUseCase
@@ -124,12 +138,14 @@ final class FolderDetailViewReactor: Reactor {
           .just(Mutation.setSelectedFolder(selectedFolder)),
           fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType),
           .just(Mutation.setLinkCount(selectedFolder.linkCount)),
+          .just(Mutation.setEditing(false)),
         ])
       } else {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
           fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: currentState.orderType),
           .just(Mutation.setLinkCount(selectedFolder.linkCount)),
+          .just(Mutation.setEditing(false)),
         ])
       }
 
@@ -186,7 +202,9 @@ final class FolderDetailViewReactor: Reactor {
     case .updateUnreadFiltering(let isFiltering):
       return .concat([
         .just(Mutation.setUnreadFiltering(isFiltering)),
-        updateUnreadFilter(isFiltering: isFiltering)
+        updateUnreadFilter(isFiltering: isFiltering),
+        .just(Mutation.setEditing(currentState.isEditing)),
+        .just(Mutation.setSelectedLinkListOnEditingMode(currentState.selectedLinkListOnEditingMode)),
       ])
 
     case .createFolderSucceed:
@@ -199,6 +217,54 @@ final class FolderDetailViewReactor: Reactor {
           order: currentState.orderType
         )
       }
+
+    case .editingButtonTapped:
+      return .concat([
+        .just(Mutation.setEditing(true)),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+//        .just(Mutation.setUnreadFiltering(false)),
+//        updateUnreadFilter(isFiltering: false),
+      ])
+
+    case .endEditingMode:
+      return .concat([
+        .just(Mutation.setEditing(false)),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+      ])
+
+    case .linkCheckBoxTapped(let id):
+
+      var currentList = currentState.selectedLinkListOnEditingMode
+
+      if let index = currentList.firstIndex(where: { $0.id == id }) {
+        currentList.remove(at: index)
+      } else {
+        if let link = currentState.linkList.first(where: { $0.id == id }) {
+          currentList.append(link)
+        }
+      }
+
+      return .just(Mutation.setSelectedLinkListOnEditingMode(currentList))
+
+    case .deleteButtonTapped:
+      return .concat([
+        deleteMultipleLink(),
+        .just(Mutation.setEditing(false)),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+      ])
+
+    case .selectAllCheckBoxTapped:
+      guard let viewModel = currentState.viewModel else { return .empty() }
+
+      if viewModel.items.count == currentState.selectedLinkListOnEditingMode.count {
+        return .just(Mutation.setSelectedLinkListOnEditingMode([]))
+      } else {
+        let filteredList = currentState.linkList.filter { link in
+          viewModel.items.contains(where: { $0.id == link.id })
+        }
+        return .just(Mutation.setSelectedLinkListOnEditingMode(filteredList))
+      }
+
     }
   }
 
@@ -232,6 +298,12 @@ final class FolderDetailViewReactor: Reactor {
 
     case .setUnreadFiltering(let filtering):
       newState.isUnreadFiltering = filtering
+
+    case .setEditing(let isEditing):
+      newState.isEditing = isEditing
+
+    case .setSelectedLinkListOnEditingMode(let linkList):
+      newState.selectedLinkListOnEditingMode = linkList
     }
 
     return newState
@@ -358,5 +430,14 @@ extension FolderDetailViewReactor {
         )
       }
     )
+  }
+
+  private func deleteMultipleLink() -> Observable<Mutation> {
+    linkRepository.deleteMultipleLink(idList: currentState.selectedLinkListOnEditingMode.map { $0.id })
+      .asObservable()
+      .do(onNext: { [weak self] in
+        self?.action.onNext(.refresh)
+      })
+      .flatMap { _ in Observable<Mutation>.empty() }
   }
 }

@@ -12,11 +12,13 @@ import SnapKit
 import Then
 
 import DesignSystem
+import Domain
 import PBLog
 
 protocol FolderDetailListViewDelegate: AnyObject {
   func listViewItemDidTapped(at row: Int)
   func listViewMoreButtonTapped(id: String)
+  func listViewCheckBoxTapped(id: String)
   func listViewDidScroll(_ scrollView: UIScrollView)
 }
 
@@ -34,13 +36,6 @@ class FolderDetailListView: UIView {
 
 
   // MARK: UI
-
-  let totalCountLabel = UILabel()
-
-  let sortButton = TextButton(type: .regular, color: .gray600).then {
-    $0.text = "생성순"
-    $0.rightIconImage = DesignSystemAsset.iconDown.image
-  }
 
   lazy var collectionView = UICollectionView(
     frame: .zero,
@@ -60,9 +55,60 @@ class FolderDetailListView: UIView {
   let refreshControl = UIRefreshControl()
 
 
+  // 편집중이 아닐때
+
+  let totalCountLabel = UILabel()
+
+  private let noEditingContainer = UIView()
+  private let noEditDivider = UIView().then {
+    $0.backgroundColor = .gray600
+  }
+
+  let sortButton = TextButton(type: .regular, color: .gray600).then {
+    $0.text = "생성순"
+    $0.rightIconImage = DesignSystemAsset.iconDown.image
+  }
+
+  let editButton = TextButton(type: .regular, color: .gray600).then {
+    $0.text = "편집"
+  }
+
+  // 편집중
+
+  private let totalCountContainer = UIView().then {
+    $0.isHidden = true
+  }
+
+  let selectAllCheckBox = CheckBox(type: .fill)
+
+  private let selectAllTitleLabel = UILabel().then {
+    $0.attributedText = "모두 선택".styled(font: .defaultSemiBold, color: .gray600)
+  }
+
+  private let selectAllCountLabel = UILabel()
+
+  private let editingContainer = UIView().then {
+    $0.isHidden = true
+  }
+
+  private let editDivider = UIView().then {
+    $0.backgroundColor = .gray600
+  }
+
+  let endEditingButton = TextButton(type: .regular, color: .gray600).then {
+    $0.text = "편집 종료"
+  }
+
+  let deleteButton = TextButton(type: .regular, color: .gray600).then {
+    $0.text = "삭제"
+  }
+
   // MARK: Properties
 
   private lazy var diffableDataSource = self.collectionViewDiffableDataSource()
+
+  var isEditing = false
+  var selectedLinkListOnEditingMode: [String] = []
 
   weak var delegate: FolderDetailListViewDelegate?
 
@@ -81,12 +127,8 @@ class FolderDetailListView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: Configuring
 
-  func configureTotalCount(count: Int) {
-//    totalCountLabel.attributedText = "\(count)개 주섬"
-//      .styled(font: .subTitleSemiBold, color: .gray800)
-  }
+  // MARK: Configuring
 
   func configureEmptyLabel(viewModel: EmptyViewModel) {
     emptyLabel.attributedText = viewModel.text
@@ -102,22 +144,48 @@ class FolderDetailListView: UIView {
 
   // MARK: CollectionView
 
-  func applyCollectionViewDataSource(by sectionViewModel: FolderDetailSectionViewModel) {
+  func applyCollectionViewDataSource(
+    by sectionViewModel: FolderDetailSectionViewModel,
+    isEditing: Bool = false
+  ) {
     guard !sectionViewModel.items.isEmpty else {
       collectionView.isHidden = true
       return
     }
 
+    if isEditing {
+      selectedLinkListOnEditingMode = []
+    }
+
     collectionView.isHidden = false
+
+    let sectionViewModelItems = sectionViewModel.items.map { viewModel in
+      FolderDetailCell.ViewModel(
+        id: viewModel.id,
+        title: viewModel.title,
+        tags: viewModel.tags,
+        thumbnailURL: viewModel.thumbnailURL,
+        url: viewModel.url,
+        createAt: viewModel.createAt,
+        folderName: viewModel.folderName,
+        isAll: viewModel.isAll,
+        readCount: viewModel.readCount,
+        isEditing: isEditing
+      )
+    }
 
     var snapshot = DiffableSnapshot()
     snapshot.appendSections([sectionViewModel.section])
-    snapshot.appendItems(sectionViewModel.items, toSection: sectionViewModel.section)
+    snapshot.appendItems(sectionViewModelItems, toSection: sectionViewModel.section)
 
     diffableDataSource.apply(snapshot)
 
-    totalCountLabel.attributedText = "\(sectionViewModel.items.count)개 주섬"
+    totalCountLabel.attributedText = "\(sectionViewModelItems.count)개 주섬"
       .styled(font: .subTitleSemiBold, color: .gray800)
+    selectAllCountLabel.attributedText = "0/\(sectionViewModelItems.count)개".styled(
+      font: .defaultSemiBold,
+      color: .gray800
+    )
   }
 
   private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
@@ -158,23 +226,76 @@ class FolderDetailListView: UIView {
       collectionView.dequeueReusableCell(
         withReuseIdentifier: FolderDetailCell.identifier,
         for: indexPath
-      ).then {
-        guard let cell = $0 as? FolderDetailCell else { return }
+      ).then { [weak self] cell in
+        guard let self,
+              let cell = cell as? FolderDetailCell else { return }
         cell.configure(viewModel: item)
+
         cell.moreButton.rx.tap
-          .subscribe(onNext: { [weak self] in
-            self?.delegate?.listViewMoreButtonTapped(id: item.id)
+          .subscribe(onNext: { _ in
+            self.delegate?.listViewMoreButtonTapped(id: item.id)
           })
           .disposed(by: cell.disposeBag)
+
+        cell.checkBox.rx.controlEvent(.touchUpInside)
+          .subscribe(onNext: { _ in
+            if let index = self.selectedLinkListOnEditingMode.firstIndex(where: { $0 == item.id }) {
+              self.selectedLinkListOnEditingMode.remove(at: index)
+            } else {
+              self.selectedLinkListOnEditingMode.append(item.id)
+            }
+            self.delegate?.listViewCheckBoxTapped(id: item.id)
+          })
+          .disposed(by: cell.disposeBag)
+
+        cell.checkBox.isSelected = selectedLinkListOnEditingMode.contains(
+          where: {
+            $0 == item.id
+          }
+        )
       }
     }
+  }
+
+  func updateSelectedLinkListOnEditingMode(list: [String]) {
+    selectedLinkListOnEditingMode = list
+  }
+
+  func configureCheckBox() {
+    collectionView.visibleCells.forEach { cell in
+      guard let cell = cell as? FolderDetailCell else {
+        return
+      }
+
+      if selectedLinkListOnEditingMode.contains(where: { $0 == cell.viewModel?.id }) {
+        cell.checkBox.isSelected = true
+      } else {
+        cell.checkBox.isSelected = false
+      }
+    }
+  }
+
+  func configureEditingContainer(isEditing: Bool) {
+    noEditingContainer.isHidden = isEditing
+    totalCountLabel.isHidden = isEditing
+    editingContainer.isHidden = !isEditing
+    totalCountContainer.isHidden = !isEditing
+  }
+
+  func configureSelectAllCountLabel(selected: Int, total: Int) {
+    selectAllCountLabel.attributedText = "\(selected)/\(total)개".styled(font: .defaultSemiBold, color: .gray800)
   }
 
 
   // MARK: Layout
 
   private func defineLayout() {
-    [totalCountLabel ,sortButton, emptyLabel, collectionView].forEach { addSubview($0) }
+    [totalCountLabel, totalCountContainer, emptyLabel, collectionView, noEditingContainer, editingContainer]
+      .forEach { addSubview($0) }
+
+    [selectAllCheckBox, selectAllTitleLabel, selectAllCountLabel].forEach { totalCountContainer.addSubview($0) }
+    [sortButton, noEditDivider, editButton].forEach { noEditingContainer.addSubview($0) }
+    [deleteButton, editDivider, endEditingButton].forEach { editingContainer.addSubview($0) }
     collectionView.addSubview(refreshControl)
 
     totalCountLabel.snp.makeConstraints {
@@ -182,9 +303,46 @@ class FolderDetailListView: UIView {
       $0.top.equalToSuperview().inset(24.0)
     }
 
-    sortButton.snp.makeConstraints {
+    noEditingContainer.snp.makeConstraints {
       $0.right.equalToSuperview()
       $0.top.equalToSuperview().inset(24.0)
+    }
+
+    noEditDivider.snp.makeConstraints {
+      $0.width.equalTo(2.0)
+      $0.height.equalTo(14.5)
+      $0.left.equalTo(sortButton.snp.right).offset(10.0)
+      $0.centerY.equalToSuperview()
+    }
+
+    sortButton.snp.makeConstraints {
+      $0.left.top.bottom.equalToSuperview()
+    }
+
+    editButton.snp.makeConstraints {
+      $0.left.equalTo(noEditDivider.snp.right).offset(10)
+      $0.right.top.bottom.equalToSuperview()
+    }
+
+    editingContainer.snp.makeConstraints {
+      $0.right.equalToSuperview()
+      $0.top.equalToSuperview().inset(24.0)
+    }
+
+    editDivider.snp.makeConstraints {
+      $0.width.equalTo(2.0)
+      $0.height.equalTo(14.5)
+      $0.left.equalTo(deleteButton.snp.right).offset(10.0)
+      $0.centerY.equalToSuperview()
+    }
+
+    deleteButton.snp.makeConstraints {
+      $0.left.top.bottom.equalToSuperview()
+    }
+
+    endEditingButton.snp.makeConstraints {
+      $0.left.equalTo(editDivider.snp.right).offset(10)
+      $0.right.top.bottom.equalToSuperview()
     }
 
     emptyLabel.snp.makeConstraints {
@@ -195,6 +353,26 @@ class FolderDetailListView: UIView {
     collectionView.snp.makeConstraints {
       $0.left.right.bottom.equalToSuperview()
       $0.top.equalTo(sortButton.snp.bottom).offset(18.0)
+    }
+
+    totalCountContainer.snp.makeConstraints {
+      $0.left.equalToSuperview()
+      $0.top.equalToSuperview().inset(24.0)
+    }
+
+    selectAllCheckBox.snp.makeConstraints {
+      $0.left.centerY.equalToSuperview()
+    }
+
+    selectAllTitleLabel.snp.makeConstraints {
+      $0.left.equalTo(selectAllCheckBox.snp.right).offset(8.0)
+      $0.top.bottom.equalToSuperview()
+    }
+
+    selectAllCountLabel.snp.makeConstraints {
+      $0.left.equalTo(selectAllTitleLabel.snp.right).offset(8.0)
+      $0.right.equalToSuperview()
+      $0.centerY.equalToSuperview()
     }
   }
 }
