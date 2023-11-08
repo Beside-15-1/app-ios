@@ -209,3 +209,14 @@ extension FolderDetailListView: UICollectionViewDelegate {
     delegate?.listViewDidScroll(scrollView)
   }
 }
+
+
+extension FolderDetailListView: FolderDetailCellDelegate {
+  func folderDetailCellCheckBoxTapped(id: String) {
+    delegate?.listViewCheckBoxTapped(id: id)
+  }
+
+  func folderDetailCellMoreButtonTapped(id: String) {
+    delegate?.listViewMoreButtonTapped(id: id)
+  }
+}
