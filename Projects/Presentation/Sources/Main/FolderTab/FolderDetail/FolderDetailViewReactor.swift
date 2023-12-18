@@ -188,7 +188,11 @@ final class FolderDetailViewReactor: Reactor {
       if currentState.selectedFolder.title == Folder.all().title {
         return fetchAllLinks(sort: currentState.sortingType, order: order)
       } else {
-        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: order)
+        return fetchLinksInFolder(
+          id: currentState.selectedFolder.id,
+          sort: currentState.sortingType,
+          order: order
+        )
       }
 
     case .readLink(let id):
@@ -249,7 +253,6 @@ final class FolderDetailViewReactor: Reactor {
     case .deleteButtonTapped:
       return .concat([
         deleteMultipleLink(),
-//        .just(Mutation.setEditing(false)),
         .just(Mutation.setSelectedLinkListOnEditingMode([])),
       ])
 
@@ -264,7 +267,6 @@ final class FolderDetailViewReactor: Reactor {
         }
         return .just(Mutation.setSelectedLinkListOnEditingMode(filteredList))
       }
-
     }
   }
 

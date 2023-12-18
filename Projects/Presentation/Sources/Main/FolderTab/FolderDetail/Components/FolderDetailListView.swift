@@ -155,10 +155,6 @@ class FolderDetailListView: UIView {
       return
     }
 
-    if isEditing {
-      selectedLinkListOnEditingMode = []
-    }
-
     collectionView.isHidden = false
 
     let sectionViewModelItems = sectionViewModel.items.map { viewModel in
@@ -182,9 +178,16 @@ class FolderDetailListView: UIView {
 
     diffableDataSource.apply(snapshot)
 
+    var selectedItemCount = 0
+    sectionViewModelItems.forEach { item in
+      if selectedLinkListOnEditingMode.contains(where: { $0 == item.id }) {
+        selectedItemCount += 1
+      }
+    }
+
     totalCountLabel.attributedText = "\(sectionViewModelItems.count)개 주섬"
       .styled(font: .subTitleSemiBold, color: .gray800)
-    selectAllCountLabel.attributedText = "0/\(sectionViewModelItems.count)개".styled(
+    selectAllCountLabel.attributedText = "\(selectedItemCount)/\(sectionViewModelItems.count)개".styled(
       font: .defaultSemiBold,
       color: .gray800
     )

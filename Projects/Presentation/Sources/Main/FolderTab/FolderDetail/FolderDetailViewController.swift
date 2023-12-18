@@ -124,6 +124,9 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           by: viewModel,
           isEditing: reactor.currentState.isEditing
         )
+        self.contentView.listView.configureEditingContainer(
+          isEditing: reactor.currentState.isEditing
+        )
       }
       .disposed(by: disposeBag)
 
@@ -225,6 +228,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         guard let currentViewModel = reactor.currentState.viewModel else { return }
         self.contentView.listView.applyCollectionViewDataSource(by: currentViewModel, isEditing: isEditing)
         self.contentView.listView.configureEditingContainer(isEditing: isEditing)
+        self.contentView.configureSearchField(isEnabled: !isEditing)
+        self.contentView.configureUnreadButton(isEnabled: !isEditing)
       }
       .disposed(by: disposeBag)
   }

@@ -65,6 +65,14 @@ final class FolderDetailView: UIView {
     tabView.selectItem(at: row)
   }
 
+  func configureSearchField(isEnabled: Bool) {
+    searchField.isEnabled = isEnabled
+  }
+
+  func configureUnreadButton(isEnabled: Bool) {
+    unreadFilterButton.isEnabled = isEnabled
+  }
+
 
   // MARK: Layout
 
