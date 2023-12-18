@@ -147,47 +147,37 @@ class FolderDetailListView: UIView {
   // MARK: CollectionView
 
   func applyCollectionViewDataSource(
-    by sectionViewModel: FolderDetailSectionViewModel,
-    isEditing: Bool = false
+    by sectionViewModel: FolderDetailSectionViewModel
   ) {
     guard !sectionViewModel.items.isEmpty else {
       collectionView.isHidden = true
+      totalCountLabel.attributedText = "0개 주섬"
+        .styled(font: .subTitleSemiBold, color: .gray800)
+      selectAllCountLabel.attributedText = "0/\(sectionViewModel.items.count)개".styled(
+        font: .defaultSemiBold,
+        color: .gray800
+      )
       return
     }
 
     collectionView.isHidden = false
 
-    let sectionViewModelItems = sectionViewModel.items.map { viewModel in
-      FolderDetailCell.ViewModel(
-        id: viewModel.id,
-        title: viewModel.title,
-        tags: viewModel.tags,
-        thumbnailURL: viewModel.thumbnailURL,
-        url: viewModel.url,
-        createAt: viewModel.createAt,
-        folderName: viewModel.folderName,
-        isAll: viewModel.isAll,
-        readCount: viewModel.readCount,
-        isEditing: isEditing
-      )
-    }
-
     var snapshot = DiffableSnapshot()
     snapshot.appendSections([sectionViewModel.section])
-    snapshot.appendItems(sectionViewModelItems, toSection: sectionViewModel.section)
+    snapshot.appendItems(sectionViewModel.items, toSection: sectionViewModel.section)
 
     diffableDataSource.apply(snapshot)
 
     var selectedItemCount = 0
-    sectionViewModelItems.forEach { item in
+    sectionViewModel.items.forEach { item in
       if selectedLinkListOnEditingMode.contains(where: { $0 == item.id }) {
         selectedItemCount += 1
       }
     }
 
-    totalCountLabel.attributedText = "\(sectionViewModelItems.count)개 주섬"
+    totalCountLabel.attributedText = "\(sectionViewModel.items.count)개 주섬"
       .styled(font: .subTitleSemiBold, color: .gray800)
-    selectAllCountLabel.attributedText = "\(selectedItemCount)/\(sectionViewModelItems.count)개".styled(
+    selectAllCountLabel.attributedText = "\(selectedItemCount)/\(sectionViewModel.items.count)개".styled(
       font: .defaultSemiBold,
       color: .gray800
     )

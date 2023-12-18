@@ -121,8 +121,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
         self.contentView.listView.applyCollectionViewDataSource(
-          by: viewModel,
-          isEditing: reactor.currentState.isEditing
+          by: viewModel
         )
         self.contentView.listView.configureEditingContainer(
           isEditing: reactor.currentState.isEditing
@@ -225,11 +224,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     reactor.pulse(\.$isEditing)
       .skip(1)
       .subscribe(with: self) { `self`, isEditing in
-        guard let currentViewModel = reactor.currentState.viewModel else { return }
-        self.contentView.listView.applyCollectionViewDataSource(by: currentViewModel, isEditing: isEditing)
         self.contentView.listView.configureEditingContainer(isEditing: isEditing)
-        self.contentView.configureSearchField(isEnabled: !isEditing)
-        self.contentView.configureUnreadButton(isEnabled: !isEditing)
       }
       .disposed(by: disposeBag)
   }
@@ -275,8 +270,15 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
     contentView.listView.deleteButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        guard var deleteList = reactor.currentState.viewModel?.items,
+              !deleteList.isEmpty else { return }
+
+        deleteList = deleteList.filter { item in
+          reactor.currentState.selectedLinkListOnEditingMode.contains(where: { $0.id == item.id })
+        }
+
         PBDialog(
-          title: "\(reactor.currentState.selectedLinkListOnEditingMode.count) 개의 링크를\n삭제 하시겠습니까?",
+          title: "\(deleteList.count) 개의 링크를\n삭제 하시겠습니까?",
           content: "삭제된 링크는 복구되지 않습니다.",
           from: self
         )
