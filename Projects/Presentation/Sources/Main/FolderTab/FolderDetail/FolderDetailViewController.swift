@@ -120,7 +120,10 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.listView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.listView.applyCollectionViewDataSource(
+          by: viewModel,
+          isEditing: reactor.currentState.isEditing
+        )
       }
       .disposed(by: disposeBag)
 

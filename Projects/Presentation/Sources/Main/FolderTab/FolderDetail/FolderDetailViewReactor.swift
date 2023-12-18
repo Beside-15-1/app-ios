@@ -249,7 +249,7 @@ final class FolderDetailViewReactor: Reactor {
     case .deleteButtonTapped:
       return .concat([
         deleteMultipleLink(),
-        .just(Mutation.setEditing(false)),
+//        .just(Mutation.setEditing(false)),
         .just(Mutation.setSelectedLinkListOnEditingMode([])),
       ])
 
