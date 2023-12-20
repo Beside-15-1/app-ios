@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBLog
 
 final class FolderDetailViewReactor: Reactor {
 
@@ -25,6 +26,11 @@ final class FolderDetailViewReactor: Reactor {
     case readLink(String)
     case updateUnreadFiltering(Bool)
     case createFolderSucceed
+    case editingButtonTapped
+    case endEditingMode
+    case linkCheckBoxTapped(id: String)
+    case deleteButtonTapped
+    case selectAllCheckBoxTapped
   }
 
   enum Mutation {
@@ -34,25 +40,32 @@ final class FolderDetailViewReactor: Reactor {
     case setSortingType(LinkSortingType)
     case setOrderType(SortingOrderType)
     case setRefreshEnd
-    case setLinkCount(Int)
     case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
     case setUnreadFiltering(Bool)
+    case setEditing(Bool)
+    case setSelectedLinkListOnEditingMode([Link])
+    case setSearchText(String)
+    case updateViewModels
   }
 
   struct State {
     let folderList: [Folder]
     var selectedFolder: Folder
-    var linkCount = 0
-
     var linkList: [Link] = []
+    var linkCount = 0
 
     var viewModel: FolderDetailSectionViewModel?
 
+    // States related to displaying the link list
     var sortingType: LinkSortingType = .createAt
     var orderType: SortingOrderType = .desc
-    var isUnreadFiltering: Bool = false
+    var isUnreadFiltering = false
+    @Pulse var isEditing = false
+    var searchText = ""
 
     var emptyLabelText: FolderDetailListView.EmptyViewModel = .init(text: "", bold: "")
+
+    var selectedLinkListOnEditingMode: [Link] = []
 
     @Pulse var refreshEnd = false
   }
@@ -63,6 +76,7 @@ final class FolderDetailViewReactor: Reactor {
 
   let initialState: State
 
+  private let linkRepository: LinkRepository
   private let fetchAllLinkUseCase: FetchAllLinksUseCase
   private let fetchLinkInFolderUseCase: FetchLinksInFolderUseCase
   private let getFolderListUseCase: GetFolderListUseCase
@@ -72,6 +86,7 @@ final class FolderDetailViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    linkRepository: LinkRepository,
     fetchAllLinkUseCase: FetchAllLinksUseCase,
     fetchLinkInFolderUseCase: FetchLinksInFolderUseCase,
     getFolderListUseCase: GetFolderListUseCase,
@@ -81,6 +96,7 @@ final class FolderDetailViewReactor: Reactor {
   ) {
     defer { _ = self.state }
 
+    self.linkRepository = linkRepository
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
     self.getFolderListUseCase = getFolderListUseCase
@@ -107,13 +123,19 @@ final class FolderDetailViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       if currentState.selectedFolder.id == Folder.all().id {
-        return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
+        return .concat([
+          fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType),
+          .just(Mutation.updateViewModels),
+        ])
       } else {
-        return fetchLinksInFolder(
-          id: currentState.selectedFolder.id,
-          sort: currentState.sortingType,
-          order: currentState.orderType
-        )
+        return .concat([
+          fetchLinksInFolder(
+            id: currentState.selectedFolder.id,
+            sort: currentState.sortingType,
+            order: currentState.orderType
+          ),
+          .just(Mutation.updateViewModels),
+        ])
       }
 
     case .selectTab(let tab):
@@ -123,13 +145,19 @@ final class FolderDetailViewReactor: Reactor {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
           fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType),
-          .just(Mutation.setLinkCount(selectedFolder.linkCount)),
+          .just(Mutation.setEditing(false)),
+          .just(Mutation.updateViewModels),
         ])
       } else {
         return .concat([
           .just(Mutation.setSelectedFolder(selectedFolder)),
-          fetchLinksInFolder(id: selectedFolder.id, sort: currentState.sortingType, order: currentState.orderType),
-          .just(Mutation.setLinkCount(selectedFolder.linkCount)),
+          fetchLinksInFolder(
+            id: selectedFolder.id,
+            sort: currentState.sortingType,
+            order: currentState.orderType
+          ),
+          .just(Mutation.setEditing(false)),
+          .just(Mutation.updateViewModels),
         ])
       }
 
@@ -138,41 +166,31 @@ final class FolderDetailViewReactor: Reactor {
 
     case .searchLink(let text):
 
-      guard !text.isEmpty else {
-        let viewModel = makeViewModel(
-          withLinkList: currentState.linkList,
-          isAll: currentState.selectedFolder.title == Folder.all().title
-        )
-
-        return .concat([
-          .just(Mutation.setEmptyLabelText(.init(text: "아직 폴더에 저장된 링크가 없어요.", bold: ""))),
-          .just(Mutation.setViewModel(viewModel)),
-          .just(Mutation.setLinkCount(viewModel.items.count)),
-        ])
-      }
-
-      let filteredList = currentState.linkList.filter {
-        $0.title.range(of: text, options: .caseInsensitive) != nil
-      }
-
-      let viewModel = makeViewModel(
-        withLinkList: filteredList,
-        isAll: currentState.selectedFolder.title == Folder.all().title
-      )
+      let emptyLabelTitle = text.isEmpty ? "아직 폴더에 저장된 링크가 없어요." : "검색한 ‘\(text)' 링크가 없어요\n링크를 추가해보세요."
 
       return .concat([
-        .just(Mutation.setEmptyLabelText(.init(text: "검색한 ‘\(text)' 링크가 없어요\n링크를 추가해보세요.", bold: text))),
-        .just(Mutation.setViewModel(viewModel)),
-        .just(Mutation.setLinkCount(filteredList.count)),
+        .just(Mutation.setSearchText(text)),
+        .just(Mutation.setEmptyLabelText(.init(text: emptyLabelTitle, bold: text))),
+        .just(Mutation.updateViewModels),
       ])
 
     case .refresh:
       let order: SortingOrderType = currentState.sortingType == .lastedAt ? .asc : .desc
 
       if currentState.selectedFolder.title == Folder.all().title {
-        return fetchAllLinks(sort: currentState.sortingType, order: order)
+        return .concat([
+          fetchAllLinks(sort: currentState.sortingType, order: order),
+          .just(Mutation.updateViewModels),
+        ])
       } else {
-        return fetchLinksInFolder(id: currentState.selectedFolder.id, sort: currentState.sortingType, order: order)
+        return .concat([
+          fetchLinksInFolder(
+            id: currentState.selectedFolder.id,
+            sort: currentState.sortingType,
+            order: order
+          ),
+          .just(Mutation.updateViewModels),
+        ])
       }
 
     case .readLink(let id):
@@ -186,18 +204,70 @@ final class FolderDetailViewReactor: Reactor {
     case .updateUnreadFiltering(let isFiltering):
       return .concat([
         .just(Mutation.setUnreadFiltering(isFiltering)),
-        updateUnreadFilter(isFiltering: isFiltering)
+        .just(Mutation.setSelectedLinkListOnEditingMode(
+          currentState.selectedLinkListOnEditingMode
+        )),
+        .just(Mutation.updateViewModels),
       ])
 
     case .createFolderSucceed:
       if currentState.selectedFolder.id == Folder.all().id {
         return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
       } else {
-        return fetchLinksInFolder(
-          id: currentState.selectedFolder.id,
-          sort: currentState.sortingType,
-          order: currentState.orderType
-        )
+        return .concat([
+          fetchLinksInFolder(
+            id: currentState.selectedFolder.id,
+            sort: currentState.sortingType,
+            order: currentState.orderType
+          ),
+          .just(Mutation.updateViewModels),
+        ])
+      }
+
+    case .editingButtonTapped:
+      return .concat([
+        .just(Mutation.setEditing(true)),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+        .just(Mutation.updateViewModels),
+      ])
+
+    case .endEditingMode:
+      return .concat([
+        .just(Mutation.setEditing(false)),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+        .just(Mutation.updateViewModels),
+      ])
+
+    case .linkCheckBoxTapped(let id):
+
+      var currentList = currentState.selectedLinkListOnEditingMode
+
+      if let index = currentList.firstIndex(where: { $0.id == id }) {
+        currentList.remove(at: index)
+      } else {
+        if let link = currentState.linkList.first(where: { $0.id == id }) {
+          currentList.append(link)
+        }
+      }
+
+      return .just(Mutation.setSelectedLinkListOnEditingMode(currentList))
+
+    case .deleteButtonTapped:
+      return .concat([
+        deleteMultipleLink(),
+        .just(Mutation.setSelectedLinkListOnEditingMode([])),
+      ])
+
+    case .selectAllCheckBoxTapped:
+      guard let viewModel = currentState.viewModel else { return .empty() }
+
+      if viewModel.items.count == currentState.selectedLinkListOnEditingMode.count {
+        return .just(Mutation.setSelectedLinkListOnEditingMode([]))
+      } else {
+        let filteredList = currentState.linkList.filter { link in
+          viewModel.items.contains(where: { $0.id == link.id })
+        }
+        return .just(Mutation.setSelectedLinkListOnEditingMode(filteredList))
       }
     }
   }
@@ -224,14 +294,58 @@ final class FolderDetailViewReactor: Reactor {
     case .setRefreshEnd:
       newState.refreshEnd = true
 
-    case .setLinkCount(let count):
-      newState.linkCount = count
-
     case .setEmptyLabelText(let text):
       newState.emptyLabelText = text
 
     case .setUnreadFiltering(let filtering):
       newState.isUnreadFiltering = filtering
+
+    case .setEditing(let isEditing):
+      newState.isEditing = isEditing
+
+    case .setSelectedLinkListOnEditingMode(let linkList):
+      newState.selectedLinkListOnEditingMode = linkList
+
+    case .setSearchText(let text):
+      newState.searchText = text
+
+    case .updateViewModels:
+      let isUnreadFiltering = newState.isUnreadFiltering
+      let isEditing = newState.isEditing
+      let searchText = newState.searchText
+      let isAll = newState.selectedFolder.id == Folder.all().id
+
+      var filteredLinkList = newState.linkList
+
+      if isUnreadFiltering {
+        filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
+      }
+
+      if !searchText.isEmpty {
+        filteredLinkList = filteredLinkList.filter {
+          $0.title.range(of: searchText, options: .caseInsensitive) != nil
+        }
+      }
+
+      newState.viewModel = FolderDetailSectionViewModel(
+        section: .normal,
+        items: filteredLinkList.map {
+          .init(
+            id: $0.id,
+            title: $0.title,
+            tags: $0.tags,
+            thumbnailURL: $0.thumbnailURL,
+            url: $0.url,
+            createAt: $0.createdAt,
+            folderName: $0.folderName,
+            isAll: isAll,
+            readCount: $0.readCount,
+            isEditing: isEditing
+          )
+        }
+      )
+
+      newState.linkCount = newState.viewModel?.items.count ?? 0
     }
 
     return newState
@@ -247,12 +361,9 @@ extension FolderDetailViewReactor {
     fetchAllLinkUseCase.execute(sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
-        let viewModel = self.makeViewModel(withLinkList: links, isAll: true)
-        return .concat([
+        .concat([
           .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
-          .just(Mutation.setViewModel(viewModel)),
-          .just(Mutation.setLinkCount(links.count)),
         ])
       }
       .catch { _ in
@@ -264,13 +375,9 @@ extension FolderDetailViewReactor {
     fetchLinkInFolderUseCase.execute(linkBookId: id, sort: sort, order: order)
       .asObservable()
       .flatMap { links -> Observable<Mutation> in
-        let viewModel = self.makeViewModel(withLinkList: links, isAll: false)
-
-        return .concat([
+        .concat([
           .just(Mutation.setRefreshEnd),
           .just(Mutation.setLinkList(links)),
-          .just(Mutation.setViewModel(viewModel)),
-          .just(Mutation.setLinkCount(links.count)),
         ])
       }.catch { _ in
         .just(Mutation.setRefreshEnd)
@@ -333,30 +440,18 @@ extension FolderDetailViewReactor {
     return .just(Mutation.setViewModel(viewModel))
   }
 
-  private func makeViewModel(withLinkList linkList: [Link], isAll: Bool) -> FolderDetailSectionViewModel {
-    var unreadFilteredLinkList: [Link]
+  private func deleteMultipleLink() -> Observable<Mutation> {
+    guard var deleteList = currentState.viewModel?.items else { return .empty() }
 
-    if currentState.isUnreadFiltering {
-      unreadFilteredLinkList = linkList.filter { $0.readCount == 0 }
-    } else {
-      unreadFilteredLinkList = linkList
+    deleteList = deleteList.filter { item in
+      currentState.selectedLinkListOnEditingMode.contains(where: { $0.id == item.id })
     }
 
-    return FolderDetailSectionViewModel(
-      section: .normal,
-      items: unreadFilteredLinkList.map {
-        .init(
-          id: $0.id,
-          title: $0.title,
-          tags: $0.tags,
-          thumbnailURL: $0.thumbnailURL,
-          url: $0.url,
-          createAt: $0.createdAt,
-          folderName: $0.folderName,
-          isAll: isAll,
-          readCount: $0.readCount
-        )
-      }
-    )
+    return linkRepository.deleteMultipleLink(idList: deleteList.map { $0.id })
+      .asObservable()
+      .do(onNext: { [weak self] in
+        self?.action.onNext(.refresh)
+      })
+      .flatMap { _ in Observable<Mutation>.empty() }
   }
 }

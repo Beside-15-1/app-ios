@@ -20,6 +20,7 @@ enum LinkAPI {
   case updateLinkWithFolderID(id: String, folderID: String)
   case readLink(id: String)
   case fetchThumbnail(url: String)
+  case deleteMultipleLink(idList: [String])
 }
 
 extension LinkAPI: BaseTargetType {
@@ -49,6 +50,9 @@ extension LinkAPI: BaseTargetType {
 
     case .fetchThumbnail:
       return "links/thumbnail"
+
+    case .deleteMultipleLink(let list):
+      return "links"
     }
   }
 
@@ -77,6 +81,9 @@ extension LinkAPI: BaseTargetType {
 
     case .fetchThumbnail:
       return .post
+
+    case .deleteMultipleLink:
+      return .delete
     }
   }
 
@@ -89,7 +96,7 @@ extension LinkAPI: BaseTargetType {
       return .requestParameters(
         parameters: [
           "sort": sort.api,
-          "order": order.rawValue
+          "order": order.rawValue,
         ],
         encoding: URLEncoding.queryString
       )
@@ -98,7 +105,7 @@ extension LinkAPI: BaseTargetType {
       return .requestParameters(
         parameters: [
           "sort": sort.api,
-          "order": order.rawValue
+          "order": order.rawValue,
         ],
         encoding: URLEncoding.queryString
       )
@@ -117,7 +124,9 @@ extension LinkAPI: BaseTargetType {
 
     case .fetchThumbnail(let url):
       return .requestJSONEncodable(["url": url])
+
+    case .deleteMultipleLink(let list):
+      return .requestJSONEncodable(["linkIds": list])
     }
   }
 }
-

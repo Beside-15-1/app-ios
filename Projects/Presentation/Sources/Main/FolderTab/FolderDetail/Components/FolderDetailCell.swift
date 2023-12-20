@@ -14,6 +14,11 @@ import Then
 
 import DesignSystem
 
+protocol FolderDetailCellDelegate: AnyObject {
+  func folderDetailCellCheckBoxTapped(id: String)
+  func folderDetailCellMoreButtonTapped(id: String)
+}
+
 class FolderDetailCell: UICollectionViewCell {
 
   static let identifier = "FolderDetailCell"
@@ -28,9 +33,12 @@ class FolderDetailCell: UICollectionViewCell {
     let folderName: String
     let isAll: Bool
     let readCount: Int
+    var isEditing: Bool = false
   }
 
   // MARK: UI
+
+  private let container = UIView()
 
   private let titleLabel = UILabel()
 
@@ -63,10 +71,16 @@ class FolderDetailCell: UICollectionViewCell {
 
   private let readCountLabel = UILabel()
 
+  let checkBox = CheckBox(type: .fill)
+
 
   // MARK: Properties
 
   var disposeBag = DisposeBag()
+
+  weak var delegate: FolderDetailCellDelegate?
+
+  var viewModel: ViewModel?
 
 
   // MARK: Initializing
@@ -75,6 +89,7 @@ class FolderDetailCell: UICollectionViewCell {
     super.init(frame: frame)
 
     defineLayout()
+//    addAction()
   }
 
   required init?(coder: NSCoder) {
@@ -83,6 +98,7 @@ class FolderDetailCell: UICollectionViewCell {
 
   override func prepareForReuse() {
     super.prepareForReuse()
+    checkBox.isSelected = false
     disposeBag = DisposeBag()
   }
 
@@ -90,6 +106,8 @@ class FolderDetailCell: UICollectionViewCell {
   // MARK: Configuring
 
   func configure(viewModel: ViewModel) {
+    self.viewModel = viewModel
+
     titleLabel.do {
       $0.attributedText = viewModel.title.styled(font: .subTitleBold, color: .staticBlack)
     }
@@ -151,14 +169,47 @@ class FolderDetailCell: UICollectionViewCell {
       readCountLabel.attributedText = "\(viewModel.readCount)회 읽음"
         .styled(font: .captionSemiBold, color: .gray700)
     }
+
+    if viewModel.isEditing {
+      container.transform = CGAffineTransform.init(translationX: 36.0, y: 0)
+      moreButton.isHidden = true
+    } else {
+      container.transform = .identity
+      checkBox.isSelected = false
+      moreButton.isHidden = false
+    }
+  }
+
+  private func addAction() {
+    checkBox.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.delegate?.folderDetailCellCheckBoxTapped(id: self.viewModel?.id ?? "")
+      }
+      .disposed(by: disposeBag)
+
+    moreButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        self.delegate?.folderDetailCellMoreButtonTapped(id: self.viewModel?.id ?? "")
+      }
+      .disposed(by: disposeBag)
   }
 
 
   // MARK: Layout
 
   private func defineLayout() {
+    [checkBox, container].forEach { contentView.addSubview($0) }
     [titleLabel, thumbnail, tagLabel, captionLabel, moreButton, underLine, folderContainer, readCountLabel].forEach {
-      contentView.addSubview($0)
+      container.addSubview($0)
+    }
+
+    checkBox.snp.makeConstraints {
+      $0.left.equalToSuperview()
+      $0.centerY.equalToSuperview()
+    }
+
+    container.snp.makeConstraints {
+      $0.edges.equalToSuperview()
     }
 
     folderContainer.addSubview(folderLabel)

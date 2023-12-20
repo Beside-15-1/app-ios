@@ -120,7 +120,12 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .asObservable()
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, viewModel in
-        self.contentView.listView.applyCollectionViewDataSource(by: viewModel)
+        self.contentView.listView.applyCollectionViewDataSource(
+          by: viewModel
+        )
+        self.contentView.listView.configureEditingContainer(
+          isEditing: reactor.currentState.isEditing
+        )
       }
       .disposed(by: disposeBag)
 
@@ -144,10 +149,19 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       }
       .disposed(by: disposeBag)
 
-    reactor.state.map(\.linkCount)
+    reactor.state.map(\.selectedLinkListOnEditingMode)
       .distinctUntilChanged()
-      .subscribe(with: self) { `self`, count in
-        self.contentView.listView.configureTotalCount(count: count)
+      .subscribe(with: self) { `self`, list in
+        self.contentView.listView.configureSelectAllCountLabel(
+          selected: list.count,
+          total: reactor.currentState.viewModel?.items.count ?? 0
+        )
+
+        self.contentView.listView.updateSelectedLinkListOnEditingMode(list: list.map { $0.id })
+        self.contentView.listView.configureCheckBox()
+
+        self.contentView.listView
+          .selectAllCheckBox.isSelected = list.count == reactor.currentState.viewModel?.items.count
       }
       .disposed(by: disposeBag)
   }
@@ -206,6 +220,13 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         self.presentPaperSheet(vc)
       }
       .disposed(by: disposeBag)
+
+    reactor.pulse(\.$isEditing)
+      .skip(1)
+      .subscribe(with: self) { `self`, isEditing in
+        self.contentView.listView.configureEditingContainer(isEditing: isEditing)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: FolderDetailViewReactor) {
@@ -236,6 +257,43 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
         reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
       }
       .disposed(by: disposeBag)
+
+    contentView.listView.editButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.editingButtonTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.listView.endEditingButton.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.endEditingMode }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    contentView.listView.deleteButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard var deleteList = reactor.currentState.viewModel?.items,
+              !deleteList.isEmpty else { return }
+
+        deleteList = deleteList.filter { item in
+          reactor.currentState.selectedLinkListOnEditingMode.contains(where: { $0.id == item.id })
+        }
+
+        PBDialog(
+          title: "\(deleteList.count) 개의 링크를\n삭제 하시겠습니까?",
+          content: "삭제된 링크는 복구되지 않습니다.",
+          from: self
+        )
+        .addAction(content: "취소", priority: .secondary, action: nil)
+        .addAction(content: "삭제", priority: .primary, action: {
+          self.reactor?.action.onNext(.deleteButtonTapped)
+        })
+        .show()
+      }
+      .disposed(by: disposeBag)
+
+    contentView.listView.selectAllCheckBox.rx.controlEvent(.touchUpInside)
+      .map { Reactor.Action.selectAllCheckBoxTapped }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
   }
 
   func selectTab(tab: String) {
@@ -260,11 +318,11 @@ extension FolderDetailViewController {
     navigationItem.leftBarButtonItem?.tintColor = .white
     navigationItem.title = "내 폴더"
 
-    let attributes = [
-      NSAttributedString.Key.foregroundColor: UIColor.white,
-      NSAttributedString.Key.font: UIFont.titleBold,
-    ]
-    navigationController?.navigationBar.titleTextAttributes = attributes
+    let appearance = UINavigationBarAppearance()
+    appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+    appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+    navigationItem.standardAppearance = appearance
   }
 
   @objc
@@ -287,8 +345,15 @@ extension FolderDetailViewController: LinkSortDelegate {
 extension FolderDetailViewController: FolderDetailListViewDelegate {
   func listViewItemDidTapped(at row: Int) {
     guard let reactor,
-          let id = reactor.currentState.viewModel?.items[row].id,
-          let link = reactor.currentState.linkList.first(where: { $0.id == id }),
+          let id = reactor.currentState.viewModel?.items[row].id else { return }
+
+    // EditingMode인 경우 체크박스가 선택되도록
+    guard !reactor.currentState.isEditing else {
+      reactor.action.onNext(.linkCheckBoxTapped(id: id))
+      return
+    }
+
+    guard let link = reactor.currentState.linkList.first(where: { $0.id == id }),
           let url = URL(string: link.url) else { return }
 
     analytics.log(type: LinkListEvent.click(component: .link))
@@ -317,8 +382,12 @@ extension FolderDetailViewController: FolderDetailListViewDelegate {
     }
   }
 
+  func listViewCheckBoxTapped(id: String) {
+    reactor?.action.onNext(.linkCheckBoxTapped(id: id))
+  }
+
   func listViewDidScroll(_ scrollView: UIScrollView) {
-    if scrollView.contentOffset.y > 50 {
+    if scrollView.contentOffset.y > 509 {
       contentView.fab.contract()
     } else {
       contentView.fab.expand()
