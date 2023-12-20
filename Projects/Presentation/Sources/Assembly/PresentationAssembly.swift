@@ -294,6 +294,7 @@ public final class PresentationAssembly: Assembly {
   private func registerPushSettingBuilder(container: Container) {
     container.register(PushSettingBuildable.self) { r in
       PushSettingBuilder(dependency: .init(
+        analytics: r.resolve(),
         pushRepository: r.resolve()
       ))
     }

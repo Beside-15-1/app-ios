@@ -50,6 +50,12 @@ final class PushSettingViewController: UIViewController, StoryboardView {
     navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    reactor?.action.onNext(.viewDidAppear)
+  }
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 

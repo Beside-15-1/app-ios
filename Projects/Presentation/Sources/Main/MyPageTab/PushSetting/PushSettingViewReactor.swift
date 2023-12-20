@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 
 final class PushSettingViewReactor: Reactor {
 
@@ -18,6 +19,7 @@ final class PushSettingViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewDidAppear
     case updateUnreadAgree(Bool)
     case updateUnclassifyAgree(Bool)
   }
@@ -36,16 +38,20 @@ final class PushSettingViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
+
   private let pushRepository: PushRepository
 
 
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     pushRepository: PushRepository
   ) {
     defer { _ = self.state }
 
+    self.analytics = analytics
     self.pushRepository = pushRepository
 
     self.initialState = State()
@@ -63,10 +69,24 @@ final class PushSettingViewReactor: Reactor {
     case .viewDidLoad:
       return fetchPushSettingConfig()
 
+    case .viewDidAppear:
+      analytics.log(type: NotificationSettingEvent.shown)
+      return .empty()
+
     case .updateUnreadAgree(let isAgree):
+      if isAgree {
+        analytics.log(type: NotificationSettingEvent.click(component: .unreadOn))
+      } else {
+        analytics.log(type: NotificationSettingEvent.click(component: .unreadOff))
+      }
       return updateUnreadAgree(isAgree: isAgree)
 
     case .updateUnclassifyAgree(let isAgree):
+      if isAgree {
+        analytics.log(type: NotificationSettingEvent.click(component: .unclassifiedOn))
+      } else {
+        analytics.log(type: NotificationSettingEvent.click(component: .unclassifiedOff))
+      }
       return updateUnclassifyAgree(isAgree: isAgree)
     }
   }

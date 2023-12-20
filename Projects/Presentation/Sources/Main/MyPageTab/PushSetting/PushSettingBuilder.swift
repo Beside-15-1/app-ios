@@ -5,13 +5,15 @@
 //  Created by 박천송 on 10/24/23.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct PushSettingDependency {
+  let analytics: PBAnalytics
   let pushRepository: PushRepository
 }
 
@@ -25,6 +27,7 @@ final class PushSettingBuilder: PushSettingBuildable {
 
   func build(payload: PushSettingPayload) -> UIViewController {
     let reactor = PushSettingViewReactor(
+      analytics: dependency.analytics,
       pushRepository: dependency.pushRepository
     )
 
