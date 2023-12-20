@@ -14,12 +14,16 @@ import DesignSystem
 import PBUserDefaults
 
 enum MyPageItemType {
+  // 설정
   case push
   case tag
   case theme
 
+  // 내 계정
   case sign
 
+  // 앱 정보
+  case notice
   case service
   case security
   case version
@@ -151,6 +155,14 @@ final class MyPageItemButton: UIControl {
         $0.top.equalTo(titleLabel.snp.bottom).offset(4.0)
         $0.left.equalTo(titleLabel)
       }
+
+    case .notice:
+      leftIcon.image = DesignSystemAsset.iconNotice.image.withTintColor(.gray900)
+      titleLabel.attributedText = "공지사항".styled(font: .defaultBold, color: .gray900)
+      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      leftIcon.isHidden = false
+      titleLabel.isHidden = false
+      rightIcon.isHidden = false
 
     case .service:
       leftIcon.image = DesignSystemAsset.iconFileCheck.image.withTintColor(.gray900)
