@@ -240,6 +240,20 @@ final class MyPageViewController: UIViewController, StoryboardView {
         self.navigationController?.pushViewController(push, animated: true)
       }
       .disposed(by: disposeBag)
+
+    contentView.noticeButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        guard let url = URL(string: "https://joosum.notion.site/d1bf0517402744ee804c7d645a472610?pvs=4") else {
+          return
+        }
+
+        self.analytics.log(type: MyPageEvent.click(component: .notice))
+
+        let web = self.webBuilder.build(payload: .init(url: url))
+
+        self.presentPaperSheet(web)
+      }
+      .disposed(by: disposeBag)
   }
 
 

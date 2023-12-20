@@ -56,5 +56,6 @@ enum MyPageClickComponent: String {
   case version
   case logout
   case deleteAccount
+  case notice
 }
 
