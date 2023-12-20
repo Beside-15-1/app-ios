@@ -31,6 +31,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   private let linkSortBuilder: LinkSortBuildable
   private let linkDetailBuilder: LinkDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
+  private let tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
 
 
   // MARK: Initializing
@@ -40,7 +41,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     analytics: PBAnalytics,
     linkSortBuilder: LinkSortBuildable,
     linkDetailBuilder: LinkDetailBuildable,
-    createLinkBuilder: CreateLinkBuildable
+    createLinkBuilder: CreateLinkBuildable,
+    tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
   ) {
     defer { self.reactor = reactor }
 
@@ -48,6 +50,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     self.linkSortBuilder = linkSortBuilder
     self.linkDetailBuilder = linkDetailBuilder
     self.createLinkBuilder = createLinkBuilder
+    self.tagAndPeriodFilterBuilder = tagAndPeriodFilterBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -255,6 +258,13 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: LinkListEvent.click(component: .filterUnread))
         reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
+      }
+      .disposed(by: disposeBag)
+
+    contentView.filterButton.rx.controlEvent(.touchUpInside)
+      .subscribe(with: self) { `self`, _ in
+        let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init())
+        self.presentPaperSheet(tagAndPeriodFilter)
       }
       .disposed(by: disposeBag)
 

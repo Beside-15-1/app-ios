@@ -37,7 +37,8 @@ public final class PresentationAssembly: Assembly {
       registerSignUpSuccessBuilder,
       registerOnboardingBuilder,
       registerMasterBuilder,
-      registerNotificationSettingBuilder
+      registerNotificationSettingBuilder,
+      registerTagAndPeriodFilterBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -210,7 +211,8 @@ public final class PresentationAssembly: Assembly {
         folderRepository: r.resolve(),
         linkSortBuilder: r.resolve(),
         linkDetailBuilder: r.resolve(),
-        createLinkBuilder: r.resolve()
+        createLinkBuilder: r.resolve(),
+        tagAndPeriodFilterBuilder: r.resolve()
       ))
     }
   }
@@ -297,6 +299,12 @@ public final class PresentationAssembly: Assembly {
         analytics: r.resolve(),
         pushRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerTagAndPeriodFilterBuilder(container: Container) {
+    container.register(TagAndPeriodFilterBuildable.self) { r in
+      TagAndPeriodFilterBuilder(dependency: .init())
     }
   }
 }
