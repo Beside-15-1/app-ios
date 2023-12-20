@@ -1,5 +1,5 @@
 //
-//  PushSettingViewController.swift
+//  NotificationSettingViewController.swift
 //  Presentation
 //
 //  Created by 박천송 on 10/24/23.
@@ -12,11 +12,11 @@ import RxSwift
 
 import DesignSystem
 
-final class PushSettingViewController: UIViewController, StoryboardView {
+final class NotificationSettingViewController: UIViewController, StoryboardView {
 
   // MARK: UI
 
-  private lazy var contentView = PushSettingView()
+  private lazy var contentView = NotificationSettingView()
 
 
   // MARK: Properties
@@ -26,7 +26,7 @@ final class PushSettingViewController: UIViewController, StoryboardView {
 
   // MARK: Initializing
 
-  init(reactor: PushSettingViewReactor) {
+  init(reactor: NotificationSettingViewReactor) {
     defer { self.reactor = reactor }
     super.init(nibName: nil, bundle: nil)
   }
@@ -67,7 +67,7 @@ final class PushSettingViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: PushSettingViewReactor) {
+  func bind(reactor: NotificationSettingViewReactor) {
     reactor.state.map(\.config)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, config in
@@ -93,7 +93,7 @@ final class PushSettingViewController: UIViewController, StoryboardView {
 
 // MARK: - NavigationBar
 
-extension PushSettingViewController {
+extension NotificationSettingViewController {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(

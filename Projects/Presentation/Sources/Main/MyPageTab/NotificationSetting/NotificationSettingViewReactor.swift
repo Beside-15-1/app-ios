@@ -1,5 +1,5 @@
 //
-//  PushSettingViewReactor.swift
+//  NotificationSettingViewReactor.swift
 //  Presentation
 //
 //  Created by 박천송 on 10/24/23.
@@ -13,7 +13,7 @@ import RxSwift
 import Domain
 import PBAnalyticsInterface
 
-final class PushSettingViewReactor: Reactor {
+final class NotificationSettingViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
 
@@ -25,11 +25,11 @@ final class PushSettingViewReactor: Reactor {
   }
 
   enum Mutation {
-    case setConfig(PushSettingConfig)
+    case setConfig(NotificationSettingConfig)
   }
 
   struct State {
-    var config = PushSettingConfig(isClassifyAgree: false, isReadAgree: false)
+    var config = NotificationSettingConfig(isClassifyAgree: false, isReadAgree: false)
   }
 
   // MARK: Properties
@@ -67,7 +67,7 @@ final class PushSettingViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return fetchPushSettingConfig()
+      return fetchNotificationSettingConfig()
 
     case .viewDidAppear:
       analytics.log(type: NotificationSettingEvent.shown)
@@ -95,8 +95,8 @@ final class PushSettingViewReactor: Reactor {
     var newState = state
 
     switch mutation {
-    case .setConfig(let pushSettingConfig):
-      newState.config = pushSettingConfig
+    case .setConfig(let NotificationSettingConfig):
+      newState.config = NotificationSettingConfig
     }
 
     return newState
@@ -106,9 +106,9 @@ final class PushSettingViewReactor: Reactor {
 
 // MARK: - Private
 
-extension PushSettingViewReactor {
+extension NotificationSettingViewReactor {
 
-  private func fetchPushSettingConfig() -> Observable<Mutation> {
+  private func fetchNotificationSettingConfig() -> Observable<Mutation> {
     pushRepository.fetchSetting()
       .asObservable()
       .map { Mutation.setConfig($0) }
