@@ -1,5 +1,5 @@
 //
-//  PushSettingView.swift
+//  NotificationSettingView.swift
 //  Presentation
 //
 //  Created by 박천송 on 10/24/23.
@@ -12,7 +12,7 @@ import Then
 
 import DesignSystem
 
-final class PushSettingView: UIView {
+final class NotificationSettingView: UIView {
 
   private let stackView = UIStackView().then {
     $0.distribution = .fill
@@ -21,11 +21,11 @@ final class PushSettingView: UIView {
     $0.backgroundColor = .gray400
   }
 
-  let unreadItem = PushSettingItemView().then {
+  let unreadItem = NotificationSettingItemView().then {
     $0.configure(type: .unread)
   }
 
-  let unclassifyItem = PushSettingItemView().then {
+  let unclassifyItem = NotificationSettingItemView().then {
     $0.configure(type: .unclassify)
   }
 

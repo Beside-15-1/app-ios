@@ -37,7 +37,7 @@ public final class PresentationAssembly: Assembly {
       registerSignUpSuccessBuilder,
       registerOnboardingBuilder,
       registerMasterBuilder,
-      registerPushSettingBuilder
+      registerNotificationSettingBuilder
     ]
 
     registerFunctions.forEach { function in
@@ -119,7 +119,7 @@ public final class PresentationAssembly: Assembly {
         manageTagBuilder: r.resolve(),
         webBuilder: r.resolve(),
         deleteAccountBuilder: r.resolve(),
-        pushSettingBuilder: r.resolve()
+        NotificationSettingBuilder: r.resolve()
       ))
     }.initCompleted { r, builder in
       builder.configure(loginBuilder: r.resolve())
@@ -291,9 +291,10 @@ public final class PresentationAssembly: Assembly {
     }
   }
 
-  private func registerPushSettingBuilder(container: Container) {
-    container.register(PushSettingBuildable.self) { r in
-      PushSettingBuilder(dependency: .init(
+  private func registerNotificationSettingBuilder(container: Container) {
+    container.register(NotificationSettingBuildable.self) { r in
+      NotificationSettingBuilder(dependency: .init(
+        analytics: r.resolve(),
         pushRepository: r.resolve()
       ))
     }

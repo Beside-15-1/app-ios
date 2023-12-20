@@ -1,5 +1,5 @@
 //
-//  PushSettingConfig.swift
+//  NotificationSettingConfig.swift
 //  Domain
 //
 //  Created by 박천송 on 10/24/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PushSettingConfig: Hashable {
+public struct NotificationSettingConfig: Hashable {
 
   public let isClassifyAgree: Bool
   public let isReadAgree: Bool

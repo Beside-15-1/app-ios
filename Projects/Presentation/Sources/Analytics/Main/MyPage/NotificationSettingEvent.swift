@@ -1,35 +1,35 @@
 //
-//  LinkListEvent.swift
+//  NotificationSettingEvent.swift
 //  Presentation
 //
-//  Created by 박천송 on 2023/10/17.
+//  Created by 박천송 on 12/20/23.
 //
 
 import Foundation
 
 import PBAnalyticsInterface
 
-enum LinkListEvent {
-  case click(component: LinkListClickComponent)
+enum NotificationSettingEvent {
+  case click(component: NotificationSettingClickComponent)
   case shown
 }
 
 // MARK: PBAnalyticsType
 
-extension LinkListEvent: PBAnalyticsType {
+extension NotificationSettingEvent: PBAnalyticsType {
   var name: String {
     switch self {
     case .click:
       return PBAnalyticsEventNameBuilder()
         .action(with: .clicked)
-        .screen(with: "linkList")
+        .screen(with: "notificationSetting")
         .version(with: 1)
         .build()
 
     case .shown:
       return PBAnalyticsEventNameBuilder()
         .action(with: .shown)
-        .screen(with: "linkList")
+        .screen(with: "notificationSetting")
         .version(with: 1)
         .build()
     }
@@ -48,20 +48,11 @@ extension LinkListEvent: PBAnalyticsType {
   }
 }
 
-enum LinkListClickComponent: String {
+enum NotificationSettingClickComponent: String {
   case back
-  case tabOtherFolder
-  case searchInput
-  case search
-  case filterUnread
-  case sortby
-  case link
-  case buttonKebab
-  case editOn
-  case editOff
-  case checkLink
-  case checkAll
-  case deleteLink
+  case unreadOn
+  case unreadOff
+  case unclassifiedOn
+  case unclassifiedOff
 }
-
 

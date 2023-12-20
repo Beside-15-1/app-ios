@@ -27,11 +27,11 @@ final class PushRepositoryImpl: PushRepository {
       .map { _ in () }
   }
 
-  func fetchSetting() -> Single<PushSettingConfig> {
+  func fetchSetting() -> Single<NotificationSettingConfig> {
     let target = PushAPI.fetchSetting
 
     return networking.request(target: target)
-      .map(PushSettingResponse.self)
+      .map(NotificationSettingResponse.self)
       .map { $0.toDomain() }
   }
 

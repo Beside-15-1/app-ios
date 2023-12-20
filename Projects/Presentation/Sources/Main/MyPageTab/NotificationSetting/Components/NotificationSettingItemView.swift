@@ -1,5 +1,5 @@
 //
-//  PushSettingItemView.swift
+//  NotificationSettingItemView.swift
 //  Presentation
 //
 //  Created by 박천송 on 10/24/23.
@@ -12,12 +12,12 @@ import Then
 
 import DesignSystem
 
-enum PushSettingItemType {
+enum NotificationSettingItemType {
   case unread
   case unclassify
 }
 
-final class PushSettingItemView: UIView {
+final class NotificationSettingItemView: UIView {
 
   private let titleLabel = UILabel()
 
@@ -45,7 +45,7 @@ final class PushSettingItemView: UIView {
 
   // MARK: Configuring
 
-  func configure(type: PushSettingItemType) {
+  func configure(type: NotificationSettingItemType) {
     switch type {
     case .unread:
       titleLabel.do {
