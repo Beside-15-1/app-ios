@@ -57,6 +57,11 @@ enum LinkListClickComponent: String {
   case sortby
   case link
   case buttonKebab
+  case editOn
+  case editOff
+  case checkLink
+  case checkAll
+  case deleteLink
 }
 
 

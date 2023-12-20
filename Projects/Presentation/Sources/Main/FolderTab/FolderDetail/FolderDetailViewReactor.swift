@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 import PBLog
 
 final class FolderDetailViewReactor: Reactor {
@@ -76,6 +77,8 @@ final class FolderDetailViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
+
   private let linkRepository: LinkRepository
   private let fetchAllLinkUseCase: FetchAllLinksUseCase
   private let fetchLinkInFolderUseCase: FetchLinksInFolderUseCase
@@ -86,6 +89,7 @@ final class FolderDetailViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     linkRepository: LinkRepository,
     fetchAllLinkUseCase: FetchAllLinksUseCase,
     fetchLinkInFolderUseCase: FetchLinksInFolderUseCase,
@@ -96,6 +100,7 @@ final class FolderDetailViewReactor: Reactor {
   ) {
     defer { _ = self.state }
 
+    self.analytics = analytics
     self.linkRepository = linkRepository
     self.fetchAllLinkUseCase = fetchAllLinkUseCase
     self.fetchLinkInFolderUseCase = fetchLinkInFolderUseCase
@@ -225,6 +230,8 @@ final class FolderDetailViewReactor: Reactor {
       }
 
     case .editingButtonTapped:
+      analytics.log(type: LinkListEvent.click(component: .editOn))
+
       return .concat([
         .just(Mutation.setEditing(true)),
         .just(Mutation.setSelectedLinkListOnEditingMode([])),
@@ -232,6 +239,8 @@ final class FolderDetailViewReactor: Reactor {
       ])
 
     case .endEditingMode:
+      analytics.log(type: LinkListEvent.click(component: .editOff))
+
       return .concat([
         .just(Mutation.setEditing(false)),
         .just(Mutation.setSelectedLinkListOnEditingMode([])),
@@ -239,6 +248,8 @@ final class FolderDetailViewReactor: Reactor {
       ])
 
     case .linkCheckBoxTapped(let id):
+
+      analytics.log(type: LinkListEvent.click(component: .checkLink))
 
       var currentList = currentState.selectedLinkListOnEditingMode
 
@@ -253,6 +264,8 @@ final class FolderDetailViewReactor: Reactor {
       return .just(Mutation.setSelectedLinkListOnEditingMode(currentList))
 
     case .deleteButtonTapped:
+      analytics.log(type: LinkListEvent.click(component: .deleteLink))
+
       return .concat([
         deleteMultipleLink(),
         .just(Mutation.setSelectedLinkListOnEditingMode([])),
@@ -260,6 +273,8 @@ final class FolderDetailViewReactor: Reactor {
 
     case .selectAllCheckBoxTapped:
       guard let viewModel = currentState.viewModel else { return .empty() }
+
+      analytics.log(type: LinkListEvent.click(component: .checkAll))
 
       if viewModel.items.count == currentState.selectedLinkListOnEditingMode.count {
         return .just(Mutation.setSelectedLinkListOnEditingMode([]))
