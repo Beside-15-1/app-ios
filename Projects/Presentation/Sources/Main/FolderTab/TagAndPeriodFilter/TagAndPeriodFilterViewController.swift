@@ -39,6 +39,8 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -49,4 +51,13 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
   // MARK: Binding
 
   func bind(reactor: TagAndPeriodFilterViewReactor) {}
+}
+
+
+// MARK: - TagAndPeriodFilterViewDelegate
+
+extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
+  func tagAndPeriodFilterViewCloseButtonTapped() {
+    dismiss(animated: true)
+  }
 }
