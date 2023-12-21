@@ -14,6 +14,7 @@ import DesignSystem
 
 protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewCloseButtonTapped()
+  func tagAndPeriodFilterViewPeriodButtonTapped(type: LinkPeriodType)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -23,6 +24,12 @@ final class TagAndPeriodFilterView: UIView {
   private let titleView = TitleView().then {
     $0.title = "필터"
   }
+
+  private lazy var selectPeriodView = SelectPeriodView().then {
+    $0.delegate = self
+  }
+
+
   // MARK: Properties
 
   weak var delegate: TagAndPeriodFilterViewDelegate?
@@ -49,7 +56,29 @@ final class TagAndPeriodFilterView: UIView {
 
   // MARK: Layout
 
+  private func defineLayout() {
+    [titleView, selectPeriodView].forEach { addSubview($0) }
+
+    titleView.snp.makeConstraints {
+      $0.left.top.right.equalToSuperview()
+    }
+
+    selectPeriodView.snp.makeConstraints {
+      $0.top.equalTo(titleView.snp.bottom).offset(20.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+  }
+
   override func layoutSubviews() {
     super.layoutSubviews()
+  }
+}
+
+
+// MARK: SelectPeriodViewDelegate
+
+extension TagAndPeriodFilterView: SelectPeriodViewDelegate {
+  func selectPeriodViewButtonTapped(type: LinkPeriodType) {
+    delegate?.tagAndPeriodFilterViewPeriodButtonTapped(type: type)
   }
 }

@@ -60,4 +60,8 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
   func tagAndPeriodFilterViewCloseButtonTapped() {
     dismiss(animated: true)
   }
+
+  func tagAndPeriodFilterViewPeriodButtonTapped(type: LinkPeriodType) {
+    print(type)
+  }
 }
