@@ -33,6 +33,10 @@ final class FolderDetailView: UIView {
 
   let unreadFilterButton = UnreadFilterButton()
 
+  let filterButton = TextButton(type: .regular, color: .white).then {
+    $0.text = "태그/기간 필터"
+  }
+
   let listView = FolderDetailListView()
 
   let fab = FAB().then {
@@ -77,7 +81,15 @@ final class FolderDetailView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [safeAreaView, colorBackground, tabView, searchField, listView, unreadFilterButton].forEach { addSubview($0) }
+    [
+      safeAreaView,
+      colorBackground,
+      tabView,
+      searchField,
+      listView,
+      unreadFilterButton,
+      filterButton,
+    ].forEach { addSubview($0) }
 
     safeAreaView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
@@ -92,6 +104,11 @@ final class FolderDetailView: UIView {
     unreadFilterButton.snp.makeConstraints {
       $0.top.equalTo(searchField.snp.bottom).offset(14.0)
       $0.left.equalToSuperview().inset(20.0)
+    }
+
+    filterButton.snp.makeConstraints {
+      $0.top.equalTo(searchField.snp.bottom).offset(14.0)
+      $0.right.equalToSuperview().inset(20.0)
     }
 
     tabView.snp.makeConstraints {
@@ -120,5 +137,5 @@ final class FolderDetailView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
   }
-  
+
 }

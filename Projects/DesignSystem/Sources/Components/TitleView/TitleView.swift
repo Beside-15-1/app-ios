@@ -32,6 +32,8 @@ public final class TitleView: UIView {
     )
   }
 
+  public var onCloseAction: (() -> Void)?
+
   private let divider = UIView().then {
     $0.backgroundColor = .border1
   }
@@ -42,11 +44,23 @@ public final class TitleView: UIView {
     super.init(frame: frame)
 
     defineLayout()
+
+    configureTapAction()
   }
 
   required init?(coder: NSCoder) {
     super.init(coder: coder)
   }
+
+
+  // MARK: Configuring
+
+  private func configureTapAction() {
+    closeButton.addAction(UIAction(handler: { [weak self] _ in
+      self?.onCloseAction?()
+    }), for: .touchUpInside)
+  }
+
 
   // MARK: Layout
 
