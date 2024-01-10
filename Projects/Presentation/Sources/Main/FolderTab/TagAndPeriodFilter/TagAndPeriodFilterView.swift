@@ -36,6 +36,12 @@ final class TagAndPeriodFilterView: UIView {
 
   private let tagListView = TagAndPeriodTagListView()
 
+  private let resetButton = TagAndPeriodFilterResetButton()
+
+  private let confirmButton = BasicButton(priority: .primary).then {
+    $0.text = "확인"
+  }
+
 
   // MARK: Properties
 
@@ -90,7 +96,11 @@ final class TagAndPeriodFilterView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleView, selectPeriodView, periodInputView, addedTagView, tagListView].forEach { addSubview($0) }
+    [titleView, 
+     selectPeriodView, periodInputView,
+     addedTagView, tagListView,
+     resetButton, confirmButton
+    ].forEach { addSubview($0) }
 
     titleView.snp.makeConstraints {
       $0.left.top.right.equalToSuperview()
@@ -114,7 +124,19 @@ final class TagAndPeriodFilterView: UIView {
     tagListView.snp.makeConstraints {
       $0.top.equalTo(addedTagView.snp.bottom).offset(12.0)
       $0.left.right.equalToSuperview().inset(20.0)
-      $0.bottom.equalToSuperview()
+    }
+
+    resetButton.snp.makeConstraints {
+      $0.left.equalToSuperview().inset(20.0)
+      $0.top.equalTo(tagListView.snp.bottom).offset(10.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide)
+    }
+
+    confirmButton.snp.makeConstraints {
+      $0.left.equalTo(resetButton.snp.right).offset(8.0)
+      $0.right.equalToSuperview().inset(20.0)
+      $0.top.equalTo(tagListView.snp.bottom).offset(10.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide)
     }
   }
 
