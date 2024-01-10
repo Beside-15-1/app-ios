@@ -45,12 +45,23 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    reactor?.action.onNext(.viewDidLoad)
   }
 
 
   // MARK: Binding
 
-  func bind(reactor: TagAndPeriodFilterViewReactor) {}
+  func bind(reactor: TagAndPeriodFilterViewReactor) {
+    bindContent(with: reactor)
+  }
+
+  private func bindContent(with reactor: TagAndPeriodFilterViewReactor) {
+    reactor.state.map(\.tagListSectionItems)
+      .subscribe(with: self) { `self`, items in
+        self.contentView.configureTagList(items: items)
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 
