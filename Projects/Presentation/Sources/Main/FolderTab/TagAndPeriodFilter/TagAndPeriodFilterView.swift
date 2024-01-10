@@ -16,6 +16,7 @@ import PresentationInterface
 protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewCloseButtonTapped()
   func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType)
+  func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -34,7 +35,9 @@ final class TagAndPeriodFilterView: UIView {
 
   private let addedTagView = AddedTagView()
 
-  private let tagListView = TagAndPeriodTagListView()
+  private lazy var tagListView = TagAndPeriodTagListView().then {
+    $0.delegate = self
+  }
 
   private let resetButton = TagAndPeriodFilterResetButton()
 
@@ -96,10 +99,15 @@ final class TagAndPeriodFilterView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleView, 
-     selectPeriodView, periodInputView,
-     addedTagView, tagListView,
-     resetButton, confirmButton
+    [
+      titleView,
+
+      selectPeriodView,
+      periodInputView,
+      addedTagView,
+      tagListView,
+      resetButton,
+      confirmButton,
     ].forEach { addSubview($0) }
 
     titleView.snp.makeConstraints {
@@ -151,5 +159,14 @@ final class TagAndPeriodFilterView: UIView {
 extension TagAndPeriodFilterView: SelectPeriodViewDelegate {
   func selectPeriodViewButtonTapped(type: PeriodType) {
     delegate?.tagAndPeriodFilterViewPeriodButtonTapped(type: type)
+  }
+}
+
+
+// MARK: TagAndPeriodListViewDelegate
+
+extension TagAndPeriodFilterView: TagAndPeriodListViewDelegate {
+  func tagListView(_ listView: TagAndPeriodTagListView, didSelectRowAt indexPath: IndexPath) {
+    delegate?.tagAndPeriodFilterView(didSelectRowAt: indexPath)
   }
 }

@@ -13,6 +13,10 @@ import Then
 
 import DesignSystem
 
+protocol TagAndPeriodListViewDelegate: AnyObject {
+  func tagListView(_ listView: TagAndPeriodTagListView, didSelectRowAt indexPath: IndexPath)
+}
+
 class TagAndPeriodTagListView: UIView {
 
   typealias Section = TagAndPeriodTagListSection
@@ -39,6 +43,8 @@ class TagAndPeriodTagListView: UIView {
   // MARK: Properties
 
   private lazy var dataSource: DiffableDataSource = diffableDataSource()
+
+  weak var delegate: TagAndPeriodListViewDelegate?
 
 
   // MARK: Initialize
@@ -100,12 +106,10 @@ extension TagAndPeriodTagListView: UITableViewDelegate {
 
     emptyLabel.isHidden = !items.isEmpty
 
-    dataSource.apply(snapshot)
+    dataSource.apply(snapshot, animatingDifferences: false)
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    guard let cell = tableView.cellForRow(at: indexPath) as? TagAndPeriodTagCell else {
-      return
-    }
+    delegate?.tagListView(self, didSelectRowAt: indexPath)
   }
 }

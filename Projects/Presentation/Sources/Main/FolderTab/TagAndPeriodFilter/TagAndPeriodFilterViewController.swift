@@ -82,4 +82,8 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
   func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType) {
     reactor?.action.onNext(.changePeriodType(type))
   }
+
+  func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath) {
+    reactor?.action.onNext(.tagItemTapped(index: indexPath.row))
+  }
 }
