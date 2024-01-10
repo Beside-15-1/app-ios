@@ -21,25 +21,17 @@ class PeriodInputField: UIControl {
 
   lazy var textField = UITextField().then {
     $0.inputView = datePicker
-    $0.inputAccessoryView = toolBar
     $0.clearButtonMode = .never
+    $0.tintColor = .clear
   }
 
   private let datePicker = UIDatePicker().then {
     $0.datePickerMode = .date
-    $0.preferredDatePickerStyle = .wheels
+    $0.preferredDatePickerStyle = .inline
     $0.locale = Locale(identifier: "ko-KR")
   }
 
-  private lazy var toolBar = UIToolbar().then {
-    $0.setItems([cancelButton, spaceButton, doneButton], animated: false)
-    $0.sizeToFit()
-  }
-
-  let doneButton = UIBarButtonItem(title: "확인", style: .done, target: nil, action: #selector(doneButtonTapped))
-  let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonTapped))
-  let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-
+  var currentDate = Date()
 
   // MARK: Initialize
 
@@ -51,6 +43,8 @@ class PeriodInputField: UIControl {
     clipsToBounds = true
 
     defineLayout()
+
+    datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
   }
 
   required init?(coder: NSCoder) {
@@ -83,8 +77,16 @@ class PeriodInputField: UIControl {
     )
   }
 
+  func configureMaximumDate(date: Date) {
+    datePicker.maximumDate = date
+  }
+
+  func configureMinimumDate(date: Date) {
+    datePicker.minimumDate = date
+  }
+
   @objc
-  func doneButtonTapped() {
+  func dateChanged() {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy.MM.dd"
 

@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import RxCocoa
+import RxSwift
 import SnapKit
 import Then
 
@@ -26,6 +28,14 @@ class PeriodInputView: UIView {
   }
 
 
+  // MARK: Properties
+
+  private var startDate = Date(timeIntervalSinceNow: -3600 * 24 * 30)
+  private var endDate = Date()
+
+  private let disposeBag = DisposeBag()
+
+
   // MARK: Initialize
 
   override init(frame: CGRect) {
@@ -33,6 +43,7 @@ class PeriodInputView: UIView {
 
     defineLayout()
     setDate()
+    addTarget()
   }
 
   required init?(coder: NSCoder) {
@@ -40,8 +51,49 @@ class PeriodInputView: UIView {
   }
 
   private func setDate() {
-    endInputField.configureDate(date: Date())
-    startInputField.configureDate(date: Date(timeIntervalSinceNow: -3600 * 24 * 30))
+    startInputField.configureDate(date: startDate)
+    endInputField.configureDate(date: endDate)
+
+    startInputField.configureMaximumDate(date: endDate)
+    endInputField.configureMinimumDate(date: startDate)
+    endInputField.configureMaximumDate(date: Date())
+  }
+
+
+  // MARK: Target
+
+  private func addTarget() {
+    startInputField.rx.text.orEmpty
+      .subscribe(onNext: { [weak self] text in
+        guard let self else { return }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        guard let date = dateFormatter.date(from: text) else {
+          return
+        }
+
+        startDate = date
+
+        setDate()
+      })
+      .disposed(by: disposeBag)
+
+    endInputField.rx.text.orEmpty
+      .subscribe(onNext: { [weak self] text in
+        guard let self else { return }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        guard let date = dateFormatter.date(from: text) else {
+          return
+        }
+
+        endDate = date
+
+        setDate()
+      })
+      .disposed(by: disposeBag)
   }
 
 
