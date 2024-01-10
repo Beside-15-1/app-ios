@@ -5,10 +5,11 @@
 //  Created by 박천송 on 12/20/23.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
+import PBUserDefaults
 import PresentationInterface
 
 struct TagAndPeriodFilterDependency {}
@@ -22,7 +23,9 @@ final class TagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable {
   }
 
   func build(payload: TagAndPeriodFilterPayload) -> UIViewController {
-    let reactor = TagAndPeriodFilterViewReactor()
+    let reactor = TagAndPeriodFilterViewReactor(
+      userDefaults: .shared
+    )
 
     let viewController = TagAndPeriodFilterViewController(
       reactor: reactor

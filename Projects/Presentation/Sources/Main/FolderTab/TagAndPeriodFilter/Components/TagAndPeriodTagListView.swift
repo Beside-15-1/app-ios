@@ -107,7 +107,5 @@ extension TagAndPeriodTagListView: UITableViewDelegate {
     guard let cell = tableView.cellForRow(at: indexPath) as? TagAndPeriodTagCell else {
       return
     }
-
-    cell.isSelected = true
   }
 }

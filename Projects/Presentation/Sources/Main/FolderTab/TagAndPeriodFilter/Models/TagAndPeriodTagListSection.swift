@@ -13,6 +13,6 @@ enum TagAndPeriodTagListSection: Hashable {
 
 extension TagAndPeriodTagListSection {
   enum Item: Hashable {
-    case normal(String)
+    case normal(TagAndPeriodTagCell.ViewModel)
   }
 }
