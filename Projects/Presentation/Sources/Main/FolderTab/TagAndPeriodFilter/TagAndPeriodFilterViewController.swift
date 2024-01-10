@@ -68,6 +68,12 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
         self.contentView.configurePeriodType(type: type)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.selectedTagList)
+      .subscribe(with: self) { `self`, tagList in
+        self.contentView.configureSelectedTagList(tagList: tagList)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -85,5 +91,9 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
 
   func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath) {
     reactor?.action.onNext(.tagItemTapped(index: indexPath.row))
+  }
+
+  func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int) {
+    reactor?.action.onNext(.selectedTagListRemoveButtonTapped(index: index))
   }
 }

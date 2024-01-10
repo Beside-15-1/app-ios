@@ -17,6 +17,7 @@ protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewCloseButtonTapped()
   func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType)
   func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath)
+  func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -33,7 +34,9 @@ final class TagAndPeriodFilterView: UIView {
 
   private let periodInputView = PeriodInputView()
 
-  private let addedTagView = AddedTagView()
+  private lazy var addedTagView = AddedTagView().then {
+    $0.delegate = self
+  }
 
   private lazy var tagListView = TagAndPeriodTagListView().then {
     $0.delegate = self
@@ -74,6 +77,10 @@ final class TagAndPeriodFilterView: UIView {
 
   func configureTagList(items: [TagAndPeriodTagListView.SectionItem]) {
     tagListView.applyDataSource(by: items)
+  }
+
+  func configureSelectedTagList(tagList: [String]) {
+    addedTagView.applyAddedTag(by: tagList)
   }
 
   func configurePeriodType(type: PeriodType) {
@@ -168,5 +175,14 @@ extension TagAndPeriodFilterView: SelectPeriodViewDelegate {
 extension TagAndPeriodFilterView: TagAndPeriodListViewDelegate {
   func tagListView(_ listView: TagAndPeriodTagListView, didSelectRowAt indexPath: IndexPath) {
     delegate?.tagAndPeriodFilterView(didSelectRowAt: indexPath)
+  }
+}
+
+
+// MARK: AddedTagViewDelegate
+
+extension TagAndPeriodFilterView: AddedTagViewDelegate {
+  func removeAddedTag(at row: Int) {
+    delegate?.tagAndPeriodFilterViewRemoveButtonTapped(at: row)
   }
 }

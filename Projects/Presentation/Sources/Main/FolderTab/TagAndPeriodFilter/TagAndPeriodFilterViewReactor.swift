@@ -21,12 +21,14 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case viewDidLoad
     case changePeriodType(PeriodType)
     case tagItemTapped(index: Int)
+    case selectedTagListRemoveButtonTapped(index: Int)
   }
 
   enum Mutation {
     case updateTagList
     case setPeriodType(PeriodType)
     case updateSelectedTag(index: Int)
+    case removeSelectedTag(index: Int)
   }
 
   struct State {
@@ -86,6 +88,12 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         .just(Mutation.updateSelectedTag(index: index)),
         .just(Mutation.updateTagList),
       ])
+
+    case .selectedTagListRemoveButtonTapped(let index):
+      return .concat([
+        .just(Mutation.removeSelectedTag(index: index)),
+        .just(Mutation.updateTagList),
+      ])
     }
   }
 
@@ -110,6 +118,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         // select
         newState.selectedTagList.append(currentState.tagList[index])
       }
+
+    case .removeSelectedTag(let index):
+      newState.selectedTagList.removeAll(where: { $0 == currentState.selectedTagList[index] })
     }
 
     return newState
