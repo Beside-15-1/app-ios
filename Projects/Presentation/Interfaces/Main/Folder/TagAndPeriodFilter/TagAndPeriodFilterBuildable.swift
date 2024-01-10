@@ -16,5 +16,10 @@ public protocol TagAndPeriodFilterBuildable {
 }
 
 public struct TagAndPeriodFilterPayload {
-  public init() {}
+
+  public let periodType: PeriodType
+
+  public init(periodType: PeriodType) {
+    self.periodType = periodType
+  }
 }

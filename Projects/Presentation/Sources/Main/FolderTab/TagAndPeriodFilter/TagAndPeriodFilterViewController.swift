@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import PresentationInterface
 
 final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
@@ -61,6 +62,12 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
         self.contentView.configureTagList(items: items)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.periodType)
+      .subscribe(with: self) { `self`, type in
+        self.contentView.configurePeriodType(type: type)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -72,7 +79,7 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
     dismiss(animated: true)
   }
 
-  func tagAndPeriodFilterViewPeriodButtonTapped(type: LinkPeriodType) {
-    print(type)
+  func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType) {
+    reactor?.action.onNext(.changePeriodType(type))
   }
 }

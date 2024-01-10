@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import PBUserDefaults
+import PresentationInterface
 
 final class TagAndPeriodFilterViewReactor: Reactor {
 
@@ -18,17 +19,22 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case changePeriodType(PeriodType)
   }
 
   enum Mutation {
     case updateTagList
+    case setPeriodType(PeriodType)
   }
 
   struct State {
+    // TagList
     var tagList: [String]
     var selectedTagList: [String] = []
-
     var tagListSectionItems: [TagAndPeriodTagListView.SectionItem] = []
+
+    // Period
+    var periodType: PeriodType
   }
 
   // MARK: Properties
@@ -43,14 +49,16 @@ final class TagAndPeriodFilterViewReactor: Reactor {
   // MARK: initializing
 
   init(
-    userDefaults: UserDefaultsManager
+    userDefaults: UserDefaultsManager,
+    periodType: PeriodType
   ) {
     defer { _ = self.state }
 
     self.userDefaults = userDefaults
 
     self.initialState = State(
-      tagList: userDefaults.tagList
+      tagList: userDefaults.tagList,
+      periodType: periodType
     )
   }
 
@@ -67,6 +75,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
       return .concat([
         .just(Mutation.updateTagList),
       ])
+
+    case .changePeriodType(let type):
+      return .just(Mutation.setPeriodType(type))
     }
   }
 
@@ -79,6 +90,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         let isSelected = currentState.selectedTagList.contains(where: { tag == $0 })
         return TagAndPeriodTagListView.SectionItem.normal(.init(tag: tag, isSelected: isSelected))
       }
+
+    case .setPeriodType(let type):
+      newState.periodType = type
     }
 
     return newState

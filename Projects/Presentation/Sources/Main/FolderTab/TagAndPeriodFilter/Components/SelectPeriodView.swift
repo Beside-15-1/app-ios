@@ -11,9 +11,10 @@ import SnapKit
 import Then
 
 import DesignSystem
+import PresentationInterface
 
 protocol SelectPeriodViewDelegate: AnyObject {
-  func selectPeriodViewButtonTapped(type: LinkPeriodType)
+  func selectPeriodViewButtonTapped(type: PeriodType)
 }
 
 final class SelectPeriodView: UIView {
@@ -75,7 +76,7 @@ final class SelectPeriodView: UIView {
       $0.height.equalTo(32.0)
     }
 
-    LinkPeriodType.allCases.forEach { type in
+    PeriodType.allCases.forEach { type in
       let button = PeriodButton().then {
         $0.configure(type: type)
       }
@@ -96,7 +97,7 @@ final class SelectPeriodView: UIView {
   }
 
 
-  private func configurePeriodButton(type: LinkPeriodType) {
+  func configurePeriodButton(type: PeriodType) {
     periodButtons.forEach { button in
       button.isSelected = button.title == type.rawValue
     }

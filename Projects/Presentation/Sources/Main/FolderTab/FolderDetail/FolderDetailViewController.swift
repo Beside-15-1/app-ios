@@ -263,7 +263,9 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
     contentView.filterButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
-        let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init())
+        let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(
+          periodType: .all
+        ))
         self.presentPaperSheet(tagAndPeriodFilter)
       }
       .disposed(by: disposeBag)

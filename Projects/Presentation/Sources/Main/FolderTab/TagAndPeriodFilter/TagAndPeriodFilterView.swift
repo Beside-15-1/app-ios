@@ -11,10 +11,11 @@ import SnapKit
 import Then
 
 import DesignSystem
+import PresentationInterface
 
 protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewCloseButtonTapped()
-  func tagAndPeriodFilterViewPeriodButtonTapped(type: LinkPeriodType)
+  func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -66,6 +67,25 @@ final class TagAndPeriodFilterView: UIView {
     tagListView.applyDataSource(by: items)
   }
 
+  func configurePeriodType(type: PeriodType) {
+    selectPeriodView.configurePeriodButton(type: type)
+    if type == .custom {
+      periodInputView.isHidden = false
+
+      addedTagView.snp.remakeConstraints {
+        $0.top.equalTo(periodInputView.snp.bottom).offset(32.0)
+        $0.left.right.equalToSuperview().inset(20.0)
+      }
+    } else {
+      periodInputView.isHidden = true
+
+      addedTagView.snp.remakeConstraints {
+        $0.top.equalTo(selectPeriodView.snp.bottom).offset(32.0)
+        $0.left.right.equalToSuperview().inset(20.0)
+      }
+    }
+  }
+
 
   // MARK: Layout
 
@@ -107,7 +127,7 @@ final class TagAndPeriodFilterView: UIView {
 // MARK: SelectPeriodViewDelegate
 
 extension TagAndPeriodFilterView: SelectPeriodViewDelegate {
-  func selectPeriodViewButtonTapped(type: LinkPeriodType) {
+  func selectPeriodViewButtonTapped(type: PeriodType) {
     delegate?.tagAndPeriodFilterViewPeriodButtonTapped(type: type)
   }
 }
