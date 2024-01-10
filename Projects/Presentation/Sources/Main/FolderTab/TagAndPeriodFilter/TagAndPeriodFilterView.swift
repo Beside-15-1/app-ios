@@ -29,6 +29,8 @@ final class TagAndPeriodFilterView: UIView {
     $0.delegate = self
   }
 
+  private let periodInputView = PeriodInputView()
+
   private let addedTagView = AddedTagView()
 
   private let tagListView = TagAndPeriodTagListView()
@@ -68,7 +70,7 @@ final class TagAndPeriodFilterView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleView, selectPeriodView, addedTagView, tagListView].forEach { addSubview($0) }
+    [titleView, selectPeriodView, periodInputView, addedTagView, tagListView].forEach { addSubview($0) }
 
     titleView.snp.makeConstraints {
       $0.left.top.right.equalToSuperview()
@@ -79,8 +81,13 @@ final class TagAndPeriodFilterView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
-    addedTagView.snp.makeConstraints {
+    periodInputView.snp.makeConstraints {
       $0.top.equalTo(selectPeriodView.snp.bottom).offset(32.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    addedTagView.snp.makeConstraints {
+      $0.top.equalTo(periodInputView.snp.bottom).offset(32.0)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
