@@ -14,6 +14,11 @@ import SnapKit
 import Then
 
 import DesignSystem
+import Domain
+
+protocol PeriodInputViewDelegate: AnyObject {
+  func periodInputView(customPeriod: CustomPeriod)
+}
 
 class PeriodInputView: UIView {
 
@@ -34,6 +39,8 @@ class PeriodInputView: UIView {
   private var endDate = Date()
 
   private let disposeBag = DisposeBag()
+
+  weak var delegate: PeriodInputViewDelegate?
 
 
   // MARK: Initialize
@@ -76,6 +83,8 @@ class PeriodInputView: UIView {
         startDate = date
 
         setDate()
+
+        self.delegate?.periodInputView(customPeriod: .init(startDate: startDate, endDate: endDate))
       })
       .disposed(by: disposeBag)
 
@@ -92,6 +101,8 @@ class PeriodInputView: UIView {
         endDate = date
 
         setDate()
+        
+        self.delegate?.periodInputView(customPeriod: .init(startDate: startDate, endDate: endDate))
       })
       .disposed(by: disposeBag)
   }

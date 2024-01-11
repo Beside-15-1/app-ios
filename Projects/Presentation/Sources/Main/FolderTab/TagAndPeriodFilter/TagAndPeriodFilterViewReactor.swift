@@ -10,6 +10,7 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import Domain
 import PBUserDefaults
 import PresentationInterface
 
@@ -22,6 +23,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case changePeriodType(PeriodType)
     case tagItemTapped(index: Int)
     case selectedTagListRemoveButtonTapped(index: Int)
+    case updateCustomPeriod(CustomPeriod)
   }
 
   enum Mutation {
@@ -29,6 +31,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case setPeriodType(PeriodType)
     case updateSelectedTag(index: Int)
     case removeSelectedTag(index: Int)
+    case setCustomPeriod(CustomPeriod)
   }
 
   struct State {
@@ -39,6 +42,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     // Period
     var periodType: PeriodType
+    var customPeriod = CustomPeriod()
   }
 
   // MARK: Properties
@@ -92,6 +96,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         .just(Mutation.removeSelectedTag(index: index)),
         .just(Mutation.updateTagList),
       ])
+
+    case .updateCustomPeriod(let period):
+      return .just(Mutation.setCustomPeriod(period))
     }
   }
 
@@ -121,6 +128,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     case .removeSelectedTag(let index):
       newState.selectedTagList.removeAll(where: { $0 == currentState.selectedTagList[index] })
+
+    case .setCustomPeriod(let period):
+      newState.customPeriod = period
     }
 
     return newState

@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import Domain
 import PresentationInterface
 
 final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
@@ -95,5 +96,9 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
 
   func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int) {
     reactor?.action.onNext(.selectedTagListRemoveButtonTapped(index: index))
+  }
+
+  func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod) {
+    reactor?.action.onNext(.updateCustomPeriod(customPeriod))
   }
 }

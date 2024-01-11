@@ -11,6 +11,7 @@ import SnapKit
 import Then
 
 import DesignSystem
+import Domain
 import PresentationInterface
 
 protocol TagAndPeriodFilterViewDelegate: AnyObject {
@@ -18,6 +19,7 @@ protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType)
   func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath)
   func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int)
+  func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -32,7 +34,9 @@ final class TagAndPeriodFilterView: UIView {
     $0.delegate = self
   }
 
-  private let periodInputView = PeriodInputView()
+  private lazy var periodInputView = PeriodInputView().then {
+    $0.delegate = self
+  }
 
   private lazy var addedTagView = AddedTagView().then {
     $0.delegate = self
@@ -184,5 +188,14 @@ extension TagAndPeriodFilterView: TagAndPeriodListViewDelegate {
 extension TagAndPeriodFilterView: AddedTagViewDelegate {
   func removeAddedTag(at row: Int) {
     delegate?.tagAndPeriodFilterViewRemoveButtonTapped(at: row)
+  }
+}
+
+
+// MARK: CustomPeriod
+
+extension TagAndPeriodFilterView: PeriodInputViewDelegate {
+  func periodInputView(customPeriod: CustomPeriod) {
+    delegate?.tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: customPeriod)
   }
 }

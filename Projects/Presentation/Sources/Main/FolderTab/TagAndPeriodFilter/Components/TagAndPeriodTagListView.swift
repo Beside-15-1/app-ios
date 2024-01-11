@@ -37,6 +37,7 @@ class TagAndPeriodTagListView: UIView {
     $0.backgroundColor = .clear
     $0.delegate = self
     $0.separatorInset = .init(top: 0, left: 0, bottom: 0, right: 0)
+    $0.showsVerticalScrollIndicator = false
   }
 
 
