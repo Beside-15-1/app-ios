@@ -13,4 +13,6 @@ public protocol TagAndPeriodFilterDelegate: AnyObject {
   func tagAndPeriodFilterConfirmButtonTapped(
     customFilter: CustomFilter?
   )
+
+  func tagAndPeriodFilterResetButtonTapped()
 }

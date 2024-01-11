@@ -435,4 +435,8 @@ extension FolderDetailViewController: TagAndPeriodFilterDelegate {
   ) {
     reactor?.action.onNext(.updateCustomFilter(customFilter))
   }
+
+  func tagAndPeriodFilterResetButtonTapped() {
+    reactor?.action.onNext(.updateCustomFilter(nil))
+  }
 }

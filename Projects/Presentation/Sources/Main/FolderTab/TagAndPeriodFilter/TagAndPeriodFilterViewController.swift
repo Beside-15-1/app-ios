@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
 import Domain
 import PresentationInterface
 
@@ -117,5 +118,14 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
     }
   }
 
-  func tagAndPeriodFilterViewResetButtonTapped() {}
+  func tagAndPeriodFilterViewResetButtonTapped() {
+    PBDialog(title: "진짜?", content: "초기화?", from: self)
+      .addAction(content: "취소", priority: .secondary, action: nil)
+      .addAction(content: "초기화", priority: .primary, action: { [weak self] in
+        self?.dismiss(animated: true) {
+          self?.delegate?.tagAndPeriodFilterResetButtonTapped()
+        }
+      })
+      .show()
+  }
 }
