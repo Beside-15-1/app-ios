@@ -122,6 +122,10 @@ final class TagAndPeriodFilterView: UIView {
     }
   }
 
+  func configureDate(customPeriod: CustomPeriod) {
+    periodInputView.configureDate(startDate: customPeriod.startDate, endDate: customPeriod.endDate)
+  }
+
 
   // MARK: Layout
 

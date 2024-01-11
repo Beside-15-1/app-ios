@@ -25,7 +25,7 @@ class PeriodInputField: UIControl {
     $0.tintColor = .clear
   }
 
-  private let datePicker = UIDatePicker().then {
+  let datePicker = UIDatePicker().then {
     $0.datePickerMode = .date
     $0.preferredDatePickerStyle = .inline
     $0.locale = Locale(identifier: "ko-KR")

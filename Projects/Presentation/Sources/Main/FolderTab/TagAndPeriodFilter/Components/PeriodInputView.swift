@@ -49,7 +49,6 @@ class PeriodInputView: UIView {
     super.init(frame: frame)
 
     defineLayout()
-    setDate()
     addTarget()
   }
 
@@ -66,44 +65,30 @@ class PeriodInputView: UIView {
     endInputField.configureMaximumDate(date: Date())
   }
 
+  func configureDate(startDate: Date, endDate: Date) {
+    self.startDate = startDate
+    self.endDate = endDate
+    setDate()
+  }
+
 
   // MARK: Target
 
   private func addTarget() {
-    startInputField.rx.text.orEmpty
-      .subscribe(onNext: { [weak self] text in
-        guard let self else { return }
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        guard let date = dateFormatter.date(from: text) else {
-          return
-        }
-
-        startDate = date
-
-        setDate()
-
-        self.delegate?.periodInputView(customPeriod: .init(startDate: startDate, endDate: endDate))
-      })
+    startInputField.datePicker.rx.date
+      .subscribe(with: self) { `self`, date in
+        self.delegate?.periodInputView(
+          customPeriod: .init(startDate: date, endDate: self.endDate)
+        )
+      }
       .disposed(by: disposeBag)
 
-    endInputField.rx.text.orEmpty
-      .subscribe(onNext: { [weak self] text in
-        guard let self else { return }
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        guard let date = dateFormatter.date(from: text) else {
-          return
-        }
-
-        endDate = date
-
-        setDate()
-        
-        self.delegate?.periodInputView(customPeriod: .init(startDate: startDate, endDate: endDate))
-      })
+    endInputField.datePicker.rx.date
+      .subscribe(with: self) { `self`, date in
+        self.delegate?.periodInputView(
+          customPeriod: .init(startDate: self.startDate, endDate: date)
+        )
+      }
       .disposed(by: disposeBag)
   }
 

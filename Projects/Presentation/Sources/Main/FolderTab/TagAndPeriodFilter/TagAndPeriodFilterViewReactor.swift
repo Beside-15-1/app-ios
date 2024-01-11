@@ -68,7 +68,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     self.initialState = State(
       tagList: userDefaults.tagList,
-      selectedTagList: customFilter.selectedTagList ,
+      selectedTagList: customFilter.selectedTagList,
       periodType: customFilter.periodType,
       customPeriod: customFilter.customPeriod
     )

@@ -345,19 +345,32 @@ final class FolderDetailViewReactor: Reactor {
 
       var filteredLinkList = newState.linkList
 
+      // 읽지 않음
       if isUnreadFiltering {
         filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
       }
 
+      // 검색 텍스트
       if !searchText.isEmpty {
         filteredLinkList = filteredLinkList.filter {
           $0.title.range(of: searchText, options: .caseInsensitive) != nil
         }
       }
 
+      // 커스텀 필터
       if let customFilter = currentState.customFilter {
+        if !customFilter.selectedTagList.isEmpty {
+          filteredLinkList = filteredLinkList.filter { link in
+            link.tags.contains(where: { tag in customFilter.selectedTagList.contains { tag == $0 } })
+          }
+        }
+
         filteredLinkList = filteredLinkList.filter { link in
-          link.tags.contains(where: { tag in customFilter.selectedTagList.contains{ tag == $0 } })
+          isDateInRange(
+            createdAt: link.createdAt,
+            periodType: customFilter.periodType,
+            customPeriod: customFilter.customPeriod
+          )
         }
       }
 
@@ -383,6 +396,33 @@ final class FolderDetailViewReactor: Reactor {
     }
 
     return newState
+  }
+}
+
+func isDateInRange(createdAt: String, periodType: PeriodType, customPeriod: CustomPeriod) -> Bool {
+  let dateFormatter = DateFormatter()
+  dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+  guard let createdDate = dateFormatter.date(from: createdAt) else {
+    return true
+  }
+
+  switch periodType {
+  case .all:
+    return true
+
+  case .week:
+    let startDate = Date(timeIntervalSinceNow: -3600 * 24 * 7)
+    let endDate = Date()
+    return createdDate >= startDate && createdDate <= endDate
+
+
+  case .month:
+    let startDate = Date(timeIntervalSinceNow: -3600 * 24 * 30)
+    let endDate = Date()
+    return createdDate >= startDate && createdDate <= endDate
+
+  case .custom:
+    return createdDate >= customPeriod.startDate && createdDate <= customPeriod.endDate
   }
 }
 
