@@ -62,18 +62,21 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
   private func bindContent(with reactor: TagAndPeriodFilterViewReactor) {
     reactor.state.map(\.tagListSectionItems)
+      .distinctUntilChanged()
       .subscribe(with: self) { `self`, items in
         self.contentView.configureTagList(items: items)
       }
       .disposed(by: disposeBag)
 
     reactor.state.map(\.periodType)
+      .distinctUntilChanged()
       .subscribe(with: self) { `self`, type in
         self.contentView.configurePeriodType(type: type)
       }
       .disposed(by: disposeBag)
 
     reactor.state.map(\.selectedTagList)
+      .distinctUntilChanged()
       .subscribe(with: self) { `self`, tagList in
         self.contentView.configureSelectedTagList(tagList: tagList)
       }

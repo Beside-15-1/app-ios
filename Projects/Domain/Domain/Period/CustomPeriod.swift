@@ -7,10 +7,16 @@
 
 import Foundation
 
-public struct CustomFilter {
-  public let periodType: PeriodType
-  public let customPeriod: CustomPeriod
-  public let selectedTagList: [String]
+public struct CustomFilter: Hashable {
+  public var periodType: PeriodType
+  public var customPeriod: CustomPeriod
+  public var selectedTagList: [String]
+
+  public init() {
+    self.periodType = .all
+    self.customPeriod = CustomPeriod()
+    self.selectedTagList = []
+  }
 
   public init(periodType: PeriodType, customPeriod: CustomPeriod, selectedTagList: [String]) {
     self.periodType = periodType
@@ -19,7 +25,7 @@ public struct CustomFilter {
   }
 }
 
-public struct CustomPeriod {
+public struct CustomPeriod: Hashable {
   public let startDate: Date
   public let endDate: Date
 

@@ -264,7 +264,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     contentView.filterButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(
-          periodType: .all,
+          customFilter: reactor.currentState.customFilter,
           delegate: self
         ))
         self.presentPaperSheet(tagAndPeriodFilter)

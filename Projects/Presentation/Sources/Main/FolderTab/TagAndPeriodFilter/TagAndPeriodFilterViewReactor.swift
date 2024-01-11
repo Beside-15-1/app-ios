@@ -42,7 +42,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     // Period
     var periodType: PeriodType
-    var customPeriod = CustomPeriod()
+    var customPeriod: CustomPeriod
   }
 
   // MARK: Properties
@@ -58,15 +58,19 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
   init(
     userDefaults: UserDefaultsManager,
-    periodType: PeriodType
+    customFilter: CustomFilter?
   ) {
     defer { _ = self.state }
 
     self.userDefaults = userDefaults
 
+    let customFilter = customFilter ?? CustomFilter()
+
     self.initialState = State(
       tagList: userDefaults.tagList,
-      periodType: periodType
+      selectedTagList: customFilter.selectedTagList ,
+      periodType: customFilter.periodType,
+      customPeriod: customFilter.customPeriod
     )
   }
 
