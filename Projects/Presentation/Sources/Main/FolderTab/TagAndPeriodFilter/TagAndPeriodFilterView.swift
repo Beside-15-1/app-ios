@@ -20,6 +20,8 @@ protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath)
   func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int)
   func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod)
+  func tagAndPeriodFilterViewConfirmButtonTapped()
+  func tagAndPeriodFilterViewResetButtonTapped()
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -66,14 +68,28 @@ final class TagAndPeriodFilterView: UIView {
     backgroundColor = .paperWhite
 
     defineLayout()
-
-    titleView.onCloseAction = { [weak self] in
-      self?.delegate?.tagAndPeriodFilterViewCloseButtonTapped()
-    }
+    addAction()
   }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+
+  // MARK: Action
+
+  private func addAction() {
+    titleView.onCloseAction = { [weak self] in
+      self?.delegate?.tagAndPeriodFilterViewCloseButtonTapped()
+    }
+
+    confirmButton.addAction(UIAction(handler: { [weak self] _ in
+      self?.delegate?.tagAndPeriodFilterViewConfirmButtonTapped()
+    }), for: .touchUpInside)
+
+    resetButton.addAction(UIAction(handler: { [weak self] _ in
+      self?.delegate?.tagAndPeriodFilterViewResetButtonTapped()
+    }), for: .touchUpInside)
   }
 
 

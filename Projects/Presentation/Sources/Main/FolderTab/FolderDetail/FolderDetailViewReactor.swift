@@ -32,6 +32,7 @@ final class FolderDetailViewReactor: Reactor {
     case linkCheckBoxTapped(id: String)
     case deleteButtonTapped
     case selectAllCheckBoxTapped
+    case updateCustomFilter(CustomFilter?)
   }
 
   enum Mutation {
@@ -46,6 +47,7 @@ final class FolderDetailViewReactor: Reactor {
     case setEditing(Bool)
     case setSelectedLinkListOnEditingMode([Link])
     case setSearchText(String)
+    case setCustomFilter(CustomFilter?)
     case updateViewModels
   }
 
@@ -67,6 +69,8 @@ final class FolderDetailViewReactor: Reactor {
     var emptyLabelText: FolderDetailListView.EmptyViewModel = .init(text: "", bold: "")
 
     var selectedLinkListOnEditingMode: [Link] = []
+
+    var customFilter: CustomFilter?
 
     @Pulse var refreshEnd = false
   }
@@ -284,6 +288,12 @@ final class FolderDetailViewReactor: Reactor {
         }
         return .just(Mutation.setSelectedLinkListOnEditingMode(filteredList))
       }
+
+    case .updateCustomFilter(let customFilter):
+      return .concat([
+        .just(Mutation.setCustomFilter(customFilter)),
+        .just(Mutation.updateViewModels),
+      ])
     }
   }
 
@@ -324,6 +334,9 @@ final class FolderDetailViewReactor: Reactor {
     case .setSearchText(let text):
       newState.searchText = text
 
+    case .setCustomFilter(let filter):
+      newState.customFilter = filter
+
     case .updateViewModels:
       let isUnreadFiltering = newState.isUnreadFiltering
       let isEditing = newState.isEditing
@@ -339,6 +352,12 @@ final class FolderDetailViewReactor: Reactor {
       if !searchText.isEmpty {
         filteredLinkList = filteredLinkList.filter {
           $0.title.range(of: searchText, options: .caseInsensitive) != nil
+        }
+      }
+
+      if let customFilter = currentState.customFilter {
+        filteredLinkList = filteredLinkList.filter { link in
+          link.tags.contains(where: { tag in customFilter.selectedTagList.contains{ tag == $0 } })
         }
       }
 

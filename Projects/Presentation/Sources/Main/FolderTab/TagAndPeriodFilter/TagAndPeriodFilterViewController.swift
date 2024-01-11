@@ -24,6 +24,8 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  weak var delegate: TagAndPeriodFilterDelegate?
+
 
   // MARK: Initializing
 
@@ -101,4 +103,19 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
   func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod) {
     reactor?.action.onNext(.updateCustomPeriod(customPeriod))
   }
+
+  func tagAndPeriodFilterViewConfirmButtonTapped() {
+    guard let reactor else { return }
+    dismiss(animated: true) {
+      self.delegate?.tagAndPeriodFilterConfirmButtonTapped(
+        customFilter: .init(
+          periodType: reactor.currentState.periodType,
+          customPeriod: reactor.currentState.customPeriod,
+          selectedTagList: reactor.currentState.selectedTagList
+        )
+      )
+    }
+  }
+
+  func tagAndPeriodFilterViewResetButtonTapped() {}
 }

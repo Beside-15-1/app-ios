@@ -11,6 +11,7 @@ import SnapKit
 import Then
 
 import DesignSystem
+import Domain
 import PresentationInterface
 
 protocol SelectPeriodViewDelegate: AnyObject {

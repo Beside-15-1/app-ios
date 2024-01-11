@@ -1,8 +1,8 @@
 //
 //  PeriodType.swift
-//  Presentation
+//  Domain
 //
-//  Created by 박천송 on 12/20/23.
+//  Created by 박천송 on 1/11/24.
 //
 
 import Foundation

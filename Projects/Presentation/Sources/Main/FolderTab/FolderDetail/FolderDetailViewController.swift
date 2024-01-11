@@ -264,7 +264,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     contentView.filterButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(
-          periodType: .all
+          periodType: .all,
+          delegate: self
         ))
         self.presentPaperSheet(tagAndPeriodFilter)
       }
@@ -422,5 +423,16 @@ extension FolderDetailViewController: CreateLinkDelegate {
 extension FolderDetailViewController: LinkDetailDelegate {
   func linkDetailDismissed() {
     reactor?.action.onNext(.refresh)
+  }
+}
+
+
+// MARK: TagAndPeriodFilterDelegate
+
+extension FolderDetailViewController: TagAndPeriodFilterDelegate {
+  func tagAndPeriodFilterConfirmButtonTapped(
+    customFilter: CustomFilter?
+  ) {
+    reactor?.action.onNext(.updateCustomFilter(customFilter))
   }
 }

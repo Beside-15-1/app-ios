@@ -30,7 +30,9 @@ final class TagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable {
 
     let viewController = TagAndPeriodFilterViewController(
       reactor: reactor
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

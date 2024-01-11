@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 import DesignSystem
+import Domain
 import PresentationInterface
 
 final class PeriodButton: UIControl {
