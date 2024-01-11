@@ -76,9 +76,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return .concat([
-        .just(Mutation.updateTagList),
-      ])
+      return .just(Mutation.updateTagList)
 
     case .changePeriodType(let type):
       return .just(Mutation.setPeriodType(type))
@@ -116,7 +114,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         newState.selectedTagList.removeAll(where: { $0 == currentState.tagList[index] })
       } else {
         // select
-        newState.selectedTagList.append(currentState.tagList[index])
+        if currentState.selectedTagList.count < 10 {
+          newState.selectedTagList.append(currentState.tagList[index])
+        }
       }
 
     case .removeSelectedTag(let index):
