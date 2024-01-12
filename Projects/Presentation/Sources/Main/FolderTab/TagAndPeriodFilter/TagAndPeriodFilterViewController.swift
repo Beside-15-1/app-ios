@@ -129,9 +129,9 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
   }
 
   func tagAndPeriodFilterViewResetButtonTapped() {
-    PBDialog(title: "진짜?", content: "초기화?", from: self)
+    PBDialog(title: "필터를 초기화 하시겠어요?", content: "선택한 날짜, 태그 조건이 모두 해제됩니다.", from: self)
       .addAction(content: "취소", priority: .secondary, action: nil)
-      .addAction(content: "초기화", priority: .primary, action: { [weak self] in
+      .addAction(content: "확인", priority: .primary, action: { [weak self] in
         self?.dismiss(animated: true) {
           self?.delegate?.tagAndPeriodFilterResetButtonTapped()
         }
