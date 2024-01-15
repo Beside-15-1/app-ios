@@ -25,7 +25,6 @@ class TagAndPeriodTagCell: UITableViewCell {
 
   private let checkIcon = UIImageView().then {
     $0.image = DesignSystemAsset.iconCheck.image.withTintColor(.primary500)
-    $0.isHidden = true
   }
 
 
@@ -63,24 +62,27 @@ class TagAndPeriodTagCell: UITableViewCell {
       checkIcon.isHidden = true
     }
   }
+  
+  override func prepareForReuse() {
+    checkIcon.isHidden = true
+  }
 
 
   // MARK: Layout
 
   private func defineLayout() {
-    [titleLabel, checkIcon].forEach { contentView.addSubview($0) }
+    contentView.addSubview(titleLabel)
+    contentView.addSubview(checkIcon)
 
     titleLabel.snp.makeConstraints {
-      $0.left.centerY.equalToSuperview()
+      $0.left.equalToSuperview()
+      $0.top.bottom.equalToSuperview().inset(12.0)
     }
 
     checkIcon.snp.makeConstraints {
-      $0.right.centerY.equalToSuperview()
+      $0.centerY.equalToSuperview()
       $0.size.equalTo(24.0)
-    }
-
-    contentView.snp.makeConstraints {
-      $0.height.equalTo(48.0)
+      $0.right.equalToSuperview()
     }
   }
 }

@@ -8,10 +8,17 @@
 import Foundation
 import UIKit
 
+import RxCocoa
+import RxSwift
 import SnapKit
 import Then
 
 import DesignSystem
+import Domain
+
+protocol PeriodInputViewDelegate: AnyObject {
+  func periodInputView(customPeriod: CustomPeriod)
+}
 
 class PeriodInputView: UIView {
 
@@ -26,13 +33,23 @@ class PeriodInputView: UIView {
   }
 
 
+  // MARK: Properties
+
+  private var startDate = Date(timeIntervalSinceNow: -3600 * 24 * 30)
+  private var endDate = Date()
+
+  private let disposeBag = DisposeBag()
+
+  weak var delegate: PeriodInputViewDelegate?
+
+
   // MARK: Initialize
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
     defineLayout()
-    setDate()
+    addTarget()
   }
 
   required init?(coder: NSCoder) {
@@ -40,8 +57,39 @@ class PeriodInputView: UIView {
   }
 
   private func setDate() {
-    endInputField.configureDate(date: Date())
-    startInputField.configureDate(date: Date(timeIntervalSinceNow: -3600 * 24 * 30))
+    startInputField.configureDate(date: startDate)
+    endInputField.configureDate(date: endDate)
+
+    startInputField.configureMaximumDate(date: endDate)
+    endInputField.configureMinimumDate(date: startDate)
+    endInputField.configureMaximumDate(date: Date())
+  }
+
+  func configureDate(startDate: Date, endDate: Date) {
+    self.startDate = startDate
+    self.endDate = endDate
+    setDate()
+  }
+
+
+  // MARK: Target
+
+  private func addTarget() {
+    startInputField.datePicker.rx.date
+      .subscribe(with: self) { `self`, date in
+        self.delegate?.periodInputView(
+          customPeriod: .init(startDate: date, endDate: self.endDate)
+        )
+      }
+      .disposed(by: disposeBag)
+
+    endInputField.datePicker.rx.date
+      .subscribe(with: self) { `self`, date in
+        self.delegate?.periodInputView(
+          customPeriod: .init(startDate: self.startDate, endDate: date)
+        )
+      }
+      .disposed(by: disposeBag)
   }
 
 

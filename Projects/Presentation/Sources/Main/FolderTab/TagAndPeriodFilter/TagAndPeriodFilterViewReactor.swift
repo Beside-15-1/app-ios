@@ -10,7 +10,9 @@ import Foundation
 import ReactorKit
 import RxSwift
 
+import Domain
 import PBUserDefaults
+import PresentationInterface
 
 final class TagAndPeriodFilterViewReactor: Reactor {
 
@@ -18,17 +20,29 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case changePeriodType(PeriodType)
+    case tagItemTapped(index: Int)
+    case selectedTagListRemoveButtonTapped(index: Int)
+    case updateCustomPeriod(CustomPeriod)
   }
 
   enum Mutation {
     case updateTagList
+    case setPeriodType(PeriodType)
+    case updateSelectedTag(index: Int)
+    case removeSelectedTag(index: Int)
+    case setCustomPeriod(CustomPeriod)
   }
 
   struct State {
+    // TagList
     var tagList: [String]
     var selectedTagList: [String] = []
-
     var tagListSectionItems: [TagAndPeriodTagListView.SectionItem] = []
+
+    // Period
+    var periodType: PeriodType
+    var customPeriod: CustomPeriod
   }
 
   // MARK: Properties
@@ -43,14 +57,20 @@ final class TagAndPeriodFilterViewReactor: Reactor {
   // MARK: initializing
 
   init(
-    userDefaults: UserDefaultsManager
+    userDefaults: UserDefaultsManager,
+    customFilter: CustomFilter?
   ) {
     defer { _ = self.state }
 
     self.userDefaults = userDefaults
 
+    let customFilter = customFilter ?? CustomFilter()
+
     self.initialState = State(
-      tagList: userDefaults.tagList
+      tagList: userDefaults.tagList,
+      selectedTagList: customFilter.selectedTagList,
+      periodType: customFilter.periodType,
+      customPeriod: customFilter.customPeriod
     )
   }
 
@@ -64,9 +84,25 @@ final class TagAndPeriodFilterViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
+      return .just(Mutation.updateTagList)
+
+    case .changePeriodType(let type):
+      return .just(Mutation.setPeriodType(type))
+
+    case .tagItemTapped(let index):
       return .concat([
+        .just(Mutation.updateSelectedTag(index: index)),
         .just(Mutation.updateTagList),
       ])
+
+    case .selectedTagListRemoveButtonTapped(let index):
+      return .concat([
+        .just(Mutation.removeSelectedTag(index: index)),
+        .just(Mutation.updateTagList),
+      ])
+
+    case .updateCustomPeriod(let period):
+      return .just(Mutation.setCustomPeriod(period))
     }
   }
 
@@ -79,6 +115,26 @@ final class TagAndPeriodFilterViewReactor: Reactor {
         let isSelected = currentState.selectedTagList.contains(where: { tag == $0 })
         return TagAndPeriodTagListView.SectionItem.normal(.init(tag: tag, isSelected: isSelected))
       }
+
+    case .setPeriodType(let type):
+      newState.periodType = type
+
+    case .updateSelectedTag(let index):
+      if currentState.selectedTagList.contains(where: { $0 == currentState.tagList[index] }) {
+        // deselect
+        newState.selectedTagList.removeAll(where: { $0 == currentState.tagList[index] })
+      } else {
+        // select
+        if currentState.selectedTagList.count < 10 {
+          newState.selectedTagList.append(currentState.tagList[index])
+        }
+      }
+
+    case .removeSelectedTag(let index):
+      newState.selectedTagList.removeAll(where: { $0 == currentState.selectedTagList[index] })
+
+    case .setCustomPeriod(let period):
+      newState.customPeriod = period
     }
 
     return newState

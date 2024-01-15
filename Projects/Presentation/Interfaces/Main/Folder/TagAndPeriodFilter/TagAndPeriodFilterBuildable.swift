@@ -16,5 +16,15 @@ public protocol TagAndPeriodFilterBuildable {
 }
 
 public struct TagAndPeriodFilterPayload {
-  public init() {}
+
+  public let customFilter: CustomFilter?
+  public let delegate: TagAndPeriodFilterDelegate?
+
+  public init(
+    customFilter: CustomFilter?,
+    delegate: TagAndPeriodFilterDelegate?
+  ) {
+    self.customFilter = customFilter
+    self.delegate = delegate
+  }
 }

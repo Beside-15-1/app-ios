@@ -24,12 +24,15 @@ final class TagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable {
 
   func build(payload: TagAndPeriodFilterPayload) -> UIViewController {
     let reactor = TagAndPeriodFilterViewReactor(
-      userDefaults: .shared
+      userDefaults: .shared,
+      customFilter: payload.customFilter
     )
 
     let viewController = TagAndPeriodFilterViewController(
       reactor: reactor
-    )
+    ).then {
+      $0.delegate = payload.delegate
+    }
 
     return viewController
   }

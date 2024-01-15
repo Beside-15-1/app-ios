@@ -99,6 +99,8 @@ class AddedTagView: UIView {
     snapshot.appendSections([.normal])
     snapshot.appendItems(items, toSection: .normal)
 
+    configureTagCount(count: tags.count)
+
     diffableDataSource.apply(snapshot)
   }
 

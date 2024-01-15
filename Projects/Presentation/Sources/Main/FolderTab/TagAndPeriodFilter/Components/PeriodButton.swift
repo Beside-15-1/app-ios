@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 import DesignSystem
+import Domain
+import PresentationInterface
 
 final class PeriodButton: UIControl {
 
@@ -32,9 +34,7 @@ final class PeriodButton: UIControl {
   }
 
   var title: String {
-    get {
-      titleLabel.text ?? ""
-    }
+    titleLabel.text ?? ""
   }
 
 
@@ -58,7 +58,7 @@ final class PeriodButton: UIControl {
 
   // MARK: Configuring
 
-  func configure(type: LinkPeriodType) {
+  func configure(type: PeriodType) {
     titleLabel.attributedText = type.rawValue.styled(font: .bodyRegular, color: .gray600)
   }
 }
