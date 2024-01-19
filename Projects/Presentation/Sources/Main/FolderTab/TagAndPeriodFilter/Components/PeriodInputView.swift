@@ -50,6 +50,7 @@ class PeriodInputView: UIView {
 
     defineLayout()
     addTarget()
+    endInputField.configureMaximumDate(date: Date())
   }
 
   required init?(coder: NSCoder) {
@@ -62,7 +63,6 @@ class PeriodInputView: UIView {
 
     startInputField.configureMaximumDate(date: endDate)
     endInputField.configureMinimumDate(date: startDate)
-    endInputField.configureMaximumDate(date: Date())
   }
 
   func configureDate(startDate: Date, endDate: Date) {
