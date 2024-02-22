@@ -254,13 +254,6 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   }
 
   private func bindButton(with reactor: FolderDetailViewReactor) {
-    contentView.unreadFilterButton.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        self.analytics.log(type: LinkListEvent.click(component: .filterUnread))
-        reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
-      }
-      .disposed(by: disposeBag)
-
     contentView.filterButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(

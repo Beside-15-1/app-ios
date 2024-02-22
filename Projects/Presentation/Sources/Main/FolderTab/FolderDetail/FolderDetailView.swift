@@ -31,12 +31,6 @@ final class FolderDetailView: UIView {
     $0.placeHolder = "링크 제목으로 검색해보세요"
   }
 
-  let unreadFilterButton = UnreadFilterButton()
-
-  let filterButton = TextButton(type: .regular, color: .white).then {
-    $0.text = "태그/기간 필터"
-  }
-
   let listView = FolderDetailListView()
 
   let fab = FAB().then {
@@ -73,10 +67,6 @@ final class FolderDetailView: UIView {
     searchField.isEnabled = isEnabled
   }
 
-  func configureUnreadButton(isEnabled: Bool) {
-    unreadFilterButton.isEnabled = isEnabled
-  }
-
 
   // MARK: Layout
 
@@ -87,8 +77,6 @@ final class FolderDetailView: UIView {
       tabView,
       searchField,
       listView,
-      unreadFilterButton,
-      filterButton,
     ].forEach { addSubview($0) }
 
     safeAreaView.snp.makeConstraints {
@@ -98,17 +86,7 @@ final class FolderDetailView: UIView {
 
     colorBackground.snp.makeConstraints {
       $0.left.right.top.equalTo(safeAreaLayoutGuide)
-      $0.bottom.equalTo(unreadFilterButton).offset(16.0)
-    }
-
-    unreadFilterButton.snp.makeConstraints {
-      $0.top.equalTo(searchField.snp.bottom).offset(14.0)
-      $0.left.equalToSuperview().inset(20.0)
-    }
-
-    filterButton.snp.makeConstraints {
-      $0.top.equalTo(searchField.snp.bottom).offset(14.0)
-      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(searchField.snp.bottom).offset(38.0)
     }
 
     tabView.snp.makeConstraints {

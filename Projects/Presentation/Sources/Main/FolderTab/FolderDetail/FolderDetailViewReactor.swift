@@ -25,7 +25,6 @@ final class FolderDetailViewReactor: Reactor {
     case searchLink(String)
     case refresh
     case readLink(String)
-    case updateUnreadFiltering(Bool)
     case createFolderSucceed
     case editingButtonTapped
     case endEditingMode
@@ -210,15 +209,6 @@ final class FolderDetailViewReactor: Reactor {
         })
         .flatMap { _ in Observable<Mutation>.empty() }
 
-    case .updateUnreadFiltering(let isFiltering):
-      return .concat([
-        .just(Mutation.setUnreadFiltering(isFiltering)),
-        .just(Mutation.setSelectedLinkListOnEditingMode(
-          currentState.selectedLinkListOnEditingMode
-        )),
-        .just(Mutation.updateViewModels),
-      ])
-
     case .createFolderSucceed:
       if currentState.selectedFolder.id == Folder.all().id {
         return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
@@ -345,11 +335,6 @@ final class FolderDetailViewReactor: Reactor {
 
       var filteredLinkList = newState.linkList
 
-      // 읽지 않음
-      if isUnreadFiltering {
-        filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
-      }
-
       // 검색 텍스트
       if !searchText.isEmpty {
         filteredLinkList = filteredLinkList.filter {
@@ -359,6 +344,11 @@ final class FolderDetailViewReactor: Reactor {
 
       // 커스텀 필터
       if let customFilter = currentState.customFilter {
+        // 읽지 않음
+        if customFilter.isUnreadFiltering {
+          filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
+        }
+
         if !customFilter.selectedTagList.isEmpty {
           filteredLinkList = filteredLinkList.filter { link in
             link.tags.contains(where: { tag in customFilter.selectedTagList.contains { tag == $0 } })
@@ -485,33 +475,6 @@ extension FolderDetailViewReactor {
         fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order),
       ])
     }
-  }
-
-  private func updateUnreadFilter(isFiltering: Bool) -> Observable<Mutation> {
-    var unreadFilteredLinkList = currentState.linkList
-
-    if isFiltering {
-      unreadFilteredLinkList = currentState.linkList.filter { $0.readCount == 0 }
-    }
-
-    let viewModel = FolderDetailSectionViewModel(
-      section: .normal,
-      items: unreadFilteredLinkList.map {
-        .init(
-          id: $0.id,
-          title: $0.title,
-          tags: $0.tags,
-          thumbnailURL: $0.thumbnailURL,
-          url: $0.url,
-          createAt: $0.createdAt,
-          folderName: $0.folderName,
-          isAll: true,
-          readCount: $0.readCount
-        )
-      }
-    )
-
-    return .just(Mutation.setViewModel(viewModel))
   }
 
   private func deleteMultipleLink() -> Observable<Mutation> {
