@@ -42,12 +42,12 @@ final class FolderDetailViewReactor: Reactor {
     case setOrderType(SortingOrderType)
     case setRefreshEnd
     case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
-    case setUnreadFiltering(Bool)
     case setEditing(Bool)
     case setSelectedLinkListOnEditingMode([Link])
     case setSearchText(String)
     case setCustomFilter(CustomFilter?)
     case updateViewModels
+    case updateFilterChip
   }
 
   struct State {
@@ -57,6 +57,12 @@ final class FolderDetailViewReactor: Reactor {
     var linkCount = 0
 
     var viewModel: FolderDetailSectionViewModel?
+
+    var filterChipSectionItems: [FilterChipView.SectionItem] = [
+      .normal(.init(title: "읽음 여부", isFiltered: false)),
+      .normal(.init(title: "태그 전체", isFiltered: false)),
+      .normal(.init(title: "기간 전체", isFiltered: false)),
+    ]
 
     // States related to displaying the link list
     var sortingType: LinkSortingType = .createAt
@@ -283,6 +289,7 @@ final class FolderDetailViewReactor: Reactor {
       return .concat([
         .just(Mutation.setCustomFilter(customFilter)),
         .just(Mutation.updateViewModels),
+        .just(Mutation.updateFilterChip),
       ])
     }
   }
@@ -312,9 +319,6 @@ final class FolderDetailViewReactor: Reactor {
     case .setEmptyLabelText(let text):
       newState.emptyLabelText = text
 
-    case .setUnreadFiltering(let filtering):
-      newState.isUnreadFiltering = filtering
-
     case .setEditing(let isEditing):
       newState.isEditing = isEditing
 
@@ -328,7 +332,6 @@ final class FolderDetailViewReactor: Reactor {
       newState.customFilter = filter
 
     case .updateViewModels:
-      let isUnreadFiltering = newState.isUnreadFiltering
       let isEditing = newState.isEditing
       let searchText = newState.searchText
       let isAll = newState.selectedFolder.id == Folder.all().id
@@ -383,6 +386,46 @@ final class FolderDetailViewReactor: Reactor {
       )
 
       newState.linkCount = newState.viewModel?.items.count ?? 0
+
+    case .updateFilterChip:
+      guard let customFilter = newState.customFilter else {
+        newState.filterChipSectionItems = [
+          .normal(.init(title: "읽음 여부", isFiltered: false)),
+          .normal(.init(title: "태그 전체", isFiltered: false)),
+          .normal(.init(title: "기간 전체", isFiltered: false)),
+        ]
+        break
+      }
+
+      var sectionItem: [FilterChipView.SectionItem] = []
+
+      if customFilter.isUnreadFiltering {
+        sectionItem.append(.normal(.init(title: "읽지 않음", isFiltered: true)))
+      } else {
+        sectionItem.append(.normal(.init(title: "읽음 여부", isFiltered: false)))
+      }
+
+      if customFilter.selectedTagList.isEmpty {
+        sectionItem.append(.normal(.init(title: "태그 전체", isFiltered: false)))
+      } else {
+        sectionItem.append(.normal(.init(
+          title: "태그 \(customFilter.selectedTagList.count)",
+          isFiltered: true
+        )))
+      }
+
+      switch customFilter.periodType {
+      case .all:
+        sectionItem.append(.normal(.init(title: "기간 전체", isFiltered: false)))
+      case .week:
+        sectionItem.append(.normal(.init(title: "최근 1주", isFiltered: true)))
+      case .month:
+        sectionItem.append(.normal(.init(title: "최근 1개월", isFiltered: true)))
+      case .custom:
+        sectionItem.append(.normal(.init(title: "사용자 설정", isFiltered: true)))
+      }
+
+      newState.filterChipSectionItems = sectionItem
     }
 
     return newState

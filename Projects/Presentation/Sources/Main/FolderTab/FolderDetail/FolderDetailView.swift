@@ -13,6 +13,10 @@ import Then
 import DesignSystem
 import Domain
 
+protocol FolderDetailViewDelegate: AnyObject {
+  func filterChipTapped()
+}
+
 final class FolderDetailView: UIView {
 
   // MARK: UI
@@ -31,11 +35,16 @@ final class FolderDetailView: UIView {
     $0.placeHolder = "링크 제목으로 검색해보세요"
   }
 
+  let filterChipView = FilterChipView()
+
   let listView = FolderDetailListView()
 
   let fab = FAB().then {
     $0.expand()
   }
+
+
+  weak var delegate: FolderDetailViewDelegate?
 
 
   // MARK: Initializing
@@ -46,6 +55,8 @@ final class FolderDetailView: UIView {
     self.backgroundColor = .paperWhite
 
     defineLayout()
+
+    filterChipView.delegate = self
   }
 
   required init?(coder: NSCoder) {
@@ -67,6 +78,9 @@ final class FolderDetailView: UIView {
     searchField.isEnabled = isEnabled
   }
 
+  func configureFilterChip(items: [FilterChipView.SectionItem]) {
+    filterChipView.applyChips(by: items)
+  }
 
   // MARK: Layout
 
@@ -77,6 +91,7 @@ final class FolderDetailView: UIView {
       tabView,
       searchField,
       listView,
+      filterChipView,
     ].forEach { addSubview($0) }
 
     safeAreaView.snp.makeConstraints {
@@ -98,8 +113,13 @@ final class FolderDetailView: UIView {
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
+    filterChipView.snp.makeConstraints {
+      $0.top.equalTo(colorBackground.snp.bottom).offset(16.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
     listView.snp.makeConstraints {
-      $0.top.equalTo(colorBackground.snp.bottom)
+      $0.top.equalTo(filterChipView.snp.bottom).offset(3.0)
       $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalTo(safeAreaLayoutGuide)
     }
@@ -116,4 +136,13 @@ final class FolderDetailView: UIView {
     super.layoutSubviews()
   }
 
+}
+
+
+// MARK: FilterChipViewDelegate
+
+extension FolderDetailView: FilterChipViewDelegate {
+  func filterChipTapped() {
+    delegate?.filterChipTapped()
+  }
 }

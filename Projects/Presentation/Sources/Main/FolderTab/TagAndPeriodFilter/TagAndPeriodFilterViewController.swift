@@ -88,6 +88,13 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
         self.contentView.configureDate(customPeriod: period)
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.isUnreadFiltering)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, isOn in
+        self.contentView.configureUnreadFilter(isOn: isOn)
+      }
+      .disposed(by: disposeBag)
   }
 }
 

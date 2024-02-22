@@ -131,6 +131,10 @@ final class TagAndPeriodFilterView: UIView {
     periodInputView.configureDate(startDate: customPeriod.startDate, endDate: customPeriod.endDate)
   }
 
+  func configureUnreadFilter(isOn: Bool) {
+    unreadFilterView.configureFilter(isOn: isOn)
+  }
+
 
   // MARK: Layout
 

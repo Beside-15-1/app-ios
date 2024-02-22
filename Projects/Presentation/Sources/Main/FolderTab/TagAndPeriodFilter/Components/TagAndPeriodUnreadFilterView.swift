@@ -42,6 +42,7 @@ final class TagAndPeriodUnreadFilterView: UIView {
     super.init(frame: frame)
 
     defineLayout()
+    addAction()
   }
 
   required init?(coder: NSCoder) {
@@ -58,6 +59,13 @@ final class TagAndPeriodUnreadFilterView: UIView {
         isOn: unreadFilteringSwitch.isOn
       )
     }), for: .valueChanged)
+  }
+
+
+  // MARK: Configuring
+
+  func configureFilter(isOn: Bool) {
+    unreadFilteringSwitch.isOn = isOn
   }
 
 
