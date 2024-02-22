@@ -122,8 +122,8 @@ final class CreateFolderViewReactor: Reactor {
       var folder = currentState.folder
       var validatedTitle = title
 
-      if title.count > 10 {
-        validatedTitle = String(title.prefix(10))
+      if title.count > 15 {
+        validatedTitle = String(title.prefix(15))
       }
 
       folder?.title = validatedTitle
