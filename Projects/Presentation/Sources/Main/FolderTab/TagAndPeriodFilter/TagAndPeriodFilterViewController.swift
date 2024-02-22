@@ -120,6 +120,7 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
     dismiss(animated: true) {
       self.delegate?.tagAndPeriodFilterConfirmButtonTapped(
         customFilter: .init(
+          isUnreadFiltering: reactor.currentState.isUnreadFiltering,
           periodType: reactor.currentState.periodType,
           customPeriod: reactor.currentState.customPeriod,
           selectedTagList: reactor.currentState.selectedTagList
@@ -137,5 +138,9 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
         }
       })
       .show()
+  }
+
+  func tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: Bool) {
+    reactor?.action.onNext(.updateUnreadFiltering(isOn))
   }
 }

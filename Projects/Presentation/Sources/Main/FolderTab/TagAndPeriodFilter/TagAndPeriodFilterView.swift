@@ -22,6 +22,7 @@ protocol TagAndPeriodFilterViewDelegate: AnyObject {
   func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod)
   func tagAndPeriodFilterViewConfirmButtonTapped()
   func tagAndPeriodFilterViewResetButtonTapped()
+  func tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: Bool)
 }
 
 final class TagAndPeriodFilterView: UIView {
@@ -30,6 +31,10 @@ final class TagAndPeriodFilterView: UIView {
 
   private let titleView = TitleView().then {
     $0.title = "필터"
+  }
+
+  private lazy var unreadFilterView = TagAndPeriodUnreadFilterView().then {
+    $0.delegate = self
   }
 
   private lazy var selectPeriodView = SelectPeriodView().then {
@@ -132,7 +137,7 @@ final class TagAndPeriodFilterView: UIView {
   private func defineLayout() {
     [
       titleView,
-
+      unreadFilterView,
       selectPeriodView,
       periodInputView,
       addedTagView,
@@ -145,8 +150,13 @@ final class TagAndPeriodFilterView: UIView {
       $0.left.top.right.equalToSuperview()
     }
 
-    selectPeriodView.snp.makeConstraints {
+    unreadFilterView.snp.makeConstraints {
       $0.top.equalTo(titleView.snp.bottom).offset(20.0)
+      $0.left.right.equalToSuperview().inset(20.0)
+    }
+
+    selectPeriodView.snp.makeConstraints {
+      $0.top.equalTo(unreadFilterView.snp.bottom).offset(32.0)
       $0.left.right.equalToSuperview().inset(20.0)
     }
 
@@ -217,5 +227,14 @@ extension TagAndPeriodFilterView: AddedTagViewDelegate {
 extension TagAndPeriodFilterView: PeriodInputViewDelegate {
   func periodInputView(customPeriod: CustomPeriod) {
     delegate?.tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: customPeriod)
+  }
+}
+
+
+// MARK: TagAndPeriodUnreadFilterDelegate
+
+extension TagAndPeriodFilterView: TagAndPeriodUnreadFilterViewDelegate {
+  func tagAndPeriodUnreadFilterViewSwitchValueChanged(isOn: Bool) {
+    delegate?.tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: isOn)
   }
 }

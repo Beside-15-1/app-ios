@@ -24,6 +24,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case tagItemTapped(index: Int)
     case selectedTagListRemoveButtonTapped(index: Int)
     case updateCustomPeriod(CustomPeriod)
+    case updateUnreadFiltering(Bool)
   }
 
   enum Mutation {
@@ -32,6 +33,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case updateSelectedTag(index: Int)
     case removeSelectedTag(index: Int)
     case setCustomPeriod(CustomPeriod)
+    case setUnreadFiltering(Bool)
   }
 
   struct State {
@@ -43,6 +45,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     // Period
     var periodType: PeriodType
     var customPeriod: CustomPeriod
+
+    // Unread
+    var isUnreadFiltering: Bool
   }
 
   // MARK: Properties
@@ -70,7 +75,8 @@ final class TagAndPeriodFilterViewReactor: Reactor {
       tagList: userDefaults.tagList,
       selectedTagList: customFilter.selectedTagList,
       periodType: customFilter.periodType,
-      customPeriod: customFilter.customPeriod
+      customPeriod: customFilter.customPeriod,
+      isUnreadFiltering: customFilter.isUnreadFiltering
     )
   }
 
@@ -103,6 +109,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     case .updateCustomPeriod(let period):
       return .just(Mutation.setCustomPeriod(period))
+
+    case .updateUnreadFiltering(let isOn):
+      return .just(Mutation.setUnreadFiltering(isOn))
     }
   }
 
@@ -135,6 +144,9 @@ final class TagAndPeriodFilterViewReactor: Reactor {
 
     case .setCustomPeriod(let period):
       newState.customPeriod = period
+
+    case .setUnreadFiltering(let isOn):
+      newState.isUnreadFiltering = isOn
     }
 
     return newState
