@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodFilterViewController.swift
+//  CustomFilterViewController.swift
 //  Presentation
 //
 //  Created by 박천송 on 12/20/23.
@@ -14,23 +14,23 @@ import DesignSystem
 import Domain
 import PresentationInterface
 
-final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
+final class CustomFilterViewController: UIViewController, StoryboardView {
 
   // MARK: UI
 
-  private lazy var contentView = TagAndPeriodFilterView()
+  private lazy var contentView = CustomFilterView()
 
 
   // MARK: Properties
 
   var disposeBag = DisposeBag()
 
-  weak var delegate: TagAndPeriodFilterDelegate?
+  weak var delegate: CustomFilterDelegate?
 
 
   // MARK: Initializing
 
-  init(reactor: TagAndPeriodFilterViewReactor) {
+  init(reactor: CustomFilterViewReactor) {
     defer { self.reactor = reactor }
     super.init(nibName: nil, bundle: nil)
   }
@@ -56,11 +56,11 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: TagAndPeriodFilterViewReactor) {
+  func bind(reactor: CustomFilterViewReactor) {
     bindContent(with: reactor)
   }
 
-  private func bindContent(with reactor: TagAndPeriodFilterViewReactor) {
+  private func bindContent(with reactor: CustomFilterViewReactor) {
     reactor.state.map(\.tagListSectionItems)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, items in
@@ -99,33 +99,33 @@ final class TagAndPeriodFilterViewController: UIViewController, StoryboardView {
 }
 
 
-// MARK: - TagAndPeriodFilterViewDelegate
+// MARK: - CustomFilterViewDelegate
 
-extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
-  func tagAndPeriodFilterViewCloseButtonTapped() {
+extension CustomFilterViewController: CustomFilterViewDelegate {
+  func customFilterViewCloseButtonTapped() {
     dismiss(animated: true)
   }
 
-  func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType) {
+  func customFilterViewPeriodButtonTapped(type: PeriodType) {
     reactor?.action.onNext(.changePeriodType(type))
   }
 
-  func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath) {
+  func customFilterView(didSelectRowAt indexPath: IndexPath) {
     reactor?.action.onNext(.tagItemTapped(index: indexPath.row))
   }
 
-  func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int) {
+  func customFilterViewRemoveButtonTapped(at index: Int) {
     reactor?.action.onNext(.selectedTagListRemoveButtonTapped(index: index))
   }
 
-  func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod) {
+  func customFilterViewCustomPeriodChanged(customPeriod: CustomPeriod) {
     reactor?.action.onNext(.updateCustomPeriod(customPeriod))
   }
 
-  func tagAndPeriodFilterViewConfirmButtonTapped() {
+  func customFilterViewConfirmButtonTapped() {
     guard let reactor else { return }
     dismiss(animated: true) {
-      self.delegate?.tagAndPeriodFilterConfirmButtonTapped(
+      self.delegate?.customFilterConfirmButtonTapped(
         customFilter: .init(
           isUnreadFiltering: reactor.currentState.isUnreadFiltering,
           periodType: reactor.currentState.periodType,
@@ -136,18 +136,18 @@ extension TagAndPeriodFilterViewController: TagAndPeriodFilterViewDelegate {
     }
   }
 
-  func tagAndPeriodFilterViewResetButtonTapped() {
+  func customFilterViewResetButtonTapped() {
     PBDialog(title: "필터를 초기화 하시겠어요?", content: "선택한 날짜, 태그 조건이 모두 해제됩니다.", from: self)
       .addAction(content: "취소", priority: .secondary, action: nil)
       .addAction(content: "확인", priority: .primary, action: { [weak self] in
         self?.dismiss(animated: true) {
-          self?.delegate?.tagAndPeriodFilterResetButtonTapped()
+          self?.delegate?.customFilterResetButtonTapped()
         }
       })
       .show()
   }
 
-  func tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: Bool) {
+  func customFilterViewUnreadFilterValueChanged(isOn: Bool) {
     reactor?.action.onNext(.updateUnreadFiltering(isOn))
   }
 }

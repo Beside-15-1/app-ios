@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodFilterView.swift
+//  CustomFilterView.swift
 //  Presentation
 //
 //  Created by 박천송 on 12/20/23.
@@ -14,18 +14,18 @@ import DesignSystem
 import Domain
 import PresentationInterface
 
-protocol TagAndPeriodFilterViewDelegate: AnyObject {
-  func tagAndPeriodFilterViewCloseButtonTapped()
-  func tagAndPeriodFilterViewPeriodButtonTapped(type: PeriodType)
-  func tagAndPeriodFilterView(didSelectRowAt indexPath: IndexPath)
-  func tagAndPeriodFilterViewRemoveButtonTapped(at index: Int)
-  func tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: CustomPeriod)
-  func tagAndPeriodFilterViewConfirmButtonTapped()
-  func tagAndPeriodFilterViewResetButtonTapped()
-  func tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: Bool)
+protocol CustomFilterViewDelegate: AnyObject {
+  func customFilterViewCloseButtonTapped()
+  func customFilterViewPeriodButtonTapped(type: PeriodType)
+  func customFilterView(didSelectRowAt indexPath: IndexPath)
+  func customFilterViewRemoveButtonTapped(at index: Int)
+  func customFilterViewCustomPeriodChanged(customPeriod: CustomPeriod)
+  func customFilterViewConfirmButtonTapped()
+  func customFilterViewResetButtonTapped()
+  func customFilterViewUnreadFilterValueChanged(isOn: Bool)
 }
 
-final class TagAndPeriodFilterView: UIView {
+final class CustomFilterView: UIView {
 
   // MARK: UI
 
@@ -49,11 +49,11 @@ final class TagAndPeriodFilterView: UIView {
     $0.delegate = self
   }
 
-  private lazy var tagListView = TagAndPeriodTagListView().then {
+  private lazy var tagListView = CustomFilterTagListView().then {
     $0.delegate = self
   }
 
-  private let resetButton = TagAndPeriodFilterResetButton()
+  private let resetButton = CustomFilterResetButton()
 
   private let confirmButton = BasicButton(priority: .primary).then {
     $0.text = "확인"
@@ -62,7 +62,7 @@ final class TagAndPeriodFilterView: UIView {
 
   // MARK: Properties
 
-  weak var delegate: TagAndPeriodFilterViewDelegate?
+  weak var delegate: CustomFilterViewDelegate?
 
 
   // MARK: Initializing
@@ -85,22 +85,22 @@ final class TagAndPeriodFilterView: UIView {
 
   private func addAction() {
     titleView.onCloseAction = { [weak self] in
-      self?.delegate?.tagAndPeriodFilterViewCloseButtonTapped()
+      self?.delegate?.customFilterViewCloseButtonTapped()
     }
 
     confirmButton.addAction(UIAction(handler: { [weak self] _ in
-      self?.delegate?.tagAndPeriodFilterViewConfirmButtonTapped()
+      self?.delegate?.customFilterViewConfirmButtonTapped()
     }), for: .touchUpInside)
 
     resetButton.addAction(UIAction(handler: { [weak self] _ in
-      self?.delegate?.tagAndPeriodFilterViewResetButtonTapped()
+      self?.delegate?.customFilterViewResetButtonTapped()
     }), for: .touchUpInside)
   }
 
 
   // MARK: Configuring
 
-  func configureTagList(items: [TagAndPeriodTagListView.SectionItem]) {
+  func configureTagList(items: [CustomFilterTagListView.SectionItem]) {
     tagListView.applyDataSource(by: items)
   }
 
@@ -201,44 +201,44 @@ final class TagAndPeriodFilterView: UIView {
 
 // MARK: SelectPeriodViewDelegate
 
-extension TagAndPeriodFilterView: SelectPeriodViewDelegate {
+extension CustomFilterView: SelectPeriodViewDelegate {
   func selectPeriodViewButtonTapped(type: PeriodType) {
-    delegate?.tagAndPeriodFilterViewPeriodButtonTapped(type: type)
+    delegate?.customFilterViewPeriodButtonTapped(type: type)
   }
 }
 
 
 // MARK: TagAndPeriodListViewDelegate
 
-extension TagAndPeriodFilterView: TagAndPeriodListViewDelegate {
-  func tagListView(_ listView: TagAndPeriodTagListView, didSelectRowAt indexPath: IndexPath) {
-    delegate?.tagAndPeriodFilterView(didSelectRowAt: indexPath)
+extension CustomFilterView: TagAndPeriodListViewDelegate {
+  func tagListView(_ listView: CustomFilterTagListView, didSelectRowAt indexPath: IndexPath) {
+    delegate?.customFilterView(didSelectRowAt: indexPath)
   }
 }
 
 
 // MARK: AddedTagViewDelegate
 
-extension TagAndPeriodFilterView: AddedTagViewDelegate {
+extension CustomFilterView: AddedTagViewDelegate {
   func removeAddedTag(at row: Int) {
-    delegate?.tagAndPeriodFilterViewRemoveButtonTapped(at: row)
+    delegate?.customFilterViewRemoveButtonTapped(at: row)
   }
 }
 
 
 // MARK: CustomPeriod
 
-extension TagAndPeriodFilterView: PeriodInputViewDelegate {
+extension CustomFilterView: PeriodInputViewDelegate {
   func periodInputView(customPeriod: CustomPeriod) {
-    delegate?.tagAndPeriodFilterViewCustomPeriodChanged(customPeriod: customPeriod)
+    delegate?.customFilterViewCustomPeriodChanged(customPeriod: customPeriod)
   }
 }
 
 
 // MARK: TagAndPeriodUnreadFilterDelegate
 
-extension TagAndPeriodFilterView: TagAndPeriodUnreadFilterViewDelegate {
+extension CustomFilterView: TagAndPeriodUnreadFilterViewDelegate {
   func tagAndPeriodUnreadFilterViewSwitchValueChanged(isOn: Bool) {
-    delegate?.tagAndPeriodFilterViewUnreadFilterValueChanged(isOn: isOn)
+    delegate?.customFilterViewUnreadFilterValueChanged(isOn: isOn)
   }
 }

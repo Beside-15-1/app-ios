@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodFilterViewReactor.swift
+//  CustomFilterViewReactor.swift
 //  Presentation
 //
 //  Created by 박천송 on 12/20/23.
@@ -14,7 +14,7 @@ import Domain
 import PBUserDefaults
 import PresentationInterface
 
-final class TagAndPeriodFilterViewReactor: Reactor {
+final class CustomFilterViewReactor: Reactor {
 
   // MARK: Action & Mutation & State
 
@@ -40,7 +40,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     // TagList
     var tagList: [String]
     var selectedTagList: [String] = []
-    var tagListSectionItems: [TagAndPeriodTagListView.SectionItem] = []
+    var tagListSectionItems: [CustomFilterTagListView.SectionItem] = []
 
     // Period
     var periodType: PeriodType
@@ -122,7 +122,7 @@ final class TagAndPeriodFilterViewReactor: Reactor {
     case .updateTagList:
       newState.tagListSectionItems = currentState.tagList.map { tag in
         let isSelected = currentState.selectedTagList.contains(where: { tag == $0 })
-        return TagAndPeriodTagListView.SectionItem.normal(.init(tag: tag, isSelected: isSelected))
+        return CustomFilterTagListView.SectionItem.normal(.init(tag: tag, isSelected: isSelected))
       }
 
     case .setPeriodType(let type):

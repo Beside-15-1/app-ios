@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodTagCell.swift
+//  CustomFilterTagCell.swift
 //  Presentation
 //
 //  Created by 박천송 on 12/21/23.
@@ -10,9 +10,9 @@ import UIKit
 
 import DesignSystem
 
-class TagAndPeriodTagCell: UITableViewCell {
+class CustomFilterTagCell: UITableViewCell {
 
-  static let identifier = "TagAndPeriodTagCell"
+  static let identifier = "CustomFilterTagCell"
 
   struct ViewModel: Hashable {
     let tag: String

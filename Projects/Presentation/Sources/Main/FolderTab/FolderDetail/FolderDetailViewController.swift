@@ -31,7 +31,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   private let linkSortBuilder: LinkSortBuildable
   private let linkDetailBuilder: LinkDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
-  private let tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
+  private let customFilterBuilder: CustomFilterBuildable
 
 
   // MARK: Initializing
@@ -42,7 +42,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     linkSortBuilder: LinkSortBuildable,
     linkDetailBuilder: LinkDetailBuildable,
     createLinkBuilder: CreateLinkBuildable,
-    tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
+    customFilterBuilder: CustomFilterBuildable
   ) {
     defer { self.reactor = reactor }
 
@@ -50,7 +50,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     self.linkSortBuilder = linkSortBuilder
     self.linkDetailBuilder = linkDetailBuilder
     self.createLinkBuilder = createLinkBuilder
-    self.tagAndPeriodFilterBuilder = tagAndPeriodFilterBuilder
+    self.customFilterBuilder = customFilterBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -418,16 +418,16 @@ extension FolderDetailViewController: LinkDetailDelegate {
 }
 
 
-// MARK: TagAndPeriodFilterDelegate
+// MARK: CustomFilterDelegate
 
-extension FolderDetailViewController: TagAndPeriodFilterDelegate {
-  func tagAndPeriodFilterConfirmButtonTapped(
+extension FolderDetailViewController: CustomFilterDelegate {
+  func customFilterConfirmButtonTapped(
     customFilter: CustomFilter?
   ) {
     reactor?.action.onNext(.updateCustomFilter(customFilter))
   }
 
-  func tagAndPeriodFilterResetButtonTapped() {
+  func customFilterResetButtonTapped() {
     reactor?.action.onNext(.updateCustomFilter(nil))
   }
 }
@@ -437,10 +437,10 @@ extension FolderDetailViewController: TagAndPeriodFilterDelegate {
 
 extension FolderDetailViewController: FolderDetailViewDelegate {
   func filterChipTapped() {
-    let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(
+    let customFilter = self.customFilterBuilder.build(payload: .init(
       customFilter: reactor?.currentState.customFilter,
       delegate: self
     ))
-    self.presentPaperSheet(tagAndPeriodFilter)
+    self.presentPaperSheet(customFilter)
   }
 }

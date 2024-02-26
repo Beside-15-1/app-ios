@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodFilterResetButton.swift
+//  CustomFilterResetButton.swift
 //  Presentation
 //
 //  Created by 박천송 on 1/10/24.
@@ -13,7 +13,7 @@ import Then
 
 import DesignSystem
 
-final class TagAndPeriodFilterResetButton: UIButton {
+final class CustomFilterResetButton: UIButton {
 
   // MARK: UI
 

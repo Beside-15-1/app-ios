@@ -1,5 +1,5 @@
 //
-//  TagAndPeriodTagListView.swift
+//  CustomFilterTagListView.swift
 //  Presentation
 //
 //  Created by 박천송 on 12/21/23.
@@ -14,13 +14,13 @@ import Then
 import DesignSystem
 
 protocol TagAndPeriodListViewDelegate: AnyObject {
-  func tagListView(_ listView: TagAndPeriodTagListView, didSelectRowAt indexPath: IndexPath)
+  func tagListView(_ listView: CustomFilterTagListView, didSelectRowAt indexPath: IndexPath)
 }
 
-class TagAndPeriodTagListView: UIView {
+class CustomFilterTagListView: UIView {
 
-  typealias Section = TagAndPeriodTagListSection
-  typealias SectionItem = TagAndPeriodTagListSection.Item
+  typealias Section = CustomFilterTagListSection
+  typealias SectionItem = CustomFilterTagListSection.Item
   private typealias DiffableDataSource = UITableViewDiffableDataSource<Section, SectionItem>
   private typealias DiffableSnapshot = NSDiffableDataSourceSnapshot<Section, SectionItem>
 
@@ -33,7 +33,7 @@ class TagAndPeriodTagListView: UIView {
   }
 
   lazy var tableView = UITableView(frame: .zero, style: .plain).then {
-    $0.register(TagAndPeriodTagCell.self, forCellReuseIdentifier: TagAndPeriodTagCell.identifier)
+    $0.register(CustomFilterTagCell.self, forCellReuseIdentifier: CustomFilterTagCell.identifier)
     $0.backgroundColor = .clear
     $0.delegate = self
     $0.separatorInset = .init(top: 0, left: 0, bottom: 0, right: 0)
@@ -81,7 +81,7 @@ class TagAndPeriodTagListView: UIView {
 
 // MARK: TableView
 
-extension TagAndPeriodTagListView: UITableViewDelegate {
+extension CustomFilterTagListView: UITableViewDelegate {
 
   private func diffableDataSource() -> DiffableDataSource {
     UITableViewDiffableDataSource<Section, SectionItem>(
@@ -89,8 +89,8 @@ extension TagAndPeriodTagListView: UITableViewDelegate {
     ) { tableView, indexPath, item in
       switch item {
       case .normal(let viewModel):
-        let cell = tableView.dequeueReusableCell(withIdentifier: TagAndPeriodTagCell.identifier)
-          as? TagAndPeriodTagCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: CustomFilterTagCell.identifier)
+          as? CustomFilterTagCell
 
         return cell?.then {
           $0.selectionStyle = .none
