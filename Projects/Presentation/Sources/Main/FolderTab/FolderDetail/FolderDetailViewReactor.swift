@@ -422,7 +422,7 @@ final class FolderDetailViewReactor: Reactor {
       case .month:
         sectionItem.append(.normal(.init(title: "최근 1개월", isFiltered: true)))
       case .custom:
-        sectionItem.append(.normal(.init(title: "사용자 설정", isFiltered: true)))
+        sectionItem.append(.normal(.init(title: "기간 설정", isFiltered: true)))
       }
 
       newState.filterChipSectionItems = sectionItem
