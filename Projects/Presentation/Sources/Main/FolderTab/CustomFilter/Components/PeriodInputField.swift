@@ -33,7 +33,7 @@ class PeriodInputField: UIControl {
   let datePicker = UIDatePicker().then {
     $0.datePickerMode = .date
     $0.preferredDatePickerStyle = .inline
-    $0.backgroundColor = .primary100
+    $0.backgroundColor = .datePicker
     $0.tintColor = .primary500
     $0.locale = Locale(identifier: "ko-KR")
   }
@@ -41,7 +41,7 @@ class PeriodInputField: UIControl {
   private lazy var toolbar = UIToolbar().then {
     $0.sizeToFit()
     $0.setItems([cancelButton, flexibleSpace, doneButton], animated: true)
-    $0.barTintColor = .primary100
+    $0.barTintColor = .datePicker
     $0.tintColor = .primary500
   }
 
@@ -145,6 +145,15 @@ class PeriodInputField: UIControl {
       $0.left.right.equalToSuperview().inset(12.0)
       $0.top.bottom.equalToSuperview().inset(8.0)
     }
+  }
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+
+    datePicker.backgroundColor = .datePicker
+    datePicker.tintColor = .primary500
+    toolbar.barTintColor = .datePicker
+    toolbar.tintColor = .toolBar
   }
 }
 

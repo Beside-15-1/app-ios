@@ -145,4 +145,22 @@ extension UIColor {
       return UIColor(hexString: "#EBECED")
     }
   }
+
+
+  // MARK: DatePicker
+  public static let datePicker = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "#221959")
+    } else {
+      return UIColor(hexString: "#EFECFF")
+    }
+  }
+
+  public static let toolBar = UIColor { (trait: UITraitCollection) -> UIColor in
+    if trait.userInterfaceStyle == .dark {
+      return UIColor(hexString: "FFFFFF")
+    } else {
+      return UIColor(hexString: "#392A95")
+    }
+  }
 }
