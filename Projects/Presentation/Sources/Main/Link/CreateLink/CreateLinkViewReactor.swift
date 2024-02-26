@@ -268,7 +268,7 @@ extension CreateLinkViewReactor {
         return .concat([
           .just(Mutation.setThumbnail(thumbnail)),
           .just(Mutation.setInputURL(thumbnail.url ?? "")),
-          .just(Mutation.setTitleError("제목을 입력해주세요."))
+          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요."))
         ])
       }
       .catch { _ in
