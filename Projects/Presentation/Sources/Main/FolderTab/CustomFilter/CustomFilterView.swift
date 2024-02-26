@@ -242,3 +242,13 @@ extension CustomFilterView: TagAndPeriodUnreadFilterViewDelegate {
     delegate?.customFilterViewUnreadFilterValueChanged(isOn: isOn)
   }
 }
+
+
+// MARK: TouchesBegan
+
+extension CustomFilterView {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
+    endEditing(true)
+  }
+}

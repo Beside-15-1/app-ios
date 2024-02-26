@@ -27,7 +27,7 @@ class PeriodInputField: UIControl {
     $0.inputView = datePicker
     $0.clearButtonMode = .never
     $0.tintColor = .clear
-    $0.inputAccessoryView = toolbar
+//    $0.inputAccessoryView = toolbar
   }
 
   let datePicker = UIDatePicker().then {
@@ -72,6 +72,7 @@ class PeriodInputField: UIControl {
     clipsToBounds = true
 
     defineLayout()
+    datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
   }
 
   required init?(coder: NSCoder) {
@@ -116,16 +117,6 @@ class PeriodInputField: UIControl {
 
   @objc
   func dateChanged() {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy.MM.dd"
-
-    // 선택된 날짜를 TextField에 표시
-    textField.attributedText = dateFormatter.string(from: datePicker.date).styled(
-      font: .defaultRegular, 
-      color: .gray900
-    )
-
-    // DatePicker를 숨김
     textField.resignFirstResponder()
     delegate?.periodInputField(self, changedDate: datePicker.date)
   }
