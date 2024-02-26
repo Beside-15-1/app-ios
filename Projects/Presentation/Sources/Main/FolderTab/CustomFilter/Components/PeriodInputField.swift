@@ -15,6 +15,10 @@ import Then
 
 import DesignSystem
 
+protocol PeriodInputFieldDelegate: AnyObject {
+  func periodInputField(_ periodInputField: PeriodInputField, changedDate date: Date)
+}
+
 class PeriodInputField: UIControl {
 
   // MARK: UI
@@ -23,15 +27,40 @@ class PeriodInputField: UIControl {
     $0.inputView = datePicker
     $0.clearButtonMode = .never
     $0.tintColor = .clear
+    $0.inputAccessoryView = toolbar
   }
 
   let datePicker = UIDatePicker().then {
     $0.datePickerMode = .date
     $0.preferredDatePickerStyle = .inline
+    $0.backgroundColor = .primary100
+    $0.tintColor = .primary500
     $0.locale = Locale(identifier: "ko-KR")
   }
 
+  private lazy var toolbar = UIToolbar().then {
+    $0.sizeToFit()
+    $0.setItems([cancelButton, flexibleSpace, doneButton], animated: true)
+    $0.barTintColor = .primary100
+    $0.tintColor = .primary500
+  }
+
+  private lazy var cancelButton = UIBarButtonItem(
+    barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped)
+  )
+
+  private lazy var flexibleSpace = UIBarButtonItem(
+    barButtonSystemItem: .flexibleSpace, target: nil, action: nil
+  )
+
+  private lazy var doneButton = UIBarButtonItem(
+    barButtonSystemItem: .done, target: self, action: #selector(dateChanged)
+  )
+
   var currentDate = Date()
+
+  weak var delegate: PeriodInputFieldDelegate?
+
 
   // MARK: Initialize
 
@@ -43,8 +72,6 @@ class PeriodInputField: UIControl {
     clipsToBounds = true
 
     defineLayout()
-
-    datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
   }
 
   required init?(coder: NSCoder) {
@@ -75,6 +102,8 @@ class PeriodInputField: UIControl {
       font: .defaultRegular,
       color: .gray900
     )
+
+    datePicker.date = date
   }
 
   func configureMaximumDate(date: Date) {
@@ -98,6 +127,7 @@ class PeriodInputField: UIControl {
 
     // DatePicker를 숨김
     textField.resignFirstResponder()
+    delegate?.periodInputField(self, changedDate: datePicker.date)
   }
 
   @objc

@@ -24,9 +24,13 @@ class PeriodInputView: UIView {
 
   // MARK: UI
 
-  private let startInputField = PeriodInputField()
+  private lazy var startInputField = PeriodInputField().then {
+    $0.delegate = self
+  }
 
-  private let endInputField = PeriodInputField()
+  private lazy var endInputField = PeriodInputField().then {
+    $0.delegate = self
+  }
 
   private let wave = UILabel().then {
     $0.attributedText = "~".styled(font: .defaultRegular, color: .gray900)
@@ -49,7 +53,6 @@ class PeriodInputView: UIView {
     super.init(frame: frame)
 
     defineLayout()
-    addTarget()
     endInputField.configureMaximumDate(date: Date())
   }
 
@@ -69,27 +72,6 @@ class PeriodInputView: UIView {
     self.startDate = startDate
     self.endDate = endDate
     setDate()
-  }
-
-
-  // MARK: Target
-
-  private func addTarget() {
-    startInputField.datePicker.rx.date
-      .subscribe(with: self) { `self`, date in
-        self.delegate?.periodInputView(
-          customPeriod: .init(startDate: date, endDate: self.endDate)
-        )
-      }
-      .disposed(by: disposeBag)
-
-    endInputField.datePicker.rx.date
-      .subscribe(with: self) { `self`, date in
-        self.delegate?.periodInputView(
-          customPeriod: .init(startDate: self.startDate, endDate: date)
-        )
-      }
-      .disposed(by: disposeBag)
   }
 
 
@@ -114,6 +96,28 @@ class PeriodInputView: UIView {
       $0.right.top.bottom.equalToSuperview()
       $0.left.equalTo(wave.snp.right).offset(4)
       $0.height.equalTo(40.0)
+    }
+  }
+}
+
+
+// MARK: PeriodInputFieldDelegate
+
+extension PeriodInputView: PeriodInputFieldDelegate {
+  func periodInputField(_ periodInputField: PeriodInputField, changedDate date: Date) {
+    switch periodInputField {
+    case startInputField:
+      self.delegate?.periodInputView(
+        customPeriod: .init(startDate: date, endDate: self.endDate)
+      )
+
+    case endInputField:
+      self.delegate?.periodInputView(
+        customPeriod: .init(startDate: self.startDate, endDate: date)
+      )
+
+    default:
+      return
     }
   }
 }
