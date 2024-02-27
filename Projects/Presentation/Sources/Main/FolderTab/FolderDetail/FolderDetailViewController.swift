@@ -31,7 +31,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   private let linkSortBuilder: LinkSortBuildable
   private let linkDetailBuilder: LinkDetailBuildable
   private let createLinkBuilder: CreateLinkBuildable
-  private let tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
+  private let customFilterBuilder: CustomFilterBuildable
 
 
   // MARK: Initializing
@@ -42,7 +42,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     linkSortBuilder: LinkSortBuildable,
     linkDetailBuilder: LinkDetailBuildable,
     createLinkBuilder: CreateLinkBuildable,
-    tagAndPeriodFilterBuilder: TagAndPeriodFilterBuildable
+    customFilterBuilder: CustomFilterBuildable
   ) {
     defer { self.reactor = reactor }
 
@@ -50,7 +50,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     self.linkSortBuilder = linkSortBuilder
     self.linkDetailBuilder = linkDetailBuilder
     self.createLinkBuilder = createLinkBuilder
-    self.tagAndPeriodFilterBuilder = tagAndPeriodFilterBuilder
+    self.customFilterBuilder = customFilterBuilder
 
     super.init(nibName: nil, bundle: nil)
   }
@@ -66,6 +66,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
     view = contentView
 
     contentView.listView.delegate = self
+    contentView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -167,6 +168,13 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
           .selectAllCheckBox.isSelected = list.count == reactor.currentState.viewModel?.items.count
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.filterChipSectionItems)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, sectionItems in
+        self.contentView.configureFilterChip(items: sectionItems)
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTab(with reactor: FolderDetailViewReactor) {
@@ -254,23 +262,6 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
   }
 
   private func bindButton(with reactor: FolderDetailViewReactor) {
-    contentView.unreadFilterButton.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        self.analytics.log(type: LinkListEvent.click(component: .filterUnread))
-        reactor.action.onNext(.updateUnreadFiltering(self.contentView.unreadFilterButton.isSelected))
-      }
-      .disposed(by: disposeBag)
-
-    contentView.filterButton.rx.controlEvent(.touchUpInside)
-      .subscribe(with: self) { `self`, _ in
-        let tagAndPeriodFilter = self.tagAndPeriodFilterBuilder.build(payload: .init(
-          customFilter: reactor.currentState.customFilter,
-          delegate: self
-        ))
-        self.presentPaperSheet(tagAndPeriodFilter)
-      }
-      .disposed(by: disposeBag)
-
     contentView.listView.editButton.rx.controlEvent(.touchUpInside)
       .map { Reactor.Action.editingButtonTapped }
       .bind(to: reactor.action)
@@ -427,16 +418,29 @@ extension FolderDetailViewController: LinkDetailDelegate {
 }
 
 
-// MARK: TagAndPeriodFilterDelegate
+// MARK: CustomFilterDelegate
 
-extension FolderDetailViewController: TagAndPeriodFilterDelegate {
-  func tagAndPeriodFilterConfirmButtonTapped(
+extension FolderDetailViewController: CustomFilterDelegate {
+  func customFilterConfirmButtonTapped(
     customFilter: CustomFilter?
   ) {
     reactor?.action.onNext(.updateCustomFilter(customFilter))
   }
 
-  func tagAndPeriodFilterResetButtonTapped() {
+  func customFilterResetButtonTapped() {
     reactor?.action.onNext(.updateCustomFilter(nil))
+  }
+}
+
+
+// MARK: FolderDetailViewDelegate
+
+extension FolderDetailViewController: FolderDetailViewDelegate {
+  func filterChipTapped() {
+    let customFilter = self.customFilterBuilder.build(payload: .init(
+      customFilter: reactor?.currentState.customFilter,
+      delegate: self
+    ))
+    self.presentPaperSheet(customFilter)
   }
 }

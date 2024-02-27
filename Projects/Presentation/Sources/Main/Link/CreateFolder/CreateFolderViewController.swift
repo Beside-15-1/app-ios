@@ -258,9 +258,9 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
   private func textDidChange(_ textField: UITextField) {
     if let text = textField.text {
       // 초과되는 텍스트 제거
-      if text.count > 10 {
+      if text.count > 15 {
         DispatchQueue.main.async {
-          textField.text = String(text.prefix(10))
+          textField.text = String(text.prefix(15))
         }
       }
     }

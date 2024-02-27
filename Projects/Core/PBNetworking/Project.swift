@@ -1,24 +1,13 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = Project(
+let project = Project.project(
   name: CoreModule.PBNetworking.rawValue,
-  options: .options(
-    textSettings: .textSettings(
-      indentWidth: 2,
-      tabWidth: 2,
-      wrapsLines: true
-    )
-  ),
   targets: [
-    Target(
+    Target.target(
       name: CoreModule.PBNetworking.rawValue,
-      platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: ["Sources/**"],
+      sources: .sources,
       dependencies: [
         // External
         .external(dependency: .RxMoya),
@@ -27,18 +16,6 @@ let project = Project(
         .external(dependency: .KeychainAccess),
         // Core
         .core(impl: .PBLog),
-      ]
-    ),
-    Target(
-      name: "\(CoreModule.PBNetworking.rawValue)Tests",
-      platform: .iOS,
-      product: .unitTests,
-      bundleId: Project.bundleID + ".\(CoreModule.PBNetworking.rawValue)Tests".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: "Tests/**",
-      dependencies: [
-        .target(name: "\(CoreModule.PBNetworking.rawValue)")
       ]
     )
   ]

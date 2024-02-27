@@ -258,9 +258,17 @@ extension CreateLinkViewReactor {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
       .flatMap { thumbnail -> Observable<Mutation> in
-        .concat([
+        if let title =  thumbnail.title {
+          return .concat([
+            .just(Mutation.setThumbnail(thumbnail)),
+            .just(Mutation.setInputURL(thumbnail.url ?? "")),
+          ])
+        }
+        
+        return .concat([
           .just(Mutation.setThumbnail(thumbnail)),
           .just(Mutation.setInputURL(thumbnail.url ?? "")),
+          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요."))
         ])
       }
       .catch { _ in

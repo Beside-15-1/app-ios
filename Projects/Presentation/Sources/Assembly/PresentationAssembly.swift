@@ -38,7 +38,7 @@ public final class PresentationAssembly: Assembly {
       registerOnboardingBuilder,
       registerMasterBuilder,
       registerNotificationSettingBuilder,
-      registerTagAndPeriodFilterBuilder,
+      registerCustomFilterBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -212,7 +212,7 @@ public final class PresentationAssembly: Assembly {
         linkSortBuilder: r.resolve(),
         linkDetailBuilder: r.resolve(),
         createLinkBuilder: r.resolve(),
-        tagAndPeriodFilterBuilder: r.resolve()
+        customFilterBuilder: r.resolve()
       ))
     }
   }
@@ -302,9 +302,9 @@ public final class PresentationAssembly: Assembly {
     }
   }
 
-  private func registerTagAndPeriodFilterBuilder(container: Container) {
-    container.register(TagAndPeriodFilterBuildable.self) { r in
-      TagAndPeriodFilterBuilder(dependency: .init())
+  private func registerCustomFilterBuilder(container: Container) {
+    container.register(CustomFilterBuildable.self) { r in
+      CustomFilterBuilder(dependency: .init())
     }
   }
 }

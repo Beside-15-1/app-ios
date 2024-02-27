@@ -1,24 +1,13 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let protject = Project(
+let protject = Project.project(
   name: Module.DesignSystem.rawValue,
-  options: .options(
-    textSettings: .textSettings(
-      indentWidth: 2,
-      tabWidth: 2,
-      wrapsLines: true
-    )
-  ),
   targets: [
-    Target(
+    Target.target(
       name: Module.DesignSystem.rawValue,
-      platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(Module.DesignSystem.rawValue)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: ["Sources/**"],
+      sources: .sources,
       resources: .default,
       dependencies: [
         .external(dependency: .SnapKit),

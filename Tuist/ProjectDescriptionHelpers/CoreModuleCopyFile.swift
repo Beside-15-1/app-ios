@@ -14,6 +14,7 @@ let moduleName: String = CoreModule.PBNetworking.rawValue
 
 let project = Project(
   name: moduleName,
+  organizationName: "Pink Boss Inc",
   options: .options(
     textSettings: .textSettings(
       indentWidth: 2,
@@ -22,43 +23,43 @@ let project = Project(
     )
   ),
   targets: [
-    Target(
+    Target.target(
       name: "\(moduleName)Interface",
-      platform: .iOS,
+      destinations: .init([.iPad, .iPhone]),
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTargets: .iOS(Project.iosVersion),
       infoPlist: .default,
       sources: ["Interfaces/**"],
       dependencies: []
     ),
-    Target(
+    Target.target(
       name: moduleName,
-      platform: .iOS,
+      destinations: .init([.iPad, .iPhone]),
       product: .staticFramework,
       bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTargets: .iOS(Project.iosVersion),
       infoPlist: .default,
       sources: ["Sources/**"],
       dependencies: [
         .target(name: "\(moduleName)Interface"),
         // External
-        .external(dependency: .Swinject)
+        .external(dependency: .Swinject),
       ]
     ),
-    Target(
+    Target.target(
       name: "\(moduleName)Tests",
-      platform: .iOS,
+      destinations: .init([.iPad, .iPhone]),
       product: .unitTests,
       bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
+      deploymentTargets: .iOS(Project.iosVersion),
       infoPlist: .default,
-      sources: "Tests/**",
+      sources: ["Tests/**"],
       dependencies: [
         .target(name: "\(moduleName)"),
         .target(name: "\(moduleName)Interface"),
         .xctest,
-        .external(dependency: .RxSwift)
+        .external(dependency: .RxSwift),
       ]
     ),
   ]

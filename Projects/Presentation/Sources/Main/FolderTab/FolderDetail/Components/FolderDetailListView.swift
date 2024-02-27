@@ -176,7 +176,7 @@ class FolderDetailListView: UIView {
     }
 
     totalCountLabel.attributedText = "\(sectionViewModel.items.count)개 주섬"
-      .styled(font: .subTitleSemiBold, color: .gray800)
+      .styled(font: .bodySemiBold, color: .gray800)
     selectAllCountLabel.attributedText = "\(selectedItemCount)/\(sectionViewModel.items.count)개".styled(
       font: .defaultSemiBold,
       color: .gray800
@@ -303,19 +303,12 @@ class FolderDetailListView: UIView {
       $0.top.equalToSuperview().inset(24.0)
     }
 
-    noEditDivider.snp.makeConstraints {
-      $0.width.equalTo(2.0)
-      $0.height.equalTo(14.5)
-      $0.left.equalTo(sortButton.snp.right).offset(10.0)
-      $0.centerY.equalToSuperview()
-    }
-
     sortButton.snp.makeConstraints {
       $0.left.top.bottom.equalToSuperview()
     }
 
     editButton.snp.makeConstraints {
-      $0.left.equalTo(noEditDivider.snp.right).offset(10)
+      $0.left.equalTo(sortButton.snp.right).offset(8.0)
       $0.right.top.bottom.equalToSuperview()
     }
 

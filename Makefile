@@ -2,9 +2,9 @@ project:
 	if [ `pgrep -x Xcode` ]; then \
 		killall -9 Xcode; \
 	fi
-	tuist clean builds
-	tuist fetch
-	tuist generate --no-open --xcframeworks
+	mise install
+	tuist install
+	tuist generate --no-open
 	pod install
 	open joosum.xcworkspace
 

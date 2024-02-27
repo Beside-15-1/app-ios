@@ -70,6 +70,11 @@ DerivedData/
 graph.dot
 Derived/
 
+# Swift Package Manager
+.build/
+.swiftpm
+
+
 ### CocoaPods
 Pods/*
 

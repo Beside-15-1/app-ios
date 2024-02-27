@@ -5,91 +5,31 @@ import ProjectDescriptionHelpers
 let moduleName: String = CoreModule.PBAnalytics.rawValue
 // ****************************************************
 
-let project = Project(
+let project = Project.project(
   name: moduleName,
-  options: .options(
-    textSettings: .textSettings(
-      indentWidth: 2,
-      tabWidth: 2,
-      wrapsLines: true
-    )
-  ),
   targets: [
-    Target(
+    Target.target(
       name: "\(moduleName)Interface",
-      platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(moduleName)Interface".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: ["Interfaces/**"],
-      scripts: [
-        TargetScript.pre(
-          script: #"""
-          export PATH="$PATH:/opt/homebrew/bin"
-
-          if which mockolo; then
-            mockolo -s Interfaces -d Testing/PBAnalyticsMocks.swift -i PBAnalyticsInterface --enable-args-history --mock-final
-          else
-            echo "warning: mockolo not installed, download from https://github.com/uber/mockolo using Homebrew"
-          fi
-          """#,
-          name: "Mockolo",
-          outputPaths: ["Testing/PBAnalyticsMocks.swift"],
-          basedOnDependencyAnalysis: false
-        )
-      ],
+      sources: .interfaces,
       dependencies: [
-        .external(dependency: .FirebaseAnalytics)
+        .external(dependency: .FirebaseAnalytics),
       ]
     ),
-    Target(
+    Target.target(
       name: moduleName,
-      platform: .iOS,
       product: .staticFramework,
-      bundleId: Project.bundleID + ".\(moduleName)".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: ["Sources/**"],
+      sources: .sources,
       dependencies: [
         .target(name: "\(moduleName)Interface"),
         // External
         .external(dependency: .Swinject),
-        .external(dependency: .FirebaseAnalytics)
+        .external(dependency: .FirebaseAnalytics),
       ],
       settings: .settings(
         base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
         configurations: []
       )
-    ),
-    Target(
-      name: "\(moduleName)Testing",
-      platform: .iOS,
-      product: .staticLibrary,
-      bundleId: Project.bundleID + ".\(moduleName)Testing".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: "Testing/**",
-      dependencies: [
-        .target(name: "\(moduleName)Interface")
-      ]
-    ),
-    Target(
-      name: "\(moduleName)Tests",
-      platform: .iOS,
-      product: .unitTests,
-      bundleId: Project.bundleID + ".\(moduleName)Tests".lowercased(),
-      deploymentTarget: .iOS(targetVersion: Project.iosVersion, devices: [.iphone, .ipad]),
-      infoPlist: .default,
-      sources: "Tests/**",
-      dependencies: [
-        .target(name: "\(moduleName)"),
-        .target(name: "\(moduleName)Interface"),
-        .target(name: "\(moduleName)Testing"),
-        .xctest,
-        .external(dependency: .RxSwift),
-        .external(dependency: .Nimble)
-      ]
     )
   ]
 )

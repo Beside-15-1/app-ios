@@ -25,7 +25,6 @@ final class FolderDetailViewReactor: Reactor {
     case searchLink(String)
     case refresh
     case readLink(String)
-    case updateUnreadFiltering(Bool)
     case createFolderSucceed
     case editingButtonTapped
     case endEditingMode
@@ -43,12 +42,12 @@ final class FolderDetailViewReactor: Reactor {
     case setOrderType(SortingOrderType)
     case setRefreshEnd
     case setEmptyLabelText(FolderDetailListView.EmptyViewModel)
-    case setUnreadFiltering(Bool)
     case setEditing(Bool)
     case setSelectedLinkListOnEditingMode([Link])
     case setSearchText(String)
     case setCustomFilter(CustomFilter?)
     case updateViewModels
+    case updateFilterChip
   }
 
   struct State {
@@ -58,6 +57,12 @@ final class FolderDetailViewReactor: Reactor {
     var linkCount = 0
 
     var viewModel: FolderDetailSectionViewModel?
+
+    var filterChipSectionItems: [FilterChipView.SectionItem] = [
+      .normal(.init(title: "읽음 여부", isFiltered: false)),
+      .normal(.init(title: "태그 전체", isFiltered: false)),
+      .normal(.init(title: "기간 전체", isFiltered: false)),
+    ]
 
     // States related to displaying the link list
     var sortingType: LinkSortingType = .createAt
@@ -210,15 +215,6 @@ final class FolderDetailViewReactor: Reactor {
         })
         .flatMap { _ in Observable<Mutation>.empty() }
 
-    case .updateUnreadFiltering(let isFiltering):
-      return .concat([
-        .just(Mutation.setUnreadFiltering(isFiltering)),
-        .just(Mutation.setSelectedLinkListOnEditingMode(
-          currentState.selectedLinkListOnEditingMode
-        )),
-        .just(Mutation.updateViewModels),
-      ])
-
     case .createFolderSucceed:
       if currentState.selectedFolder.id == Folder.all().id {
         return fetchAllLinks(sort: currentState.sortingType, order: currentState.orderType)
@@ -293,6 +289,7 @@ final class FolderDetailViewReactor: Reactor {
       return .concat([
         .just(Mutation.setCustomFilter(customFilter)),
         .just(Mutation.updateViewModels),
+        .just(Mutation.updateFilterChip),
       ])
     }
   }
@@ -322,9 +319,6 @@ final class FolderDetailViewReactor: Reactor {
     case .setEmptyLabelText(let text):
       newState.emptyLabelText = text
 
-    case .setUnreadFiltering(let filtering):
-      newState.isUnreadFiltering = filtering
-
     case .setEditing(let isEditing):
       newState.isEditing = isEditing
 
@@ -338,17 +332,11 @@ final class FolderDetailViewReactor: Reactor {
       newState.customFilter = filter
 
     case .updateViewModels:
-      let isUnreadFiltering = newState.isUnreadFiltering
       let isEditing = newState.isEditing
       let searchText = newState.searchText
       let isAll = newState.selectedFolder.id == Folder.all().id
 
       var filteredLinkList = newState.linkList
-
-      // 읽지 않음
-      if isUnreadFiltering {
-        filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
-      }
 
       // 검색 텍스트
       if !searchText.isEmpty {
@@ -359,6 +347,11 @@ final class FolderDetailViewReactor: Reactor {
 
       // 커스텀 필터
       if let customFilter = currentState.customFilter {
+        // 읽지 않음
+        if customFilter.isUnreadFiltering {
+          filteredLinkList = filteredLinkList.filter { $0.readCount == 0 }
+        }
+
         if !customFilter.selectedTagList.isEmpty {
           filteredLinkList = filteredLinkList.filter { link in
             link.tags.contains(where: { tag in customFilter.selectedTagList.contains { tag == $0 } })
@@ -393,6 +386,46 @@ final class FolderDetailViewReactor: Reactor {
       )
 
       newState.linkCount = newState.viewModel?.items.count ?? 0
+
+    case .updateFilterChip:
+      guard let customFilter = newState.customFilter else {
+        newState.filterChipSectionItems = [
+          .normal(.init(title: "읽음 여부", isFiltered: false)),
+          .normal(.init(title: "태그 전체", isFiltered: false)),
+          .normal(.init(title: "기간 전체", isFiltered: false)),
+        ]
+        break
+      }
+
+      var sectionItem: [FilterChipView.SectionItem] = []
+
+      if customFilter.isUnreadFiltering {
+        sectionItem.append(.normal(.init(title: "읽지 않음", isFiltered: true)))
+      } else {
+        sectionItem.append(.normal(.init(title: "읽음 여부", isFiltered: false)))
+      }
+
+      if customFilter.selectedTagList.isEmpty {
+        sectionItem.append(.normal(.init(title: "태그 전체", isFiltered: false)))
+      } else {
+        sectionItem.append(.normal(.init(
+          title: "태그 \(customFilter.selectedTagList.count)",
+          isFiltered: true
+        )))
+      }
+
+      switch customFilter.periodType {
+      case .all:
+        sectionItem.append(.normal(.init(title: "기간 전체", isFiltered: false)))
+      case .week:
+        sectionItem.append(.normal(.init(title: "최근 1주", isFiltered: true)))
+      case .month:
+        sectionItem.append(.normal(.init(title: "최근 1개월", isFiltered: true)))
+      case .custom:
+        sectionItem.append(.normal(.init(title: "기간 설정", isFiltered: true)))
+      }
+
+      newState.filterChipSectionItems = sectionItem
     }
 
     return newState
@@ -485,33 +518,6 @@ extension FolderDetailViewReactor {
         fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order),
       ])
     }
-  }
-
-  private func updateUnreadFilter(isFiltering: Bool) -> Observable<Mutation> {
-    var unreadFilteredLinkList = currentState.linkList
-
-    if isFiltering {
-      unreadFilteredLinkList = currentState.linkList.filter { $0.readCount == 0 }
-    }
-
-    let viewModel = FolderDetailSectionViewModel(
-      section: .normal,
-      items: unreadFilteredLinkList.map {
-        .init(
-          id: $0.id,
-          title: $0.title,
-          tags: $0.tags,
-          thumbnailURL: $0.thumbnailURL,
-          url: $0.url,
-          createAt: $0.createdAt,
-          folderName: $0.folderName,
-          isAll: true,
-          readCount: $0.readCount
-        )
-      }
-    )
-
-    return .just(Mutation.setViewModel(viewModel))
   }
 
   private func deleteMultipleLink() -> Observable<Mutation> {

@@ -304,6 +304,25 @@ extension CreateLinkViewController: UITextFieldDelegate {
       return false
     }
   }
+
+  func textFieldDidEndEditing(_ textField: UITextField) {
+    switch textField.tag {
+    case 1:
+      guard let text = textField.text else { return }
+
+      if reactor?.currentState.thumbnail == nil {
+        guard text.lowercased().hasPrefix("https://") || text.lowercased().hasPrefix("http://") else {
+          let newText = "https://\(text)"
+          reactor?.action.onNext(.fetchThumbnail(newText))
+          return
+        }
+
+        reactor?.action.onNext(.fetchThumbnail(text))
+      }
+    default:
+      return
+    }
+  }
 }
 
 
