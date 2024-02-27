@@ -510,12 +510,14 @@ extension FolderDetailViewReactor {
         .just(Mutation.setSortingType(type)),
         .just(Mutation.setOrderType(order)),
         fetchAllLinks(sort: type, order: order),
+        .just(Mutation.updateViewModels),
       ])
     } else {
       return .concat([
         .just(Mutation.setSortingType(type)),
         .just(Mutation.setOrderType(order)),
         fetchLinksInFolder(id: currentState.selectedFolder.id, sort: type, order: order),
+        .just(Mutation.updateViewModels),
       ])
     }
   }
