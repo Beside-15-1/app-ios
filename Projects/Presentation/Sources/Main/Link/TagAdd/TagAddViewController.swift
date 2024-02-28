@@ -53,7 +53,6 @@ final class TagAddViewController: UIViewController, StoryboardView {
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] tag in
-      self?.analytics.log(type: AddTagEvent.click(component: .editTag))
       self?.contentView.inputField.becomeFirstResponder()
       self?.reactor?.action.onNext(.editButtonTapped(tag))
     }
@@ -61,6 +60,8 @@ final class TagAddViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    reactor?.action.onNext(.viewDidLoad)
 
     contentView.inputField.addTarget(
       self,
@@ -71,8 +72,7 @@ final class TagAddViewController: UIViewController, StoryboardView {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    reactor?.action.onNext(.viewDidLoad)
-    analytics.log(type: AddTagEvent.shown)
+    reactor?.action.onNext(.viewDidAppear)
   }
 
 
@@ -230,7 +230,6 @@ extension TagAddViewController: TagListViewDelegate {
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {
-    analytics.log(type: AddTagEvent.click(component: .deleteTag))
     reactor?.action.onNext(.tagListTagRemoveButtonTapped(at: at))
   }
 }

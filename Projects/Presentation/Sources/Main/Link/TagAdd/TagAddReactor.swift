@@ -18,7 +18,7 @@ final class TagAddReactor: Reactor {
 
   enum Action {
     case viewDidLoad
-    case addTag(Tag)
+    case viewDidAppear
     case editButtonTapped(Tag)
     case endEditing
     case returnButtonTapped(Tag)
@@ -84,10 +84,15 @@ final class TagAddReactor: Reactor {
     case .viewDidLoad:
       return fetchTagList()
 
-    case .addTag(let tag):
+    case .viewDidAppear:
+
+      analytics.log(type: AddTagEvent.shown)
+
       return .empty()
 
     case .editButtonTapped(let tag):
+      analytics.log(type: AddTagEvent.click(component: .editTag))
+
       return .concat([
         .just(Mutation.setTagInputMode(.edit)),
         .just(Mutation.setEditedTag(tag)),
@@ -106,6 +111,7 @@ final class TagAddReactor: Reactor {
       return removeAddedTag(at: index)
 
     case .tagListTagRemoveButtonTapped(let index):
+      analytics.log(type: AddTagEvent.click(component: .deleteTag))
       return removeTagListTag(at: index)
 
     case .selectTag(let index):
@@ -154,6 +160,7 @@ extension TagAddReactor {
   private func returnButtonAction(tag: Tag) -> Observable<Mutation> {
     switch currentState.tagInputMode {
     case .input:
+      analytics.log(type: AddTagEvent.click(component: .tagInput))
       var addedTagList = currentState.addedTagList
       var tagList = currentState.tagList
 
