@@ -31,7 +31,7 @@ protocol ManageTagViewReactorOutput {
   var shouldShowTagLimitToast: PublishRelay<Void> { get }
 }
 
-// MARK: - TagAddViewModel
+// MARK: - TagAddReactor
 
 final class ManageTagViewReactor: ManageTagViewReactorOutput {
   enum TagInputMode {

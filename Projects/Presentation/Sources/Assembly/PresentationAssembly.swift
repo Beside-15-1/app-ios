@@ -151,7 +151,8 @@ public final class PresentationAssembly: Assembly {
     container.register(TagAddBuildable.self) { r in
       TagAddBuilder(
         dependency: .init(
-          analytics: r.resolve()
+          analytics: r.resolve(),
+          tagRepository: r.resolve()
         )
       )
     }

@@ -10,6 +10,7 @@ import PresentationInterface
 
 struct TagAddDependency {
   let analytics: PBAnalytics
+  let tagRepository: TagRepository
 }
 
 // MARK: - TagAddBuilder
@@ -22,13 +23,14 @@ final class TagAddBuilder: TagAddBuildable {
   }
 
   func build(payload: TagAddPayload) -> UIViewController {
-    let viewModel = TagAddViewModel(
-      userDefaults: UserDefaultsManager.shared,
+    let reactor = TagAddReactor(
+      analytics: dependency.analytics,
+      tagRepository: dependency.tagRepository,
       addedTagList: payload.addedTagList
     )
 
     let viewController = TagAddViewController(
-      viewModel: viewModel,
+      reactor: reactor,
       analytics: dependency.analytics
     ).then {
       $0.delegate = payload.tagAddDelegate
