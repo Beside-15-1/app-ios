@@ -9,7 +9,6 @@ import Foundation
 import LinkPresentation
 
 import RxSwift
-import SwiftSoup
 
 public protocol FetchThumbnailUseCase {
   func execute(url: String) -> Single<Thumbnail>

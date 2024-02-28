@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     dependency.configureFirebase()
+    dependency.migrationTagList()
 
     configureNotification(application)
 

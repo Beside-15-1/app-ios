@@ -46,10 +46,14 @@ final class TagRepositoryImpl: TagRepository {
 
   // Local -> Remote 데이터 동기화를 위한 마이그레이션 함수 <2024.02.28>
   func migration() {
-    let target = TagAPI.updateTagList(UserDefaultsManager.shared.tagList)
+    if !UserDefaultsManager.shared.isTagMigration {
+      let target = TagAPI.updateTagList(UserDefaultsManager.shared.tagList)
 
-    return networking.request(target: target)
-      .subscribe()
-      .disposed(by: disposeBag)
+      return networking.request(target: target)
+        .subscribe(onSuccess: { _ in
+          UserDefaultsManager.shared.isTagMigration = true
+        })
+        .disposed(by: disposeBag)
+    }
   }
 }
