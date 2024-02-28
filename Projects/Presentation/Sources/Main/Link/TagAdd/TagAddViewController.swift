@@ -99,16 +99,19 @@ final class TagAddViewController: UIViewController, StoryboardView {
         guard let self else { return }
         guard !local.isEmpty else { return }
         contentView.tagListView.applyTagList(by: local)
-        contentView.addedTagView.collectionView
-          .scrollToItem(
-            at: IndexPath(item: reactor.currentState.tagList.count - 1, section: 0),
-            at: .centeredHorizontally,
-            animated: true
-          )
+        if reactor.currentState.tagList.count > 1 {
+          contentView.addedTagView.collectionView
+            .scrollToItem(
+              at: IndexPath(item: reactor.currentState.tagList.count - 1, section: 0),
+              at: .centeredHorizontally,
+              animated: true
+            )
+        }
       })
       .disposed(by: disposeBag)
 
     reactor.pulse(\.$shouldShowTagLimitToast)
+      .filter { $0 }
       .subscribe(with: self) { _, _ in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
           PBToast(content: "태그는 10개까지 선택할 수 있어요")

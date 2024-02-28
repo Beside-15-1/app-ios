@@ -130,7 +130,7 @@ final class TagAddReactor: Reactor {
       newState.tagList = tagList
 
     case .setAddedTagList(let addedTagList):
-      newState.tagList = addedTagList
+      newState.addedTagList = addedTagList
 
     case .setTagInputMode(let inputMode):
       newState.tagInputMode = inputMode
