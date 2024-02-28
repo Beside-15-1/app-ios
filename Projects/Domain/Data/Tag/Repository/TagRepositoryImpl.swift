@@ -40,4 +40,11 @@ final class TagRepositoryImpl: TagRepository {
         UserDefaultsManager.shared.tagList = []
       }
   }
+
+  func deleteTag(tag: String) -> Single<Void> {
+    let target = TagAPI.deleteTag(tag)
+
+    return networking.request(target: target)
+      .map { _ in Void() }
+  }
 }

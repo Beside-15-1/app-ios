@@ -12,4 +12,5 @@ import RxSwift
 public protocol TagRepository {
   func fetchTagList() -> Single<Void>
   func updateTagList() -> Single<Void>
+  func deleteTag(tag: String) -> Single<Void>
 }
