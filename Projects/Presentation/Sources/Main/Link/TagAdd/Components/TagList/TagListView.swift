@@ -75,6 +75,7 @@ final class TagListView: UIView {
     emptyLabel.isHidden = !tags.isEmpty
 
     tableView.reloadData()
+    tableView.scrollToRow(at: IndexPath(row: tags.count - 1, section: 0), at: .bottom, animated: true)
   }
 
   // MARK: Layout

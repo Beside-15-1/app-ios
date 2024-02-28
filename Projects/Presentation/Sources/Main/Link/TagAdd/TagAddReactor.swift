@@ -55,6 +55,8 @@ final class TagAddReactor: Reactor {
   private let analytics: PBAnalytics
   private let tagRepository: TagRepository
 
+  var isFirst = true
+
 
   // MARK: initializing
 
@@ -128,6 +130,7 @@ final class TagAddReactor: Reactor {
     switch mutation {
     case .setTagList(let tagList):
       newState.tagList = tagList
+      saveTagListToRemote(tagList: tagList)
 
     case .setAddedTagList(let addedTagList):
       newState.addedTagList = addedTagList
@@ -239,5 +242,22 @@ extension TagAddReactor {
     }
 
     return .just(Mutation.setAddedTagList(addedTagList))
+  }
+
+  func saveTagListToRemote(tagList: [Tag]) {
+    guard !isFirst else {
+      isFirst = false
+      return
+    }
+
+    return tagRepository.updateTagList(tagList: tagList)
+      .subscribe()
+      .disposed(by: disposeBag)
+  }
+
+  func deleteTagToRemote(tag: Tag) {
+    tagRepository.deleteTag(tag: tag)
+      .subscribe()
+      .disposed(by: disposeBag)
   }
 }

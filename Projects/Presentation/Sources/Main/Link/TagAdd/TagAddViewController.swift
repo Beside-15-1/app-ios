@@ -95,18 +95,10 @@ final class TagAddViewController: UIViewController, StoryboardView {
     reactor.state.map(\.tagList)
       .distinctUntilChanged()
       .delay(.milliseconds(100), scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] local in
+      .subscribe(onNext: { [weak self] tagList in
         guard let self else { return }
-        guard !local.isEmpty else { return }
-        contentView.tagListView.applyTagList(by: local)
-        if reactor.currentState.tagList.count > 1 {
-          contentView.addedTagView.collectionView
-            .scrollToItem(
-              at: IndexPath(item: reactor.currentState.tagList.count - 1, section: 0),
-              at: .centeredHorizontally,
-              animated: true
-            )
-        }
+        guard !tagList.isEmpty else { return }
+        contentView.tagListView.applyTagList(by: tagList)
       })
       .disposed(by: disposeBag)
 
