@@ -64,7 +64,6 @@ public final class PresentationAssembly: Assembly {
       LoginBuilder(dependency: .init(
         analytics: r.resolve(),
         loginRepository: r.resolve(),
-        tagRepository: r.resolve(),
         mainTabBuilder: r.resolve(),
         signUpBuilder: r.resolve(),
         termsOfUseBuilder: r.resolve()

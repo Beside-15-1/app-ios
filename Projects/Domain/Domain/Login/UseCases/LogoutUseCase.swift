@@ -24,11 +24,6 @@ public final class LogoutUseCaseImpl: LogoutUseCase {
   }
 
   public func execute() -> Single<Bool> {
-    tagRepository.updateTagList()
-      .flatMap { [weak self] _ -> Single<Bool> in
-        guard let self else { return .error(RxError.unknown)}
-
-        return self.loginRepository.logout()
-      }
+    loginRepository.logout()
   }
 }
