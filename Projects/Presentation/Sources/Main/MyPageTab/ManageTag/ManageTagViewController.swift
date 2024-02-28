@@ -13,7 +13,7 @@ import RxSwift
 import DesignSystem
 import PBAnalyticsInterface
 
-final class ManageTagViewController: UIViewController {
+final class ManageTagViewController: UIViewController, StoryboardView {
 
   // MARK: UI
 
@@ -21,8 +21,6 @@ final class ManageTagViewController: UIViewController {
 
 
   // MARK: Properties
-
-  let reactor: ManageTagViewReactor
 
   var disposeBag = DisposeBag()
 
@@ -35,7 +33,7 @@ final class ManageTagViewController: UIViewController {
     reactor: ManageTagViewReactor,
     analytics: PBAnalytics
   ) {
-    self.reactor = reactor
+    defer { self.reactor = reactor }
 
     self.analytics = analytics
 
@@ -55,9 +53,8 @@ final class ManageTagViewController: UIViewController {
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
     contentView.tagListView.editHandler = { [weak self] text in
-      self?.analytics.log(type: SettingTagEvent.click(component: .editTag))
       self?.contentView.inputField.becomeFirstResponder()
-      self?.reactor.changeEditMode(text: text)
+      self?.reactor?.action.onNext(.editButtonTapped(text))
     }
   }
 
@@ -65,8 +62,6 @@ final class ManageTagViewController: UIViewController {
     super.viewDidLoad()
 
     navigationController?.interactivePopGestureRecognizer?.delegate = nil
-
-    bind(reactor: reactor)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -90,8 +85,9 @@ final class ManageTagViewController: UIViewController {
     bindButton(with: reactor)
   }
 
-  private func bindContent(with viewModel: ManageTagViewReactor) {
-    viewModel.localTagList
+  private func bindContent(with reactor: ManageTagViewReactor) {
+    reactor.state.map(\.tagList)
+      .distinctUntilChanged()
       .delay(.milliseconds(100), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] local in
         guard !local.isEmpty else { return }
@@ -101,21 +97,13 @@ final class ManageTagViewController: UIViewController {
 
     contentView.inputField.rx.text
       .subscribe(with: self) { `self`, text in
-        self.reactor.inputText(text: text)
+        self.reactor?.action.onNext(.inputText(text))
       }
       .disposed(by: disposeBag)
 
-    viewModel.validatedText
+    reactor.state.map(\.validatedText)
+      .distinctUntilChanged()
       .bind(to: contentView.inputField.rx.text)
-      .disposed(by: disposeBag)
-
-    viewModel.shouldShowTagLimitToast
-      .subscribe(with: self) { _, _ in
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-          PBToast(content: "태그는 10개까지 선택할 수 있어요")
-            .show()
-        }
-      }
       .disposed(by: disposeBag)
 
     contentView.inputField.rx.editingDidBegin
@@ -180,20 +168,13 @@ extension ManageTagViewController: UITextFieldDelegate {
     view.endEditing(true)
     textField.text = ""
 
-    self.analytics.log(type: SettingTagEvent.click(component: .keyboardDone))
-
-    if reactor.tagInputMode == .input {
-      reactor.addTag(text: text)
-    } else {
-      reactor.editTag(text: text)
-    }
+    reactor?.action.onNext(.returnButtonTapped(text))
 
     return true
   }
 
   func textFieldDidBeginEditing(_ textField: UITextField) {
-    reactor.editedTag = nil
-    reactor.tagInputMode = .input
+    reactor?.action.onNext(.endEditing)
   }
 }
 
@@ -204,11 +185,10 @@ extension ManageTagViewController: TagListViewDelegate {
   func tagListView(_ tagListView: TagListView, didSelectedRow at: Int) {}
 
   func updateTagList(_ tagListView: TagListView, tagList: [String]) {
-    reactor.updateTagList(tags: tagList)
+    reactor?.action.onNext(.replaceTagOrder(tagList))
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {
-    self.analytics.log(type: SettingTagEvent.click(component: .deleteTag))
-    reactor.removeTagListTag(at: at)
+    reactor?.action.onNext(.tagListTagRemoveButtonTapped(at: at))
   }
 }

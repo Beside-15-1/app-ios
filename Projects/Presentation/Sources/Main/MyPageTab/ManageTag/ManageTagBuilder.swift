@@ -14,6 +14,7 @@ import PresentationInterface
 
 struct ManageTagDependency {
   let analytics: PBAnalytics
+  let tagRepository: TagRepository
 }
 
 final class ManageTagBuilder: ManageTagBuildable {
@@ -26,7 +27,8 @@ final class ManageTagBuilder: ManageTagBuildable {
 
   func build(payload: ManageTagPayload) -> UIViewController {
     let reactor = ManageTagViewReactor(
-      userDefaults: .shared
+      analytics: dependency.analytics,
+      tagRepository: dependency.tagRepository
     )
 
     let viewController = ManageTagViewController(
