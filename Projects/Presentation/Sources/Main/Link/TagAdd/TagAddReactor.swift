@@ -1,10 +1,3 @@
-//
-//  ManageTagViewReactor.swift
-//  Presentation
-//
-//  Created by 박천송 on 2023/07/22.
-//
-
 import Foundation
 
 import ReactorKit
@@ -16,7 +9,7 @@ import PBAnalyticsInterface
 import PBUserDefaults
 
 
-final class ManageTagViewReactor: Reactor {
+final class TagAddReactor: Reactor {
 
   enum TagInputMode {
     case input
@@ -29,26 +22,26 @@ final class ManageTagViewReactor: Reactor {
     case editButtonTapped(Tag)
     case endEditing
     case returnButtonTapped(Tag)
+    case addedTagRemoveButtonTapped(at: Int)
     case tagListTagRemoveButtonTapped(at: Int)
+    case selectTag(at: Int)
     case replaceTagOrder([Tag])
-    case inputText(String)
   }
 
   enum Mutation {
     case setTagList([Tag])
+    case setAddedTagList([Tag])
     case setTagInputMode(TagInputMode)
     case setEditedTag(Tag?)
     case setShouldShowTagLimitToast
-    case setValidatedText(String)
   }
 
   struct State {
     var tagList: [Tag] = []
+    var addedTagList: [Tag] = []
 
     var tagInputMode: TagInputMode = .input
     var editedTag: Tag?
-
-    var validatedText = ""
 
     @Pulse var shouldShowTagLimitToast = false
   }
@@ -69,14 +62,17 @@ final class ManageTagViewReactor: Reactor {
 
   init(
     analytics: PBAnalytics,
-    tagRepository: TagRepository
+    tagRepository: TagRepository,
+    addedTagList: [Tag]
   ) {
     defer { _ = self.state }
 
     self.analytics = analytics
     self.tagRepository = tagRepository
 
-    self.initialState = State()
+    self.initialState = State(
+      addedTagList: addedTagList
+    )
   }
 
   deinit {
@@ -92,12 +88,12 @@ final class ManageTagViewReactor: Reactor {
 
     case .viewDidAppear:
 
-      analytics.log(type: SettingTagEvent.shown)
+      analytics.log(type: AddTagEvent.shown)
 
       return .empty()
 
     case .editButtonTapped(let tag):
-      analytics.log(type: SettingTagEvent.click(component: .editTag))
+      analytics.log(type: AddTagEvent.click(component: .editTag))
 
       return .concat([
         .just(Mutation.setTagInputMode(.edit)),
@@ -113,20 +109,18 @@ final class ManageTagViewReactor: Reactor {
     case .returnButtonTapped(let tag):
       return returnButtonAction(tag: tag)
 
+    case .addedTagRemoveButtonTapped(let index):
+      return removeAddedTag(at: index)
+
     case .tagListTagRemoveButtonTapped(let index):
-      analytics.log(type: SettingTagEvent.click(component: .deleteTag))
+      analytics.log(type: AddTagEvent.click(component: .deleteTag))
       return removeTagListTag(at: index)
+
+    case .selectTag(let index):
+      return selectTag(at: index)
 
     case .replaceTagOrder(let tagList):
       return .just(Mutation.setTagList(tagList))
-
-    case .inputText(let text):
-      var validatedText = text
-      if text.count > 9 {
-        validatedText = String(text[text.startIndex...text.index(text.startIndex, offsetBy: 9)])
-      }
-
-      return .just(Mutation.setValidatedText(validatedText))
     }
   }
 
@@ -138,6 +132,9 @@ final class ManageTagViewReactor: Reactor {
       newState.tagList = tagList
       saveTagListToRemote(tagList: tagList)
 
+    case .setAddedTagList(let addedTagList):
+      newState.addedTagList = addedTagList
+
     case .setTagInputMode(let inputMode):
       newState.tagInputMode = inputMode
 
@@ -146,9 +143,6 @@ final class ManageTagViewReactor: Reactor {
 
     case .setShouldShowTagLimitToast:
       newState.shouldShowTagLimitToast = true
-
-    case .setValidatedText(let text):
-      newState.validatedText = text
     }
 
     return newState
@@ -158,7 +152,7 @@ final class ManageTagViewReactor: Reactor {
 
 // MARK: - Private
 
-extension ManageTagViewReactor {
+extension TagAddReactor {
 
   private func fetchTagList() -> Observable<Mutation> {
     tagRepository.fetchTagList()
@@ -169,29 +163,62 @@ extension ManageTagViewReactor {
   private func returnButtonAction(tag: Tag) -> Observable<Mutation> {
     switch currentState.tagInputMode {
     case .input:
-      analytics.log(type: SettingTagEvent.click(component: .inputbox))
+      analytics.log(type: AddTagEvent.click(component: .tagInput))
+      var addedTagList = currentState.addedTagList
       var tagList = currentState.tagList
+
+      guard addedTagList.count < 10 else {
+        if !tagList.contains(where: { $0 == tag }) {
+          tagList.insert(tag, at: 0)
+        }
+
+        return .concat([
+          .just(Mutation.setShouldShowTagLimitToast),
+          .just(Mutation.setTagList(tagList)),
+        ])
+      }
+
+      if !addedTagList.contains(where: { $0 == tag }) {
+        addedTagList.append(tag)
+      }
 
       if !tagList.contains(where: { $0 == tag }) {
         tagList.insert(tag, at: 0)
       }
 
-      return .just(Mutation.setTagList(tagList))
+      return .concat([
+        .just(Mutation.setAddedTagList(addedTagList)),
+        .just(Mutation.setTagList(tagList)),
+      ])
 
     case .edit:
       guard let editedTag = currentState.editedTag else { return .empty() }
 
+      var addedTagList = currentState.addedTagList
       var tagList = currentState.tagList
+
+      if let index = addedTagList.firstIndex(of: editedTag) {
+        addedTagList[index] = tag
+      }
 
       if let index = tagList.firstIndex(of: editedTag) {
         tagList[index] = tag
       }
 
       return .concat([
+        .just(Mutation.setAddedTagList(addedTagList)),
         .just(Mutation.setTagList(tagList)),
         .just(Mutation.setEditedTag(nil)),
       ])
     }
+  }
+
+  func removeAddedTag(at row: Int) -> Observable<Mutation> {
+    var addedTagList = currentState.addedTagList
+
+    addedTagList.remove(at: row)
+
+    return .just(Mutation.setAddedTagList(addedTagList))
   }
 
   func removeTagListTag(at row: Int) -> Observable<Mutation> {
@@ -200,6 +227,21 @@ extension ManageTagViewReactor {
     tagList.remove(at: row)
 
     return .just(Mutation.setTagList(tagList))
+  }
+
+  func selectTag(at row: Int) -> Observable<Mutation> {
+    var addedTagList = currentState.addedTagList
+    let selectedTag = currentState.tagList[row]
+
+    guard addedTagList.count < 10 else {
+      return .just(Mutation.setShouldShowTagLimitToast)
+    }
+
+    if !addedTagList.contains(where: { $0 == selectedTag }) {
+      addedTagList.append(selectedTag)
+    }
+
+    return .just(Mutation.setAddedTagList(addedTagList))
   }
 
   func saveTagListToRemote(tagList: [Tag]) {

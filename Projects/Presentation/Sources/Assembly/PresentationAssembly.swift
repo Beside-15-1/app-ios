@@ -64,7 +64,6 @@ public final class PresentationAssembly: Assembly {
       LoginBuilder(dependency: .init(
         analytics: r.resolve(),
         loginRepository: r.resolve(),
-        tagRepository: r.resolve(),
         mainTabBuilder: r.resolve(),
         signUpBuilder: r.resolve(),
         termsOfUseBuilder: r.resolve()
@@ -152,7 +151,8 @@ public final class PresentationAssembly: Assembly {
     container.register(TagAddBuildable.self) { r in
       TagAddBuilder(
         dependency: .init(
-          analytics: r.resolve()
+          analytics: r.resolve(),
+          tagRepository: r.resolve()
         )
       )
     }
@@ -247,7 +247,8 @@ public final class PresentationAssembly: Assembly {
   private func registerManageTagBuilder(container: Container) {
     container.register(ManageTagBuildable.self) { r in
       ManageTagBuilder(dependency: .init(
-        analytics: r.resolve()
+        analytics: r.resolve(),
+        tagRepository: r.resolve()
       ))
     }
   }

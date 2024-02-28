@@ -24,6 +24,9 @@ public class UserDefaultsManager {
   @UserDefault(key: "social")
   public var social = ""
 
+  @UserDefault(key: "is_tag_migration")
+  public var isTagMigration = false
+
   func migrateUserDefaultsToAppGroups() {
     // User Defaults - AS-IS
     let defaultDefaults = UserDefaults.standard

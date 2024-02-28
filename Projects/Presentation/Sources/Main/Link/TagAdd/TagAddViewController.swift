@@ -1,6 +1,7 @@
 import UIKit
 
 import PanModal
+import ReactorKit
 import RxSwift
 
 import DesignSystem
@@ -9,28 +10,32 @@ import PresentationInterface
 
 // MARK: - TagAddViewController
 
-final class TagAddViewController: UIViewController {
+final class TagAddViewController: UIViewController, StoryboardView {
+
   // MARK: UI
 
   private lazy var contentView = TagAddView()
 
+
   // MARK: Properties
 
-  private let viewModel: TagAddViewModel
-  private let disposeBag = DisposeBag()
+  var disposeBag = DisposeBag()
+
+  private let analytics: PBAnalytics
 
   weak var delegate: TagAddDelegate?
 
-  private let analytics: PBAnalytics
 
   // MARK: Initializing
 
   init(
-    viewModel: TagAddViewModel,
+    reactor: TagAddReactor,
     analytics: PBAnalytics
   ) {
-    self.viewModel = viewModel
+    defer { self.reactor = reactor }
+
     self.analytics = analytics
+
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -47,17 +52,16 @@ final class TagAddViewController: UIViewController {
     contentView.addedTagView.delegate = self
     contentView.inputField.setDelegate(self)
     contentView.tagListView.delegate = self
-    contentView.tagListView.editHandler = { [weak self] text in
-      self?.analytics.log(type: AddTagEvent.click(component: .editTag))
+    contentView.tagListView.editHandler = { [weak self] tag in
       self?.contentView.inputField.becomeFirstResponder()
-      self?.viewModel.changeEditMode(text: text)
+      self?.reactor?.action.onNext(.editButtonTapped(tag))
     }
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    bind(with: viewModel)
+    reactor?.action.onNext(.viewDidLoad)
 
     contentView.inputField.addTarget(
       self,
@@ -68,33 +72,38 @@ final class TagAddViewController: UIViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    analytics.log(type: AddTagEvent.shown)
+    reactor?.action.onNext(.viewDidAppear)
   }
+
 
   // MARK: Binding
 
-  func bind(with viewModel: TagAddViewModel) {
-    bindContent(with: viewModel)
-    bindButton(with: viewModel)
+  func bind(reactor: TagAddReactor) {
+    bindContent(with: reactor)
+    bindButton(with: reactor)
   }
 
-  private func bindContent(with viewModel: TagAddViewModel) {
-    viewModel.addedTagList
+  private func bindContent(with reactor: TagAddReactor) {
+    reactor.state.map(\.addedTagList)
+      .distinctUntilChanged()
       .subscribe(with: self) { `self`, list in
         self.contentView.addedTagView.applyAddedTag(by: list)
         self.contentView.addedTagView.configureTagCount(count: list.count)
       }
       .disposed(by: disposeBag)
 
-    viewModel.localTagList
+    reactor.state.map(\.tagList)
+      .distinctUntilChanged()
       .delay(.milliseconds(100), scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] local in
-        guard !local.isEmpty else { return }
-        self?.contentView.tagListView.applyTagList(by: local)
+      .subscribe(onNext: { [weak self] tagList in
+        guard let self else { return }
+        guard !tagList.isEmpty else { return }
+        contentView.tagListView.applyTagList(by: tagList)
       })
       .disposed(by: disposeBag)
 
-    viewModel.shouldShowTagLimitToast
+    reactor.pulse(\.$shouldShowTagLimitToast)
+      .filter { $0 }
       .subscribe(with: self) { _, _ in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
           PBToast(content: "태그는 10개까지 선택할 수 있어요")
@@ -102,28 +111,15 @@ final class TagAddViewController: UIViewController {
         }
       }
       .disposed(by: disposeBag)
-
-    viewModel.tagListIndexToScroll
-      .subscribe(with: self) { `self`, row in
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-          self.contentView.addedTagView.collectionView
-            .scrollToItem(
-              at: IndexPath(item: row, section: 0),
-              at: .centeredHorizontally,
-              animated: true
-            )
-        }
-      }
-      .disposed(by: disposeBag)
   }
 
-  private func bindButton(with viewModel: TagAddViewModel) {
+  private func bindButton(with reactor: TagAddReactor) {
     contentView.makeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: AddTagEvent.click(component: .saveTag))
         self.dismiss(animated: true) {
           self.delegate?.tagAddViewControllerMakeButtonTapped(
-            tagList: self.viewModel.addedTagList.value
+            tagList: reactor.currentState.addedTagList
           )
         }
       }
@@ -187,19 +183,13 @@ extension TagAddViewController: UITextFieldDelegate {
     view.endEditing(true)
     textField.text = ""
 
-    if viewModel.tagInputMode == .input {
-      analytics.log(type: AddTagEvent.click(component: .tagInput))
-      viewModel.addTag(text: text)
-    } else {
-      viewModel.editTag(text: text)
-    }
+    reactor?.action.onNext(.returnButtonTapped(text))
 
     return true
   }
 
   func textFieldDidBeginEditing(_ textField: UITextField) {
-    viewModel.editedTag = nil
-    viewModel.tagInputMode = .input
+    reactor?.action.onNext(.endEditing)
   }
 
   @objc
@@ -219,7 +209,7 @@ extension TagAddViewController: UITextFieldDelegate {
 
 extension TagAddViewController: AddedTagViewDelegate {
   func removeAddedTag(at row: Int) {
-    viewModel.removeAddedTag(at: row)
+    reactor?.action.onNext(.addedTagRemoveButtonTapped(at: row))
   }
 }
 
@@ -227,23 +217,14 @@ extension TagAddViewController: AddedTagViewDelegate {
 
 extension TagAddViewController: TagListViewDelegate {
   func tagListView(_ tagListView: TagListView, didSelectedRow at: Int) {
-    guard let _ = tagListView.tableView.cellForRow(at: IndexPath(row: at, section: 0))
-      as? TagListCell else { return }
-
-    let selectedTag = viewModel.localTagList.value[at]
-
-    guard let _ = viewModel.addedTagList.value.firstIndex(of: selectedTag) else {
-      viewModel.addTag(text: selectedTag)
-      return
-    }
+    reactor?.action.onNext(.selectTag(at: at))
   }
 
   func updateTagList(_ tagListView: TagListView, tagList: [String]) {
-    viewModel.localTagList.accept(tagList)
+    reactor?.action.onNext(.replaceTagOrder(tagList))
   }
 
   func removeTag(_ tagListView: TagListView, row at: Int) {
-    analytics.log(type: AddTagEvent.click(component: .deleteTag))
-    viewModel.removeTagListTag(at: at)
+    reactor?.action.onNext(.tagListTagRemoveButtonTapped(at: at))
   }
 }

@@ -19,6 +19,7 @@ struct AppDependency {
   let rootViewController: UIViewController
   let configureFirebase: () -> Void
   let pushRepository: PushRepository
+  let migrationTagList: () -> Void
 }
 
 // MARK: - AppAssembly
@@ -45,13 +46,22 @@ enum AppAssembly {
     ))
 
     let pushRepository = resolver.resolve(PushRepository.self)!
+    let tagRepository = resolver.resolve(TagRepository.self)!
+    let tagMigration: ()->Void = {
+      let pushRepository = resolver.resolve(PushRepository.self)!
+
+      if isLogin {
+        tagRepository.migration()
+      }
+    }
 
     return AppDependency(
       rootViewController: rootViewController,
       configureFirebase: {
         FirebaseApp.configure()
       },
-      pushRepository: pushRepository
+      pushRepository: pushRepository,
+      migrationTagList: tagMigration
     )
   }
 }

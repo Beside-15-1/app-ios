@@ -13,6 +13,7 @@ import PBNetworking
 enum TagAPI {
   case fetchTagList
   case updateTagList([String])
+  case deleteTag(String)
 }
 
 extension TagAPI: BaseTargetType {
@@ -24,6 +25,9 @@ extension TagAPI: BaseTargetType {
       
     case .updateTagList:
       return "tags"
+
+    case .deleteTag(let tag):
+      return "tags/\(tag)"
     }
   }
 
@@ -34,6 +38,9 @@ extension TagAPI: BaseTargetType {
 
     case .updateTagList:
       return .post
+
+    case .deleteTag:
+      return .delete
     }
   }
 
@@ -44,6 +51,9 @@ extension TagAPI: BaseTargetType {
 
     case .updateTagList(let array):
       return .requestJSONEncodable(array)
+
+    case .deleteTag:
+      return .requestPlain
     }
   }
 }

@@ -25,7 +25,7 @@ protocol TagAddViewModelOutput {
   var tagListIndexToScroll: PublishRelay<Int> { get }
 }
 
-// MARK: - TagAddViewModel
+// MARK: - TagAddReactor
 
 final class TagAddViewModel: TagAddViewModelOutput {
   enum TagInputMode {
