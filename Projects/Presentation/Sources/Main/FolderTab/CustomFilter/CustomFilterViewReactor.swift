@@ -28,6 +28,7 @@ final class CustomFilterViewReactor: Reactor {
   }
 
   enum Mutation {
+    case setTagList([Tag])
     case updateTagList
     case setPeriodType(PeriodType)
     case updateSelectedTag(index: Int)
@@ -38,8 +39,8 @@ final class CustomFilterViewReactor: Reactor {
 
   struct State {
     // TagList
-    var tagList: [String]
-    var selectedTagList: [String] = []
+    var tagList: [Tag] = []
+    var selectedTagList: [Tag] = []
     var tagListSectionItems: [CustomFilterTagListView.SectionItem] = []
 
     // Period
@@ -54,7 +55,7 @@ final class CustomFilterViewReactor: Reactor {
 
   private let disposeBag = DisposeBag()
 
-  private let userDefaults: UserDefaultsManager
+  private let tagRepository: TagRepository
 
   let initialState: State
 
@@ -62,17 +63,16 @@ final class CustomFilterViewReactor: Reactor {
   // MARK: initializing
 
   init(
-    userDefaults: UserDefaultsManager,
+    tagRepository: TagRepository,
     customFilter: CustomFilter?
   ) {
     defer { _ = self.state }
 
-    self.userDefaults = userDefaults
+    self.tagRepository = tagRepository
 
     let customFilter = customFilter ?? CustomFilter()
 
     self.initialState = State(
-      tagList: userDefaults.tagList,
       selectedTagList: customFilter.selectedTagList,
       periodType: customFilter.periodType,
       customPeriod: customFilter.customPeriod,
@@ -90,7 +90,10 @@ final class CustomFilterViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .viewDidLoad:
-      return .just(Mutation.updateTagList)
+      return .concat([
+        fetchTagList(),
+        .just(Mutation.updateTagList),
+      ])
 
     case .changePeriodType(let type):
       return .just(Mutation.setPeriodType(type))
@@ -119,6 +122,9 @@ final class CustomFilterViewReactor: Reactor {
     var newState = state
 
     switch mutation {
+    case .setTagList(let tagList):
+      newState.tagList = tagList
+
     case .updateTagList:
       newState.tagListSectionItems = currentState.tagList.map { tag in
         let isSelected = currentState.selectedTagList.contains(where: { tag == $0 })
@@ -150,5 +156,17 @@ final class CustomFilterViewReactor: Reactor {
     }
 
     return newState
+  }
+}
+
+
+// MARK: - Private
+
+extension CustomFilterViewReactor {
+
+  private func fetchTagList() -> Observable<Mutation> {
+    tagRepository.fetchTagList()
+      .asObservable()
+      .map { Mutation.setTagList($0) }
   }
 }

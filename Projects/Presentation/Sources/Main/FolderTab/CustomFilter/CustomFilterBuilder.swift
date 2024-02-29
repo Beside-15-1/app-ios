@@ -9,10 +9,11 @@ import Foundation
 import UIKit
 
 import Domain
-import PBUserDefaults
 import PresentationInterface
 
-struct CustomFilterDependency {}
+struct CustomFilterDependency {
+  let tagRepository: TagRepository
+}
 
 final class CustomFilterBuilder: CustomFilterBuildable {
 
@@ -24,7 +25,7 @@ final class CustomFilterBuilder: CustomFilterBuildable {
 
   func build(payload: CustomFilterPayload) -> UIViewController {
     let reactor = CustomFilterViewReactor(
-      userDefaults: .shared,
+      tagRepository: dependency.tagRepository,
       customFilter: payload.customFilter
     )
 
