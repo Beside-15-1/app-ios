@@ -8,7 +8,6 @@ import DesignSystem
 import PBAnalyticsInterface
 import PresentationInterface
 
-// MARK: - TagAddViewController
 
 final class TagAddViewController: UIViewController, StoryboardView {
 

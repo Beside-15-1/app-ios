@@ -1,148 +1,263 @@
 import Foundation
 
+import ReactorKit
 import RxRelay
 import RxSwift
 
+import Domain
+import PBAnalyticsInterface
 import PBUserDefaults
 
-// MARK: - TagAddViewModelInput
 
-protocol TagAddViewModelInput {
-  func addTag(text: String)
-  func editTag(text: String)
-  func removeAddedTag(at row: Int)
-  func removeTagListTag(at row: Int)
-  func changeEditMode(text: String)
-}
+final class TagAddReactor: Reactor {
 
-// MARK: - TagAddViewModelOutput
-
-protocol TagAddViewModelOutput {
-  var addedTagList: BehaviorRelay<[String]> { get }
-  var localTagList: BehaviorRelay<[String]> { get }
-  var validatedText: PublishRelay<String> { get }
-  var shouldShowTagLimitToast: PublishRelay<Void> { get }
-  var tagListIndexToScroll: PublishRelay<Int> { get }
-}
-
-// MARK: - TagAddReactor
-
-final class TagAddViewModel: TagAddViewModelOutput {
   enum TagInputMode {
     case input
     case edit
+  }
+
+  enum Action {
+    case viewDidLoad
+    case viewDidAppear
+    case editButtonTapped(Tag)
+    case endEditing
+    case returnButtonTapped(Tag)
+    case addedTagRemoveButtonTapped(at: Int)
+    case tagListTagRemoveButtonTapped(at: Int)
+    case selectTag(at: Int)
+    case replaceTagOrder([Tag])
+  }
+
+  enum Mutation {
+    case setTagList([Tag])
+    case setAddedTagList([Tag])
+    case setTagInputMode(TagInputMode)
+    case setEditedTag(Tag?)
+    case setShouldShowTagLimitToast
+  }
+
+  struct State {
+    var tagList: [Tag] = []
+    var addedTagList: [Tag] = []
+
+    var tagInputMode: TagInputMode = .input
+    var editedTag: Tag?
+
+    @Pulse var shouldShowTagLimitToast = false
   }
 
   // MARK: Properties
 
   private let disposeBag = DisposeBag()
 
-  var tagInputMode: TagInputMode = .input
-  var editedTag: String? = nil
+  let initialState: State
 
-  private let userDefaults: UserDefaultsManager
+  private let analytics: PBAnalytics
+  private let tagRepository: TagRepository
 
-  // MARK: Output
+  var isFirst = true
 
-  var addedTagList: BehaviorRelay<[String]> = .init(value: [])
-  var localTagList: BehaviorRelay<[String]> = .init(value: [])
-  var validatedText: PublishRelay<String> = .init()
-  var shouldShowTagLimitToast: PublishRelay<Void> = .init()
-  var tagListIndexToScroll: PublishRelay<Int> = .init()
 
   // MARK: initializing
 
   init(
-    userDefaults: UserDefaultsManager,
-    addedTagList: [String]
+    analytics: PBAnalytics,
+    tagRepository: TagRepository,
+    addedTagList: [Tag]
   ) {
-    self.userDefaults = userDefaults
-    self.addedTagList.accept(addedTagList)
-    localTagList.accept(userDefaults.tagList)
+    defer { _ = self.state }
+
+    self.analytics = analytics
+    self.tagRepository = tagRepository
+
+    self.initialState = State(
+      addedTagList: addedTagList
+    )
   }
 
   deinit {
     print("🗑️ deinit: \(type(of: self))")
   }
 
-  // MARK: Output
+  // MARK: Mutate & Reduce
+
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .viewDidLoad:
+      return fetchTagList()
+
+    case .viewDidAppear:
+
+      analytics.log(type: ShareSelectTagEvent.shown)
+
+      return .empty()
+
+    case .editButtonTapped(let tag):
+      analytics.log(type: ShareSelectTagEvent.click(component: .editTag))
+
+      return .concat([
+        .just(Mutation.setTagInputMode(.edit)),
+        .just(Mutation.setEditedTag(tag)),
+      ])
+
+    case .endEditing:
+      return .concat([
+        .just(Mutation.setEditedTag(nil)),
+        .just(Mutation.setTagInputMode(.input)),
+      ])
+
+    case .returnButtonTapped(let tag):
+      return returnButtonAction(tag: tag)
+
+    case .addedTagRemoveButtonTapped(let index):
+      return removeAddedTag(at: index)
+
+    case .tagListTagRemoveButtonTapped(let index):
+      analytics.log(type: ShareSelectTagEvent.click(component: .deleteTag))
+      return removeTagListTag(at: index)
+
+    case .selectTag(let index):
+      return selectTag(at: index)
+
+    case .replaceTagOrder(let tagList):
+      return .just(Mutation.setTagList(tagList))
+    }
+  }
+
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+
+    switch mutation {
+    case .setTagList(let tagList):
+      newState.tagList = tagList
+      saveTagListToRemote(tagList: tagList)
+
+    case .setAddedTagList(let addedTagList):
+      newState.addedTagList = addedTagList
+
+    case .setTagInputMode(let inputMode):
+      newState.tagInputMode = inputMode
+
+    case .setEditedTag(let tag):
+      newState.editedTag = tag
+
+    case .setShouldShowTagLimitToast:
+      newState.shouldShowTagLimitToast = true
+    }
+
+    return newState
+  }
 }
 
-// MARK: TagAddViewModelInput
 
-extension TagAddViewModel: TagAddViewModelInput {
-  func addTag(text: String) {
-    if tagInputMode == .input {
-      guard addedTagList.value.count < 10 else {
-        shouldShowTagLimitToast.accept(())
-        var tagList = localTagList.value
-        if !tagList.contains(where: { $0 == text }) {
-          tagList.insert(text, at: 0)
+// MARK: - Private
+
+extension TagAddReactor {
+
+  private func fetchTagList() -> Observable<Mutation> {
+    tagRepository.fetchTagList()
+      .asObservable()
+      .map { Mutation.setTagList($0) }
+  }
+
+  private func returnButtonAction(tag: Tag) -> Observable<Mutation> {
+    switch currentState.tagInputMode {
+    case .input:
+      analytics.log(type: ShareSelectTagEvent.click(component: .tagInput))
+      var addedTagList = currentState.addedTagList
+      var tagList = currentState.tagList
+
+      guard addedTagList.count < 10 else {
+        if !tagList.contains(where: { $0 == tag }) {
+          tagList.insert(tag, at: 0)
         }
-        localTagList.accept(tagList)
-        userDefaults.tagList = tagList
-        return
+
+        return .concat([
+          .just(Mutation.setShouldShowTagLimitToast),
+          .just(Mutation.setTagList(tagList)),
+        ])
       }
 
-      // AddedTag에 추가
-      var addedTag = addedTagList.value
-      if !addedTag.contains(where: { $0 == text }) {
-        addedTag.append(text)
-        addedTagList.accept(addedTag)
-        tagListIndexToScroll.accept(addedTag.count - 1)
+      if !addedTagList.contains(where: { $0 == tag }) {
+        addedTagList.append(tag)
       }
 
-      // 태그 리스트에 추가
-      var tagList = localTagList.value
-      if !tagList.contains(where: { $0 == text }) {
-        tagList.insert(text, at: 0)
-      }
-      localTagList.accept(tagList)
-      userDefaults.tagList = tagList
-      // 유저디폴트에 저장
-    }
-  }
-
-  func editTag(text: String) {
-    if tagInputMode == .edit {
-      guard let editedTag else { return }
-
-      var addedTag = addedTagList.value
-      if let index = addedTag.firstIndex(of: editedTag) {
-        addedTag[index] = text
-        addedTagList.accept(addedTag)
+      if !tagList.contains(where: { $0 == tag }) {
+        tagList.insert(tag, at: 0)
       }
 
-      var tagList = localTagList.value
+      return .concat([
+        .just(Mutation.setAddedTagList(addedTagList)),
+        .just(Mutation.setTagList(tagList)),
+      ])
+
+    case .edit:
+      guard let editedTag = currentState.editedTag else { return .empty() }
+
+      var addedTagList = currentState.addedTagList
+      var tagList = currentState.tagList
+
+      if let index = addedTagList.firstIndex(of: editedTag) {
+        addedTagList[index] = tag
+      }
+
       if let index = tagList.firstIndex(of: editedTag) {
-        tagList[index] = text
+        tagList[index] = tag
       }
-      localTagList.accept(tagList)
-      userDefaults.tagList = tagList
+
+      return .concat([
+        .just(Mutation.setAddedTagList(addedTagList)),
+        .just(Mutation.setTagList(tagList)),
+        .just(Mutation.setEditedTag(nil)),
+      ])
+    }
+  }
+
+  func removeAddedTag(at row: Int) -> Observable<Mutation> {
+    var addedTagList = currentState.addedTagList
+
+    addedTagList.remove(at: row)
+
+    return .just(Mutation.setAddedTagList(addedTagList))
+  }
+
+  func removeTagListTag(at row: Int) -> Observable<Mutation> {
+    var tagList = currentState.tagList
+
+    tagList.remove(at: row)
+
+    return .just(Mutation.setTagList(tagList))
+  }
+
+  func selectTag(at row: Int) -> Observable<Mutation> {
+    var addedTagList = currentState.addedTagList
+    let selectedTag = currentState.tagList[row]
+
+    guard addedTagList.count < 10 else {
+      return .just(Mutation.setShouldShowTagLimitToast)
     }
 
-    tagInputMode = .input
-    editedTag = nil
+    if !addedTagList.contains(where: { $0 == selectedTag }) {
+      addedTagList.append(selectedTag)
+    }
+
+    return .just(Mutation.setAddedTagList(addedTagList))
   }
 
-  func removeAddedTag(at row: Int) {
-    var addedTag = addedTagList.value
-    addedTag.remove(at: row)
-    addedTagList.accept(addedTag)
-    tagListIndexToScroll.accept(row - 1)
+  func saveTagListToRemote(tagList: [Tag]) {
+    guard !isFirst else {
+      isFirst = false
+      return
+    }
+
+    return tagRepository.updateTagList(tagList: tagList)
+      .subscribe()
+      .disposed(by: disposeBag)
   }
 
-  func removeTagListTag(at row: Int) {
-    var local = localTagList.value
-
-    local.remove(at: row)
-    localTagList.accept(local)
-    userDefaults.tagList = local
-  }
-
-  func changeEditMode(text: String) {
-    tagInputMode = .edit
-    editedTag = text
-    validatedText.accept(text)
+  func deleteTagToRemote(tag: Tag) {
+    tagRepository.deleteTag(tag: tag)
+      .subscribe()
+      .disposed(by: disposeBag)
   }
 }
