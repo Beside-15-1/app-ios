@@ -28,7 +28,7 @@ final class TagAddViewController: UIViewController, StoryboardView {
   // MARK: Initializing
 
   init(
-    reactor: TagAddReactor,
+    reactor: TagAddViewReactor,
     analytics: PBAnalytics
   ) {
     defer { self.reactor = reactor }
@@ -77,12 +77,12 @@ final class TagAddViewController: UIViewController, StoryboardView {
 
   // MARK: Binding
 
-  func bind(reactor: TagAddReactor) {
+  func bind(reactor: TagAddViewReactor) {
     bindContent(with: reactor)
     bindButton(with: reactor)
   }
 
-  private func bindContent(with reactor: TagAddReactor) {
+  private func bindContent(with reactor: TagAddViewReactor) {
     reactor.state.map(\.addedTagList)
       .distinctUntilChanged()
       .subscribe(with: self) { `self`, list in
@@ -93,11 +93,14 @@ final class TagAddViewController: UIViewController, StoryboardView {
 
     reactor.state.map(\.tagList)
       .distinctUntilChanged()
-      .delay(.milliseconds(100), scheduler: MainScheduler.instance)
+      .do(onNext: { _ in
+        reactor.action.onNext(.syncTagList)
+      })
       .subscribe(onNext: { [weak self] tagList in
         guard let self else { return }
         guard !tagList.isEmpty else { return }
-        contentView.tagListView.applyTagList(by: tagList)
+        let items = tagList.map { tag in TagListSection.Item.normal(tag) }
+        contentView.tagListView.applyTagList(by: items)
       })
       .disposed(by: disposeBag)
 
@@ -112,7 +115,7 @@ final class TagAddViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
   }
 
-  private func bindButton(with reactor: TagAddReactor) {
+  private func bindButton(with reactor: TagAddViewReactor) {
     contentView.makeButton.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: AddTagEvent.click(component: .saveTag))

@@ -32,6 +32,7 @@ final class ManageTagViewReactor: Reactor {
     case tagListTagRemoveButtonTapped(at: Int)
     case replaceTagOrder([Tag])
     case inputText(String)
+    case syncTagList
   }
 
   enum Mutation {
@@ -127,6 +128,11 @@ final class ManageTagViewReactor: Reactor {
       }
 
       return .just(Mutation.setValidatedText(validatedText))
+
+    case .syncTagList:
+      saveTagListToRemote(tagList: currentState.tagList)
+
+      return .empty()
     }
   }
 
@@ -136,7 +142,6 @@ final class ManageTagViewReactor: Reactor {
     switch mutation {
     case .setTagList(let tagList):
       newState.tagList = tagList
-      saveTagListToRemote(tagList: tagList)
 
     case .setTagInputMode(let inputMode):
       newState.tagInputMode = inputMode

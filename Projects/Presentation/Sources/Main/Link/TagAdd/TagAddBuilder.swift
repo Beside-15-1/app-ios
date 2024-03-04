@@ -23,7 +23,7 @@ final class TagAddBuilder: TagAddBuildable {
   }
 
   func build(payload: TagAddPayload) -> UIViewController {
-    let reactor = TagAddReactor(
+    let reactor = TagAddViewReactor(
       analytics: dependency.analytics,
       tagRepository: dependency.tagRepository,
       addedTagList: payload.addedTagList
