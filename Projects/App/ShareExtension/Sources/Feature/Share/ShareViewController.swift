@@ -13,7 +13,6 @@ import RxSwift
 import KeychainAccess
 import FirebaseAnalytics
 
-import PBAnalytics
 import Domain
 import PBUserDefaults
 
@@ -29,7 +28,6 @@ final class ShareViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let analytics = PBAnalyticsImpl(firebaseAnalytics: FirebaseAnalytics.Analytics.self)
-
 
   // MARK: Initializing
 
@@ -172,8 +170,7 @@ final class ShareViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: ShareAddLinkEvent.click(component: .addTag))
 
-        let vc = TagAddViewController(viewModel: .init(
-          userDefaults: UserDefaultsManager.shared,
+        let vc = TagAddViewController(reactor: .init(
           addedTagList: reactor.currentState.link?.tags ?? [])
         ).then {
           $0.delegate = self

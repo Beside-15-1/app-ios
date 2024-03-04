@@ -69,4 +69,26 @@ class Repository {
     networking.request(target: API.updateLinkWithFolderID(id: id, folderID: folderID))
       .map { _ in }
   }
+
+  func fetchTagList() -> Single<[Tag]> {
+    let target = API.fetchTagList
+
+    return networking.request(target: target)
+      .map([String].self)
+      .catchAndReturn([])
+  }
+
+  func updateTagList(tagList: [Tag]) -> Single<[Tag]> {
+    let target = API.updateTagList(tagList)
+
+    return networking.request(target: target)
+      .map([String].self)
+  }
+
+  func deleteTag(tag: Tag) -> Single<Void> {
+    let target = API.deleteTag(tag)
+
+    return networking.request(target: target)
+      .map { _ in Void() }
+  }
 }

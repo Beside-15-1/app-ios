@@ -16,6 +16,9 @@ enum API {
   case fetchFolderList
   case updateLink(id: String, UpdateLinkRequest)
   case updateLinkWithFolderID(id: String, folderID: String)
+  case fetchTagList
+  case updateTagList([String])
+  case deleteTag(String)
 }
 
 extension API: BaseTargetType {
@@ -33,6 +36,15 @@ extension API: BaseTargetType {
 
     case .updateLinkWithFolderID(let id, let folderID):
       return "links/\(id)/link-book-id/\(folderID)"
+
+    case .fetchTagList:
+      return "tags"
+
+    case .updateTagList:
+      return "tags"
+
+    case .deleteTag(let tag):
+      return "tags/\(tag)"
     }
   }
 
@@ -49,6 +61,15 @@ extension API: BaseTargetType {
 
     case .updateLinkWithFolderID:
       return .put
+
+    case .fetchTagList:
+      return .get
+
+    case .updateTagList:
+      return .post
+
+    case .deleteTag:
+      return .delete
     }
   }
 
@@ -64,6 +85,15 @@ extension API: BaseTargetType {
       return .requestJSONEncodable(request)
 
     case .updateLinkWithFolderID:
+      return .requestPlain
+
+    case .fetchTagList:
+      return .requestPlain
+
+    case .updateTagList(let array):
+      return .requestJSONEncodable(array)
+
+    case .deleteTag:
       return .requestPlain
     }
   }

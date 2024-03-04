@@ -24,7 +24,7 @@ final class TagAddViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
-  private let analytics: PBAnalytics
+  private let analytics = PBAnalyticsImpl(firebaseAnalytics: FirebaseAnalytics.Analytics.self)
 
   weak var delegate: TagAddDelegate?
 
@@ -32,12 +32,9 @@ final class TagAddViewController: UIViewController, StoryboardView {
   // MARK: Initializing
 
   init(
-    reactor: TagAddReactor,
-    analytics: PBAnalytics
+    reactor: TagAddReactor
   ) {
     defer { self.reactor = reactor }
-
-    self.analytics = analytics
 
     super.init(nibName: nil, bundle: nil)
   }
