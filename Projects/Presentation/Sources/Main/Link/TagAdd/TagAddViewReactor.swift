@@ -9,7 +9,7 @@ import PBAnalyticsInterface
 import PBUserDefaults
 
 
-final class TagAddReactor: Reactor {
+final class TagAddViewReactor: Reactor {
 
   enum TagInputMode {
     case input
@@ -26,6 +26,7 @@ final class TagAddReactor: Reactor {
     case tagListTagRemoveButtonTapped(at: Int)
     case selectTag(at: Int)
     case replaceTagOrder([Tag])
+    case syncTagList
   }
 
   enum Mutation {
@@ -121,6 +122,11 @@ final class TagAddReactor: Reactor {
 
     case .replaceTagOrder(let tagList):
       return .just(Mutation.setTagList(tagList))
+
+    case .syncTagList:
+      saveTagListToRemote(tagList: currentState.tagList)
+
+      return .empty()
     }
   }
 
@@ -152,7 +158,7 @@ final class TagAddReactor: Reactor {
 
 // MARK: - Private
 
-extension TagAddReactor {
+extension TagAddViewReactor {
 
   private func fetchTagList() -> Observable<Mutation> {
     tagRepository.fetchTagList()

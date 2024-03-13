@@ -1,5 +1,6 @@
 import Foundation
 
+import FirebaseAnalytics
 import ReactorKit
 import RxRelay
 import RxSwift
@@ -52,8 +53,8 @@ final class TagAddReactor: Reactor {
 
   let initialState: State
 
-  private let analytics: PBAnalytics
-  private let tagRepository: TagRepository
+  private let analytics = PBAnalyticsImpl(firebaseAnalytics: FirebaseAnalytics.Analytics.self)
+  private let tagRepository: Repository = .init()
 
   var isFirst = true
 
@@ -61,14 +62,9 @@ final class TagAddReactor: Reactor {
   // MARK: initializing
 
   init(
-    analytics: PBAnalytics,
-    tagRepository: TagRepository,
     addedTagList: [Tag]
   ) {
     defer { _ = self.state }
-
-    self.analytics = analytics
-    self.tagRepository = tagRepository
 
     self.initialState = State(
       addedTagList: addedTagList

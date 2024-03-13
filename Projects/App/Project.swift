@@ -32,7 +32,11 @@ let joosumTarget = Target.target(
     .external(dependency: .FirebaseMessaging),
   ],
   settings: .settings(
-    base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
+    base: [
+      "OTHER_LDFLAGS": "$(inherited) -ObjC",
+      "CODE_SIGN_STYLE": "7ZK7Q3JHK4",
+      "DEVELOPMENT_TEAM": "7ZK7Q3JHK4"
+    ],
     configurations: []
   )
 )
@@ -72,7 +76,11 @@ let shareExtensionTarget = Target.target(
     .external(dependency: .FirebaseAnalytics),
   ],
   settings: .settings(
-    base: ["OTHER_LDFLAGS": "$(inherited) -ObjC"],
+    base: [
+      "OTHER_LDFLAGS": "$(inherited) -ObjC",
+      "CODE_SIGN_STYLE": "7ZK7Q3JHK4",
+      "DEVELOPMENT_TEAM": "7ZK7Q3JHK4"
+    ],
     configurations: []
   )
 )

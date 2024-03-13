@@ -61,6 +61,8 @@ final class ManageTagViewController: UIViewController, StoryboardView {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    reactor?.action.onNext(.viewDidLoad)
+
     navigationController?.interactivePopGestureRecognizer?.delegate = nil
   }
 
@@ -88,10 +90,14 @@ final class ManageTagViewController: UIViewController, StoryboardView {
   private func bindContent(with reactor: ManageTagViewReactor) {
     reactor.state.map(\.tagList)
       .distinctUntilChanged()
-      .delay(.milliseconds(100), scheduler: MainScheduler.instance)
-      .subscribe(onNext: { [weak self] local in
-        guard !local.isEmpty else { return }
-        self?.contentView.tagListView.applyTagList(by: local)
+      .do(onNext: { _ in
+        reactor.action.onNext(.syncTagList)
+      })
+      .subscribe(onNext: { [weak self] tagList in
+        guard !tagList.isEmpty else { return }
+
+        let items = tagList.map { tag in TagListSection.Item.normal(tag) }
+        self?.contentView.tagListView.applyTagList(by: items)
       })
       .disposed(by: disposeBag)
 
