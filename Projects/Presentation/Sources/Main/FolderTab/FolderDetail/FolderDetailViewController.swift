@@ -225,7 +225,8 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
-          link: nil
+          link: nil,
+          folder: reactor.currentState.selectedFolder
         ))
 
         self.presentPaperSheet(vc)

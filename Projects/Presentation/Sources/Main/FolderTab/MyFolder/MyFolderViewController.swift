@@ -179,7 +179,8 @@ final class MyFolderViewController: UIViewController, StoryboardView {
 
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
-          link: nil
+          link: nil,
+          folder: nil
         ))
 
         self.presentPaperSheet(vc)
