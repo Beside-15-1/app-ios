@@ -47,9 +47,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.8.0</string>
+	<string>1.9.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>0</string>
 	<key>GIDClientID</key>
 	<string>454988091393-sdiabacur5v8pqbst1ssniu30rt6vg72.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
