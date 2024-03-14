@@ -42,7 +42,8 @@ final class CreateLinkBuilder: CreateLinkBuildable {
         linkRepository: dependency.linkRepository
       ),
       pasteboard: UIPasteboard.general,
-      link: payload.link
+      link: payload.link,
+      folder: payload.folder
     )
 
     let viewController = CreateLinkViewController(

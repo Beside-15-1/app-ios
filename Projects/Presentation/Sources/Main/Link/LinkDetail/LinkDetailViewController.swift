@@ -136,7 +136,8 @@ final class LinkDetailViewController: UIViewController, StoryboardView {
         let createLink = self.createLinkBuilder.build(
           payload: .init(
             delegate: self,
-            link: reactor.currentState.link
+            link: reactor.currentState.link,
+            folder: nil
           )
         )
 

@@ -15,12 +15,15 @@ public struct CreateLinkPayload {
 
   public let delegate: CreateLinkDelegate?
   public let link: Link?
+  public let folder: Folder?
 
   public init(
     delegate: CreateLinkDelegate?,
-    link: Link?
+    link: Link?,
+    folder: Folder?
   ) {
     self.delegate = delegate
     self.link = link
+    self.folder = folder
   }
 }

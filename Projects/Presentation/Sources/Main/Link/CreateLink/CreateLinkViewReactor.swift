@@ -100,7 +100,8 @@ final class CreateLinkViewReactor: Reactor {
     createLinkUseCase: CreateLinkUseCase,
     updateLinkUseCase: UpdateLinkUseCase,
     pasteboard: UIPasteboard,
-    link: Link?
+    link: Link?,
+    folder: Folder?
   ) {
     defer { _ = self.state }
     self.analytics = analytics
@@ -113,6 +114,7 @@ final class CreateLinkViewReactor: Reactor {
     self.initialState = State(
       link: link,
       thumbnail: link == nil ? nil : Thumbnail(title: link?.title, url: link?.url, imageURL: link?.thumbnailURL),
+      folder: folder,
       tags: link == nil ? [] : link?.tags ?? []
     )
   }
@@ -258,17 +260,17 @@ extension CreateLinkViewReactor {
     fetchThumbnailUseCase.execute(url: url)
       .asObservable()
       .flatMap { thumbnail -> Observable<Mutation> in
-        if let title =  thumbnail.title {
+        if let title = thumbnail.title {
           return .concat([
             .just(Mutation.setThumbnail(thumbnail)),
             .just(Mutation.setInputURL(thumbnail.url ?? "")),
           ])
         }
-        
+
         return .concat([
           .just(Mutation.setThumbnail(thumbnail)),
           .just(Mutation.setInputURL(thumbnail.url ?? "")),
-          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요."))
+          .just(Mutation.setTitleError("제목은 1 글자 이상 입력해주세요.")),
         ])
       }
       .catch { _ in
@@ -282,13 +284,22 @@ extension CreateLinkViewReactor {
       .flatMap { [weak self] folderList -> Observable<Mutation> in
         guard let self else { return .empty() }
 
-        if let folder = folderList.folders.first(where: { $0.id == self.currentState.link?.linkBookId }) {
+        // 링크의 폴더 1순위
+        if let folder = folderList.folders.first(where: {
+          $0.id == self.currentState.link?.linkBookId
+        }) {
           return .concat([
             .just(Mutation.setFolderList(folderList.folders)),
             .just(Mutation.setFolder(folder)),
           ])
         }
 
+        // 선택된 폴더 2순위
+        if let folder = currentState.folder {
+          return .just(Mutation.setFolderList(folderList.folders))
+        }
+
+        // 없으면 기본
         return .concat([
           .just(Mutation.setFolderList(folderList.folders)),
           .just(Mutation.setFolder(folderList.folders.first!)),
