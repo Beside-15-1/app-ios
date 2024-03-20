@@ -19,6 +19,7 @@ enum API {
   case fetchTagList
   case updateTagList([String])
   case deleteTag(String)
+  case createFolder(CreateFolderRequest)
 }
 
 extension API: BaseTargetType {
@@ -45,6 +46,9 @@ extension API: BaseTargetType {
 
     case .deleteTag(let tag):
       return "tags/\(tag)"
+
+    case .createFolder:
+      return "link-books"
     }
   }
 
@@ -70,6 +74,9 @@ extension API: BaseTargetType {
 
     case .deleteTag:
       return .delete
+
+    case .createFolder:
+      return .post
     }
   }
 
@@ -95,6 +102,9 @@ extension API: BaseTargetType {
 
     case .deleteTag:
       return .requestPlain
+
+    case .createFolder(let request):
+      return .requestJSONEncodable(request)
     }
   }
 }

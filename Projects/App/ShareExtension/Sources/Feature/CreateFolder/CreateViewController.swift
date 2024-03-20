@@ -8,12 +8,18 @@
 
 import UIKit
 
+import FirebaseAnalytics
 import ReactorKit
 import RxSwift
 
 import DesignSystem
+import Domain
 import PBAnalyticsInterface
 import PresentationInterface
+
+public protocol CreateFolderDelegate: AnyObject {
+  func createFolderSucceed(folder: Folder)
+}
 
 final class CreateFolderViewController: UIViewController, StoryboardView {
 
@@ -25,18 +31,18 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
-  private let analytics: PBAnalytics
+  private let analytics: PBAnalytics = PBAnalyticsImpl(
+    firebaseAnalytics: FirebaseAnalytics.Analytics.self
+  )
 
   weak var delegate: CreateFolderDelegate?
 
   // MARK: Initializing
 
   init(
-    reactor: CreateFolderViewReactor,
-    analytics: PBAnalytics
+    reactor: CreateFolderViewReactor
   ) {
     defer { self.reactor = reactor }
-    self.analytics = analytics
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -58,6 +64,8 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    reactor?.action.onNext(.viewDidLoad)
 
     contentView.linkBookTabView.folderView.inputField.addTarget(
       self,
@@ -249,7 +257,7 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
 
 extension CreateFolderViewController: CreateFolderColorViewDelegate {
   func backgroundColorDidTap(at row: Int) {
-    self.analytics.log(type: ShareAddFolderEvent.click(component: .folderColorButton))
+    analytics.log(type: ShareAddFolderEvent.click(component: .folderColorButton))
     reactor?.action.onNext(.updateBackgroundColor(row))
   }
 
@@ -263,7 +271,7 @@ extension CreateFolderViewController: CreateFolderColorViewDelegate {
 
 extension CreateFolderViewController: CreateFolderIllustViewDelegate {
   func illustView(_ illustView: CreateFolderIllustView, didSelectItemAt indexPath: IndexPath) {
-    self.analytics.log(type: ShareAddFolderEvent.click(component: .folderIllustButton))
+    analytics.log(type: ShareAddFolderEvent.click(component: .folderIllustButton))
     reactor?.action.onNext(.updateIllust(indexPath.row))
   }
 }

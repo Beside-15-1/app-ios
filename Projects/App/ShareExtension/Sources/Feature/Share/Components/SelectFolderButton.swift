@@ -3,8 +3,8 @@ import UIKit
 import SnapKit
 import Then
 
-import Domain
 import DesignSystem
+import Domain
 
 final class SelectFolderButton: UIView {
 
@@ -20,6 +20,11 @@ final class SelectFolderButton: UIView {
     $0.text = "저장할 폴더"
     $0.textColor = .staticBlack
     $0.font = .subTitleSemiBold
+  }
+
+  let createFolderButton = TextButton(type: .regular, color: .primary500).then {
+    $0.leftIconImage = DesignSystemAsset.iconPlus.image
+    $0.text = "새폴더"
   }
 
   let container = UIControl().then {
@@ -72,11 +77,15 @@ final class SelectFolderButton: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    [titleLabel, container].forEach { addSubview($0) }
+    [titleLabel, createFolderButton, container].forEach { addSubview($0) }
     [folderTitleLabel, dropDownImage].forEach { container.addSubview($0) }
 
     titleLabel.snp.makeConstraints {
       $0.left.top.equalToSuperview()
+    }
+
+    createFolderButton.snp.makeConstraints {
+      $0.right.top.equalToSuperview()
     }
 
     container.snp.makeConstraints {

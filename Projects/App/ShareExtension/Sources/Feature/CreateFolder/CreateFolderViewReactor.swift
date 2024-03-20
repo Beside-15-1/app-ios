@@ -16,6 +16,7 @@ import Domain
 final class CreateFolderViewReactor: Reactor {
 
   enum Action {
+    case viewDidLoad
     case updateTitle(String)
     case updateBackgroundColor(Int)
     case updateTitleColor(Int)
@@ -24,6 +25,7 @@ final class CreateFolderViewReactor: Reactor {
   }
 
   enum Mutation {
+    case setFolderList([Folder])
     case updateFolder(Folder?)
     case updateViewModel(CreateFolderPreviewView.ViewModel)
     case setSucceed(Folder)
@@ -48,9 +50,14 @@ final class CreateFolderViewReactor: Reactor {
     let titleColors = ["#FFFFFF", "#000000"]
 
     var folder: Folder?
-    let folderList: [Folder]
+    var folderList: [Folder] = []
 
-    var viewModel: CreateFolderPreviewView.ViewModel
+    var viewModel: CreateFolderPreviewView.ViewModel = .init(
+      backgroundColor: "#91B0C4",
+      titleColor: "#FFFFFF",
+      title: "",
+      illuste: nil
+    )
 
     var isMakeButtonEnabled: Bool {
       !viewModel.title.isEmpty == true
@@ -66,47 +73,15 @@ final class CreateFolderViewReactor: Reactor {
 
   let initialState: State
 
-  private let createFolderUseCase: CreateFolderUseCase
-  private let updateFolderUseCase: UpdateFolderUseCase
-  private let getFolderListUseCase: GetFolderListUseCase
+  private let folderRepository = Repository()
+
 
   // MARK: initializing
 
-  init(
-    createFolderUseCase: CreateFolderUseCase,
-    updateFolderUseCase: UpdateFolderUseCase,
-    getFolderListUseCase: GetFolderListUseCase,
-    folder: Folder?
-  ) {
+  init() {
     defer { _ = self.state }
 
-    self.createFolderUseCase = createFolderUseCase
-    self.updateFolderUseCase = updateFolderUseCase
-    self.getFolderListUseCase = getFolderListUseCase
-
-    var viewModel: CreateFolderPreviewView.ViewModel {
-      guard let folder else {
-        return .init(
-          backgroundColor: "#91B0C4",
-          titleColor: "#FFFFFF",
-          title: "",
-          illuste: nil
-        )
-      }
-
-      return .init(
-        backgroundColor: folder.backgroundColor,
-        titleColor: folder.titleColor,
-        title: folder.title,
-        illuste: folder.illustration
-      )
-    }
-
-    self.initialState = State(
-      folder: folder,
-      folderList: getFolderListUseCase.execute().folders,
-      viewModel: viewModel
-    )
+    self.initialState = State()
   }
 
   deinit {
@@ -118,6 +93,9 @@ final class CreateFolderViewReactor: Reactor {
 
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .viewDidLoad:
+      return fetchAll()
+
     case .updateTitle(let title):
       var folder = currentState.folder
       var validatedTitle = title
@@ -173,10 +151,7 @@ final class CreateFolderViewReactor: Reactor {
       ])
 
     case .makeButtonTapped:
-      guard let _ = currentState.folder else {
-        return createFolder()
-      }
-      return updateFolder()
+      return createFolder()
     }
   }
 
@@ -184,6 +159,9 @@ final class CreateFolderViewReactor: Reactor {
     var newState = state
 
     switch mutation {
+    case .setFolderList(let list):
+      newState.folderList = list
+
     case .updateFolder(let folder):
       newState.folder = folder
 
@@ -204,37 +182,27 @@ final class CreateFolderViewReactor: Reactor {
 
 extension CreateFolderViewReactor {
 
+  private func fetchAll() -> Observable<Mutation> {
+    folderRepository.fetchFolderList()
+      .asObservable()
+      .map { Mutation.setFolderList($0.folders) }
+      .catchAndReturn(.setFolderList([]))
+  }
+
   private func createFolder() -> Observable<Mutation> {
     if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
       return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
     }
 
-    return createFolderUseCase.execute(
+    return folderRepository.createFolder(
       backgroundColor: currentState.viewModel.backgroundColor,
+      illustration: currentState.viewModel.illuste,
       title: currentState.viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines),
-      titleColor: currentState.viewModel.titleColor,
-      illustration: currentState.viewModel.illuste
+      titleColor: currentState.viewModel.titleColor
     )
     .asObservable()
     .flatMap { folder -> Observable<Mutation> in
       .just(Mutation.setSucceed(folder))
-    }
-  }
-
-  private func updateFolder() -> Observable<Mutation> {
-    return updateFolderUseCase.execute(
-      id: currentState.folder?.id ?? "",
-      backgroundColor: currentState.viewModel.backgroundColor,
-      title: currentState.viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines),
-      titleColor: currentState.viewModel.titleColor,
-      illustration: currentState.viewModel.illuste
-    )
-    .asObservable()
-    .flatMap { folder -> Observable<Mutation> in
-      .just(Mutation.setSucceed(folder))
-    }
-    .catch { _ in
-      .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
     }
   }
 }
