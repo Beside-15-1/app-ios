@@ -91,4 +91,22 @@ class Repository {
     return networking.request(target: target)
       .map { _ in Void() }
   }
+
+  func createFolder(
+    backgroundColor: String,
+    illustration: String?,
+    title: String,
+    titleColor: String
+  ) -> Single<Folder> {
+    let target = API.createFolder(.init(
+      backgroundColor: backgroundColor,
+      illustration: illustration,
+      title: title,
+      titleColor: titleColor
+    ))
+
+    return networking.request(target: target)
+      .map(FolderDTO.self)
+      .map { $0.toDomain() }
+  }
 }

@@ -7,11 +7,11 @@
 
 import UIKit
 
+import FirebaseAnalytics
+import KeychainAccess
 import ReactorKit
 import RxKeyboard
 import RxSwift
-import KeychainAccess
-import FirebaseAnalytics
 
 import Domain
 import PBUserDefaults
@@ -80,7 +80,6 @@ final class ShareViewController: UIViewController, StoryboardView {
     default:
       analytics.log(type: ShareAddLinkEvent.shown)
     }
-
   }
 
 
@@ -170,8 +169,10 @@ final class ShareViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: ShareAddLinkEvent.click(component: .addTag))
 
-        let vc = TagAddViewController(reactor: .init(
-          addedTagList: reactor.currentState.link?.tags ?? [])
+        let vc = TagAddViewController(
+          reactor: .init(
+            addedTagList: reactor.currentState.link?.tags ?? []
+          )
         ).then {
           $0.delegate = self
         }
@@ -184,6 +185,20 @@ final class ShareViewController: UIViewController, StoryboardView {
       .subscribe(with: self) { `self`, _ in
         self.analytics.log(type: ShareAddLinkEvent.click(component: .titleInput))
       }
+      .disposed(by: disposeBag)
+
+    contentView.boxView.selectFolderButton.createFolderButton.rx.controlEvent(.touchUpInside)
+      .subscribe(onNext: { [weak self] _ in
+        guard let self else { return }
+
+        let vc = CreateFolderViewController(
+          reactor: .init()
+        ).then {
+          $0.delegate = self
+        }
+
+        self.presentPaperSheet(vc)
+      })
       .disposed(by: disposeBag)
   }
 }
@@ -257,5 +272,14 @@ extension ShareViewController: UITextFieldDelegate {
 extension ShareViewController: TagAddDelegate {
   func tagAddViewControllerMakeButtonTapped(tagList: [String]) {
     reactor?.action.onNext(.updateTags(tagList))
+  }
+}
+
+
+// MARK: CreateFolderDelegate
+
+extension ShareViewController: CreateFolderDelegate {
+  func createFolderSucceed(folder: Folder) {
+    reactor?.action.onNext(.updateFolder(folder))
   }
 }
