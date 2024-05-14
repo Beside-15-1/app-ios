@@ -120,7 +120,7 @@ final class ShareViewController: UIViewController, StoryboardView {
           break
 
         case .success:
-          self.analytics.log(type: ShareAddLinkEvent.click(component: .selectFolder))
+          self.analytics.log(type: ShareAddLinkEvent.click(component: .done))
           reactor.action.onNext(.completeButtonTapped(self.contentView.boxView.titleInputField.text ?? ""))
 
         case .needLogin:
