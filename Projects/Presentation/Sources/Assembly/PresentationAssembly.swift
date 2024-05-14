@@ -306,6 +306,7 @@ public final class PresentationAssembly: Assembly {
   private func registerCustomFilterBuilder(container: Container) {
     container.register(CustomFilterBuildable.self) { r in
       CustomFilterBuilder(dependency: .init(
+        analytics: r.resolve(),
         tagRepository: r.resolve()
       ))
     }

@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 import PBUserDefaults
 import PresentationInterface
 
@@ -55,6 +56,7 @@ final class CustomFilterViewReactor: Reactor {
 
   private let disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
   private let tagRepository: TagRepository
 
   let initialState: State
@@ -63,11 +65,13 @@ final class CustomFilterViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     tagRepository: TagRepository,
     customFilter: CustomFilter?
   ) {
     defer { _ = self.state }
 
+    self.analytics = analytics
     self.tagRepository = tagRepository
 
     let customFilter = customFilter ?? CustomFilter()
