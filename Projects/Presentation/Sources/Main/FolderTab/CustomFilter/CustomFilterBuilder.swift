@@ -9,9 +9,11 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct CustomFilterDependency {
+  let analytics: PBAnalytics
   let tagRepository: TagRepository
 }
 
@@ -25,6 +27,7 @@ final class CustomFilterBuilder: CustomFilterBuildable {
 
   func build(payload: CustomFilterPayload) -> UIViewController {
     let reactor = CustomFilterViewReactor(
+      analytics: dependency.analytics,
       tagRepository: dependency.tagRepository,
       customFilter: payload.customFilter
     )

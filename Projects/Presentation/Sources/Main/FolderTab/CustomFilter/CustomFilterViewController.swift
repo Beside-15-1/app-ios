@@ -53,6 +53,11 @@ final class CustomFilterViewController: UIViewController, StoryboardView {
     reactor?.action.onNext(.viewDidLoad)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    reactor?.action.onNext(.viewDidAppear)
+  }
+
 
   // MARK: Binding
 
@@ -103,6 +108,7 @@ final class CustomFilterViewController: UIViewController, StoryboardView {
 
 extension CustomFilterViewController: CustomFilterViewDelegate {
   func customFilterViewCloseButtonTapped() {
+    reactor?.action.onNext(.closeButtonTapped)
     dismiss(animated: true)
   }
 
@@ -124,6 +130,7 @@ extension CustomFilterViewController: CustomFilterViewDelegate {
 
   func customFilterViewConfirmButtonTapped() {
     guard let reactor else { return }
+    reactor.action.onNext(.confirmButtonTapped)
     dismiss(animated: true) {
       self.delegate?.customFilterConfirmButtonTapped(
         customFilter: .init(
@@ -141,6 +148,7 @@ extension CustomFilterViewController: CustomFilterViewDelegate {
       .addAction(content: "취소", priority: .secondary, action: nil)
       .addAction(content: "확인", priority: .primary, action: { [weak self] in
         self?.dismiss(animated: true) {
+          self?.reactor?.action.onNext(.resetButtonTapped)
           self?.delegate?.customFilterResetButtonTapped()
         }
       })
