@@ -223,10 +223,15 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
 
     contentView.fab.rx.controlEvent(.touchUpInside)
       .subscribe(with: self) { `self`, _ in
+        var folder: Folder?
+        if reactor.currentState.selectedFolder == .all() {
+          folder = reactor.currentState.folderList.first { $0.isDefault }
+        }
+
         let vc = self.createLinkBuilder.build(payload: .init(
           delegate: self,
           link: nil,
-          folder: reactor.currentState.selectedFolder
+          folder: folder
         ))
 
         self.presentPaperSheet(vc)

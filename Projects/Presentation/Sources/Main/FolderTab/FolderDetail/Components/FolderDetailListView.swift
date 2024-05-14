@@ -45,6 +45,7 @@ class FolderDetailListView: UIView {
     $0.backgroundColor = .staticWhite
     $0.showsVerticalScrollIndicator = false
     $0.delegate = self
+    $0.contentInset = .init(top: 0, left: 0, bottom: 60.0, right: 0)
   }
 
   let emptyLabel = UILabel().then {
@@ -152,7 +153,7 @@ class FolderDetailListView: UIView {
     guard !sectionViewModel.items.isEmpty else {
       collectionView.isHidden = true
       totalCountLabel.attributedText = "0개 주섬"
-        .styled(font: .subTitleSemiBold, color: .gray800)
+        .styled(font: .defaultSemiBold, color: .gray800)
       selectAllCountLabel.attributedText = "0/\(sectionViewModel.items.count)개".styled(
         font: .defaultSemiBold,
         color: .gray800
