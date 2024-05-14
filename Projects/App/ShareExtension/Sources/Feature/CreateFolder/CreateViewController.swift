@@ -81,7 +81,6 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
     bindContent(with: reactor)
     bindTextField(with: reactor)
     bindRoute(with: reactor)
-    bindError(with: reactor)
   }
 
   private func bindButtons(with reactor: CreateFolderViewReactor) {
@@ -182,6 +181,25 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
         }
       }
       .disposed(by: disposeBag)
+
+    reactor.state.map(\.createFolderValidationResult)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, result in
+        self.contentView.linkBookTabView.makeButton.isEnabled = result == .valid
+        switch result {
+        case .valid:
+          self.contentView.linkBookTabView.folderView.inputField.do {
+            $0.errorDescription = nil
+            $0.hideError()
+          }
+        case .folderNameDuplication:
+          self.contentView.linkBookTabView.folderView.inputField.do {
+            $0.errorDescription = "같은 이름의 폴더가 존재합니다."
+            $0.showError()
+          }
+        }
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: CreateFolderViewReactor) {
@@ -205,16 +223,6 @@ final class CreateFolderViewController: UIViewController, StoryboardView {
         self.dismiss(animated: true) {
           self.delegate?.createFolderSucceed(folder: folder)
         }
-      }
-      .disposed(by: disposeBag)
-  }
-
-  private func bindError(with reactor: CreateFolderViewReactor) {
-    reactor.pulse(\.$error)
-      .compactMap { $0 }
-      .subscribe(with: self) { `self`, error in
-        PBToast(content: error)
-          .show()
       }
       .disposed(by: disposeBag)
   }

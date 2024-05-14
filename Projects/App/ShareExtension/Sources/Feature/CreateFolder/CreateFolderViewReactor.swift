@@ -63,6 +63,14 @@ final class CreateFolderViewReactor: Reactor {
       !viewModel.title.isEmpty == true
     }
 
+    var createFolderValidationResult: CreateFolderValidationResult {
+      if folderList.contains(where: { $0.title == viewModel.title }) {
+        return .folderNameDuplication
+      }
+
+      return .valid
+    }
+
     var isSucceed: Folder?
     @Pulse var error: String?
   }
@@ -190,11 +198,7 @@ extension CreateFolderViewReactor {
   }
 
   private func createFolder() -> Observable<Mutation> {
-    if currentState.folderList.contains(where: { $0.title == currentState.viewModel.title }) {
-      return .just(Mutation.setError("같은 이름의 폴더가 존재합니다."))
-    }
-
-    return folderRepository.createFolder(
+    folderRepository.createFolder(
       backgroundColor: currentState.viewModel.backgroundColor,
       illustration: currentState.viewModel.illuste,
       title: currentState.viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines),
