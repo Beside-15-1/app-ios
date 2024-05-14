@@ -21,11 +21,15 @@ final class CustomFilterViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewDidAppear
     case changePeriodType(PeriodType)
     case tagItemTapped(index: Int)
     case selectedTagListRemoveButtonTapped(index: Int)
     case updateCustomPeriod(CustomPeriod)
     case updateUnreadFiltering(Bool)
+    case resetButtonTapped
+    case confirmButtonTapped
+    case closeButtonTapped
   }
 
   enum Mutation {
@@ -99,16 +103,33 @@ final class CustomFilterViewReactor: Reactor {
         .just(Mutation.updateTagList),
       ])
 
+    case .viewDidAppear:
+      analytics.log(type: CustomFilterEvent.shown)
+      return .empty()
+
     case .changePeriodType(let type):
+      switch type {
+      case .all:
+        analytics.log(type: CustomFilterEvent.click(component: .dateAll))
+      case .week:
+        analytics.log(type: CustomFilterEvent.click(component: .dateWeek))
+      case .month:
+        analytics.log(type: CustomFilterEvent.click(component: .dateMonth))
+      case .custom:
+        analytics.log(type: CustomFilterEvent.click(component: .dateCustom))
+      }
+
       return .just(Mutation.setPeriodType(type))
 
     case .tagItemTapped(let index):
+      analytics.log(type: CustomFilterEvent.click(component: .addTag))
       return .concat([
         .just(Mutation.updateSelectedTag(index: index)),
         .just(Mutation.updateTagList),
       ])
 
     case .selectedTagListRemoveButtonTapped(let index):
+      analytics.log(type: CustomFilterEvent.click(component: .deleteTag))
       return .concat([
         .just(Mutation.removeSelectedTag(index: index)),
         .just(Mutation.updateTagList),
@@ -118,7 +139,20 @@ final class CustomFilterViewReactor: Reactor {
       return .just(Mutation.setCustomPeriod(period))
 
     case .updateUnreadFiltering(let isOn):
+      analytics.log(type: CustomFilterEvent.click(component: .toggle))
       return .just(Mutation.setUnreadFiltering(isOn))
+
+    case .resetButtonTapped:
+      analytics.log(type: CustomFilterEvent.click(component: .reset))
+      return .empty()
+
+    case .confirmButtonTapped:
+      analytics.log(type: CustomFilterEvent.click(component: .applyFilter))
+      return .empty()
+
+    case .closeButtonTapped:
+      analytics.log(type: CustomFilterEvent.click(component: .close))
+      return .empty()
     }
   }
 

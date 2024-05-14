@@ -50,7 +50,8 @@ extension CustomFilterEvent: PBAnalyticsType {
 
 enum CustomFilterClickComponent: String {
   case toggle
-  case dateYear
+  case dateAll
+  case dateWeek
   case dateMonth
   case dateCustom
   case addTag
