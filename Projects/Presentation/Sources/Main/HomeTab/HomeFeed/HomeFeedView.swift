@@ -34,8 +34,10 @@ final class HomeFeedView: UIView {
 
   // MARK: Configuring
 
-  func configureDataSource(by sectionViewModels: [HomeFeedSectionViewModel]) {
-    listView.applyCollectionViewDataSource(by: sectionViewModels)
+  func configureDataSource(
+    by sectionViewModels: [SectionViewModel<HomeFeedModel.Section, HomeFeedModel.Item>]
+  ) {
+    listView.update(sections: sectionViewModels)
   }
 
 

@@ -17,10 +17,10 @@ import PBLog
 
 class HomeFeedListView: UIView {
 
-  typealias Section = HomeFeedSection
-  typealias SectionItem = HomeFeedSectionItem
-  private typealias DiffableDataSource = UICollectionViewDiffableDataSource<Section, SectionItem>
-  private typealias DiffableSnapshot = NSDiffableDataSourceSnapshot<Section, SectionItem>
+  typealias Section = HomeFeedModel.Section
+  typealias Item = HomeFeedModel.Item
+  private typealias DiffableDataSource = UICollectionViewDiffableDataSource<Section, Item>
+  private typealias DiffableSnapshot = NSDiffableDataSourceSnapshot<Section, Item>
 
 
   // MARK: UI
@@ -29,6 +29,7 @@ class HomeFeedListView: UIView {
     frame: .zero,
     collectionViewLayout: self.collectionViewLayout()
   ).then {
+    $0.register(HomeBannerCell.self, forCellWithReuseIdentifier: HomeBannerCell.identifier)
     $0.register(HomeFeedCell.self, forCellWithReuseIdentifier: HomeFeedCell.identifier)
     $0.register(HomeFeedMoreCell.self, forCellWithReuseIdentifier: HomeFeedMoreCell.identifier)
     $0.backgroundColor = .gray300
@@ -40,6 +41,7 @@ class HomeFeedListView: UIView {
 
   // MARK: Properties
 
+  private let sectionProvider = HomeFeedSectionProvider()
   private lazy var diffableDataSource = self.collectionViewDiffableDataSource()
 
 
@@ -60,79 +62,37 @@ class HomeFeedListView: UIView {
 
   // MARK: CollectionView
 
-  func applyCollectionViewDataSource(
-    by sectionViewModels: [HomeFeedSectionViewModel]
+  func update(
+    sections: [SectionViewModel<Section, Item>],
+    animatingDifferences: Bool = true,
+    completion: (() -> Void)? = nil
   ) {
-    var snapshot = DiffableSnapshot()
-    snapshot.appendSections(sectionViewModels.map { $0.section })
-    sectionViewModels.forEach {
-      snapshot.appendItems($0.items, toSection: $0.section)
+    self.sectionProvider.updateSectionViewModels(sections)
+    self.diffableDataSource.apply(
+      self.sectionProvider.snapshot(),
+      animatingDifferences: animatingDifferences,
+      completion: completion
+    )
+  }
+
+  func updateSection(
+    _ section: SectionViewModel<Section, Item>,
+    animatingDifferences: Bool = true,
+    completion: (() -> Void)? = nil
+  ) {
+    guard self.sectionProvider.updateSection(section) else {
+      return
     }
 
-    diffableDataSource.apply(snapshot)
+    self.diffableDataSource.apply(
+      self.sectionProvider.snapshot(),
+      animatingDifferences: animatingDifferences,
+      completion: completion
+    )
   }
 
   private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
-    let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment -> NSCollectionLayoutSection? in
-      switch sectionIndex {
-      case 0:
-        // 첫 번째 섹션
-        let totalWidth = UIScreen.main.bounds.width
-        let itemWidth = totalWidth - 40
-        let itemHeight = itemWidth * 162 / 335 + 114
-
-        let item = NSCollectionLayoutItem(
-          layoutSize: .init(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(itemHeight)
-          )
-        )
-
-        let groupSize = NSCollectionLayoutSize(
-          widthDimension: .fractionalWidth(1),
-          heightDimension: .estimated(itemHeight)
-        )
-
-        let group = NSCollectionLayoutGroup.vertical(
-          layoutSize: groupSize,
-          subitem: item,
-          count: 1
-        )
-
-        return NSCollectionLayoutSection(group: group).then {
-          $0.interGroupSpacing = 20.0
-        }
-
-      case 1:
-        // 첫 번째 섹션
-        let item = NSCollectionLayoutItem(
-          layoutSize: .init(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(48)
-          )
-        )
-
-        let groupSize = NSCollectionLayoutSize(
-          widthDimension: .fractionalWidth(1),
-          heightDimension: .estimated(48)
-        )
-
-        let group = NSCollectionLayoutGroup.vertical(
-          layoutSize: groupSize,
-          subitem: item,
-          count: 1
-        )
-
-        return NSCollectionLayoutSection(group: group).then {
-          $0.interGroupSpacing = 20.0
-        }
-
-      default:
-        return nil
-      }
-    }
-
-    return layout.then {
+    UICollectionViewCompositionalLayout(sectionProvider: sectionProvider.sectionLayout).then {
       $0.configuration = UICollectionViewCompositionalLayoutConfiguration().then {
         $0.scrollDirection = .vertical
         $0.interSectionSpacing = 20.0
@@ -141,10 +101,19 @@ class HomeFeedListView: UIView {
   }
 
   private func collectionViewDiffableDataSource() -> DiffableDataSource {
-    UICollectionViewDiffableDataSource<Section, SectionItem>(
+    UICollectionViewDiffableDataSource<Section, Item>(
       collectionView: collectionView
     ) { collectionView, indexPath, item in
       switch item {
+      case .banner(let viewModel):
+        return collectionView.dequeueReusableCell(
+          withReuseIdentifier: HomeBannerCell.identifier,
+          for: indexPath
+        ).then {
+          guard let cell = $0 as? HomeBannerCell else { return }
+          cell.configure(viewModel: viewModel)
+        }
+
       case .link(let viewModel):
         return collectionView.dequeueReusableCell(
           withReuseIdentifier: HomeFeedCell.identifier,
