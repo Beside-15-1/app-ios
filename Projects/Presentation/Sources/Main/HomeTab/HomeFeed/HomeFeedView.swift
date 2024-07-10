@@ -18,6 +18,12 @@ final class HomeFeedView: UIView {
 
   private let listView = HomeFeedListView()
 
+  private let colorBackground = UIView().then {
+    $0.backgroundColor = .paperAboveBg
+  }
+
+  let navigationBar = MainNavigationBar(style: .home)
+
 
   // MARK: Initializing
 
@@ -44,10 +50,22 @@ final class HomeFeedView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
+    addSubview(colorBackground)
+    addSubview(navigationBar)
     addSubview(listView)
 
+    navigationBar.snp.makeConstraints {
+      $0.left.right.top.equalTo(safeAreaLayoutGuide)
+    }
+
+    colorBackground.snp.makeConstraints {
+      $0.top.left.right.equalToSuperview()
+      $0.bottom.equalTo(navigationBar.snp.top)
+    }
+
     listView.snp.makeConstraints {
-      $0.edges.equalToSuperview()
+      $0.top.equalTo(navigationBar.snp.bottom)
+      $0.bottom.left.right.equalToSuperview()
     }
   }
 
