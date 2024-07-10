@@ -35,7 +35,7 @@ final class HomeFeedSectionProvider: SectionProvider<HomeFeedModel.Section, Home
 
   private func makeBannerSection() -> NSCollectionLayoutSection {
     let totalWidth = UIScreen.main.bounds.width
-    let itemWidth = totalWidth - 40
+    let itemWidth = totalWidth
     let itemHeight = itemWidth * 84 / 375
 
     let item = NSCollectionLayoutItem(layoutSize: .init(

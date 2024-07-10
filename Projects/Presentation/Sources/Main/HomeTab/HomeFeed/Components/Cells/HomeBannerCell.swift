@@ -32,7 +32,7 @@ class HomeBannerCell: UICollectionViewCell {
   }
 
   let imageView = UIImageView().then {
-    $0.image = DesignSystemAsset.homeFeedDefault.image
+    $0.image = DesignSystemAsset.bannerDefault.image
   }
 
 

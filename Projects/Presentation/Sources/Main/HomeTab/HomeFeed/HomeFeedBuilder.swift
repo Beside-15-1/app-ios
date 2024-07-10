@@ -11,7 +11,9 @@ import Foundation
 import Domain
 import PresentationInterface
 
-struct HomeFeedDependency {}
+struct HomeFeedDependency {
+  let linkRepository: LinkRepository
+}
 
 final class HomeFeedBuilder: HomeFeedBuildable {
 
@@ -22,7 +24,9 @@ final class HomeFeedBuilder: HomeFeedBuildable {
   }
 
   func build(payload: HomeFeedPayload) -> UIViewController {
-    let reactor = HomeFeedViewReactor()
+    let reactor = HomeFeedViewReactor(
+      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository)
+    )
 
     let viewController = HomeFeedViewController(
       reactor: reactor

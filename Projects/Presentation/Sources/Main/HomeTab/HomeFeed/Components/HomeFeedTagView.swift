@@ -48,6 +48,13 @@ final class HomeFeedTagView: UIView {
   }
 
   func configureTags(tags: [String]) {
+    if !tagList.isEmpty {
+      tagList.forEach {
+        $0.removeFromSuperview()
+      }
+      tagList.removeAll()
+    }
+
     let totalWidth = UIScreen.main.bounds.width - 40 - 32
 
     var remainWidth = totalWidth

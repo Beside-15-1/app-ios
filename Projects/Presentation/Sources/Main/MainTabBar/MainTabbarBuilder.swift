@@ -8,6 +8,7 @@ import PresentationInterface
 
 struct MainTabBarDependency {
   let homeBuilder: HomeBuildable
+  let homeFeedBuilder: HomeFeedBuildable
   let myFolderBuilder: MyFolderBuildable
   let myPageBuilder: MyPageBuildable
 }
@@ -24,6 +25,7 @@ final class MainTabBarBuilder: MainTabBarBuildable {
   func build(payload: MainTabBarPayload) -> UITabBarController {
     let viewController = MainTabBarViewController(
       homeBuilder: dependency.homeBuilder,
+      homeFeedBuilder: dependency.homeFeedBuilder,
       folderBuilder: dependency.myFolderBuilder,
       myPageBuilder: dependency.myPageBuilder
     )

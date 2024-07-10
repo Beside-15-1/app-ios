@@ -47,19 +47,48 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    reactor?.action.onNext(.viewDidLoad)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.isNavigationBarHidden = true
   }
 
 
   // MARK: Binding
 
-  func bind(reactor: HomeFeedViewReactor) {}
+  func bind(reactor: HomeFeedViewReactor) {
+    bindContent(with: reactor)
+  }
+
+  private func bindContent(with reactor: HomeFeedViewReactor) {
+    reactor.state.map(\.tab)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, tab in
+        self.contentView.configureTab(tab: tab)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state.map(\.sectionViewModels)
+      .distinctUntilChanged()
+      .subscribe(with: self) { `self`, sectionViewModels in
+        self.contentView.configureDataSource(by: sectionViewModels)
+      }
+      .disposed(by: disposeBag)
+  }
 }
 
 
 // MARK: HomeFeedViewDelegate
 
 extension HomeFeedViewController: HomeFeedViewDelegate {
-  func homeFeedTabViewNoReadButtonTapped() {}
+  func homeFeedTabViewNoReadButtonTapped() {
+    reactor?.action.onNext(.noReadButtonTapped)
+  }
 
-  func homeFeedTabViewRecentlySavedButtonTapped() {}
+  func homeFeedTabViewRecentlySavedButtonTapped() {
+    reactor?.action.onNext(.recentlySavedButtonTapped)
+  }
 }

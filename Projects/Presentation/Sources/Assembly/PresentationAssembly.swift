@@ -316,7 +316,9 @@ public final class PresentationAssembly: Assembly {
 
   private func registerHomeFeedBuilder(container: Container) {
     container.register(HomeFeedBuildable.self) { r in
-      HomeFeedBuilder(dependency: .init())
+      HomeFeedBuilder(dependency: .init(
+        linkRepository: r.resolve()
+      ))
     }
   }
 }

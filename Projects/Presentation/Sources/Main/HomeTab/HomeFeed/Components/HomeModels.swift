@@ -24,7 +24,7 @@ enum HomeFeedModel {
 
     case banner(HomeBannerCell.ViewModel)
     case link(HomeFeedCell.ViewModel)
-    case more
+    case more(Int)
 
     var id: ID {
       switch self {

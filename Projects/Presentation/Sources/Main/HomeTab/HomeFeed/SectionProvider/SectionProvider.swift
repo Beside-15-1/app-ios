@@ -27,7 +27,7 @@ extension SectionModelType {
   }
 }
 
-struct SectionViewModel<Section: SectionModelType, Item: ItemModelType> {
+struct SectionViewModel<Section: SectionModelType, Item: ItemModelType>: Hashable {
   let section: Section
   var items: [Item]
 }

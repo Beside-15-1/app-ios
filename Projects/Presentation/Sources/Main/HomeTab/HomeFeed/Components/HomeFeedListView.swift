@@ -123,11 +123,14 @@ class HomeFeedListView: UIView {
           cell.configure(viewModel: viewModel)
         }
 
-      case .more:
+      case .more(let count):
         return collectionView.dequeueReusableCell(
           withReuseIdentifier: HomeFeedMoreCell.identifier,
           for: indexPath
-        )
+        ).then {
+          guard let cell = $0 as? HomeFeedMoreCell else { return }
+          cell.configureCount(count: count)
+        }
       }
     }
   }

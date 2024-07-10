@@ -60,6 +60,10 @@ final class HomeFeedView: UIView {
     listView.update(sections: sectionViewModels)
   }
 
+  func configureTab(tab: HomeFeedTab) {
+    tabView.configureTab(tab: tab)
+  }
+
 
   // MARK: Layout
 

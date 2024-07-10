@@ -49,6 +49,20 @@ class HomeFeedMoreCell: UICollectionViewCell {
   }
 
 
+  // MARK: Configure
+
+  func configureCount(count: Int) {
+    if count > 0 {
+      titleLabel.attributedText = "저장한 링크 \(count)+개 모두 보기".styled(
+        font: .bodyBold,
+        color: .gray700
+      )
+    } else {
+      titleLabel.attributedText = "저장한 링크 모두 보기".styled(font: .bodyBold, color: .gray700)
+    }
+  }
+
+
   // MARK: Layout
 
   private func defineLayout() {
