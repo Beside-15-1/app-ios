@@ -17,12 +17,9 @@ final class HomeFeedTagView: UIView {
 
   // MARK: UI
 
-  private let stackView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.alignment = .leading
-    $0.distribution = .equalSpacing
-    $0.spacing = 8.0
-  }
+  private let contentView = UIView()
+
+  private var tagList: [UIView] = []
 
 
   // MARK: Initialize
@@ -30,7 +27,7 @@ final class HomeFeedTagView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    self.backgroundColor = .paperCard
+    self.backgroundColor = .paperWhite
 
     defineLayout()
   }
@@ -43,34 +40,77 @@ final class HomeFeedTagView: UIView {
   // MARK: Layout
 
   private func defineLayout() {
-    addSubview(stackView)
+    addSubview(contentView)
 
-    stackView.snp.makeConstraints {
-      $0.edges.equalToSuperview()
+    contentView.snp.makeConstraints {
+      $0.left.top.bottom.equalToSuperview()
     }
   }
 
   func configureTags(tags: [String]) {
-    tags.forEach { tag in
+    let totalWidth = UIScreen.main.bounds.width - 40 - 32
+
+    var remainWidth = totalWidth
+
+    tags.enumerated().forEach { index, tag in
+      let label = UILabel().then {
+        $0.attributedText = "#\(tag)".styled(font: .captionRegular, color: .staticBlack)
+        $0.textAlignment = .center
+      }
+      label.sizeToFit()
+
+      let width = label.frame.width + 16.0
+      let height = label.frame.height
+
+      guard remainWidth - width - 8 > 0 else {
+        let label = tagList.last?.subviews.first(where: { view in
+          view is UILabel
+        }) as? UILabel
+
+        label?.attributedText = "+\(tags.count - tagList.count + 1)".styled(
+          font: .captionRegular,
+          color: .staticBlack
+        )
+        label?.sizeToFit()
+
+        return
+      }
+
+      remainWidth = remainWidth - width - 8
+
       let container = UIView().then {
-        $0.layer.cornerRadius = 14.0
+        $0.layer.cornerRadius = (height + 8) / 2
         $0.backgroundColor = .gray300
         $0.clipsToBounds = true
       }
 
-      let label = UILabel().then {
-        $0.attributedText = tag.styled(font: .captionRegular, color: .staticBlack)
-        $0.textAlignment = .center
-      }
-
       container.addSubview(label)
       label.snp.makeConstraints {
-        $0.center.equalToSuperview()
-        $0.top.bottom.equalTo(4.0)
-        $0.left.right.equalTo(8.0)
+        $0.top.bottom.equalToSuperview().inset(4.0)
+        $0.left.right.equalToSuperview().inset(8.0)
       }
 
-      stackView.addArrangedSubview(container)
+      contentView.addSubview(container)
+
+      if let view = tagList.last {
+        if index < tags.count {
+          container.snp.makeConstraints {
+            $0.left.equalTo(view.snp.right).offset(8.0)
+            $0.top.bottom.equalToSuperview()
+          }
+        } else {
+          container.snp.makeConstraints {
+            $0.left.equalTo(view.snp.right).offset(8.0)
+            $0.right.top.bottom.equalToSuperview()
+          }
+        }
+      } else {
+        container.snp.makeConstraints {
+          $0.edges.equalToSuperview()
+        }
+      }
+
+      tagList.append(container)
     }
   }
 }

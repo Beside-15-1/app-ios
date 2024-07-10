@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HomeSectionViewModel: Hashable {
+struct HomeFeedSectionViewModel: Hashable {
 
   let section: HomeFeedSection
   var items: [HomeFeedSectionItem]

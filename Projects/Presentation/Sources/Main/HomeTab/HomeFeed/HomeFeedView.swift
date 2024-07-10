@@ -14,10 +14,17 @@ import DesignSystem
 
 final class HomeFeedView: UIView {
 
+  // MARK: UI
+
+  private let listView = HomeFeedListView()
+
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+
+    defineLayout()
   }
 
   required init?(coder: NSCoder) {
@@ -25,7 +32,22 @@ final class HomeFeedView: UIView {
   }
 
 
+  // MARK: Configuring
+
+  func configureDataSource(by sectionViewModels: [HomeFeedSectionViewModel]) {
+    listView.applyCollectionViewDataSource(by: sectionViewModels)
+  }
+
+
   // MARK: Layout
+
+  private func defineLayout() {
+    addSubview(listView)
+
+    listView.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
+  }
 
   override func layoutSubviews() {
     super.layoutSubviews()

@@ -25,15 +25,21 @@ class HomeFeedCell: UICollectionViewCell {
     let title: String?
     let tagList: [Tag]
     let date: String
-    let isMore: Bool
   }
 
 
   // MARK: UI
 
+  let flexContainer = UIView().then {
+    $0.layer.cornerRadius = 8
+    $0.clipsToBounds = true
+    $0.backgroundColor = .paperWhite
+  }
+
   let imageView = UIImageView().then {
     $0.contentMode = .scaleAspectFill
     $0.clipsToBounds = true
+    $0.backgroundColor = .black
     $0.image = DesignSystemAsset.homeFeedDefault.image
   }
 
@@ -60,7 +66,7 @@ class HomeFeedCell: UICollectionViewCell {
 
   override func prepareForReuse() {
     super.prepareForReuse()
-    imageView.image = nil
+//    imageView.image = DesignSystemAsset.homeFeedDefault.image
   }
 
 
@@ -69,7 +75,9 @@ class HomeFeedCell: UICollectionViewCell {
   func configure(viewModel: ViewModel) {
     titleLabel.attributedText = viewModel.title?.styled(font: .defaultBold, color: .gray900)
 
-    imageView.sd_setImage(with: URL(string: viewModel.imageURL ?? ""))
+    if let url = viewModel.imageURL {
+      imageView.sd_setImage(with: URL(string: url))
+    }
 
     tagView.configureTags(tags: viewModel.tagList)
 
@@ -88,18 +96,25 @@ class HomeFeedCell: UICollectionViewCell {
   // MARK: Layout
 
   private func defineLayout() {
+    contentView.addSubview(flexContainer)
     [
       imageView,
       titleLabel,
       tagView,
-      dateLabel
+      dateLabel,
     ].forEach {
-      contentView.addSubview($0)
+      flexContainer.addSubview($0)
+    }
+
+    flexContainer.snp.makeConstraints {
+      $0.top.bottom.equalToSuperview()
+      $0.left.right.equalToSuperview().inset(20.0)
     }
 
     imageView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
-      $0.height.equalTo(imageView.snp.width).multipliedBy(162 / 336)
+      $0.width.equalToSuperview()
+      $0.height.greaterThanOrEqualTo(imageView.snp.width).multipliedBy(162 / 336)
     }
 
     titleLabel.snp.makeConstraints {
@@ -118,5 +133,7 @@ class HomeFeedCell: UICollectionViewCell {
     }
   }
 
-  override func layoutSubviews() {}
+  override func layoutSubviews() {
+    super.layoutSubviews()
+  }
 }

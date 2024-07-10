@@ -39,6 +39,7 @@ public final class PresentationAssembly: Assembly {
       registerMasterBuilder,
       registerNotificationSettingBuilder,
       registerCustomFilterBuilder,
+      registerHomeFeedBuilder,
     ]
 
     registerFunctions.forEach { function in
@@ -75,6 +76,7 @@ public final class PresentationAssembly: Assembly {
     contianer.register(MainTabBarBuildable.self) { r in
       MainTabBarBuilder(dependency: .init(
         homeBuilder: r.resolve(),
+        homeFeedBuilder: r.resolve(),
         myFolderBuilder: r.resolve(),
         myPageBuilder: r.resolve()
       ))
@@ -309,6 +311,12 @@ public final class PresentationAssembly: Assembly {
         analytics: r.resolve(),
         tagRepository: r.resolve()
       ))
+    }
+  }
+
+  private func registerHomeFeedBuilder(container: Container) {
+    container.register(HomeFeedBuildable.self) { r in
+      HomeFeedBuilder(dependency: .init())
     }
   }
 }

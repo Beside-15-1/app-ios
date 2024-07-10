@@ -58,7 +58,8 @@ class HomeFeedMoreCell: UICollectionViewCell {
     contentContainer.addSubview(chevronIcon)
 
     flexContainer.snp.makeConstraints {
-      $0.edges.equalToSuperview()
+      $0.top.bottom.equalToSuperview()
+      $0.left.right.equalToSuperview().inset(20.0)
     }
 
     contentContainer.snp.makeConstraints {
@@ -70,7 +71,9 @@ class HomeFeedMoreCell: UICollectionViewCell {
     }
 
     chevronIcon.snp.makeConstraints {
-      $0.right.centerX.equalToSuperview()
+      $0.right.equalToSuperview()
+      $0.left.equalTo(titleLabel.snp.right)
+      $0.centerY.equalTo(titleLabel.snp.centerY)
       $0.size.equalTo(20.0)
     }
   }
