@@ -7,18 +7,34 @@
 
 import Foundation
 
-struct HomeFeedSectionViewModel: Hashable {
+enum HomeFeedModel {
+  struct Section: SectionModelType {
+    enum ID: Hashable {
+      case banner
+      case normal
+      case more
+    }
 
-  let section: HomeFeedSection
-  var items: [HomeFeedSectionItem]
-}
+    let id: ID
+    let title: String?
+  }
 
-enum HomeFeedSection: Hashable {
-  case normal
-  case more
-}
+  enum Item: ItemModelType {
+    typealias ID = String
 
-enum HomeFeedSectionItem: Hashable {
-  case link(HomeFeedCell.ViewModel)
-  case more
+    case banner(HomeBannerCell.ViewModel)
+    case link(HomeFeedCell.ViewModel)
+    case more
+
+    var id: ID {
+      switch self {
+      case .banner:
+        return "banner"
+      case .link:
+        return "link"
+      case .more:
+        return "more"
+      }
+    }
+  }
 }
