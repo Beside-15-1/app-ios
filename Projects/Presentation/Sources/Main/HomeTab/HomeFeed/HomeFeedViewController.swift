@@ -10,6 +10,8 @@ import UIKit
 import ReactorKit
 import RxSwift
 
+import DesignSystem
+
 
 final class HomeFeedViewController: UIViewController, StoryboardView {
 
@@ -39,6 +41,8 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   override func loadView() {
     view = contentView
+
+    contentView.delegate = self
   }
 
   override func viewDidLoad() {
@@ -49,4 +53,13 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
   // MARK: Binding
 
   func bind(reactor: HomeFeedViewReactor) {}
+}
+
+
+// MARK: HomeFeedViewDelegate
+
+extension HomeFeedViewController: HomeFeedViewDelegate {
+  func homeFeedTabViewNoReadButtonTapped() {}
+
+  func homeFeedTabViewRecentlySavedButtonTapped() {}
 }

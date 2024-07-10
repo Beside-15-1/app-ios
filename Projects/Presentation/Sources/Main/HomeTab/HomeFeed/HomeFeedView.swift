@@ -12,6 +12,11 @@ import Then
 
 import DesignSystem
 
+protocol HomeFeedViewDelegate: AnyObject {
+  func homeFeedTabViewRecentlySavedButtonTapped()
+  func homeFeedTabViewNoReadButtonTapped()
+}
+
 final class HomeFeedView: UIView {
 
   // MARK: UI
@@ -24,6 +29,13 @@ final class HomeFeedView: UIView {
 
   let navigationBar = MainNavigationBar(style: .home)
 
+  private let tabView = HomeFeedTabView()
+
+
+  // MARK: Properties
+
+  weak var delegate: HomeFeedViewDelegate?
+
 
   // MARK: Initializing
 
@@ -31,6 +43,8 @@ final class HomeFeedView: UIView {
     super.init(frame: frame)
 
     defineLayout()
+
+    tabView.delegate = self
   }
 
   required init?(coder: NSCoder) {
@@ -53,6 +67,7 @@ final class HomeFeedView: UIView {
     addSubview(colorBackground)
     addSubview(navigationBar)
     addSubview(listView)
+    addSubview(tabView)
 
     navigationBar.snp.makeConstraints {
       $0.left.right.top.equalTo(safeAreaLayoutGuide)
@@ -63,13 +78,32 @@ final class HomeFeedView: UIView {
       $0.bottom.equalTo(navigationBar.snp.top)
     }
 
-    listView.snp.makeConstraints {
+    tabView.snp.makeConstraints {
+      $0.left.right.equalToSuperview()
       $0.top.equalTo(navigationBar.snp.bottom)
+      $0.height.equalTo(52)
+    }
+
+    listView.snp.makeConstraints {
+      $0.top.equalTo(tabView.snp.bottom)
       $0.bottom.left.right.equalToSuperview()
     }
   }
 
   override func layoutSubviews() {
     super.layoutSubviews()
+  }
+}
+
+
+// MARK: HomeFeedTabViewDelegate
+
+extension HomeFeedView: HomeFeedTabViewDelegate {
+  func homeFeedTabViewNoReadButtonTapped() {
+    delegate?.homeFeedTabViewNoReadButtonTapped()
+  }
+
+  func homeFeedTabViewRecentlySavedButtonTapped() {
+    delegate?.homeFeedTabViewRecentlySavedButtonTapped()
   }
 }
