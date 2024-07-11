@@ -18,6 +18,7 @@ protocol HomeFeedViewDelegate: AnyObject {
   func homeFeedListViewDidSelectBanner()
   func homeFeedListViewDidSelectLink(id: String, url: String?)
   func homeFeedListViewDidSelectMore()
+  func homeFeedFABButtonTapped()
 }
 
 final class HomeFeedView: UIView {
@@ -34,6 +35,8 @@ final class HomeFeedView: UIView {
 
   private let tabView = HomeFeedTabView()
 
+  private let fab = FAB()
+
 
   // MARK: Properties
 
@@ -49,6 +52,10 @@ final class HomeFeedView: UIView {
 
     tabView.delegate = self
     listView.delegate = self
+
+    fab.addAction(UIAction(handler: { [weak self] _ in
+      self?.delegate?.homeFeedFABButtonTapped()
+    }), for: .touchUpInside)
   }
 
   required init?(coder: NSCoder) {
@@ -77,6 +84,7 @@ final class HomeFeedView: UIView {
     addSubview(navigationBar)
     addSubview(listView)
     addSubview(tabView)
+    addSubview(fab)
 
     navigationBar.snp.makeConstraints {
       $0.left.right.top.equalTo(safeAreaLayoutGuide)
@@ -96,6 +104,11 @@ final class HomeFeedView: UIView {
     listView.snp.makeConstraints {
       $0.top.equalTo(tabView.snp.bottom)
       $0.bottom.left.right.equalToSuperview()
+    }
+
+    fab.snp.makeConstraints {
+      $0.right.equalToSuperview().inset(20.0)
+      $0.bottom.equalTo(safeAreaLayoutGuide).inset(12.0)
     }
   }
 
@@ -131,5 +144,13 @@ extension HomeFeedView: HomeFeedListViewDelegate {
 
   func didSelectLink(_ listView: HomeFeedListView, id: String, url: String?) {
     delegate?.homeFeedListViewDidSelectLink(id: id, url: url)
+  }
+
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView.contentOffset.y > 50 {
+      fab.contract()
+    } else {
+      fab.expand()
+    }
   }
 }

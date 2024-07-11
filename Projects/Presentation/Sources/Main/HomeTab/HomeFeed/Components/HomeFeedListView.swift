@@ -19,6 +19,7 @@ protocol HomeFeedListViewDelegate: AnyObject {
   func didSelectBanner(_ listView: HomeFeedListView)
   func didSelectMoreButton(_ listView: HomeFeedListView)
   func didSelectLink(_ listView: HomeFeedListView, id: String, url: String?)
+  func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
 class HomeFeedListView: UIView {
@@ -187,6 +188,6 @@ extension HomeFeedListView: UICollectionViewDelegate {
   }
 
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//    delegate?.listViewDidScroll(scrollView)
+    delegate?.scrollViewDidScroll(scrollView)
   }
 }

@@ -67,7 +67,6 @@ final class HomeFeedTagView: UIView {
       label.sizeToFit()
 
       let width = label.frame.width + 16.0
-      let height = label.frame.height
 
       guard remainWidth - width - 8 > 0 else {
         let label = tagList.last?.subviews.first(where: { view in
@@ -86,7 +85,7 @@ final class HomeFeedTagView: UIView {
       remainWidth = remainWidth - width - 8
 
       let container = UIView().then {
-        $0.layer.cornerRadius = (height + 8) / 2
+        $0.layer.cornerRadius = 14
         $0.backgroundColor = .gray300
         $0.clipsToBounds = true
       }
@@ -104,11 +103,13 @@ final class HomeFeedTagView: UIView {
           container.snp.makeConstraints {
             $0.left.equalTo(view.snp.right).offset(8.0)
             $0.top.bottom.equalToSuperview()
+            $0.height.equalTo(28.0)
           }
         } else {
           container.snp.makeConstraints {
             $0.left.equalTo(view.snp.right).offset(8.0)
             $0.right.top.bottom.equalToSuperview()
+            $0.height.equalTo(28.0)
           }
         }
       } else {

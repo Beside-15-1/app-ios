@@ -320,7 +320,8 @@ public final class PresentationAssembly: Assembly {
         linkRepository: r.resolve(),
         folderRepository: r.resolve(),
         folderDetailBuilder: r.resolve(),
-        webBuilder: r.resolve()
+        webBuilder: r.resolve(),
+        createLinkBuilder: r.resolve()
       ))
     }
   }

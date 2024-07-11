@@ -60,7 +60,7 @@ final class HomeFeedSectionProvider: SectionProvider<HomeFeedModel.Section, Home
   }
 
   private func makeNormalSection() -> NSCollectionLayoutSection {
-    let totalWidth = UIScreen.main.bounds.width
+    let totalWidth = UIScreen.main.bounds.width - 40
     let itemWidth = totalWidth
     let itemHeight = itemWidth * 162 / 335 + 114
 

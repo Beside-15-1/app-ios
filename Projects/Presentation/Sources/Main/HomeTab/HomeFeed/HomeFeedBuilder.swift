@@ -16,6 +16,7 @@ struct HomeFeedDependency {
   let folderRepository: FolderRepository
   let folderDetailBuilder: FolderDetailBuildable
   let webBuilder: PBWebBuildable
+  let createLinkBuilder: CreateLinkBuildable
 }
 
 final class HomeFeedBuilder: HomeFeedBuildable {
@@ -42,7 +43,8 @@ final class HomeFeedBuilder: HomeFeedBuildable {
     let viewController = HomeFeedViewController(
       reactor: reactor,
       folderDetailBuilder: dependency.folderDetailBuilder,
-      webBuilder: dependency.webBuilder
+      webBuilder: dependency.webBuilder,
+      createLinkBuilder: dependency.createLinkBuilder
     )
 
     return viewController

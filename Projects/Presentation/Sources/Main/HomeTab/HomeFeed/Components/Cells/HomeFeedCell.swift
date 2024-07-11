@@ -53,6 +53,11 @@ class HomeFeedCell: UICollectionViewCell {
   let dateLabel = UILabel()
 
 
+  // MARK: Properties
+
+  var viewModel: ViewModel?
+
+
   // MARK: Initializing
 
   override init(frame: CGRect) {
@@ -67,7 +72,9 @@ class HomeFeedCell: UICollectionViewCell {
 
   override func prepareForReuse() {
     super.prepareForReuse()
-//    imageView.image = DesignSystemAsset.homeFeedDefault.image
+    viewModel = nil
+    imageView.image = nil
+    imageView.sd_cancelCurrentImageLoad()
     titleLabel.text = nil
     dateLabel.text = nil
   }
@@ -76,6 +83,8 @@ class HomeFeedCell: UICollectionViewCell {
   // MARK: Configuring
 
   func configure(viewModel: ViewModel) {
+    self.viewModel = viewModel
+
     titleLabel.attributedText = viewModel.title?.styled(font: .defaultBold, color: .gray900)
 
     if let url = viewModel.imageURL {
@@ -116,8 +125,8 @@ class HomeFeedCell: UICollectionViewCell {
 
     imageView.snp.makeConstraints {
       $0.top.left.right.equalToSuperview()
-      $0.width.equalToSuperview()
-      $0.height.greaterThanOrEqualTo(imageView.snp.width).multipliedBy(162 / 336)
+      $0.width.equalTo(UIScreen.main.bounds.width - 40)
+      $0.height.equalTo((UIScreen.main.bounds.width - 40) * 162 / 335)
     }
 
     titleLabel.snp.makeConstraints {
@@ -138,5 +147,21 @@ class HomeFeedCell: UICollectionViewCell {
 
   override func layoutSubviews() {
     super.layoutSubviews()
+
+    print("UIScreen.main.bounds.width: \(UIScreen.main.bounds.width - 40)")
+    print("width: \(imageView.frame.width) height: \(imageView.frame.height)")
+  }
+
+  override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes)
+    -> UICollectionViewLayoutAttributes {
+    setNeedsLayout()
+    layoutIfNeeded()
+
+    let size = contentView.systemLayoutSizeFitting(layoutAttributes.size)
+    var frame = layoutAttributes.frame
+    frame.size.height = ceil(size.height)
+    layoutAttributes.frame = frame
+
+    return layoutAttributes
   }
 }

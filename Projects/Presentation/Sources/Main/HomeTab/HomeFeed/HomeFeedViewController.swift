@@ -11,8 +11,8 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import Domain
 import PresentationInterface
-
 
 final class HomeFeedViewController: UIViewController, StoryboardView {
 
@@ -27,6 +27,7 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   private let folderDetailBuilder: FolderDetailBuildable
   private let webBuilder: PBWebBuildable
+  private let createLinkBuilder: CreateLinkBuildable
 
 
   // MARK: Initializing
@@ -34,11 +35,13 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
   init(
     reactor: HomeFeedViewReactor,
     folderDetailBuilder: FolderDetailBuildable,
-    webBuilder: PBWebBuildable
+    webBuilder: PBWebBuildable,
+    createLinkBuilder: CreateLinkBuildable
   ) {
     defer { self.reactor = reactor }
     self.folderDetailBuilder = folderDetailBuilder
     self.webBuilder = webBuilder
+    self.createLinkBuilder = createLinkBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -107,9 +110,9 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
       return
     }
 
-    let web = self.webBuilder.build(payload: .init(url: url))
+    let web = webBuilder.build(payload: .init(url: url))
 
-    self.presentPaperSheet(web)
+    presentPaperSheet(web)
   }
 
   func homeFeedListViewDidSelectLink(id: String, url: String?) {
@@ -136,5 +139,25 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
       .navigationController?.pushViewController(
         folderDetail, animated: true
       )
+  }
+
+  func homeFeedFABButtonTapped() {
+    let vc = createLinkBuilder.build(payload: .init(
+      delegate: self,
+      link: nil,
+      folder: nil
+    ))
+
+    presentPaperSheet(vc)
+  }
+}
+
+
+// MARK: CreateLinkDelegate
+
+extension HomeFeedViewController: CreateLinkDelegate {
+
+  func createLinkSucceed(link: Link) {
+    reactor?.action.onNext(.refresh)
   }
 }
