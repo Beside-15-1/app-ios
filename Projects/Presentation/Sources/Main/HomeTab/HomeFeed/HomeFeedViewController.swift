@@ -26,16 +26,19 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
   var disposeBag = DisposeBag()
 
   private let folderDetailBuilder: FolderDetailBuildable
+  private let webBuilder: PBWebBuildable
 
 
   // MARK: Initializing
 
   init(
     reactor: HomeFeedViewReactor,
-    folderDetailBuilder: FolderDetailBuildable
+    folderDetailBuilder: FolderDetailBuildable,
+    webBuilder: PBWebBuildable
   ) {
     defer { self.reactor = reactor }
     self.folderDetailBuilder = folderDetailBuilder
+    self.webBuilder = webBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -99,7 +102,15 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
     reactor?.action.onNext(.recentlySavedButtonTapped)
   }
 
-  func homeFeedListViewDidSelectBanner() {}
+  func homeFeedListViewDidSelectBanner() {
+    guard let url = URL(string: "https://joosum.notion.site/d1bf0517402744ee804c7d645a472610?pvs=4") else {
+      return
+    }
+
+    let web = self.webBuilder.build(payload: .init(url: url))
+
+    self.presentPaperSheet(web)
+  }
 
   func homeFeedListViewDidSelectLink(id: String, url: String?) {
     guard let url = URL(string: url ?? "") else {

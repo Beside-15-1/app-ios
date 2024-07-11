@@ -319,7 +319,8 @@ public final class PresentationAssembly: Assembly {
       HomeFeedBuilder(dependency: .init(
         linkRepository: r.resolve(),
         folderRepository: r.resolve(),
-        folderDetailBuilder: r.resolve()
+        folderDetailBuilder: r.resolve(),
+        webBuilder: r.resolve()
       ))
     }
   }

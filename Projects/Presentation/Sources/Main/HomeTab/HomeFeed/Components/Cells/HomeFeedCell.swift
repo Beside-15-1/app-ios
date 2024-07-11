@@ -68,6 +68,8 @@ class HomeFeedCell: UICollectionViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
 //    imageView.image = DesignSystemAsset.homeFeedDefault.image
+    titleLabel.text = nil
+    dateLabel.text = nil
   }
 
 

@@ -183,7 +183,7 @@ extension HomeFeedViewReactor {
     fetchLinkListUseCase.execute(sort: .createAt, order: .desc)
       .asObservable()
       .flatMap { list -> Observable<Mutation> in
-        let lastIndex = list.count < 5 ? list.endIndex : list.index(0, offsetBy: 5)
+        let lastIndex = list.count < 30 ? list.endIndex : list.index(0, offsetBy: 30)
         let linkList = list[list.startIndex..<lastIndex]
 
         // 링크 자체가 존재 X
@@ -229,9 +229,9 @@ extension HomeFeedViewReactor {
       .asObservable()
       .flatMap { list -> Observable<Mutation> in
         let noReadLinkList = list.filter { $0.readCount == 0 }
-        let lastIndex = noReadLinkList.count < 5
+        let lastIndex = noReadLinkList.count < 30
           ? noReadLinkList.endIndex
-          : noReadLinkList.index(0, offsetBy: 5)
+          : noReadLinkList.index(0, offsetBy: 30)
         let linkList = noReadLinkList[noReadLinkList.startIndex..<lastIndex]
 
         // 링크 자체가 존재 X
