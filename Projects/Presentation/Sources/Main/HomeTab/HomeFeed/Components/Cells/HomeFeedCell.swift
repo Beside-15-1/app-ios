@@ -85,6 +85,8 @@ class HomeFeedCell: UICollectionViewCell {
   func configure(viewModel: ViewModel) {
     self.viewModel = viewModel
 
+    titleLabel.numberOfLines = viewModel.tagList.count == 0 ? 2 : 1
+
     titleLabel.attributedText = viewModel.title?.styled(font: .defaultBold, color: .gray900)
 
     if let url = viewModel.imageURL {
