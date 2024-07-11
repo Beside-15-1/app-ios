@@ -26,18 +26,16 @@ final class HomeFeedViewReactor: Reactor {
 
   enum Mutation {
     case updateSectionViewModels
-    case setLinkSectionViewModel(HomeFeedSectionViewModel)
-    case setMoreSectionViewModel(HomeFeedSectionViewModel)
+    case setBannerSectionViewModel(HomeFeedSectionViewModel)
+    case setLinkSectionViewModel(HomeFeedSectionViewModel?)
+    case setMoreSectionViewModel(HomeFeedSectionViewModel?)
     case setTab(HomeFeedTab)
   }
 
   struct State {
     var sectionViewModels: [HomeFeedSectionViewModel] = []
 
-    var bannerSectionViewModel: HomeFeedSectionViewModel = .init(
-      section: .init(id: .banner, title: "banner"),
-      items: [.banner(.init(id: "banner", imageURL: nil))]
-    )
+    var bannerSectionViewModel: HomeFeedSectionViewModel?
     var linkSectionViewModel: HomeFeedSectionViewModel?
     var moreSectionViewModel: HomeFeedSectionViewModel?
 
@@ -102,11 +100,11 @@ final class HomeFeedViewReactor: Reactor {
       var sectionViewModels: [SectionViewModel<HomeFeedModel.Section, HomeFeedModel.Item>] = []
 
       // TODO: Banner Request API 나오면 주석 해제
-//      if let bannerSectionViewModel = newState.bannerSectionViewModel {
-//        sectionViewModels.append(bannerSectionViewModel)
-//      }
+      if let bannerSectionViewModel = newState.bannerSectionViewModel {
+        sectionViewModels.append(bannerSectionViewModel)
+      }
 
-      sectionViewModels.append(newState.bannerSectionViewModel)
+//      sectionViewModels.append(newState.bannerSectionViewModel)
 
       if let linkSectionViewModel = newState.linkSectionViewModel {
         sectionViewModels.append(linkSectionViewModel)
@@ -117,6 +115,9 @@ final class HomeFeedViewReactor: Reactor {
       }
 
       newState.sectionViewModels = sectionViewModels
+
+    case .setBannerSectionViewModel(let viewModel):
+      newState.bannerSectionViewModel = viewModel
 
     case .setLinkSectionViewModel(let viewModel):
       newState.linkSectionViewModel = viewModel
@@ -154,7 +155,23 @@ extension HomeFeedViewReactor {
         let lastIndex = list.count < 5 ? list.endIndex : list.index(0, offsetBy: 5)
         let linkList = list[list.startIndex..<lastIndex]
 
+        // 링크 자체가 존재 X
+        if list.count == 0 {
+          return .concat([
+            .just(Mutation.setBannerSectionViewModel(.init(
+              section: .init(id: .banner, title: "banner"),
+              items: [.banner(.init(id: "banner", imageURL: nil, type: .recentlySaved))]
+            ))),
+            .just(Mutation.setLinkSectionViewModel(nil)),
+            .just(Mutation.setMoreSectionViewModel(nil)),
+          ])
+        }
+
         return .concat([
+          .just(Mutation.setBannerSectionViewModel(.init(
+            section: .init(id: .banner, title: "banner"),
+            items: [.banner(.init(id: "banner", imageURL: nil, type: .recentlySaved))]
+          ))),
           .just(Mutation.setLinkSectionViewModel(.init(
             section: .init(id: .normal, title: "normal"),
             items: linkList.map { link in
@@ -185,7 +202,24 @@ extension HomeFeedViewReactor {
           : noReadLinkList.index(0, offsetBy: 5)
         let linkList = noReadLinkList[noReadLinkList.startIndex..<lastIndex]
 
+        // 링크 자체가 존재 X
+        if list.count == 0 {
+          return .concat([
+            .just(Mutation.setBannerSectionViewModel(.init(
+              section: .init(id: .banner, title: "banner"),
+              items: [.banner(.init(id: "banner", imageURL: nil, type: .noRead))]
+            ))),
+            .just(Mutation.setLinkSectionViewModel(nil)),
+            .just(Mutation.setMoreSectionViewModel(nil)),
+          ])
+        }
+
+        // 링크 존재 O , 읽지 않은 링크 존재 O
         return .concat([
+          .just(Mutation.setBannerSectionViewModel(.init(
+            section: .init(id: .banner, title: "banner"),
+            items: [.banner(.init(id: "banner", imageURL: nil, type: .noRead))]
+          ))),
           .just(Mutation.setLinkSectionViewModel(.init(
             section: .init(id: .normal, title: "normal"),
             items: linkList.map { link in

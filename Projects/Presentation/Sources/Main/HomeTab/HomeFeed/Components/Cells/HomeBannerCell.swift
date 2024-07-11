@@ -22,6 +22,7 @@ class HomeBannerCell: UICollectionViewCell {
   struct ViewModel: Hashable {
     let id: String
     let imageURL: String?
+    let type: HomeFeedTab
   }
 
 
@@ -32,7 +33,7 @@ class HomeBannerCell: UICollectionViewCell {
   }
 
   let imageView = UIImageView().then {
-    $0.image = DesignSystemAsset.bannerDefault.image
+    $0.image = DesignSystemAsset.bannerRecentlyDefault.image
   }
 
 
@@ -59,6 +60,13 @@ class HomeBannerCell: UICollectionViewCell {
   func configure(viewModel: ViewModel) {
     if let url = viewModel.imageURL {
       imageView.sd_setImage(with: URL(string: url))
+    }
+
+    switch viewModel.type {
+    case .noRead:
+      imageView.image = DesignSystemAsset.bannerNoReadDefault.image
+    case .recentlySaved:
+      imageView.image = DesignSystemAsset.bannerRecentlyDefault.image
     }
   }
 

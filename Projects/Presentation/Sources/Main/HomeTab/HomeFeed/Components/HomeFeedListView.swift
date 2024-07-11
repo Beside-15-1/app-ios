@@ -38,6 +38,10 @@ class HomeFeedListView: UIView {
     $0.contentInset = .init(top: 0, left: 0, bottom: 60.0, right: 0)
   }
 
+  private let recentlyEmptyView = UIView()
+
+  private let noReadEmptyView = UIView()
+
 
   // MARK: Properties
 
