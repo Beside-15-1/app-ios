@@ -52,7 +52,6 @@ final class ShareViewReactor: Reactor {
   let initialState: State
 
   private let repository: Repository = .init()
-  private let fetchThumbnailUseCase = FetchThumbnailUseCase(metadataProvider: .init())
 
 
   // MARK: initializing
@@ -166,7 +165,7 @@ extension ShareViewReactor {
   }
 
   private func fetchThumbnailAndCreateLink(url: URL) -> Observable<Mutation> {
-    fetchThumbnailUseCase.execute(url: url)
+    repository.fetchThumbnail(url: url.absoluteString)
       .asObservable()
       .flatMap { [weak self] thumbnail -> Observable<Mutation> in
         guard let self else { return .empty() }

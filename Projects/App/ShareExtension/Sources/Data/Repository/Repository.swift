@@ -109,4 +109,12 @@ class Repository {
       .map(FolderDTO.self)
       .map { $0.toDomain() }
   }
+
+  func fetchThumbnail(url: String) -> Single<Thumbnail> {
+    let target = API.fetchThumbnail(url: url)
+
+    return networking.request(target: target)
+      .map(ThumbnailResponse.self)
+      .map { $0.toDomain() }
+  }
 }

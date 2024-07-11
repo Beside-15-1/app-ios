@@ -20,6 +20,7 @@ enum API {
   case updateTagList([String])
   case deleteTag(String)
   case createFolder(CreateFolderRequest)
+  case fetchThumbnail(url: String)
 }
 
 extension API: BaseTargetType {
@@ -49,6 +50,9 @@ extension API: BaseTargetType {
 
     case .createFolder:
       return "link-books"
+
+    case .fetchThumbnail:
+      return "links/thumbnail"
     }
   }
 
@@ -76,6 +80,9 @@ extension API: BaseTargetType {
       return .delete
 
     case .createFolder:
+      return .post
+
+    case .fetchThumbnail:
       return .post
     }
   }
@@ -105,6 +112,9 @@ extension API: BaseTargetType {
 
     case .createFolder(let request):
       return .requestJSONEncodable(request)
+
+    case .fetchThumbnail(let url):
+      return .requestJSONEncodable(["url": url])
     }
   }
 }
