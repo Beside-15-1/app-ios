@@ -52,17 +52,20 @@ final class HomeFeedViewReactor: Reactor {
 
   private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let readLinkUseCase: ReadLinkUseCase
+  private let fetchFolderListUseCase: FetchFolderListUseCase
 
 
   // MARK: initializing
 
   init(
     fetchLinkListUseCase: FetchAllLinksUseCase,
-    readLinkUseCase: ReadLinkUseCase
+    readLinkUseCase: ReadLinkUseCase,
+    fetchFolderListUseCase: FetchFolderListUseCase
   ) {
     defer { _ = self.state }
     self.fetchLinkListUseCase = fetchLinkListUseCase
     self.readLinkUseCase = readLinkUseCase
+    self.fetchFolderListUseCase = fetchFolderListUseCase
     self.initialState = State()
   }
 
@@ -77,6 +80,7 @@ final class HomeFeedViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return .concat([
+        syncFolderList(),
         fetchLinks(tab: currentState.tab),
         .just(Mutation.updateSectionViewModels),
       ])
@@ -267,5 +271,11 @@ extension HomeFeedViewReactor {
           ))),
         ])
       }
+  }
+
+  private func syncFolderList() -> Observable<Mutation> {
+    fetchFolderListUseCase.execute(sort: .createAt)
+      .asObservable()
+      .flatMap { _ in Observable<Mutation>.empty() }
   }
 }

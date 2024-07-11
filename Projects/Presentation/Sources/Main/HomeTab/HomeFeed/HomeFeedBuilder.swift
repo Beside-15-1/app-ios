@@ -5,14 +5,16 @@
 //  Created by 박천송 on 6/21/24.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 import Domain
 import PresentationInterface
 
 struct HomeFeedDependency {
   let linkRepository: LinkRepository
+  let folderRepository: FolderRepository
+  let folderDetailBuilder: FolderDetailBuildable
 }
 
 final class HomeFeedBuilder: HomeFeedBuildable {
@@ -25,12 +27,20 @@ final class HomeFeedBuilder: HomeFeedBuildable {
 
   func build(payload: HomeFeedPayload) -> UIViewController {
     let reactor = HomeFeedViewReactor(
-      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
-      readLinkUseCase: ReadLinkUseCaseImpl(linkRepository: dependency.linkRepository)
+      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
+      readLinkUseCase: ReadLinkUseCaseImpl(
+        linkRepository: dependency.linkRepository
+      ),
+      fetchFolderListUseCase: FetchFolderListUseCaseImpl(
+        folderRepository: dependency.folderRepository
+      )
     )
 
     let viewController = HomeFeedViewController(
-      reactor: reactor
+      reactor: reactor,
+      folderDetailBuilder: dependency.folderDetailBuilder
     )
 
     return viewController

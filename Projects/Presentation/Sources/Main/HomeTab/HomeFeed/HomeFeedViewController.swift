@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import DesignSystem
+import PresentationInterface
 
 
 final class HomeFeedViewController: UIViewController, StoryboardView {
@@ -24,11 +25,17 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let folderDetailBuilder: FolderDetailBuildable
+
 
   // MARK: Initializing
 
-  init(reactor: HomeFeedViewReactor) {
+  init(
+    reactor: HomeFeedViewReactor,
+    folderDetailBuilder: FolderDetailBuildable
+  ) {
     defer { self.reactor = reactor }
+    self.folderDetailBuilder = folderDetailBuilder
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -106,5 +113,17 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
     reactor?.action.onNext(.readLink(id))
   }
 
-  func homeFeedListViewDidSelectMore() {}
+  func homeFeedListViewDidSelectMore() {
+    let folderDetail = folderDetailBuilder.build(
+      payload: .init(
+        folderList: [],
+        selectedFolder: .all()
+      )
+    )
+
+    tabBarController?.selectedViewController?
+      .navigationController?.pushViewController(
+        folderDetail, animated: true
+      )
+  }
 }
