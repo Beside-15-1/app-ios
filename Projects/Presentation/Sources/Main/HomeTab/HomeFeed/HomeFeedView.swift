@@ -15,6 +15,9 @@ import DesignSystem
 protocol HomeFeedViewDelegate: AnyObject {
   func homeFeedTabViewRecentlySavedButtonTapped()
   func homeFeedTabViewNoReadButtonTapped()
+  func homeFeedListViewDidSelectBanner()
+  func homeFeedListViewDidSelectLink(id: String, url: String?)
+  func homeFeedListViewDidSelectMore()
 }
 
 final class HomeFeedView: UIView {
@@ -45,6 +48,7 @@ final class HomeFeedView: UIView {
     defineLayout()
 
     tabView.delegate = self
+    listView.delegate = self
   }
 
   required init?(coder: NSCoder) {
@@ -110,5 +114,22 @@ extension HomeFeedView: HomeFeedTabViewDelegate {
 
   func homeFeedTabViewRecentlySavedButtonTapped() {
     delegate?.homeFeedTabViewRecentlySavedButtonTapped()
+  }
+}
+
+
+// MARK: HomeFeedListViewDelegate
+
+extension HomeFeedView: HomeFeedListViewDelegate {
+  func didSelectBanner(_ listView: HomeFeedListView) {
+    delegate?.homeFeedListViewDidSelectBanner()
+  }
+
+  func didSelectMoreButton(_ listView: HomeFeedListView) {
+    delegate?.homeFeedListViewDidSelectMore()
+  }
+
+  func didSelectLink(_ listView: HomeFeedListView, id: String, url: String?) {
+    delegate?.homeFeedListViewDidSelectLink(id: id, url: url)
   }
 }

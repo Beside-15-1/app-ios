@@ -22,6 +22,7 @@ class HomeFeedCell: UICollectionViewCell {
   struct ViewModel: Hashable {
     let id: String
     let imageURL: String?
+    let linkURL: String?
     let title: String?
     let tagList: [Tag]
     let date: String

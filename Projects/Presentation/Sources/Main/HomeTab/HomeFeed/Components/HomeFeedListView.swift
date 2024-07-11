@@ -15,6 +15,12 @@ import DesignSystem
 import Domain
 import PBLog
 
+protocol HomeFeedListViewDelegate: AnyObject {
+  func didSelectBanner(_ listView: HomeFeedListView)
+  func didSelectMoreButton(_ listView: HomeFeedListView)
+  func didSelectLink(_ listView: HomeFeedListView, id: String, url: String?)
+}
+
 class HomeFeedListView: UIView {
 
   typealias Section = HomeFeedModel.Section
@@ -46,6 +52,8 @@ class HomeFeedListView: UIView {
 
   private let sectionProvider = HomeFeedSectionProvider()
   private lazy var diffableDataSource = self.collectionViewDiffableDataSource()
+
+  weak var delegate: HomeFeedListViewDelegate?
 
 
   // MARK: Initializing
@@ -170,11 +178,11 @@ extension HomeFeedListView: UICollectionViewDelegate {
 
     switch item {
     case .banner:
-      return
-    case .link:
-      return
+      delegate?.didSelectBanner(self)
+    case .link(let model):
+      delegate?.didSelectLink(self, id: model.id, url: model.linkURL)
     case .more:
-      return
+      delegate?.didSelectMoreButton(self)
     }
   }
 

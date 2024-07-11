@@ -22,6 +22,8 @@ final class HomeFeedViewReactor: Reactor {
     case viewDidLoad
     case recentlySavedButtonTapped
     case noReadButtonTapped
+    case readLink(String)
+    case refresh
   }
 
   enum Mutation {
@@ -49,15 +51,18 @@ final class HomeFeedViewReactor: Reactor {
   let initialState: State
 
   private let fetchLinkListUseCase: FetchAllLinksUseCase
+  private let readLinkUseCase: ReadLinkUseCase
 
 
   // MARK: initializing
 
   init(
-    fetchLinkListUseCase: FetchAllLinksUseCase
+    fetchLinkListUseCase: FetchAllLinksUseCase,
+    readLinkUseCase: ReadLinkUseCase
   ) {
     defer { _ = self.state }
     self.fetchLinkListUseCase = fetchLinkListUseCase
+    self.readLinkUseCase = readLinkUseCase
     self.initialState = State()
   }
 
@@ -89,6 +94,31 @@ final class HomeFeedViewReactor: Reactor {
         fetchLinks(tab: .noRead),
         .just(Mutation.updateSectionViewModels),
       ])
+
+    case .readLink(let id):
+      return readLinkUseCase.execute(id: id)
+        .asObservable()
+        .do(onNext: { [weak self] in
+          self?.action.onNext(.refresh)
+        })
+        .flatMap { _ in Observable<Mutation>.empty() }
+
+    case .refresh:
+      switch currentState.tab {
+      case .recentlySaved:
+        return .concat([
+          .just(Mutation.setTab(.recentlySaved)),
+          fetchLinks(tab: .recentlySaved),
+          .just(Mutation.updateSectionViewModels),
+        ])
+
+      case .noRead:
+        return .concat([
+          .just(Mutation.setTab(.noRead)),
+          fetchLinks(tab: .noRead),
+          .just(Mutation.updateSectionViewModels),
+        ])
+      }
     }
   }
 
@@ -99,12 +129,9 @@ final class HomeFeedViewReactor: Reactor {
     case .updateSectionViewModels:
       var sectionViewModels: [SectionViewModel<HomeFeedModel.Section, HomeFeedModel.Item>] = []
 
-      // TODO: Banner Request API 나오면 주석 해제
       if let bannerSectionViewModel = newState.bannerSectionViewModel {
         sectionViewModels.append(bannerSectionViewModel)
       }
-
-//      sectionViewModels.append(newState.bannerSectionViewModel)
 
       if let linkSectionViewModel = newState.linkSectionViewModel {
         sectionViewModels.append(linkSectionViewModel)
@@ -178,6 +205,7 @@ extension HomeFeedViewReactor {
               HomeFeedModel.Item.link(.init(
                 id: link.id,
                 imageURL: link.thumbnailURL,
+                linkURL: link.url,
                 title: link.title,
                 tagList: link.tags,
                 date: link.createdAt
@@ -226,6 +254,7 @@ extension HomeFeedViewReactor {
               HomeFeedModel.Item.link(.init(
                 id: link.id,
                 imageURL: link.thumbnailURL,
+                linkURL: link.url,
                 title: link.title,
                 tagList: link.tags,
                 date: link.createdAt

@@ -25,7 +25,8 @@ final class HomeFeedBuilder: HomeFeedBuildable {
 
   func build(payload: HomeFeedPayload) -> UIViewController {
     let reactor = HomeFeedViewReactor(
-      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository)
+      fetchLinkListUseCase: FetchAllLinksUseCaseImpl(linkRepository: dependency.linkRepository),
+      readLinkUseCase: ReadLinkUseCaseImpl(linkRepository: dependency.linkRepository)
     )
 
     let viewController = HomeFeedViewController(

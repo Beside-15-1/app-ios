@@ -91,4 +91,20 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
   func homeFeedTabViewRecentlySavedButtonTapped() {
     reactor?.action.onNext(.recentlySavedButtonTapped)
   }
+
+  func homeFeedListViewDidSelectBanner() {}
+
+  func homeFeedListViewDidSelectLink(id: String, url: String?) {
+    guard let url = URL(string: url ?? "") else {
+      return
+    }
+
+    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:]
+
+    UIApplication.shared.open(url, options: options)
+
+    reactor?.action.onNext(.readLink(id))
+  }
+
+  func homeFeedListViewDidSelectMore() {}
 }
