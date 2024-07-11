@@ -203,7 +203,7 @@ extension HomeFeedViewReactor {
         let linkList = noReadLinkList[noReadLinkList.startIndex..<lastIndex]
 
         // 링크 자체가 존재 X
-        if list.count == 0 {
+        if noReadLinkList.count == 0 {
           return .concat([
             .just(Mutation.setBannerSectionViewModel(.init(
               section: .init(id: .banner, title: "banner"),

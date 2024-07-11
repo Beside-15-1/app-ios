@@ -36,11 +36,10 @@ class HomeFeedListView: UIView {
     $0.showsVerticalScrollIndicator = false
     $0.delegate = self
     $0.contentInset = .init(top: 0, left: 0, bottom: 60.0, right: 0)
+    $0.backgroundView = emptyView
   }
 
-  private let recentlyEmptyView = UIView()
-
-  private let noReadEmptyView = UIView()
+  private let emptyView = HomeFeedEmptyView()
 
 
   // MARK: Properties
@@ -77,6 +76,9 @@ class HomeFeedListView: UIView {
       animatingDifferences: animatingDifferences,
       completion: completion
     )
+
+    collectionView.backgroundView?.isHidden = sections.count > 1
+    collectionView.bounces = sections.count > 1
   }
 
   func updateSection(
@@ -140,6 +142,16 @@ class HomeFeedListView: UIView {
   }
 
 
+  // MARK: Configuring
+  
+  func configureEmptyView(tab: HomeFeedTab) {
+    emptyView.isHidden = true
+    emptyView.configureEmptyView(tab: tab)
+  }
+
+
+  // MARK: Layout
+
   private func defineLayout() {
     addSubview(collectionView)
 
@@ -152,7 +164,18 @@ class HomeFeedListView: UIView {
 
 extension HomeFeedListView: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//    delegate?.listViewItemDidTapped(at: indexPath.row)
+    guard let item = self.diffableDataSource.itemIdentifier(for: indexPath) else {
+      return
+    }
+
+    switch item {
+    case .banner:
+      return
+    case .link:
+      return
+    case .more:
+      return
+    }
   }
 
   func scrollViewDidScroll(_ scrollView: UIScrollView) {

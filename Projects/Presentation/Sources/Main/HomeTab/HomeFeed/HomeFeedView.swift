@@ -62,6 +62,7 @@ final class HomeFeedView: UIView {
 
   func configureTab(tab: HomeFeedTab) {
     tabView.configureTab(tab: tab)
+    listView.configureEmptyView(tab: tab)
   }
 
 
