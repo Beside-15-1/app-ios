@@ -142,6 +142,7 @@ final class FolderDetailViewController: UIViewController, StoryboardView {
       .disposed(by: disposeBag)
 
     contentView.listView.refreshControl.rx.controlEvent(.valueChanged)
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
       .map { Reactor.Action.refresh }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)

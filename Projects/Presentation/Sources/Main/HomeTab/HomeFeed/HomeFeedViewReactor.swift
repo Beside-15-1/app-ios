@@ -32,6 +32,7 @@ final class HomeFeedViewReactor: Reactor {
     case setLinkSectionViewModel(HomeFeedSectionViewModel?)
     case setMoreSectionViewModel(HomeFeedSectionViewModel?)
     case setTab(HomeFeedTab)
+    case endRefreshing
   }
 
   struct State {
@@ -42,6 +43,8 @@ final class HomeFeedViewReactor: Reactor {
     var moreSectionViewModel: HomeFeedSectionViewModel?
 
     var tab: HomeFeedTab = .recentlySaved
+
+    @Pulse var endRefreshing: Bool = false
   }
 
   // MARK: Properties
@@ -114,6 +117,7 @@ final class HomeFeedViewReactor: Reactor {
           .just(Mutation.setTab(.recentlySaved)),
           fetchLinks(tab: .recentlySaved),
           .just(Mutation.updateSectionViewModels),
+          .just(Mutation.endRefreshing),
         ])
 
       case .noRead:
@@ -121,6 +125,7 @@ final class HomeFeedViewReactor: Reactor {
           .just(Mutation.setTab(.noRead)),
           fetchLinks(tab: .noRead),
           .just(Mutation.updateSectionViewModels),
+          .just(Mutation.endRefreshing),
         ])
       }
     }
@@ -158,6 +163,9 @@ final class HomeFeedViewReactor: Reactor {
 
     case .setTab(let homeFeedTab):
       newState.tab = homeFeedTab
+
+    case .endRefreshing:
+      newState.endRefreshing = true
     }
 
     return newState

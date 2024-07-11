@@ -53,6 +53,8 @@ class MyFolderListView: UIView {
     $0.textAlignment = .center
   }
 
+  let refreshControl = UIRefreshControl()
+
 
   // MARK: Properties
 
@@ -75,6 +77,7 @@ class MyFolderListView: UIView {
     backgroundColor = .paperWhite
 
     defineLayout()
+    collectionView.addSubview(refreshControl)
   }
 
   required init?(coder: NSCoder) {

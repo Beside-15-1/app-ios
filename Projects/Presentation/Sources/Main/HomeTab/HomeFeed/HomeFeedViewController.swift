@@ -90,6 +90,13 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
         self.contentView.configureDataSource(by: sectionViewModels)
       }
       .disposed(by: disposeBag)
+
+    reactor.pulse(\.$endRefreshing)
+      .filter { $0 }
+      .subscribe(with: self) { `self`, _ in
+        self.contentView.endRefreshing()
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -149,6 +156,10 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
     ))
 
     presentPaperSheet(vc)
+  }
+
+  func pullToRefresh() {
+    reactor?.action.onNext(.refresh)
   }
 }
 

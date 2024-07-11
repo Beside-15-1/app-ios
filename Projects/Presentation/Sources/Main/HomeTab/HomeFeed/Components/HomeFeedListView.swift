@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+import RxSwift
 import SnapKit
 import Then
 
@@ -20,6 +21,7 @@ protocol HomeFeedListViewDelegate: AnyObject {
   func didSelectMoreButton(_ listView: HomeFeedListView)
   func didSelectLink(_ listView: HomeFeedListView, id: String, url: String?)
   func scrollViewDidScroll(_ scrollView: UIScrollView)
+  func pullToRefresh()
 }
 
 class HomeFeedListView: UIView {
@@ -48,6 +50,8 @@ class HomeFeedListView: UIView {
 
   private let emptyView = HomeFeedEmptyView()
 
+  private let refreshControl = UIRefreshControl()
+
 
   // MARK: Properties
 
@@ -55,6 +59,8 @@ class HomeFeedListView: UIView {
   private lazy var diffableDataSource = self.collectionViewDiffableDataSource()
 
   weak var delegate: HomeFeedListViewDelegate?
+
+  private let disposeBag = DisposeBag()
 
 
   // MARK: Initializing
@@ -65,6 +71,13 @@ class HomeFeedListView: UIView {
     backgroundColor = .gray300
 
     defineLayout()
+
+    refreshControl.rx.controlEvent(.valueChanged)
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .subscribe(onNext: { [weak self] _ in
+        self?.delegate?.pullToRefresh()
+      })
+      .disposed(by: disposeBag)
   }
 
   required init?(coder: NSCoder) {
@@ -79,9 +92,9 @@ class HomeFeedListView: UIView {
     animatingDifferences: Bool = true,
     completion: (() -> Void)? = nil
   ) {
-    self.sectionProvider.updateSectionViewModels(sections)
-    self.diffableDataSource.apply(
-      self.sectionProvider.snapshot(),
+    sectionProvider.updateSectionViewModels(sections)
+    diffableDataSource.apply(
+      sectionProvider.snapshot(),
       animatingDifferences: animatingDifferences,
       completion: completion
     )
@@ -95,12 +108,12 @@ class HomeFeedListView: UIView {
     animatingDifferences: Bool = true,
     completion: (() -> Void)? = nil
   ) {
-    guard self.sectionProvider.updateSection(section) else {
+    guard sectionProvider.updateSection(section) else {
       return
     }
 
-    self.diffableDataSource.apply(
-      self.sectionProvider.snapshot(),
+    diffableDataSource.apply(
+      sectionProvider.snapshot(),
       animatingDifferences: animatingDifferences,
       completion: completion
     )
@@ -152,10 +165,14 @@ class HomeFeedListView: UIView {
 
 
   // MARK: Configuring
-  
+
   func configureEmptyView(tab: HomeFeedTab) {
     emptyView.isHidden = true
     emptyView.configureEmptyView(tab: tab)
+  }
+
+  func endRefreshing() {
+    refreshControl.endRefreshing()
   }
 
 
@@ -167,13 +184,15 @@ class HomeFeedListView: UIView {
     collectionView.snp.makeConstraints {
       $0.edges.equalToSuperview()
     }
+
+    collectionView.addSubview(refreshControl)
   }
 }
 
 
 extension HomeFeedListView: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    guard let item = self.diffableDataSource.itemIdentifier(for: indexPath) else {
+    guard let item = diffableDataSource.itemIdentifier(for: indexPath) else {
       return
     }
 

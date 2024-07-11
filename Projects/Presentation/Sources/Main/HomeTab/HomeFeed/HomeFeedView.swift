@@ -19,6 +19,7 @@ protocol HomeFeedViewDelegate: AnyObject {
   func homeFeedListViewDidSelectLink(id: String, url: String?)
   func homeFeedListViewDidSelectMore()
   func homeFeedFABButtonTapped()
+  func pullToRefresh()
 }
 
 final class HomeFeedView: UIView {
@@ -74,6 +75,10 @@ final class HomeFeedView: UIView {
   func configureTab(tab: HomeFeedTab) {
     tabView.configureTab(tab: tab)
     listView.configureEmptyView(tab: tab)
+  }
+
+  func endRefreshing() {
+    listView.endRefreshing()
   }
 
 
@@ -152,5 +157,9 @@ extension HomeFeedView: HomeFeedListViewDelegate {
     } else {
       fab.expand()
     }
+  }
+
+  func pullToRefresh() {
+    delegate?.pullToRefresh()
   }
 }

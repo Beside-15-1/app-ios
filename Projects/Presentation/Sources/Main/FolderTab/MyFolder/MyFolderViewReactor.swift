@@ -24,12 +24,14 @@ final class MyFolderViewReactor: Reactor {
     case createFolderSucceed
     case deleteFolder(Folder)
     case updateSort(FolderSortModel)
+    case refresh
   }
 
   enum Mutation {
     case setFolderList([Folder])
     case setFolderViewModel(MyFolderSectionViewModel)
     case setSortType(FolderSortModel)
+    case setEndRefreshing
   }
 
   struct State {
@@ -37,6 +39,8 @@ final class MyFolderViewReactor: Reactor {
     var folderViewModel: MyFolderSectionViewModel?
 
     var folderSortType: FolderSortModel = .create
+
+    @Pulse var endRefreshing = false
   }
 
   // MARK: Properties
@@ -82,7 +86,7 @@ final class MyFolderViewReactor: Reactor {
       var newFolderList = getFolderListUseCase.execute().folders
       newFolderList.insert(.all(count: getFolderListUseCase.execute().totalLinkCount), at: 0)
 
-      let viewModel = self.makeViewModel(withFolderList: newFolderList)
+      let viewModel = makeViewModel(withFolderList: newFolderList)
 
       return .concat([
         .just(Mutation.setFolderList(newFolderList)),
@@ -125,6 +129,23 @@ final class MyFolderViewReactor: Reactor {
 
     case .updateSort(let type):
       return updateSort(type: type)
+
+    case .refresh:
+      let sortType: FolderSortingType
+
+      switch currentState.folderSortType {
+      case .create:
+        sortType = .createAt
+      case .naming:
+        sortType = .title
+      case .update:
+        sortType = .lastSavedAt
+      }
+
+      return .concat([
+        fetchFolderList(sort: sortType),
+        .just(Mutation.setEndRefreshing),
+      ])
     }
   }
 
@@ -140,6 +161,9 @@ final class MyFolderViewReactor: Reactor {
 
     case .setSortType(let type):
       newState.folderSortType = type
+
+    case .setEndRefreshing:
+      newState.endRefreshing = true
     }
 
     return newState
@@ -160,7 +184,7 @@ extension MyFolderViewReactor {
         var newFolderList = folderList.folders
         newFolderList.insert(.all(count: folderList.totalLinkCount), at: 0)
 
-        let viewModel = self.makeViewModel(withFolderList: newFolderList)
+        let viewModel = makeViewModel(withFolderList: newFolderList)
 
         return .concat([
           .just(Mutation.setFolderList(newFolderList)),
@@ -193,7 +217,7 @@ extension MyFolderViewReactor {
         guard let self else { return .empty() }
         let sortType: FolderSortingType
 
-        switch self.currentState.folderSortType {
+        switch currentState.folderSortType {
         case .create:
           sortType = .createAt
         case .naming:
@@ -202,7 +226,7 @@ extension MyFolderViewReactor {
           sortType = .lastSavedAt
         }
 
-        return self.fetchFolderList(sort: sortType)
+        return fetchFolderList(sort: sortType)
       }
   }
 
@@ -222,7 +246,7 @@ extension MyFolderViewReactor {
 
     return .concat([
       .just(Mutation.setSortType(type)),
-      fetch
+      fetch,
     ])
   }
 }
