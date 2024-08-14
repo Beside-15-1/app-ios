@@ -101,6 +101,8 @@ class HomeFeedListView: UIView {
 
     collectionView.backgroundView?.isHidden = sections.count > 1
     collectionView.bounces = sections.count > 1
+
+    emptyView.isHidden = sectionProvider.snapshot().numberOfItems <= 1 ? false : true
   }
 
   func updateSection(
