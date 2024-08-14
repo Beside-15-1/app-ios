@@ -151,13 +151,13 @@ class HomeFeedListView: UIView {
           cell.configure(viewModel: viewModel)
         }
 
-      case .more(let count):
+      case .more(let viewModel):
         return collectionView.dequeueReusableCell(
           withReuseIdentifier: HomeFeedMoreCell.identifier,
           for: indexPath
         ).then {
           guard let cell = $0 as? HomeFeedMoreCell else { return }
-          cell.configureCount(count: count)
+          cell.configure(viewModel: viewModel)
         }
       }
     }

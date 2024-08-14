@@ -149,9 +149,6 @@ class HomeFeedCell: UICollectionViewCell {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-
-    print("UIScreen.main.bounds.width: \(UIScreen.main.bounds.width - 40)")
-    print("width: \(imageView.frame.width) height: \(imageView.frame.height)")
   }
 
   override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes)

@@ -221,7 +221,7 @@ extension HomeFeedViewReactor {
               ? nil
               : .init(
                 section: .init(id: .more, title: "more"),
-                items: [.more(list.count)]
+                items: [.more(.init(linkCount: list.count, tab: .recentlySaved))]
               )
           )),
         ])
@@ -265,7 +265,7 @@ extension HomeFeedViewReactor {
               ? nil
               : .init(
                 section: .init(id: .more, title: "more"),
-                items: [.more(list.count)]
+                items: [.more(.init(linkCount: list.count, tab: .noRead))]
               )
           )),
         ])

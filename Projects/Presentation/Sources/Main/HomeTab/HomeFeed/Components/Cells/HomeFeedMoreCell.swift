@@ -16,6 +16,11 @@ import DesignSystem
 
 class HomeFeedMoreCell: UICollectionViewCell {
 
+  struct ViewModel {
+    let linkCount: Int
+    let tab: HomeFeedTab
+  }
+
   static let identifier = "HomeFeedMoreCell"
 
   // MARK: UI
@@ -51,14 +56,14 @@ class HomeFeedMoreCell: UICollectionViewCell {
 
   // MARK: Configure
 
-  func configureCount(count: Int) {
-    if count > 0 {
-      titleLabel.attributedText = "저장한 링크 \(count)+개 모두 보기".styled(
-        font: .bodyBold,
-        color: .gray700
-      )
-    } else {
-      titleLabel.attributedText = "저장한 링크 모두 보기".styled(font: .bodyBold, color: .gray700)
+  func configure(viewModel: ViewModel) {
+    switch viewModel.tab {
+    case .noRead:
+      titleLabel.attributedText = "저장한 링크 \(viewModel.linkCount)개 모두보기"
+        .styled(font: .bodyBold, color: .gray700)
+    case .recentlySaved:
+      titleLabel.attributedText = "읽지 않은 링크 \(viewModel.linkCount)개 모두보기"
+        .styled(font: .bodyBold, color: .gray700)
     }
   }
 
