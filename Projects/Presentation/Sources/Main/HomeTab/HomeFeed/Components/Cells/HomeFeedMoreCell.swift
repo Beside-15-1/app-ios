@@ -16,7 +16,7 @@ import DesignSystem
 
 class HomeFeedMoreCell: UICollectionViewCell {
 
-  struct ViewModel {
+  struct ViewModel: Equatable {
     let linkCount: Int
     let tab: HomeFeedTab
   }
