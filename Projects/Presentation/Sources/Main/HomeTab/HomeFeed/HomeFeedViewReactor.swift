@@ -44,7 +44,7 @@ final class HomeFeedViewReactor: Reactor {
 
     var tab: HomeFeedTab = .recentlySaved
 
-    @Pulse var endRefreshing: Bool = false
+    @Pulse var endRefreshing = false
   }
 
   // MARK: Properties
@@ -194,40 +194,36 @@ extension HomeFeedViewReactor {
         let lastIndex = list.count < 30 ? list.endIndex : list.index(0, offsetBy: 30)
         let linkList = list[list.startIndex..<lastIndex]
 
-        // 링크 자체가 존재 X
-        if list.count == 0 {
-          return .concat([
-            .just(Mutation.setBannerSectionViewModel(.init(
-              section: .init(id: .banner, title: "banner"),
-              items: [.banner(.init(id: "banner", imageURL: nil, type: .recentlySaved))]
-            ))),
-            .just(Mutation.setLinkSectionViewModel(nil)),
-            .just(Mutation.setMoreSectionViewModel(nil)),
-          ])
-        }
-
         return .concat([
           .just(Mutation.setBannerSectionViewModel(.init(
             section: .init(id: .banner, title: "banner"),
             items: [.banner(.init(id: "banner", imageURL: nil, type: .recentlySaved))]
           ))),
-          .just(Mutation.setLinkSectionViewModel(.init(
-            section: .init(id: .normal, title: "normal"),
-            items: linkList.map { link in
-              HomeFeedModel.Item.link(.init(
-                id: link.id,
-                imageURL: link.thumbnailURL,
-                linkURL: link.url,
-                title: link.title,
-                tagList: link.tags,
-                date: link.createdAt
-              ))
-            }
-          ))),
-          .just(Mutation.setMoreSectionViewModel(.init(
-            section: .init(id: .more, title: "more"),
-            items: [.more(list.count - linkList.count)]
-          ))),
+          .just(Mutation.setLinkSectionViewModel(
+            list.count > 0
+              ? .init(
+                section: .init(id: .normal, title: "normal"),
+                items: linkList.map { link in
+                  HomeFeedModel.Item.link(.init(
+                    id: link.id,
+                    imageURL: link.thumbnailURL,
+                    linkURL: link.url,
+                    title: link.title,
+                    tagList: link.tags,
+                    date: link.createdAt
+                  ))
+                }
+              )
+              : nil
+          )),
+          .just(Mutation.setMoreSectionViewModel(
+            list.count < 31
+              ? nil
+              : .init(
+                section: .init(id: .more, title: "more"),
+                items: [.more(list.count)]
+              )
+          )),
         ])
       }
   }
@@ -242,41 +238,36 @@ extension HomeFeedViewReactor {
           : noReadLinkList.index(0, offsetBy: 30)
         let linkList = noReadLinkList[noReadLinkList.startIndex..<lastIndex]
 
-        // 링크 자체가 존재 X
-        if noReadLinkList.count == 0 {
-          return .concat([
-            .just(Mutation.setBannerSectionViewModel(.init(
-              section: .init(id: .banner, title: "banner"),
-              items: [.banner(.init(id: "banner", imageURL: nil, type: .noRead))]
-            ))),
-            .just(Mutation.setLinkSectionViewModel(nil)),
-            .just(Mutation.setMoreSectionViewModel(nil)),
-          ])
-        }
-
-        // 링크 존재 O , 읽지 않은 링크 존재 O
         return .concat([
           .just(Mutation.setBannerSectionViewModel(.init(
             section: .init(id: .banner, title: "banner"),
             items: [.banner(.init(id: "banner", imageURL: nil, type: .noRead))]
           ))),
-          .just(Mutation.setLinkSectionViewModel(.init(
-            section: .init(id: .normal, title: "normal"),
-            items: linkList.map { link in
-              HomeFeedModel.Item.link(.init(
-                id: link.id,
-                imageURL: link.thumbnailURL,
-                linkURL: link.url,
-                title: link.title,
-                tagList: link.tags,
-                date: link.createdAt
-              ))
-            }
-          ))),
-          .just(Mutation.setMoreSectionViewModel(.init(
-            section: .init(id: .more, title: "more"),
-            items: [.more(list.count - linkList.count)]
-          ))),
+          .just(Mutation.setLinkSectionViewModel(
+            list.count > 0
+              ? .init(
+                section: .init(id: .normal, title: "normal"),
+                items: linkList.map { link in
+                  HomeFeedModel.Item.link(.init(
+                    id: link.id,
+                    imageURL: link.thumbnailURL,
+                    linkURL: link.url,
+                    title: link.title,
+                    tagList: link.tags,
+                    date: link.createdAt
+                  ))
+                }
+              )
+              : nil
+          )),
+          .just(Mutation.setMoreSectionViewModel(
+            list.count < 31
+              ? nil
+              : .init(
+                section: .init(id: .more, title: "more"),
+                items: [.more(list.count)]
+              )
+          )),
         ])
       }
   }
