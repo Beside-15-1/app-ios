@@ -113,10 +113,18 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
   }
 
   func homeFeedListViewDidSelectBanner() {
-    guard let url = URL(string: "https://joosum.notion.site/d1bf0517402744ee804c7d645a472610?pvs=4") else {
-      return
+    let url: URL?
+
+    switch reactor?.currentState.tab {
+    case .noRead:
+      url = URL(string: "https://www.notion.so/joosum/a694027a091c44dc87db37c63ae37611?pvs=4")
+    case .recentlySaved:
+      url = URL(string: "https://www.notion.so/joosum/45776b3736494e29b182375cbaa50056?pvs=4")
+    default:
+      url = URL(string: "")
     }
 
+    guard let url else { return }
     let web = webBuilder.build(payload: .init(url: url))
 
     presentPaperSheet(web)
