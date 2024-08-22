@@ -89,7 +89,7 @@ class HomeFeedCell: UICollectionViewCell {
 
     titleLabel.attributedText = viewModel.title?.styled(font: .defaultBold, color: .gray900)
 
-    if let url = viewModel.imageURL {
+    if let url = viewModel.imageURL, !url.isEmpty {
       imageView.sd_setImage(with: URL(string: url))
     }
 
