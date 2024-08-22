@@ -244,7 +244,7 @@ extension HomeFeedViewReactor {
             items: [.banner(.init(id: "banner", imageURL: nil, type: .noRead))]
           ))),
           .just(Mutation.setLinkSectionViewModel(
-            list.count > 0
+            linkList.count > 0
               ? .init(
                 section: .init(id: .normal, title: "normal"),
                 items: linkList.map { link in
@@ -261,11 +261,11 @@ extension HomeFeedViewReactor {
               : nil
           )),
           .just(Mutation.setMoreSectionViewModel(
-            list.count < 31
+            linkList.count < 31
               ? nil
               : .init(
                 section: .init(id: .more, title: "more"),
-                items: [.more(.init(linkCount: list.count, tab: .noRead))]
+                items: [.more(.init(linkCount: linkList.count, tab: .noRead))]
               )
           )),
         ])
