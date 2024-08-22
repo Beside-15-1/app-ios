@@ -59,10 +59,10 @@ class HomeFeedMoreCell: UICollectionViewCell {
   func configure(viewModel: ViewModel) {
     switch viewModel.tab {
     case .noRead:
-      titleLabel.attributedText = "저장한 링크 \(viewModel.linkCount)개 모두보기"
+      titleLabel.attributedText = "읽지 않은 링크 \(viewModel.linkCount)개 모두보기"
         .styled(font: .bodyBold, color: .gray700)
     case .recentlySaved:
-      titleLabel.attributedText = "읽지 않은 링크 \(viewModel.linkCount)개 모두보기"
+      titleLabel.attributedText = "저장한 링크 \(viewModel.linkCount)개 모두보기"
         .styled(font: .bodyBold, color: .gray700)
     }
   }
