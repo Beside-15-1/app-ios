@@ -73,8 +73,7 @@ class HomeFeedCell: UICollectionViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     viewModel = nil
-    imageView.image = nil
-    imageView.sd_cancelCurrentImageLoad()
+    imageView.image = DesignSystemAsset.homeFeedDefault.image
     titleLabel.text = nil
     dateLabel.text = nil
   }
