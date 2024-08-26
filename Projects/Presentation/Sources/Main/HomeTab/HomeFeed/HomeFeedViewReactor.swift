@@ -261,11 +261,11 @@ extension HomeFeedViewReactor {
               : nil
           )),
           .just(Mutation.setMoreSectionViewModel(
-            linkList.count < 31
+            noReadLinkList.count < 31
               ? nil
               : .init(
                 section: .init(id: .more, title: "more"),
-                items: [.more(.init(linkCount: linkList.count, tab: .noRead))]
+                items: [.more(.init(linkCount: noReadLinkList.count, tab: .noRead))]
               )
           )),
         ])
