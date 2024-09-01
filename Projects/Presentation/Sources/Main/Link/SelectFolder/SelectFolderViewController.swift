@@ -98,7 +98,7 @@ extension SelectFolderViewController: PanModalPresentable {
   }
 
   var longFormHeight: PanModalHeight {
-    .contentHeightIgnoringSafeArea(506.0)
+    .contentHeightIgnoringSafeArea(298.0)
   }
 
   var cornerRadius: CGFloat {
