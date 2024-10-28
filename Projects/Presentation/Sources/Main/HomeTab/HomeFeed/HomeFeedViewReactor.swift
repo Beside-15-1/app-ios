@@ -11,6 +11,7 @@ import ReactorKit
 import RxSwift
 
 import Domain
+import PBAnalyticsInterface
 
 final class HomeFeedViewReactor: Reactor {
 
@@ -20,6 +21,7 @@ final class HomeFeedViewReactor: Reactor {
 
   enum Action {
     case viewDidLoad
+    case viewDidAppear
     case recentlySavedButtonTapped
     case noReadButtonTapped
     case readLink(String)
@@ -53,6 +55,8 @@ final class HomeFeedViewReactor: Reactor {
 
   let initialState: State
 
+  private let analytics: PBAnalytics
+
   private let fetchLinkListUseCase: FetchAllLinksUseCase
   private let readLinkUseCase: ReadLinkUseCase
   private let fetchFolderListUseCase: FetchFolderListUseCase
@@ -61,11 +65,13 @@ final class HomeFeedViewReactor: Reactor {
   // MARK: initializing
 
   init(
+    analytics: PBAnalytics,
     fetchLinkListUseCase: FetchAllLinksUseCase,
     readLinkUseCase: ReadLinkUseCase,
     fetchFolderListUseCase: FetchFolderListUseCase
   ) {
     defer { _ = self.state }
+    self.analytics = analytics
     self.fetchLinkListUseCase = fetchLinkListUseCase
     self.readLinkUseCase = readLinkUseCase
     self.fetchFolderListUseCase = fetchFolderListUseCase
@@ -88,7 +94,13 @@ final class HomeFeedViewReactor: Reactor {
         .just(Mutation.updateSectionViewModels),
       ])
 
+    case .viewDidAppear:
+      analytics.log(type: HomeFeedEvent.shown)
+
+      return .empty()
+
     case .recentlySavedButtonTapped:
+      analytics.log(type: HomeFeedEvent.click(component: .tabSaved))
       return .concat([
         .just(Mutation.setTab(.recentlySaved)),
         fetchLinks(tab: .recentlySaved),
@@ -96,6 +108,7 @@ final class HomeFeedViewReactor: Reactor {
       ])
 
     case .noReadButtonTapped:
+      analytics.log(type: HomeFeedEvent.click(component: .tabUnread))
       return .concat([
         .just(Mutation.setTab(.noRead)),
         fetchLinks(tab: .noRead),
@@ -103,6 +116,13 @@ final class HomeFeedViewReactor: Reactor {
       ])
 
     case .readLink(let id):
+      switch currentState.tab {
+      case .noRead:
+        analytics.log(type: HomeFeedEvent.click(component: .listUnreadLink))
+      case .recentlySaved:
+        analytics.log(type: HomeFeedEvent.click(component: .listSavedLink))
+      }
+
       return readLinkUseCase.execute(id: id)
         .asObservable()
         .do(onNext: { [weak self] in
