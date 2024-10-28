@@ -116,6 +116,18 @@ final class MyFolderViewController: UIViewController, StoryboardView {
         self.contentView.myFolderListView.sortButton.text = type.rawValue
       }
       .disposed(by: disposeBag)
+
+    contentView.myFolderListView.refreshControl.rx.controlEvent(.valueChanged)
+      .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+      .map { Reactor.Action.refresh }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+
+    reactor.pulse(\.$endRefreshing)
+      .subscribe(with: self) { `self`, _ in
+        self.contentView.myFolderListView.refreshControl.endRefreshing()
+      }
+      .disposed(by: disposeBag)
   }
 
   private func bindTextField(with reactor: MyFolderViewReactor) {

@@ -138,7 +138,6 @@ final class SelectFolderView: UIView {
       $0.top.equalTo(titleView.snp.bottom).offset(12.0)
       $0.left.right.equalToSuperview().inset(20.0)
       $0.bottom.equalToSuperview().inset(8.0)
-      //      $0.height.equalTo(0)
     }
   }
 

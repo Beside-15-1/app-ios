@@ -14,6 +14,7 @@ final class MainTabBarViewController: UITabBarController {
   // MARK: Properties
 
   private let homeBuilder: HomeBuildable
+  private let homeFeedBuilder: HomeFeedBuildable
   private let folderBuilder: MyFolderBuildable
   private let myPageBuilder: MyPageBuildable
 
@@ -21,10 +22,12 @@ final class MainTabBarViewController: UITabBarController {
 
   init(
     homeBuilder: HomeBuildable,
+    homeFeedBuilder: HomeFeedBuildable,
     folderBuilder: MyFolderBuildable,
     myPageBuilder: MyPageBuildable
   ) {
     self.homeBuilder = homeBuilder
+    self.homeFeedBuilder = homeFeedBuilder
     self.folderBuilder = folderBuilder
     self.myPageBuilder = myPageBuilder
 
@@ -60,7 +63,7 @@ final class MainTabBarViewController: UITabBarController {
   }
 
   private func setViewControllers() {
-    let homeVC = homeBuilder.build(payload: .init())
+    let homeVC = homeFeedBuilder.build(payload: .init())
     let folderVC = folderBuilder.build(payload: .init())
     let myPageVC = myPageBuilder.build(payload: .init())
 

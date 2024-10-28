@@ -90,7 +90,7 @@ final class SelectFolderViewController: UIViewController, StoryboardView {
 
 extension SelectFolderViewController: PanModalPresentable {
   var panScrollable: UIScrollView? {
-    contentView.collectionView
+    nil
   }
 
   var shortFormHeight: PanModalHeight {
@@ -98,7 +98,7 @@ extension SelectFolderViewController: PanModalPresentable {
   }
 
   var longFormHeight: PanModalHeight {
-    .contentHeightIgnoringSafeArea(506.0)
+    .contentHeightIgnoringSafeArea(298.0)
   }
 
   var cornerRadius: CGFloat {
