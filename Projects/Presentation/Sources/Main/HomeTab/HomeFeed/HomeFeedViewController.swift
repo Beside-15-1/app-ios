@@ -12,6 +12,7 @@ import RxSwift
 
 import DesignSystem
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 final class HomeFeedViewController: UIViewController, StoryboardView {
@@ -25,6 +26,8 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   var disposeBag = DisposeBag()
 
+  private let analytics: PBAnalytics
+
   private let folderDetailBuilder: FolderDetailBuildable
   private let webBuilder: PBWebBuildable
   private let createLinkBuilder: CreateLinkBuildable
@@ -34,11 +37,13 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
 
   init(
     reactor: HomeFeedViewReactor,
+    analytics: PBAnalytics,
     folderDetailBuilder: FolderDetailBuildable,
     webBuilder: PBWebBuildable,
     createLinkBuilder: CreateLinkBuildable
   ) {
     defer { self.reactor = reactor }
+    self.analytics = analytics
     self.folderDetailBuilder = folderDetailBuilder
     self.webBuilder = webBuilder
     self.createLinkBuilder = createLinkBuilder
@@ -67,6 +72,11 @@ final class HomeFeedViewController: UIViewController, StoryboardView {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     navigationController?.isNavigationBarHidden = true
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    reactor?.action.onNext(.viewDidAppear)
   }
 
 
@@ -117,8 +127,10 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
 
     switch reactor?.currentState.tab {
     case .noRead:
+      analytics.log(type: HomeFeedEvent.click(component: .bannerUnread))
       url = URL(string: "https://www.notion.so/joosum/a694027a091c44dc87db37c63ae37611?pvs=4")
     case .recentlySaved:
+      analytics.log(type: HomeFeedEvent.click(component: .bannerSaved))
       url = URL(string: "https://www.notion.so/joosum/45776b3736494e29b182375cbaa50056?pvs=4")
     default:
       url = URL(string: "")
@@ -143,6 +155,15 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
   }
 
   func homeFeedListViewDidSelectMore() {
+    switch reactor?.currentState.tab {
+    case .noRead:
+      analytics.log(type: HomeFeedEvent.click(component: .moreUnreadLink))
+    case .recentlySaved:
+      analytics.log(type: HomeFeedEvent.click(component: .moreSavedLink))
+    default:
+      break
+    }
+
     let folderDetail = folderDetailBuilder.build(
       payload: .init(
         folderList: [],
@@ -162,6 +183,8 @@ extension HomeFeedViewController: HomeFeedViewDelegate {
       link: nil,
       folder: nil
     ))
+
+    analytics.log(type: HomeFeedEvent.click(component: .floatingAddLink))
 
     presentPaperSheet(vc)
   }

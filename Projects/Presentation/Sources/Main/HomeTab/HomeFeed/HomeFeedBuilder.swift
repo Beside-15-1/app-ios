@@ -9,9 +9,11 @@ import Foundation
 import UIKit
 
 import Domain
+import PBAnalyticsInterface
 import PresentationInterface
 
 struct HomeFeedDependency {
+  let analytics: PBAnalytics
   let linkRepository: LinkRepository
   let folderRepository: FolderRepository
   let folderDetailBuilder: FolderDetailBuildable
@@ -29,6 +31,7 @@ final class HomeFeedBuilder: HomeFeedBuildable {
 
   func build(payload: HomeFeedPayload) -> UIViewController {
     let reactor = HomeFeedViewReactor(
+      analytics: dependency.analytics,
       fetchLinkListUseCase: FetchAllLinksUseCaseImpl(
         linkRepository: dependency.linkRepository
       ),
@@ -42,6 +45,7 @@ final class HomeFeedBuilder: HomeFeedBuildable {
 
     let viewController = HomeFeedViewController(
       reactor: reactor,
+      analytics: dependency.analytics,
       folderDetailBuilder: dependency.folderDetailBuilder,
       webBuilder: dependency.webBuilder,
       createLinkBuilder: dependency.createLinkBuilder
