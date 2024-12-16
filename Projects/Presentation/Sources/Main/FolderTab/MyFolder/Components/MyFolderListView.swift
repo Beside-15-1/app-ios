@@ -30,7 +30,7 @@ class MyFolderListView: UIView {
 
   let sortButton = TextButton(type: .regular, color: .gray700).then {
     $0.text = "생성순"
-    $0.rightIconImage = DesignSystemAsset.iconDown.image
+    $0.rightIconImage = DesignSystemAsset.iconChevronDown.image
   }
 
   let createFolderButton = TextButton(type: .regular, color: .primary500).then {

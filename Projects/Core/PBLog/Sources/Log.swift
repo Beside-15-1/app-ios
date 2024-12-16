@@ -32,11 +32,11 @@ public enum Log {
     #endif
   }
 
-  public static func api(method: String, _ url: URL?, _ response: JSON) {
+  public static func api(statusCode: Int, method: String, _ url: URL?, _ response: JSON) {
     if let error = response["error"].string {
-      print("\(Date().toString()) [❗️Failure]: Request: [\(method.uppercased())] \(url?.description ?? "")\n Error: \(error)")
+      print("\(Date().toString()) [❗️Failure]: [StatusCode \(statusCode)] [\(method.uppercased())] \(url?.description ?? "")\n Error: \(error)")
     } else {
-      print("\(Date().toString()) [✅Success]: Request: [\(method.uppercased())] \(url?.description ?? "")\n Response: \(response)")
+      print("\(Date().toString()) [✅Success]: [StatusCode \(statusCode)] [\(method.uppercased())] \(url?.description ?? "")\n Response: \(response)")
     }
   }
 

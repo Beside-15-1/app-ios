@@ -319,7 +319,7 @@ extension FolderDetailViewController {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconPop.image.withTintColor(.white),
+      image: DesignSystemAsset.iconChevronLeftLarge.image.withTintColor(.white),
       style: .plain,
       target: self,
       action: #selector(pop)

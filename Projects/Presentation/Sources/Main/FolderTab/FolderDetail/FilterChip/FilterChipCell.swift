@@ -43,7 +43,7 @@ class FilterChipCell: UICollectionViewCell {
   private let titleLabel = UILabel()
 
   private let iconDown = UIImageView().then {
-    $0.image = DesignSystemAsset.iconDown.image.withTintColor(.gray500)
+    $0.image = DesignSystemAsset.iconChevronDown.image.withTintColor(.gray500)
   }
 
 

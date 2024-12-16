@@ -29,7 +29,7 @@ public class MainNavigationBar: UIView {
   }
 
   public let masterDetailButton = UIButton().then {
-    $0.setImage(DesignSystemAsset.iconMasterDetail.image.withTintColor(.white), for: .normal)
+    $0.setImage(DesignSystemAsset.iconHamburger.image.withTintColor(.white), for: .normal)
   }.then {
     $0.isHidden = true
   }

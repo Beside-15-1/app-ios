@@ -42,6 +42,7 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
     flatMap { response in
 
       Log.api(
+        statusCode: response.statusCode,
         method: response.request?.method?.rawValue ?? "",
         response.request?.url,
         JSON(response.data))

@@ -35,7 +35,7 @@ final class SelectFolderButton: UIView {
   }
 
   private let dropDownImage = UIImageView().then {
-    $0.image = DesignSystemAsset.iconDown.image.withTintColor(.gray500)
+    $0.image = DesignSystemAsset.iconChevronDown.image.withTintColor(.gray500)
   }
 
   let createFolderButton = TextButton(type: .regular, color: .primary500).then {

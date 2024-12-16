@@ -60,11 +60,11 @@ class LinkDetailBottomButton: UIControl {
   func configure(type: LinkDetailBottomButtonType) {
     switch type {
     case .delete:
-      icon.image = DesignSystemAsset.iconBin.image.withTintColor(.gray900)
+      icon.image = DesignSystemAsset.iconTrash.image.withTintColor(.gray900)
       text.attributedText = "삭제".styled(font: .captionRegular, color: .gray900)
 
     case .move:
-      icon.image = DesignSystemAsset.iconFolderMove.image.withTintColor(.gray900)
+      icon.image = DesignSystemAsset.iconFolderTransfer.image.withTintColor(.gray900)
       text.attributedText = "폴더 이동".styled(font: .captionRegular, color: .gray900)
 
     case .edit:

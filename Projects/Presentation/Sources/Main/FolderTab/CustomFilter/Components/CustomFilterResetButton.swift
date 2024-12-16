@@ -18,7 +18,7 @@ final class CustomFilterResetButton: UIButton {
   // MARK: UI
 
   private let icon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconReset.image.withTintColor(.gray700)
+    $0.image = DesignSystemAsset.iconResetDefault.image.withTintColor(.gray700)
   }
 
 

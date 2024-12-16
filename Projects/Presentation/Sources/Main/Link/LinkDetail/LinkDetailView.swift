@@ -20,7 +20,7 @@ final class LinkDetailView: UIView {
   private let folderTitleContainer = UIView()
   private let folderTitleLabel = UILabel()
   private let folderTitleIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconFolderOpen.image.withTintColor(.gray600)
+    $0.image = DesignSystemAsset.iconFolder.image.withTintColor(.gray600)
   }
 
   let thumbnail = UIImageView().then {
