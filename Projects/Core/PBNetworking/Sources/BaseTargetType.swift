@@ -13,7 +13,7 @@ public protocol BaseTargetType: TargetType, AccessTokenAuthorizable {
 
 extension BaseTargetType {
     public var baseURL: URL {
-      return URL(string: "http://49.50.165.241/api")!
+      return URL(string: "https://joosum.com/api")!
     }
 
     // HTTP header

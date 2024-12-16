@@ -32,7 +32,7 @@ class HomeFolderView: UIView {
   }
 
   let moveToFolderButton = UIButton().then {
-    $0.setImage(DesignSystemAsset.iconRight.image.withTintColor(.staticBlack), for: .normal)
+    $0.setImage(DesignSystemAsset.iconChevronRight.image.withTintColor(.staticBlack), for: .normal)
   }
 
   private lazy var collectionView = UICollectionView(

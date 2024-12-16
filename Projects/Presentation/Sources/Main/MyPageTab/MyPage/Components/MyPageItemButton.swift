@@ -94,7 +94,7 @@ final class MyPageItemButton: UIControl {
     case .push:
       leftIcon.image = DesignSystemAsset.iconBellOutline.image.withTintColor(.gray900)
       titleLabel.attributedText = "알림 설정".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
@@ -102,15 +102,15 @@ final class MyPageItemButton: UIControl {
     case .tag:
       leftIcon.image = DesignSystemAsset.iconHash.image.withTintColor(.gray900)
       titleLabel.attributedText = "태그 관리".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
 
     case .theme:
-      leftIcon.image = DesignSystemAsset.iconSun.image.withTintColor(.gray900)
+      leftIcon.image = DesignSystemAsset.iconLink.image.withTintColor(.gray900)
       titleLabel.attributedText = "테마 관리".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
@@ -159,7 +159,7 @@ final class MyPageItemButton: UIControl {
     case .notice:
       leftIcon.image = DesignSystemAsset.iconNotice.image.withTintColor(.gray900)
       titleLabel.attributedText = "공지사항".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
@@ -167,15 +167,15 @@ final class MyPageItemButton: UIControl {
     case .service:
       leftIcon.image = DesignSystemAsset.iconFileCheck.image.withTintColor(.gray900)
       titleLabel.attributedText = "서비스 이용약관".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
 
     case .security:
-      leftIcon.image = DesignSystemAsset.iconFolderLock.image.withTintColor(.gray900)
+      leftIcon.image = DesignSystemAsset.iconLock.image.withTintColor(.gray900)
       titleLabel.attributedText = "개인정보 처리방침".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false
@@ -183,7 +183,7 @@ final class MyPageItemButton: UIControl {
     case .cs:
       leftIcon.image = DesignSystemAsset.iconMail.image.withTintColor(.gray900)
       titleLabel.attributedText = "문의하기".styled(font: .defaultBold, color: .gray900)
-      rightIcon.image = DesignSystemAsset.iconRight.image.withTintColor(.gray900)
+      rightIcon.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray900)
       leftIcon.isHidden = false
       titleLabel.isHidden = false
       rightIcon.isHidden = false

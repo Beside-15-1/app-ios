@@ -66,7 +66,7 @@ class MoveFolderCell: UICollectionViewCell {
   }
 
   private let checkIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconCheckFill.image.withTintColor(.white)
+    $0.image = DesignSystemAsset.iconCheckCircleFill.image.withTintColor(.white)
   }
 
   // MARK: Configuring

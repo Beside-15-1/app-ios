@@ -31,7 +31,7 @@ final class TermsOfUseServiceView: UIControl {
   }
 
   let showPageButton = UIButton().then {
-    $0.setImage(DesignSystemAsset.iconRight.image.withTintColor(.gray500), for: .normal)
+    $0.setImage(DesignSystemAsset.iconChevronRight.image.withTintColor(.gray500), for: .normal)
   }
 
   // MARK: Initialize

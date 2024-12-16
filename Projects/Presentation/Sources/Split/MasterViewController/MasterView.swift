@@ -28,7 +28,7 @@ final class MasterView: UIView {
   }
 
   let masterDetailButton = UIButton().then {
-    $0.setImage(DesignSystemAsset.iconMasterDetail.image.withTintColor(.staticBlack), for: .normal)
+    $0.setImage(DesignSystemAsset.iconHamburger.image.withTintColor(.staticBlack), for: .normal)
   }
 
   lazy var tableView = UITableView(frame: .zero, style: .plain).then {

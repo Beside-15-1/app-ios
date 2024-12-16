@@ -136,7 +136,7 @@ extension ManageTagViewController {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconPop.image.withTintColor(.staticBlack),
+      image: DesignSystemAsset.iconChevronLeftLarge.image.withTintColor(.staticBlack),
       style: .plain,
       target: self,
       action: #selector(pop)

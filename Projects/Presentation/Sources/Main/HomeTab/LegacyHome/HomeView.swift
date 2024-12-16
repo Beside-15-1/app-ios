@@ -41,7 +41,7 @@ final class HomeView: UIView {
 
   let viewAllButton = TextButton(type: .regular, color: .white).then {
     $0.text = "전체보기"
-    $0.rightIconImage = DesignSystemAsset.iconRight.image
+    $0.rightIconImage = DesignSystemAsset.iconChevronRight.image
   }
 
   let homeLinkView = HomeLinkView()

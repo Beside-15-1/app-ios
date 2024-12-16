@@ -37,7 +37,7 @@ class HomeFeedMoreCell: UICollectionViewCell {
   }
 
   private let chevronIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconRight.image.withTintColor(.gray700)
+    $0.image = DesignSystemAsset.iconChevronRight.image.withTintColor(.gray700)
   }
 
 

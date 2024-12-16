@@ -186,7 +186,7 @@ public class InputField: UIView {
 
     case .dropdown:
       textField.clearButtonMode = .never
-      rightIcon.image = DesignSystemAsset.iconDown.image.withTintColor(.gray500)
+      rightIcon.image = DesignSystemAsset.iconChevronDown.image.withTintColor(.gray500)
       rightIcon.isHidden = false
       textField.snp.updateConstraints {
         $0.right.equalToSuperview().inset(48.0)

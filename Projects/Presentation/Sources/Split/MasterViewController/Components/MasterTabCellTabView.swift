@@ -35,7 +35,7 @@ class MasterTabCellTabView: UIView {
   private let titleLabel = UILabel()
 
   private let dropdownIcon = UIImageView().then {
-    $0.image = DesignSystemAsset.iconDown.image.withTintColor(.gray600)
+    $0.image = DesignSystemAsset.iconChevronDown.image.withTintColor(.gray600)
   }
 
 

@@ -206,14 +206,14 @@ extension LinkDetailViewController {
 
   private func configureNavigationBar() {
     let backButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconPop.image.withTintColor(.staticBlack),
+      image: DesignSystemAsset.iconChevronLeftLarge.image.withTintColor(.staticBlack),
       style: .plain,
       target: self,
       action: #selector(pop)
     )
 
     let shareButton = UIBarButtonItem(
-      image: DesignSystemAsset.iconUpload.image.withTintColor(.staticBlack),
+      image: DesignSystemAsset.iconDownload.image.withTintColor(.staticBlack),
       style: .plain,
       target: self,
       action: #selector(share)
