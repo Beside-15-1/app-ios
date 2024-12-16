@@ -17,6 +17,8 @@ class CreateLinkSuccessView: UIView {
 
   // MARK: UI
 
+  let titleContainer = UIView()
+
   let titleLabel = UILabel().then {
     $0.attributedText = "링크가 정상적으로 저장되었어요!".styled(font: .defaultSemiBold, color: .black)
   }
@@ -75,15 +77,20 @@ class CreateLinkSuccessView: UIView {
       subtitleLabel.attributedText = "연결 확인 후 다시 시도해주세요.".styled(font: .bodyRegular, color: .black)
       icon.image = DesignSystemAsset.iconNetworkError.image.withTintColor(.primary500)
     }
+
+    titleLabel.sizeToFit()
+    setNeedsLayout()
   }
 
 
   // MARK: Layout
 
   private func defineLayout() {
-    [iconView, titleLabel, subtitleLabel].forEach {
+    [iconView, titleContainer].forEach {
       addSubview($0)
     }
+    titleContainer.addSubview(titleLabel)
+    titleContainer.addSubview(subtitleLabel)
     iconView.addSubview(icon)
 
     iconView.snp.makeConstraints {
@@ -97,17 +104,19 @@ class CreateLinkSuccessView: UIView {
       $0.size.equalTo(18.0)
     }
 
-    titleLabel.snp.makeConstraints {
-      $0.left.equalTo(iconView.snp.right).offset(8.0)
-      $0.top.equalToSuperview().inset(16.0)
+    titleContainer.snp.makeConstraints {
+      $0.left.equalTo(iconView.snp.right).offset(12.0)
+      $0.centerY.equalToSuperview()
       $0.right.equalToSuperview().inset(24.0)
     }
 
+    titleLabel.snp.makeConstraints {
+      $0.left.right.top.equalToSuperview()
+    }
+
     subtitleLabel.snp.makeConstraints {
-      $0.left.equalTo(iconView.snp.right).offset(8.0)
-      $0.top.equalTo(titleLabel.snp.bottom).offset(4.0)
-      $0.bottom.equalToSuperview().inset(16.0)
-      $0.right.equalToSuperview().inset(24.0)
+      $0.top.equalTo(titleLabel.snp.bottom).offset(8.0)
+      $0.left.right.bottom.equalToSuperview()
     }
   }
 }
